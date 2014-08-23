@@ -1,0 +1,19 @@
+#########################################################################
+#
+# CIOlib Staging 
+# 
+# Copyright (c) 2013-2004 Advanced Institute for Computational Science, RIKEN.
+# All rights reserved.
+#
+# #######################################################################
+
+
+# DO NOT DELETE
+
+main.o: ../include/Staging_Utility.h
+main.o: ../include/ActiveSubDomain.h ../include/Staging_Define.h
+main.o: ../include/frm_Version.h ../include/frm_EndianUtil.h
+Staging.o: ../include/Staging_Utility.h
+Staging.o: ../include/ActiveSubDomain.h ../include/Staging_Define.h
+Staging.o: ../include/frm_Version.h ../include/frm_EndianUtil.h
+ActiveSubDomain.o: ../include/ActiveSubDomain.h
