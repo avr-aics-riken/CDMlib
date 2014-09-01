@@ -43,7 +43,7 @@ public:
 
   /** FCONV用処理リスト */
   struct step_rank_info{
-   cio_DFI* dfi;
+   cdm_DFI* dfi;
    int stepStart;
    int stepEnd;
    int rankStart;
@@ -83,17 +83,17 @@ public:
 
 public:
   
-  //cio_DFI *DFI;
-  vector<cio_DFI *> DFI;
+  //cdm_DFI *DFI;
+  vector<cdm_DFI *> DFI;
 
-  const cio_FileInfo  *dfi_Finfo;   ///< DFI cio_FileInfoのポインタ
-  const cio_FilePath  *dfi_Fpath;   ///< DFI cio_FilePathのポインタ
-  const cio_Unit      *dfi_Unit;    ///< DFI cio_Unitのポインタ
-  const cio_Domain    *dfi_Domain;  ///< DFI cio_Domainのポインタ
-  const cio_MPI       *dfi_MPI;     ///< DFI cio_MPIのポインタ
-  const cio_TimeSlice *dfi_TSlice;  ///< DFI cio_TimeSliceのポインタ
-  //const cio_Process   *dfi_Process; ///< DFI cio_Processのポインタ
-        cio_Process   *dfi_Process; ///< DFI cio_Processのポインタ
+  const cdm_FileInfo  *dfi_Finfo;   ///< DFI cdm_FileInfoのポインタ
+  const cdm_FilePath  *dfi_Fpath;   ///< DFI cdm_FilePathのポインタ
+  const cdm_Unit      *dfi_Unit;    ///< DFI cdm_Unitのポインタ
+  const cdm_Domain    *dfi_Domain;  ///< DFI cdm_Domainのポインタ
+  const cdm_MPI       *dfi_MPI;     ///< DFI cdm_MPIのポインタ
+  const cdm_TimeSlice *dfi_TSlice;  ///< DFI cdm_TimeSliceのポインタ
+  //const cdm_Process   *dfi_Process; ///< DFI cdm_Processのポインタ
+        cdm_Process   *dfi_Process; ///< DFI cdm_Processのポインタ
 
   int m_step;                   ///< Restart step番号
   string m_inPath;              ///< DFIディレクトリ
@@ -339,14 +339,14 @@ public:
   /** index.dfiファイルの生成、出力
    * @param [in] dfi_name index dfi ファイル名
    */ 
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   WriteIndexDfiFile(const std::string dfi_name);
  
   /** index.dfiファイルの生成、出力（FCONV用）
    * @param [in] dfi_name index dfi ファイル名
    * @param [in] info 処理リスト
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   WriteIndexDfiFile(const std::string dfi_name, const step_rank_info info);
 
   /** ファイル名の作成

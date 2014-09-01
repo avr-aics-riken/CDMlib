@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_DFI.C
- * @brief  cio_DFI Class
+ * @file   cdm_DFI.C
+ * @brief  cdm_DFI Class
  * @author aics    
  */
 
@@ -24,41 +24,41 @@
 
 // #################################################################
 // コンストラクタ
-cio_DFI::cio_DFI()
+cdm_DFI::cdm_DFI()
 {
 
- m_read_type = CIO::E_CIO_READTYPE_UNKNOWN;
+ m_read_type = CDM::E_CDM_READTYPE_UNKNOWN;
  m_RankID = 0;
 
- m_output_type = CIO::E_CIO_OUTPUT_TYPE_DEFAULT;
- m_output_fname = CIO::E_CIO_FNAME_DEFAULT;
+ m_output_type = CDM::E_CDM_OUTPUT_TYPE_DEFAULT;
+ m_output_fname = CDM::E_CDM_FNAME_DEFAULT;
 
 }
 
 
 // #################################################################
 // デストラクタ
-cio_DFI::~cio_DFI()
+cdm_DFI::~cdm_DFI()
 {
 
 }
 
 // #################################################################
 // DFI read インスタンス
-cio_DFI* cio_DFI::ReadInit(const MPI_Comm comm, 
+cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm, 
                            const std::string DfiName,
                            const int G_Voxel[3],
                            const int G_Div[3],
-                           CIO::E_CIO_ERRORCODE &ret)
+                           CDM::E_CDM_ERRORCODE &ret)
 {
 
   /** DFIのディレクトリパスの取得 */
-  std::string dirName = CIO::cioPath_DirName(DfiName);
+  std::string dirName = CDM::cdmPath_DirName(DfiName);
 
   int RankID;
   MPI_Comm_rank( comm, &RankID );
 
-  cio_TextParser tpCntl;
+  cdm_TextParser tpCntl;
 
   /** index.dfi read */
   /** TPインスタンス */
@@ -67,7 +67,7 @@ cio_DFI* cio_DFI::ReadInit(const MPI_Comm comm,
   FILE*fp = NULL;
   if( !(fp=fopen(DfiName.c_str(),"rb")) ) {
     printf("Can't open file. (%s)\n",DfiName.c_str());
-    ret = CIO::E_CIO_ERROR_READ_INDEXFILE_OPENERROR;
+    ret = CDM::E_CDM_ERROR_READ_INDEXFILE_OPENERROR;
     return NULL;
   }
   fclose(fp);
@@ -78,43 +78,43 @@ cio_DFI* cio_DFI::ReadInit(const MPI_Comm comm,
   if ( ierror )
   {
     printf("\tinput file not found '%s'\n",DfiName.c_str());
-    ret = CIO::E_CIO_ERROR_TEXTPARSER;
+    ret = CDM::E_CDM_ERROR_TEXTPARSER;
     return NULL;
   }
 
   /** Fileinfoの読込み */
-  cio_FileInfo F_info;
-  if( F_info.Read(tpCntl) != CIO::E_CIO_SUCCESS ) 
+  cdm_FileInfo F_info;
+  if( F_info.Read(tpCntl) != CDM::E_CDM_SUCCESS ) 
   {
     printf("\tFileInfo Data Read error %s\n",DfiName.c_str());
-    ret = CIO::E_CIO_ERROR_READ_FILEINFO;
+    ret = CDM::E_CDM_ERROR_READ_FILEINFO;
     return NULL;
   }
 
   /** FilePathの読込み */
-  cio_FilePath F_path;
-  if( F_path.Read(tpCntl) != CIO::E_CIO_SUCCESS )
+  cdm_FilePath F_path;
+  if( F_path.Read(tpCntl) != CDM::E_CDM_SUCCESS )
   {
     printf("\tFilePath Data Read error %s\n",DfiName.c_str());
-    ret = CIO::E_CIO_ERROR_READ_FILEPATH;
+    ret = CDM::E_CDM_ERROR_READ_FILEPATH;
     return NULL;
   }
 
   /** Unitの読込み */
-  cio_Unit unit;
-  if( unit.Read(tpCntl) != CIO::E_CIO_SUCCESS )
+  cdm_Unit unit;
+  if( unit.Read(tpCntl) != CDM::E_CDM_SUCCESS )
   {
     printf("\tUnit Data Read error %s\n",DfiName.c_str());
-    ret = CIO::E_CIO_ERROR_READ_UNIT;
+    ret = CDM::E_CDM_ERROR_READ_UNIT;
     return NULL;
   }
 
   /** TimeSliceの読込み */
-  cio_TimeSlice TimeSlice;
-  if( TimeSlice.Read(tpCntl) != CIO::E_CIO_SUCCESS )
+  cdm_TimeSlice TimeSlice;
+  if( TimeSlice.Read(tpCntl) != CDM::E_CDM_SUCCESS )
   {
     printf("\tTimeSlice Data Read error %s\n",DfiName.c_str());
-    ret = CIO::E_CIO_ERROR_READ_TIMESLICE;
+    ret = CDM::E_CDM_ERROR_READ_TIMESLICE;
     return NULL;
   }
 
@@ -122,8 +122,8 @@ cio_DFI* cio_DFI::ReadInit(const MPI_Comm comm,
   tpCntl.remove();
 
   /** proc.dfi file name の取得 */
-  std::string dfiname  = CIO::cioPath_FileName(F_path.ProcDFIFile,".dfi");
-  std::string procfile = CIO::cioPath_ConnectPath(dirName,dfiname);
+  std::string dfiname  = CDM::cdmPath_FileName(F_path.ProcDFIFile,".dfi");
+  std::string procfile = CDM::cdmPath_ConnectPath(dirName,dfiname);
 
   /** proc.dfi read */
   /** TPインスタンス */
@@ -132,7 +132,7 @@ cio_DFI* cio_DFI::ReadInit(const MPI_Comm comm,
   fp = NULL;
   if( !(fp=fopen(procfile.c_str(),"rb")) ) {
     printf("Can't open file. (%s)\n",procfile.c_str());
-    ret = CIO::E_CIO_ERROR_READ_PROCFILE_OPENERROR;
+    ret = CDM::E_CDM_ERROR_READ_PROCFILE_OPENERROR;
     return NULL;
   }
   fclose(fp);
@@ -142,34 +142,34 @@ cio_DFI* cio_DFI::ReadInit(const MPI_Comm comm,
   if ( ierror )
   {
     printf("\tinput file not found '%s'\n",procfile.c_str());
-    ret = CIO::E_CIO_ERROR_TEXTPARSER;
+    ret = CDM::E_CDM_ERROR_TEXTPARSER;
     return NULL;
   }
 
   /** Domainの読込み */
-  cio_Domain domain;
-  if( domain.Read(tpCntl) != CIO::E_CIO_SUCCESS ) 
+  cdm_Domain domain;
+  if( domain.Read(tpCntl) != CDM::E_CDM_SUCCESS ) 
   {
     printf("\tDomain Data Read error %s\n",procfile.c_str());
-    ret = CIO::E_CIO_ERROR_READ_DOMAIN;
+    ret = CDM::E_CDM_ERROR_READ_DOMAIN;
     return NULL;
   }
 
   /** MPIの読込み */
-  cio_MPI mpi;
-  if( mpi.Read(tpCntl,domain) != CIO::E_CIO_SUCCESS )
+  cdm_MPI mpi;
+  if( mpi.Read(tpCntl,domain) != CDM::E_CDM_SUCCESS )
   {
     printf("\tMPI Data Read error %s\n",procfile.c_str());
-    ret = CIO::E_CIO_ERROR_READ_MPI;
+    ret = CDM::E_CDM_ERROR_READ_MPI;
     return NULL;
   }
 
   /** Processの読込み */
-  cio_Process process;
-  if( process.Read(tpCntl) != CIO::E_CIO_SUCCESS )
+  cdm_Process process;
+  if( process.Read(tpCntl) != CDM::E_CDM_SUCCESS )
   {
     printf("\tProcess Data Read error %s\n",procfile.c_str());
-    ret = CIO::E_CIO_ERROR_READ_PROCESS;
+    ret = CDM::E_CDM_ERROR_READ_PROCESS;
     return NULL;
   }
 
@@ -177,11 +177,11 @@ cio_DFI* cio_DFI::ReadInit(const MPI_Comm comm,
   tpCntl.remove();
 
   /** dfiのインスタンス **/
-  cio_DFI *dfi = NULL;
-  if( F_info.FileFormat == CIO::E_CIO_FMT_SPH ) {
-    dfi = new cio_DFI_SPH(F_info, F_path, unit, domain, mpi, TimeSlice, process);
-  } else if( F_info.FileFormat == CIO::E_CIO_FMT_BOV ) {
-    dfi = new cio_DFI_BOV(F_info, F_path, unit, domain, mpi, TimeSlice, process);
+  cdm_DFI *dfi = NULL;
+  if( F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
+    dfi = new cdm_DFI_SPH(F_info, F_path, unit, domain, mpi, TimeSlice, process);
+  } else if( F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
+    dfi = new cdm_DFI_BOV(F_info, F_path, unit, domain, mpi, TimeSlice, process);
   } else {
     return NULL;
   }
@@ -189,10 +189,10 @@ cio_DFI* cio_DFI::ReadInit(const MPI_Comm comm,
   //読込みタイプのチェック
   dfi->m_read_type = dfi->CheckReadType(G_Voxel,dfi->DFI_Domain.GlobalVoxel,
                                          G_Div,dfi->DFI_Domain.GlobalDivision);
-  if( dfi->m_read_type == CIO::E_CIO_READTYPE_UNKNOWN ) {
+  if( dfi->m_read_type == CDM::E_CDM_READTYPE_UNKNOWN ) {
     //printf("\tDimension size error (%d %d %d)\n", 
     //       G_Voxel[0], G_Voxel[1], G_Voxel[2]);
-    ret = CIO::E_CIO_ERROR_INVALID_DIVNUM;
+    ret = CDM::E_CDM_ERROR_INVALID_DIVNUM;
     dfi->m_comm = comm;
     dfi->m_indexDfiName = DfiName;
     dfi->m_RankID = RankID;
@@ -200,13 +200,13 @@ cio_DFI* cio_DFI::ReadInit(const MPI_Comm comm,
   }
 
 #if 0
-  if( dfi->m_start_type == E_CIO_SAMEDIV_SAMERES ) {
+  if( dfi->m_start_type == E_CDM_SAMEDIV_SAMERES ) {
     printf("***** SAMEDIV_SAMERES\n");
-  } else if( dfi->m_start_type == E_CIO_SAMEDIV_REFINEMENT ) {
+  } else if( dfi->m_start_type == E_CDM_SAMEDIV_REFINEMENT ) {
     printf("***** SAMEDIV_REFINEMENT\n");
-  } else if( dfi->m_start_type == E_CIO_DIFFDIV_SAMERES ) {
+  } else if( dfi->m_start_type == E_CDM_DIFFDIV_SAMERES ) {
     printf("***** DIFFDIV_SAMERES\n");
-  } else if( dfi->m_start_type == E_CIO_DIFFDIV_REFINEMENT ) {
+  } else if( dfi->m_start_type == E_CDM_DIFFDIV_REFINEMENT ) {
     printf("***** DIFFDIV_REFINEMENT\n");
   }
 #endif
@@ -215,54 +215,54 @@ cio_DFI* cio_DFI::ReadInit(const MPI_Comm comm,
   dfi->m_indexDfiName = DfiName;
   dfi->m_RankID = RankID;
 
-  ret = CIO::E_CIO_SUCCESS;
+  ret = CDM::E_CDM_SUCCESS;
 
   return dfi;
 
 }
 
 // #################################################################
-// cio_FileInfoクラスのポインタ取得
+// cdm_FileInfoクラスのポインタ取得
 const
-cio_FileInfo* cio_DFI::GetcioFileInfo()
+cdm_FileInfo* cdm_DFI::GetcdmFileInfo()
 {
   return &DFI_Finfo;
 }
 
 // #################################################################
 void 
-cio_DFI::SetcioFilePath(cio_FilePath FPath)
+cdm_DFI::SetcdmFilePath(cdm_FilePath FPath)
 {
   DFI_Fpath = FPath;
 }
 
 // #################################################################
-// cio_FilePathクラスのポインタ取得
+// cdm_FilePathクラスのポインタ取得
 const
-cio_FilePath* cio_DFI::GetcioFilePath()
+cdm_FilePath* cdm_DFI::GetcdmFilePath()
 {
   return &DFI_Fpath;
 }
 
 // #################################################################
-// cio_Unitクラスのポインタ取得
+// cdm_Unitクラスのポインタ取得
 const
-cio_Unit* cio_DFI::GetcioUnit()
+cdm_Unit* cdm_DFI::GetcdmUnit()
 {
   return &DFI_Unit;
 }
 
 // #################################################################
 //
-void cio_DFI::SetcioUnit(cio_Unit unit)
+void cdm_DFI::SetcdmUnit(cdm_Unit unit)
 {
   DFI_Unit = unit;
 }
 
 // #################################################################
-// cio_Domainクラスのポインタ取得
+// cdm_Domainクラスのポインタ取得
 const
-cio_Domain* cio_DFI::GetcioDomain()
+cdm_Domain* cdm_DFI::GetcdmDomain()
 {
   return &DFI_Domain;
 }
@@ -270,16 +270,16 @@ cio_Domain* cio_DFI::GetcioDomain()
 // #################################################################
 //
 void 
-cio_DFI::SetcioDomain(cio_Domain domain)
+cdm_DFI::SetcdmDomain(cdm_Domain domain)
 {
   DFI_Domain = domain;
 }
 
 
 // #################################################################
-// cio_MPIクラスのポインタ取得
+// cdm_MPIクラスのポインタ取得
 const
-cio_MPI* cio_DFI::GetcioMPI()
+cdm_MPI* cdm_DFI::GetcdmMPI()
 {
   return &DFI_MPI;
 }
@@ -287,30 +287,30 @@ cio_MPI* cio_DFI::GetcioMPI()
 // #################################################################
 //
 void 
-cio_DFI::SetcioMPI(cio_MPI mpi)
+cdm_DFI::SetcdmMPI(cdm_MPI mpi)
 {
   DFI_MPI = mpi;
 }
 
 // #################################################################
-// cio_TimeSliceクラスのポインタ取得
+// cdm_TimeSliceクラスのポインタ取得
 const
-cio_TimeSlice* cio_DFI::GetcioTimeSlice()
+cdm_TimeSlice* cdm_DFI::GetcdmTimeSlice()
 {
   return &DFI_TimeSlice;
 }
 
 // #################################################################
 void
-cio_DFI::SetcioTimeSlice(cio_TimeSlice TSlice)
+cdm_DFI::SetcdmTimeSlice(cdm_TimeSlice TSlice)
 {
   DFI_TimeSlice = TSlice;
 }
 
 // #################################################################
-// cio_Processクラスのポインタ取得
+// cdm_Processクラスのポインタ取得
 const
-cio_Process* cio_DFI::GetcioProcess()
+cdm_Process* cdm_DFI::GetcdmProcess()
 {
   return &DFI_Process;
 }
@@ -318,21 +318,21 @@ cio_Process* cio_DFI::GetcioProcess()
 // #################################################################
 //
 void
-cio_DFI::SetcioProcess(cio_Process Process)
+cdm_DFI::SetcdmProcess(cdm_Process Process)
 {
   DFI_Process = Process;
 }
 
 // #################################################################
 // DFI Write インスタンス float 型
-cio_DFI* cio_DFI::WriteInit(const MPI_Comm comm,
+cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const std::string DfiName,
                             const std::string Path,
                             const std::string prefix,
-                            const CIO::E_CIO_FORMAT format,
+                            const CDM::E_CDM_FORMAT format,
                             const int GCell,
-                            const CIO::E_CIO_DTYPE DataType,
-                            const CIO::E_CIO_ARRAYSHAPE ArrayShape, 
+                            const CDM::E_CDM_DTYPE DataType,
+                            const CDM::E_CDM_ARRAYSHAPE ArrayShape, 
                             const int nComp,
                             const std::string proc_fname,
                             const int G_size[3],
@@ -342,7 +342,7 @@ cio_DFI* cio_DFI::WriteInit(const MPI_Comm comm,
                             const int head[3],
                             const int tail[3],
                             const std::string hostname,
-                            const CIO::E_CIO_ONOFF TSliceOnOff)
+                            const CDM::E_CDM_ONOFF TSliceOnOff)
 {
 
   // float型をdouble型に変換してdouble版WriteInit関数を呼ぶ
@@ -376,14 +376,14 @@ cio_DFI* cio_DFI::WriteInit(const MPI_Comm comm,
 
 // #################################################################
 // DFI Write インスタンス double 型
-cio_DFI* cio_DFI::WriteInit(const MPI_Comm comm,
+cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const std::string DfiName,
                             const std::string Path,
                             const std::string prefix,
-                            const CIO::E_CIO_FORMAT format,
+                            const CDM::E_CDM_FORMAT format,
                             const int GCell,
-                            const CIO::E_CIO_DTYPE DataType,
-                            const CIO::E_CIO_ARRAYSHAPE ArrayShape,
+                            const CDM::E_CDM_DTYPE DataType,
+                            const CDM::E_CDM_ARRAYSHAPE ArrayShape,
                             const int nComp,
                             const std::string proc_fname,
                             const int G_size[3],
@@ -393,19 +393,19 @@ cio_DFI* cio_DFI::WriteInit(const MPI_Comm comm,
                             const int head[3],
                             const int tail[3],
                             const std::string hostname,
-                            const CIO::E_CIO_ONOFF TSliceOnOff)
+                            const CDM::E_CDM_ONOFF TSliceOnOff)
 {
 
 //FCONV 20140131.s
-  if( format == CIO::E_CIO_FMT_SPH ) {
-    if( nComp > 1 && ArrayShape == CIO::E_CIO_IJKN ) {
-      printf("\tCIO error sph file undefined ijkn component>1.\n");
+  if( format == CDM::E_CDM_FMT_SPH ) {
+    if( nComp > 1 && ArrayShape == CDM::E_CDM_IJKN ) {
+      printf("\tCDM error sph file undefined ijkn component>1.\n");
       return NULL;
     }
   }
 //FCONV 20140131.e
 
-  cio_DFI *dfi = NULL;
+  cdm_DFI *dfi = NULL;
 
   int RankID;
   MPI_Comm_rank( comm, &RankID );
@@ -413,7 +413,7 @@ cio_DFI* cio_DFI::WriteInit(const MPI_Comm comm,
   int nrank;
   MPI_Comm_size( comm, &nrank );
 
-  cio_FileInfo out_F_info;
+  cdm_FileInfo out_F_info;
   out_F_info.DirectoryPath    = Path;
   out_F_info.TimeSliceDirFlag = TSliceOnOff;
   out_F_info.Prefix           = prefix;
@@ -425,21 +425,21 @@ cio_DFI* cio_DFI::WriteInit(const MPI_Comm comm,
 
   int idumy = 1;
   char* cdumy = (char*)(&idumy);
-  if( cdumy[0] == 0x01 ) out_F_info.Endian = CIO::E_CIO_LITTLE;
-  if( cdumy[0] == 0x00 ) out_F_info.Endian = CIO::E_CIO_BIG;
+  if( cdumy[0] == 0x01 ) out_F_info.Endian = CDM::E_CDM_LITTLE;
+  if( cdumy[0] == 0x00 ) out_F_info.Endian = CDM::E_CDM_BIG;
 
-  cio_FilePath out_F_path;
+  cdm_FilePath out_F_path;
   out_F_path.ProcDFIFile = proc_fname;
 
-  cio_Unit out_unit;
+  cdm_Unit out_unit;
 
-  cio_MPI out_mpi;
+  cdm_MPI out_mpi;
   out_mpi.NumberOfRank = nrank;
   out_mpi.NumberOfGroup = 1;
 
-  cio_Domain out_domain;
-  cio_Process out_Process;
-  cio_Rank out_Rank;
+  cdm_Domain out_domain;
+  cdm_Process out_Process;
+  cdm_Rank out_Rank;
 
   for(int i=0; i<nrank; i++ ) {
      out_Process.RankList.push_back(out_Rank);
@@ -460,34 +460,34 @@ cio_DFI* cio_DFI::WriteInit(const MPI_Comm comm,
     out_domain.GlobalRegion[i] = pitch[i]*G_size[i];
   }
 
-  cio_TimeSlice out_TSlice;
+  cdm_TimeSlice out_TSlice;
 
   char tmpname[512];
   memset(tmpname,0x00,sizeof(char)*512);
   if( gethostname(tmpname, 512) != 0 ) printf("*** error gethostname() \n");
 
-  if( out_F_info.FileFormat == CIO::E_CIO_FMT_SPH ) {
-    dfi = new cio_DFI_SPH(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+  if( out_F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
+    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
-  } else if( out_F_info.FileFormat == CIO::E_CIO_FMT_BOV ) {
-    dfi = new cio_DFI_BOV(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
+    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.s
-  } else if( out_F_info.FileFormat == CIO::E_CIO_FMT_AVS ) {
-    dfi = new cio_DFI_AVS(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_AVS ) {
+    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
-  } else if( out_F_info.FileFormat == CIO::E_CIO_FMT_PLOT3D ) {
-    dfi = new cio_DFI_PLOT3D(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
+    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
-  } else if( out_F_info.FileFormat == CIO::E_CIO_FMT_VTK ) {
-    dfi = new cio_DFI_VTK(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_VTK ) {
+    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.e
   } else return NULL;
 
 
   dfi->m_indexDfiName = DfiName;
-  dfi->m_directoryPath = CIO::cioPath_DirName(DfiName);
+  dfi->m_directoryPath = CDM::cdmPath_DirName(DfiName);
   dfi->m_comm = comm;
   dfi->m_RankID = RankID;
 
@@ -497,145 +497,145 @@ cio_DFI* cio_DFI::WriteInit(const MPI_Comm comm,
 
 // #################################################################
 // 配列形状を文字列で返す
-std::string cio_DFI::GetArrayShapeString()
+std::string cdm_DFI::GetArrayShapeString()
 {
-  if( DFI_Finfo.ArrayShape == CIO::E_CIO_IJKN ) return D_CIO_IJNK;
-  if( DFI_Finfo.ArrayShape == CIO::E_CIO_NIJK ) return D_CIO_NIJK;
+  if( DFI_Finfo.ArrayShape == CDM::E_CDM_IJKN ) return D_CDM_IJNK;
+  if( DFI_Finfo.ArrayShape == CDM::E_CDM_NIJK ) return D_CDM_NIJK;
   return " ";
 }
 
 // #################################################################
 // 配列形状を返す(e_num番号)
-CIO::E_CIO_ARRAYSHAPE cio_DFI::GetArrayShape()
+CDM::E_CDM_ARRAYSHAPE cdm_DFI::GetArrayShape()
 {
-  return (CIO::E_CIO_ARRAYSHAPE)DFI_Finfo.ArrayShape;
+  return (CDM::E_CDM_ARRAYSHAPE)DFI_Finfo.ArrayShape;
 }
 
 // #################################################################
 // データタイプの取り出し(文字列)
-std::string cio_DFI::GetDataTypeString()
+std::string cdm_DFI::GetDataTypeString()
 {
-  return ConvDatatypeE2S((CIO::E_CIO_DTYPE)DFI_Finfo.DataType);
+  return ConvDatatypeE2S((CDM::E_CDM_DTYPE)DFI_Finfo.DataType);
 }
 
 // #################################################################
 // データタイプの取り出し(e_num)
-CIO::E_CIO_DTYPE cio_DFI::GetDataType()
+CDM::E_CDM_DTYPE cdm_DFI::GetDataType()
 {
-  return (CIO::E_CIO_DTYPE)DFI_Finfo.DataType;
+  return (CDM::E_CDM_DTYPE)DFI_Finfo.DataType;
 }
 
 //FCONV 20140123.s
 // #################################################################
 // FileFormatの取り出し(文字列)
-std::string cio_DFI::GetFileFormatString()
+std::string cdm_DFI::GetFileFormatString()
 {
-  if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_UNKNOWN ) return "";
-  if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_SPH ) return "sph";
-  if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_BOV ) return "bov";
-  if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_AVS ) return "avs";
-  if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_PLOT3D ) return "plot3d";
-  if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_VTK ) return "vtk";
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_UNKNOWN ) return "";
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH ) return "sph";
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_BOV ) return "bov";
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS ) return "avs";
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) return "plot3d";
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_VTK ) return "vtk";
   return "";
 }
 
 // #################################################################
 // FileFormatの取り出し(e_num)
-CIO::E_CIO_FORMAT cio_DFI::GetFileFormat()
+CDM::E_CDM_FORMAT cdm_DFI::GetFileFormat()
 {
-  return (CIO::E_CIO_FORMAT)DFI_Finfo.FileFormat;
+  return (CDM::E_CDM_FORMAT)DFI_Finfo.FileFormat;
 }
 
 
 // #################################################################
 // 成分数の取り出し
-int cio_DFI::GetNumComponent()
+int cdm_DFI::GetNumComponent()
 {
   return DFI_Finfo.Component;
 }
 
 // #################################################################
 // 仮想セル数の取り出し
-int cio_DFI::GetNumGuideCell()
+int cdm_DFI::GetNumGuideCell()
 {
   return DFI_Finfo.GuideCell;
 }
 
 // #################################################################
 // データタイプを文字列からe_num番号へ変換
-CIO::E_CIO_DTYPE cio_DFI::ConvDatatypeS2E(const std::string datatype)
+CDM::E_CDM_DTYPE cdm_DFI::ConvDatatypeS2E(const std::string datatype)
 {
 
-  if     ( !strcasecmp(datatype.c_str(),"Int8"   ) ) return CIO::E_CIO_INT8;
-  else if( !strcasecmp(datatype.c_str(),"Int16"  ) ) return CIO::E_CIO_INT16;
-  else if( !strcasecmp(datatype.c_str(),"Int32"  ) ) return CIO::E_CIO_INT32;
-  else if( !strcasecmp(datatype.c_str(),"Int64"  ) ) return CIO::E_CIO_INT64;
-  else if( !strcasecmp(datatype.c_str(),"UInt8"  ) ) return CIO::E_CIO_UINT8;
-  else if( !strcasecmp(datatype.c_str(),"UInt16" ) ) return CIO::E_CIO_UINT16;
-  else if( !strcasecmp(datatype.c_str(),"UInt32" ) ) return CIO::E_CIO_UINT32;
-  else if( !strcasecmp(datatype.c_str(),"UInt64" ) ) return CIO::E_CIO_UINT64;
-  else if( !strcasecmp(datatype.c_str(),"Float32") ) return CIO::E_CIO_FLOAT32;
-  else if( !strcasecmp(datatype.c_str(),"Float64") ) return CIO::E_CIO_FLOAT64;
+  if     ( !strcasecmp(datatype.c_str(),"Int8"   ) ) return CDM::E_CDM_INT8;
+  else if( !strcasecmp(datatype.c_str(),"Int16"  ) ) return CDM::E_CDM_INT16;
+  else if( !strcasecmp(datatype.c_str(),"Int32"  ) ) return CDM::E_CDM_INT32;
+  else if( !strcasecmp(datatype.c_str(),"Int64"  ) ) return CDM::E_CDM_INT64;
+  else if( !strcasecmp(datatype.c_str(),"UInt8"  ) ) return CDM::E_CDM_UINT8;
+  else if( !strcasecmp(datatype.c_str(),"UInt16" ) ) return CDM::E_CDM_UINT16;
+  else if( !strcasecmp(datatype.c_str(),"UInt32" ) ) return CDM::E_CDM_UINT32;
+  else if( !strcasecmp(datatype.c_str(),"UInt64" ) ) return CDM::E_CDM_UINT64;
+  else if( !strcasecmp(datatype.c_str(),"Float32") ) return CDM::E_CDM_FLOAT32;
+  else if( !strcasecmp(datatype.c_str(),"Float64") ) return CDM::E_CDM_FLOAT64;
 
-  return CIO::E_CIO_DTYPE_UNKNOWN;
+  return CDM::E_CDM_DTYPE_UNKNOWN;
 }
 
 // #################################################################
 // データタイプをe_num番号から文字列に変換
-std::string cio_DFI::ConvDatatypeE2S(const CIO::E_CIO_DTYPE Dtype)
+std::string cdm_DFI::ConvDatatypeE2S(const CDM::E_CDM_DTYPE Dtype)
 {
-  if     ( Dtype == CIO::E_CIO_INT8    ) return D_CIO_INT8;
-  else if( Dtype == CIO::E_CIO_INT16   ) return D_CIO_INT16;
-  else if( Dtype == CIO::E_CIO_INT32   ) return D_CIO_INT32;
-  else if( Dtype == CIO::E_CIO_INT64   ) return D_CIO_INT64;
-  else if( Dtype == CIO::E_CIO_UINT8   ) return D_CIO_UINT8;
-  else if( Dtype == CIO::E_CIO_UINT16  ) return D_CIO_UINT16;
-  else if( Dtype == CIO::E_CIO_UINT32  ) return D_CIO_UINT32;
-  else if( Dtype == CIO::E_CIO_UINT64  ) return D_CIO_UINT64;
-  else if( Dtype == CIO::E_CIO_FLOAT32 ) return D_CIO_FLOAT32;
-  else if( Dtype == CIO::E_CIO_FLOAT64 ) return D_CIO_FLOAT64;
+  if     ( Dtype == CDM::E_CDM_INT8    ) return D_CDM_INT8;
+  else if( Dtype == CDM::E_CDM_INT16   ) return D_CDM_INT16;
+  else if( Dtype == CDM::E_CDM_INT32   ) return D_CDM_INT32;
+  else if( Dtype == CDM::E_CDM_INT64   ) return D_CDM_INT64;
+  else if( Dtype == CDM::E_CDM_UINT8   ) return D_CDM_UINT8;
+  else if( Dtype == CDM::E_CDM_UINT16  ) return D_CDM_UINT16;
+  else if( Dtype == CDM::E_CDM_UINT32  ) return D_CDM_UINT32;
+  else if( Dtype == CDM::E_CDM_UINT64  ) return D_CDM_UINT64;
+  else if( Dtype == CDM::E_CDM_FLOAT32 ) return D_CDM_FLOAT32;
+  else if( Dtype == CDM::E_CDM_FLOAT64 ) return D_CDM_FLOAT64;
   else return "dummy";
 
 }
 // #################################################################
 // データサイズの取り出し
-int cio_DFI::get_cio_Datasize(CIO::E_CIO_DTYPE Dtype)
+int cdm_DFI::get_cdm_Datasize(CDM::E_CDM_DTYPE Dtype)
 {
 
-  if     ( Dtype == CIO::E_CIO_INT8    ) return sizeof(char);
-  else if( Dtype == CIO::E_CIO_INT16   ) return sizeof(short);
-  else if( Dtype == CIO::E_CIO_INT32   ) return sizeof(int);
-  else if( Dtype == CIO::E_CIO_INT64   ) return sizeof(long long);
-  else if( Dtype == CIO::E_CIO_UINT8   ) return sizeof(unsigned char);
-  else if( Dtype == CIO::E_CIO_UINT16  ) return sizeof(unsigned short);
-  else if( Dtype == CIO::E_CIO_UINT32  ) return sizeof(unsigned int);
-  else if( Dtype == CIO::E_CIO_UINT64  ) return sizeof(unsigned long long);
-  else if( Dtype == CIO::E_CIO_FLOAT32 ) return sizeof(float);
-  else if( Dtype == CIO::E_CIO_FLOAT64 ) return sizeof(double);
+  if     ( Dtype == CDM::E_CDM_INT8    ) return sizeof(char);
+  else if( Dtype == CDM::E_CDM_INT16   ) return sizeof(short);
+  else if( Dtype == CDM::E_CDM_INT32   ) return sizeof(int);
+  else if( Dtype == CDM::E_CDM_INT64   ) return sizeof(long long);
+  else if( Dtype == CDM::E_CDM_UINT8   ) return sizeof(unsigned char);
+  else if( Dtype == CDM::E_CDM_UINT16  ) return sizeof(unsigned short);
+  else if( Dtype == CDM::E_CDM_UINT32  ) return sizeof(unsigned int);
+  else if( Dtype == CDM::E_CDM_UINT64  ) return sizeof(unsigned long long);
+  else if( Dtype == CDM::E_CDM_FLOAT32 ) return sizeof(float);
+  else if( Dtype == CDM::E_CDM_FLOAT64 ) return sizeof(double);
   else return 0;
 
 }
 
 // #################################################################
 // DFI DomainのGlobalVoxelの取り出し
-int* cio_DFI::GetDFIGlobalVoxel()
+int* cdm_DFI::GetDFIGlobalVoxel()
 {
   return DFI_Domain.GlobalVoxel;
 }
 
 // #################################################################
 // DFI DomainのGlobalDivisionの取り出し
-int* cio_DFI::GetDFIGlobalDivision()
+int* cdm_DFI::GetDFIGlobalDivision()
 {
   return DFI_Domain.GlobalDivision;
 }
 // #################################################################
 // Create Domain & Process  
-void cio_DFI::cio_Create_dfiProcessInfo(const MPI_Comm comm, 
-                                        cio_Process &G_Process)
+void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm, 
+                                        cdm_Process &G_Process)
 {
 
-  cio_Rank G_Rank;
+  cdm_Rank G_Rank;
 
   int RankID;
   MPI_Comm_rank( comm, &RankID );
@@ -684,7 +684,7 @@ void cio_DFI::cio_Create_dfiProcessInfo(const MPI_Comm comm,
 
 // #################################################################
 // 読込み判定
-CIO::E_CIO_READTYPE cio_DFI::CheckReadType(const int G_voxel[3], 
+CDM::E_CDM_READTYPE cdm_DFI::CheckReadType(const int G_voxel[3], 
                                            const int DFI_GlobalVoxel[3],
                                            const int G_Div[3],
                                            const int DFI_GlobalDivision[3])
@@ -702,34 +702,34 @@ CIO::E_CIO_READTYPE cio_DFI::CheckReadType(const int G_voxel[3],
   if( isSameDiv ) {
     if( G_voxel[0] == DFI_GlobalVoxel[0]   &&
         G_voxel[1] == DFI_GlobalVoxel[1]   &&
-        G_voxel[2] == DFI_GlobalVoxel[2]   ) return CIO::E_CIO_SAMEDIV_SAMERES;
+        G_voxel[2] == DFI_GlobalVoxel[2]   ) return CDM::E_CDM_SAMEDIV_SAMERES;
 
     if( G_voxel[0] == DFI_GlobalVoxel[0]*2 &&
         G_voxel[1] == DFI_GlobalVoxel[1]*2 &&
-        G_voxel[2] == DFI_GlobalVoxel[2]*2 ) return CIO::E_CIO_SAMEDIV_REFINEMENT;
+        G_voxel[2] == DFI_GlobalVoxel[2]*2 ) return CDM::E_CDM_SAMEDIV_REFINEMENT;
   } else {
     if( G_voxel[0] == DFI_GlobalVoxel[0]   &&
         G_voxel[1] == DFI_GlobalVoxel[1]   &&
-        G_voxel[2] == DFI_GlobalVoxel[2]   ) return CIO::E_CIO_DIFFDIV_SAMERES;
+        G_voxel[2] == DFI_GlobalVoxel[2]   ) return CDM::E_CDM_DIFFDIV_SAMERES;
 
     if( G_voxel[0] == DFI_GlobalVoxel[0]*2 &&
         G_voxel[1] == DFI_GlobalVoxel[1]*2 &&
-        G_voxel[2] == DFI_GlobalVoxel[2]*2 ) return CIO::E_CIO_DIFFDIV_REFINEMENT;
+        G_voxel[2] == DFI_GlobalVoxel[2]*2 ) return CDM::E_CDM_DIFFDIV_REFINEMENT;
   }
  
-  return CIO::E_CIO_READTYPE_UNKNOWN;
+  return CDM::E_CDM_READTYPE_UNKNOWN;
 }
 
 // #################################################################
 // 読込み範囲を求める
-void cio_DFI::CreateReadStartEnd(bool isSame,
+void cdm_DFI::CreateReadStartEnd(bool isSame,
                             const int head[3], 
                             const int tail[3], 
                             const int gc, 
                             const int DFI_head[3],
                             const int DFI_tail[3], 
                             const int DFI_gc, 
-                            const CIO::E_CIO_READTYPE readflag, 
+                            const CDM::E_CDM_READTYPE readflag, 
                             int copy_sta[3], 
                             int copy_end[3],
                             int read_sta[3],
@@ -791,7 +791,7 @@ void cio_DFI::CreateReadStartEnd(bool isSame,
 
 // #################################################################
 // ファイル名を作成(ディレクトリパス付加）
-std::string cio_DFI::Generate_FieldFileName(int RankID, 
+std::string cdm_DFI::Generate_FieldFileName(int RankID, 
                                        int step, 
                                        const bool mio)
 {
@@ -800,30 +800,30 @@ std::string cio_DFI::Generate_FieldFileName(int RankID,
   if( DFI_Finfo.Prefix.empty() ) return NULL;
 
   std::string fmt;
-  if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_SPH ) {
-    fmt=D_CIO_EXT_SPH;
-  } else if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_BOV ) {
-    fmt=D_CIO_EXT_BOV;
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH ) {
+    fmt=D_CDM_EXT_SPH;
+  } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_BOV ) {
+    fmt=D_CDM_EXT_BOV;
 //FCONV 20131122.s
-  } else if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_AVS ) {
-    //fmt=D_CIO_EXT_SPH;
-    fmt=D_CIO_EXT_BOV;
-  } else if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_VTK ) {
-    fmt=D_CIO_EXT_VTK;
-  } else if( DFI_Finfo.FileFormat == CIO::E_CIO_FMT_PLOT3D ) {
-    fmt=D_CIO_EXT_FUNC;
+  } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS ) {
+    //fmt=D_CDM_EXT_SPH;
+    fmt=D_CDM_EXT_BOV;
+  } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_VTK ) {
+    fmt=D_CDM_EXT_VTK;
+  } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
+    fmt=D_CDM_EXT_FUNC;
 //FCONV 20131122.e
   }
 
   int len = DFI_Finfo.DirectoryPath.size() + DFI_Finfo.Prefix.size() + fmt.size() + 25; 
   // id(6) + step(10) + 1(\0) + "_"(2) + "."(1)+"id"(2)
-  if( DFI_Finfo.TimeSliceDirFlag == CIO::E_CIO_ON ) len += 11;
+  if( DFI_Finfo.TimeSliceDirFlag == CDM::E_CDM_ON ) len += 11;
 
   char* tmp = new char[len];
   memset(tmp, 0, sizeof(char)*len);
 
   if( mio ) {
-    if( DFI_Finfo.TimeSliceDirFlag == CIO::E_CIO_ON ) {
+    if( DFI_Finfo.TimeSliceDirFlag == CDM::E_CDM_ON ) {
       sprintf(tmp, "%s/%010d/%s_%010d_id%06d.%s",DFI_Finfo.DirectoryPath.c_str(),step,DFI_Finfo.Prefix.c_str(), 
             step,RankID,fmt.c_str());
     } else {
@@ -831,7 +831,7 @@ std::string cio_DFI::Generate_FieldFileName(int RankID,
             step,RankID,fmt.c_str());
     }
   } else {
-    if( DFI_Finfo.TimeSliceDirFlag == CIO::E_CIO_ON ) {
+    if( DFI_Finfo.TimeSliceDirFlag == CDM::E_CDM_ON ) {
       sprintf(tmp, "%s/%010d/%s_%010d.%s",DFI_Finfo.DirectoryPath.c_str(),step,DFI_Finfo.Prefix.c_str(), 
             step,fmt.c_str());
     } else {
@@ -849,13 +849,13 @@ std::string cio_DFI::Generate_FieldFileName(int RankID,
 //FCONV 20131128.s
 // #################################################################
 // ファイル名のみの生成（static 関数）
-std::string cio_DFI::Generate_FileName(std::string prefix,
+std::string cdm_DFI::Generate_FileName(std::string prefix,
                                        int RankID,
                                        int step,
                                        std::string ext,
-                                       CIO::E_CIO_OUTPUT_FNAME output_fname,
+                                       CDM::E_CDM_OUTPUT_FNAME output_fname,
                                        bool mio,
-                                       CIO::E_CIO_ONOFF TimeSliceDirFlag)
+                                       CDM::E_CDM_ONOFF TimeSliceDirFlag)
 {
 
   int len = prefix.size()+ext.size()+100;
@@ -884,17 +884,17 @@ std::string cio_DFI::Generate_FileName(std::string prefix,
   }
 
   //step_rank
-  if( output_fname != CIO::E_CIO_FNAME_RANK_STEP ) 
+  if( output_fname != CDM::E_CDM_FNAME_RANK_STEP ) 
   {
-    if( TimeSliceDirFlag == CIO::E_CIO_ON ) {
+    if( TimeSliceDirFlag == CDM::E_CDM_ON ) {
       sprintf(tmp,"%010d/%s_%010d_id%06d.%s",step,prefix.c_str(),step,RankID,ext.c_str());
     } else {
       sprintf(tmp,"%s_%010d_id%06d.%s",prefix.c_str(),step,RankID,ext.c_str());
     }
-  } else if( output_fname == CIO::E_CIO_FNAME_RANK_STEP ) 
+  } else if( output_fname == CDM::E_CDM_FNAME_RANK_STEP ) 
   {
   //rank_step
-    if( TimeSliceDirFlag == CIO::E_CIO_ON ) {
+    if( TimeSliceDirFlag == CDM::E_CDM_ON ) {
       sprintf(tmp,"%010d/%s_id%06d_%010d.%s",step,prefix.c_str(),RankID,step,ext.c_str());
     } else {
       sprintf(tmp,"%s_id%06d_%010d.%s",prefix.c_str(),RankID,step,ext.c_str());
@@ -911,7 +911,7 @@ std::string cio_DFI::Generate_FileName(std::string prefix,
 
 // #################################################################
 // ディレクトリがなければ作成、既存なら何もしない
-int cio_DFI::MakeDirectory(const std::string path)
+int cdm_DFI::MakeDirectory(const std::string path)
 {
   int ret = MakeDirectorySub(path);
   if( ret != 0 )
@@ -930,7 +930,7 @@ int cio_DFI::MakeDirectory(const std::string path)
 
 // #################################################################
 // ディレクトリがなければ作成、既存なら何もしない
-int cio_DFI::MakeDirectoryPath()
+int cdm_DFI::MakeDirectoryPath()
 {
   // DirectoryPath with TimeSlice
   std::string path = Generate_Directory_Path();
@@ -939,7 +939,7 @@ int cio_DFI::MakeDirectoryPath()
 }
 
 // #################################################################
-int cio_DFI::MakeDirectorySub( std::string path )
+int cdm_DFI::MakeDirectorySub( std::string path )
 {
 
   umask(022);
@@ -949,7 +949,7 @@ int cio_DFI::MakeDirectorySub( std::string path )
   {
     if( errno == EEXIST ) return 0;
 
-    std::string parent = CIO::cioPath_DirName(path);
+    std::string parent = CDM::cdmPath_DirName(path);
     int ret2 = MakeDirectorySub( parent );
     if( ret2 != 0 )
     {
@@ -964,46 +964,46 @@ int cio_DFI::MakeDirectorySub( std::string path )
 
 // #################################################################
 // Directoryパスを生成する関数
-std::string cio_DFI::Generate_Directory_Path()
+std::string cdm_DFI::Generate_Directory_Path()
 {
 
   // dfiのパスとDirectoryPathを連結する関数
   // ただし、絶対パスのときはdfiのパスは無視
-  // CIO::cioPath_isAbsoluteがtrueのとき絶対パス
+  // CDM::cdmPath_isAbsoluteがtrueのとき絶対パス
   // DirectoryPath + TimeSliceDir
   std::string path = m_directoryPath;
-  if( DFI_Finfo.TimeSliceDirFlag == CIO::E_CIO_ON )
+  if( DFI_Finfo.TimeSliceDirFlag == CDM::E_CDM_ON )
   {
-    //path = CIO::cioPath_ConnectPath(path, m_timeSliceDir);
-    path = CIO::cioPath_ConnectPath(path, "");
+    //path = CDM::cdmPath_ConnectPath(path, m_timeSliceDir);
+    path = CDM::cdmPath_ConnectPath(path, "");
   }
 
   // absolute path
-  if( CIO::cioPath_isAbsolute(path) )
+  if( CDM::cdmPath_isAbsolute(path) )
   {
     return path;
   }
 
   // relative path
-  std::string dfidir = CIO::cioPath_DirName(m_indexDfiName);
-  path = CIO::cioPath_ConnectPath(dfidir, path);
+  std::string dfidir = CDM::cdmPath_DirName(m_indexDfiName);
+  path = CDM::cdmPath_ConnectPath(dfidir, path);
   return path;
 
 }
 
 // #################################################################
 // 出力DFIファイル名を作成する
-std::string cio_DFI::Generate_DFI_Name(const std::string prefix)
+std::string cdm_DFI::Generate_DFI_Name(const std::string prefix)
 {
 
   // directory path
-  std::string dirName  = CIO::cioPath_DirName(prefix);
+  std::string dirName  = CDM::cdmPath_DirName(prefix);
 
   // file extension
-  std::string dfiname = CIO::cioPath_FileName(prefix,".dfi");
+  std::string dfiname = CDM::cdmPath_FileName(prefix,".dfi");
 
   // filename
-  std::string fname = CIO::cioPath_ConnectPath( dirName, dfiname );
+  std::string fname = CDM::cdmPath_ConnectPath( dirName, dfiname );
 
 #if 0 // for debug
   printf("prefix    =%s\n", prefix.c_str() );
@@ -1018,7 +1018,7 @@ std::string cio_DFI::Generate_DFI_Name(const std::string prefix)
 
 // #################################################################
 // Unitを追加する
-void cio_DFI::AddUnit(const std::string Name,
+void cdm_DFI::AddUnit(const std::string Name,
                       const std::string Unit,
                       const double reference,
                       const double difference,
@@ -1026,24 +1026,24 @@ void cio_DFI::AddUnit(const std::string Name,
 {
 
   /** UnitElemの生成 */
-  cio_UnitElem unit =  cio_UnitElem(Name,Unit,reference,difference,BsetDiff);
+  cdm_UnitElem unit =  cdm_UnitElem(Name,Unit,reference,difference,BsetDiff);
   
   /** UnilListへのセット */
-  DFI_Unit.UnitList.insert(map<std::string,cio_UnitElem>::value_type(Name,unit));
+  DFI_Unit.UnitList.insert(map<std::string,cdm_UnitElem>::value_type(Name,unit));
 
 }
 
 // #################################################################
 // UuitElemを取得する
-CIO::E_CIO_ERRORCODE cio_DFI::GetUnitElem(const std::string Name,
-                                          cio_UnitElem &unit)
+CDM::E_CDM_ERRORCODE cdm_DFI::GetUnitElem(const std::string Name,
+                                          cdm_UnitElem &unit)
 {
   return DFI_Unit.GetUnitElem(Name, unit);
 }
 
 // #################################################################
 // UnitElemのメンバ変数毎に取得する
-CIO::E_CIO_ERRORCODE cio_DFI::GetUnit(const std::string Name,
+CDM::E_CDM_ERRORCODE cdm_DFI::GetUnit(const std::string Name,
                                       std::string &unit,
                                       double &ref,
                                       double &diff,
@@ -1055,14 +1055,14 @@ CIO::E_CIO_ERRORCODE cio_DFI::GetUnit(const std::string Name,
 
 // #################################################################
 // TimeSlice OnOff フラグをセットする
-void cio_DFI::SetTimeSliceFlag(const CIO::E_CIO_ONOFF ONOFF)
+void cdm_DFI::SetTimeSliceFlag(const CDM::E_CDM_ONOFF ONOFF)
 {
   DFI_Finfo.TimeSliceDirFlag = ONOFF;
 }
 
 // #################################################################
 // FileInfoの成分名を登録する
-void cio_DFI::setComponentVariable(int pcomp, std::string compName)
+void cdm_DFI::setComponentVariable(int pcomp, std::string compName)
 {
 
   DFI_Finfo.setComponentVariable(pcomp, compName);
@@ -1071,7 +1071,7 @@ void cio_DFI::setComponentVariable(int pcomp, std::string compName)
 
 // #################################################################
 // FileInfoの成分名を取得する
-std::string cio_DFI::getComponentVariable(int pcomp)
+std::string cdm_DFI::getComponentVariable(int pcomp)
 {
 
   return DFI_Finfo.getComponentVariable(pcomp);
@@ -1080,7 +1080,7 @@ std::string cio_DFI::getComponentVariable(int pcomp)
 
 // #################################################################
 // DFIに出力されているminmaxの合成値を取得
-CIO::E_CIO_ERRORCODE cio_DFI::getVectorMinMax(const unsigned step,
+CDM::E_CDM_ERRORCODE cdm_DFI::getVectorMinMax(const unsigned step,
                                               double &vec_min,
                                               double &vec_max)
 {
@@ -1091,7 +1091,7 @@ CIO::E_CIO_ERRORCODE cio_DFI::getVectorMinMax(const unsigned step,
 
 // #################################################################
 // DFIに出力されているminmaxの合成値を取得
-CIO::E_CIO_ERRORCODE cio_DFI::getMinMax(const unsigned step,
+CDM::E_CDM_ERRORCODE cdm_DFI::getMinMax(const unsigned step,
                                         const int compNo,
                                         double &min_value,
                                         double &max_value)
@@ -1103,11 +1103,11 @@ CIO::E_CIO_ERRORCODE cio_DFI::getMinMax(const unsigned step,
 
 // #################################################################
 // 読込みランクリストの作成
-CIO::E_CIO_ERRORCODE
-cio_DFI::CheckReadRank(cio_Domain dfi_domain,
+CDM::E_CDM_ERRORCODE
+cdm_DFI::CheckReadRank(cdm_Domain dfi_domain,
                        const int head[3],
                        const int tail[3],
-                       CIO::E_CIO_READTYPE readflag,
+                       CDM::E_CDM_READTYPE readflag,
                        vector<int> &readRankList)
 {
 

@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_DFI_Read.C
- * @brief  cio_DFI Class
+ * @file   cdm_DFI_Read.C
+ * @brief  cdm_DFI Class
  * @author aics    
  */
 
@@ -16,8 +16,8 @@
 
 // #################################################################
 // フィールドデータの読込み（引数で渡された配列にデータを読込み返す）
-CIO::E_CIO_ERRORCODE
-cio_DFI::ReadData(cio_Array *dst,
+CDM::E_CDM_ERRORCODE
+cdm_DFI::ReadData(cdm_Array *dst,
                   const unsigned step, 
                   const int gc, 
                   const int Gvoxel[3], 
@@ -30,7 +30,7 @@ cio_DFI::ReadData(cio_Array *dst,
                   double &avr_time)
 {
 
-  CIO::E_CIO_ERRORCODE ret;
+  CDM::E_CDM_ERRORCODE ret;
 
   /** dts にHead/Tailをセット */
 
@@ -39,22 +39,22 @@ cio_DFI::ReadData(cio_Array *dst,
   dst->setHeadIndex(Shead);
 
   /** index DFIファイルの ディレクトリパスを取得 */
-  std::string dir = CIO::cioPath_DirName(m_indexDfiName);
+  std::string dir = CDM::cdmPath_DirName(m_indexDfiName);
 
   bool mio = false;             ///< DFIファイルの並列フラグ
   bool isSame =true;            ///< 粗密フラグ true:密 false:粗
-  CIO::E_CIO_READTYPE readflag; ///<読込み判定フラグ
+  CDM::E_CDM_READTYPE readflag; ///<読込み判定フラグ
 
   /** 読込みフラグ取得 */
   readflag = CheckReadType(Gvoxel, DFI_Domain.GlobalVoxel,
                            Gdivision, DFI_Domain.GlobalDivision);
 
   /** 粗密フラグセット */
-  if( readflag == CIO::E_CIO_SAMEDIV_REFINEMENT || readflag == CIO::E_CIO_DIFFDIV_REFINEMENT ) isSame = false; 
+  if( readflag == CDM::E_CDM_SAMEDIV_REFINEMENT || readflag == CDM::E_CDM_DIFFDIV_REFINEMENT ) isSame = false; 
 
   /**読込みランクリストの生成 */
   ret = DFI_Process.CheckReadRank(DFI_Domain, head, tail, readflag, m_readRankList);
-  if( ret != CIO::E_CIO_SUCCESS ) {
+  if( ret != CDM::E_CDM_SUCCESS ) {
     printf("error code : %d\n",(int)ret);
     return ret;
   }
@@ -67,11 +67,11 @@ cio_DFI::ReadData(cio_Array *dst,
 
     /** ファイル名の生成 */
     std::string fname;
-    if( CIO::cioPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
+    if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
       fname = Generate_FieldFileName(ID,step,mio);
     } else {
       std::string tmp = Generate_FieldFileName(ID,step,mio);
-      fname = CIO::cioPath_ConnectPath( dir, tmp );
+      fname = CDM::cdmPath_ConnectPath( dir, tmp );
     }
 
     int copy_sta[3],copy_end[3],read_sta[3],read_end[3];
@@ -86,11 +86,11 @@ cio_DFI::ReadData(cio_Array *dst,
 
     /** フィールドデータの読込み */
 
-    cio_Array* src = ReadFieldData(fname, step, time, read_sta, read_end,
+    cdm_Array* src = ReadFieldData(fname, step, time, read_sta, read_end,
                                    DFI_Process.RankList[n].HeadIndex, 
                                    DFI_Process.RankList[n].TailIndex, 
                                    avr_mode, avr_step, avr_time, ret);
-    if( ret != CIO::E_CIO_SUCCESS ) {
+    if( ret != CDM::E_CDM_SUCCESS ) {
       delete src;
       return ret;
     }
@@ -106,9 +106,9 @@ cio_DFI::ReadData(cio_Array *dst,
 
     /** 粗密処理 */
     if( !isSame ) {
-      cio_Array *temp = src;
+      cdm_Array *temp = src;
       int err;
-      src = cio_Array::interp_coarse(temp,err,false);
+      src = cdm_Array::interp_coarse(temp,err,false);
       delete temp;
     }
 
@@ -117,13 +117,13 @@ cio_DFI::ReadData(cio_Array *dst,
 
   }
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
 
 // #################################################################
 // フィールドデータの読込み
-cio_Array* cio_DFI::ReadFieldData(std::string fname,
+cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
                                   const unsigned step,
                                   double &time,
                                   const int sta[3],
@@ -133,14 +133,14 @@ cio_Array* cio_DFI::ReadFieldData(std::string fname,
                                   bool avr_mode,
                                   unsigned &avr_step,
                                   double &avr_time,
-                                  CIO::E_CIO_ERRORCODE &ret )
+                                  CDM::E_CDM_ERRORCODE &ret )
 {
 
-  ret = CIO::E_CIO_SUCCESS;
+  ret = CDM::E_CDM_SUCCESS;
 
 
   if( !fname.c_str() || !DFI_Finfo.Component ) {
-    ret = CIO::E_CIO_ERROR_READ_FIELDDATA_FILE;
+    ret = CDM::E_CDM_ERROR_READ_FIELDDATA_FILE;
     return NULL;
   }
 
@@ -148,16 +148,16 @@ cio_Array* cio_DFI::ReadFieldData(std::string fname,
   FILE* fp;
   if( !(fp=fopen(fname.c_str(),"rb")) ) {
     printf("Can't open file. (%s)\n",fname.c_str());
-    ret = CIO::E_CIO_ERROR_OPEN_FIELDDATA;
+    ret = CDM::E_CDM_ERROR_OPEN_FIELDDATA;
     return NULL;
   }
 
   /** Endian セット */
   int idumy = 1;
   char* cdumy = (char*)(&idumy);
-  CIO::E_CIO_ENDIANTYPE Endian=CIO::E_CIO_ENDIANTYPE_UNKNOWN;
-  if( cdumy[0] == 0x01 ) Endian = CIO::E_CIO_LITTLE;
-  if( cdumy[0] == 0x00 ) Endian = CIO::E_CIO_BIG;
+  CDM::E_CDM_ENDIANTYPE Endian=CDM::E_CDM_ENDIANTYPE_UNKNOWN;
+  if( cdumy[0] == 0x01 ) Endian = CDM::E_CDM_LITTLE;
+  if( cdumy[0] == 0x00 ) Endian = CDM::E_CDM_BIG;
 
   bool matchEndian = true;
   if( Endian != DFI_Finfo.Endian ) matchEndian = false;
@@ -167,9 +167,9 @@ cio_Array* cio_DFI::ReadFieldData(std::string fname,
   /** ヘッダーレコードの読込み */
   ret = read_HeaderRecord(fp, matchEndian, step, DFI_head, DFI_tail, 
                          DFI_Finfo.GuideCell, voxsize, time);
-  if( ret != CIO::E_CIO_SUCCESS )
+  if( ret != CDM::E_CDM_SUCCESS )
   {
-    ret = CIO::E_CIO_ERROR_READ_FIELD_HEADER_RECORD;
+    ret = CDM::E_CDM_ERROR_READ_FIELD_HEADER_RECORD;
     printf("**** read error\n");
     fclose(fp);
     return NULL;
@@ -188,17 +188,17 @@ cio_Array* cio_DFI::ReadFieldData(std::string fname,
 
 //FCONV 20121216.s
   //読み込みバッファ
-  cio_Array* buf=NULL;
+  cdm_Array* buf=NULL;
   //配列形状がIJKNのときは成分数を１にしてインスタンスする
-  if( DFI_Finfo.ArrayShape == CIO::E_CIO_NIJK ) {
-    buf = cio_Array::instanceArray
+  if( DFI_Finfo.ArrayShape == CDM::E_CDM_NIJK ) {
+    buf = cdm_Array::instanceArray
                    ( DFI_Finfo.DataType
                    , DFI_Finfo.ArrayShape
                    , szB
                    , 0 
                    , DFI_Finfo.Component );
-  } else if( DFI_Finfo.ArrayShape == CIO::E_CIO_IJKN ) {
-    buf = cio_Array::instanceArray
+  } else if( DFI_Finfo.ArrayShape == CDM::E_CDM_IJKN ) {
+    buf = cdm_Array::instanceArray
                    ( DFI_Finfo.DataType
                    , DFI_Finfo.ArrayShape
                    , szB
@@ -214,7 +214,7 @@ cio_Array* cio_DFI::ReadFieldData(std::string fname,
     headS[i]=sta[i];
   }
 
-  cio_Array* src = cio_Array::instanceArray
+  cdm_Array* src = cdm_Array::instanceArray
                    ( DFI_Finfo.DataType
                    , DFI_Finfo.ArrayShape
                    , szS
@@ -226,8 +226,8 @@ cio_Array* cio_DFI::ReadFieldData(std::string fname,
   //data 読込み
   //if( !read_Datarecord(fp, matchEndian, buf, headB, voxsize[2], src ) ) {
   ret = read_Datarecord(fp, matchEndian, buf, headB, voxsize[2], src );
-  if( ret != CIO::E_CIO_SUCCESS) {
-    ret = CIO::E_CIO_ERROR_READ_FIELD_DATA_RECORD;
+  if( ret != CDM::E_CDM_SUCCESS) {
+    ret = CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
     fclose(fp);
     printf("ERROR Data Record Read error!!!!\n");
     delete buf;
@@ -238,9 +238,9 @@ cio_Array* cio_DFI::ReadFieldData(std::string fname,
   if( !avr_mode ) {
     //if( !read_averaged(fp, matchEndian, step, avr_step, avr_time) )
     ret = read_averaged(fp, matchEndian, step, avr_step, avr_time);
-    if( ret !=CIO::E_CIO_SUCCESS )
+    if( ret !=CDM::E_CDM_SUCCESS )
     {
-      ret = CIO::E_CIO_ERROR_READ_FIELD_AVERAGED_RECORD;
+      ret = CDM::E_CDM_ERROR_READ_FIELD_AVERAGED_RECORD;
       delete buf;
       return src;
     }

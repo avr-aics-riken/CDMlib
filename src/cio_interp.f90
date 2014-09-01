@@ -7,7 +7,7 @@
 !
 !########################################################################
 !
-!> @file    cio_interp.f90
+!> @file    cdm_interp.f90
 !! @brief   粗データsrcを密データdstに補間するルーチン群
 !! @author  kero
 
@@ -30,7 +30,7 @@
 !!    - dst(i+1,j  ,k+1,n)
 !!    - dst(i  ,j+1,k+1,n)
 !!    - dst(i+1,j+1,k+1,n)
-subroutine cio_interp_ijkn_r4(szS,gcS,szD,gcD,nc,src,dst)
+subroutine cdm_interp_ijkn_r4(szS,gcS,szD,gcD,nc,src,dst)
   implicit none
   ! arguments
   integer :: szS(3),gcS,szD(3),gcD,nc
@@ -44,7 +44,7 @@ subroutine cio_interp_ijkn_r4(szS,gcS,szD,gcD,nc,src,dst)
   include 'cio_interp_ijkn.h'
 
   return
-end subroutine cio_interp_ijkn_r4
+end subroutine cdm_interp_ijkn_r4
 
 !  *********************************************************************
 !! @brief 粗データsrcを密データdstに補間する(i,j,k,n) double版
@@ -65,7 +65,7 @@ end subroutine cio_interp_ijkn_r4
 !!    - dst(i+1,j  ,k+1,n)
 !!    - dst(i  ,j+1,k+1,n)
 !!    - dst(i+1,j+1,k+1,n)
-subroutine cio_interp_ijkn_r8(szS,gcS,szD,gcD,nc,src,dst)
+subroutine cdm_interp_ijkn_r8(szS,gcS,szD,gcD,nc,src,dst)
   implicit none
   ! arguments
   integer :: szS(3),gcS,szD(3),gcD,nc
@@ -79,7 +79,7 @@ subroutine cio_interp_ijkn_r8(szS,gcS,szD,gcD,nc,src,dst)
   include 'cio_interp_ijkn.h'
 
   return
-end subroutine cio_interp_ijkn_r8
+end subroutine cdm_interp_ijkn_r8
 
 !  *********************************************************************
 !! @brief 粗データsrcを密データdstに補間する(n,i,j,k) real版
@@ -100,7 +100,7 @@ end subroutine cio_interp_ijkn_r8
 !!    - dst(n,i+1,j  ,k+1)
 !!    - dst(n,i  ,j+1,k+1)
 !!    - dst(n,i+1,j+1,k+1)
-subroutine cio_interp_nijk_r4(szS,gcS,szD,gcD,nc,src,dst)
+subroutine cdm_interp_nijk_r4(szS,gcS,szD,gcD,nc,src,dst)
   implicit none
   ! arguments
   integer :: szS(3),gcS,szD(3),gcD,nc
@@ -114,7 +114,7 @@ subroutine cio_interp_nijk_r4(szS,gcS,szD,gcD,nc,src,dst)
   include 'cio_interp_nijk.h'
 
   return
-end subroutine cio_interp_nijk_r4
+end subroutine cdm_interp_nijk_r4
 
 !  *********************************************************************
 !! @brief 粗データsrcを密データdstに補間する(n,i,j,k) double版
@@ -135,7 +135,7 @@ end subroutine cio_interp_nijk_r4
 !!    - dst(n,i+1,j  ,k+1)
 !!    - dst(n,i  ,j+1,k+1)
 !!    - dst(n,i+1,j+1,k+1)
-subroutine cio_interp_nijk_r8(szS,gcS,szD,gcD,nc,src,dst)
+subroutine cdm_interp_nijk_r8(szS,gcS,szD,gcD,nc,src,dst)
   implicit none
   ! arguments
   integer :: szS(3),gcS,szD(3),gcD,nc
@@ -149,5 +149,5 @@ subroutine cio_interp_nijk_r8(szS,gcS,szD,gcD,nc,src,dst)
   include 'cio_interp_nijk.h'
 
   return
-end subroutine cio_interp_nijk_r8
+end subroutine cdm_interp_nijk_r8
 

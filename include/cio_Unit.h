@@ -1,5 +1,5 @@
-#ifndef _CIO_UNIT_H_
-#define _CIO_UNIT_H_
+#ifndef _CDM_UNIT_H_
+#define _CDM_UNIT_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,12 +10,12 @@
  */
 
 /** 
- * @file   cio_Unit.h
- * @brief  cio_UnitElem & cio_Unit Class Header
+ * @file   cdm_Unit.h
+ * @brief  cdm_UnitElem & cdm_Unit Class Header
  * @author aics    
  */
 
-class cio_UnitElem {
+class cdm_UnitElem {
 
 public:
 
@@ -30,26 +30,26 @@ public:
   //double      DiffValue;    ///<差の値
 
   /** コンストラクタ */
-  cio_UnitElem();
+  cdm_UnitElem();
 
   /** コンストラクタ */
-  cio_UnitElem(const std::string _Name,
+  cdm_UnitElem(const std::string _Name,
                const std::string _Unit,
                const double _reference,
                const double _difference,
                const bool _BsetDiff);
 
   /** デストラクタ */
-  ~cio_UnitElem();
+  ~cdm_UnitElem();
 
   /**
    * @brief Unit要素の読込み
-   * @param [in]  tpCntl      cio_TextParserクラス 
+   * @param [in]  tpCntl      cdm_TextParserクラス 
    * @param [in]  label_leaf   
    * @return error code
    */
-   CIO::E_CIO_ERRORCODE 
-   Read(cio_TextParser tpCntl,
+   CDM::E_CDM_ERRORCODE 
+   Read(cdm_TextParser tpCntl,
         const std::string label_leaf);
 
   /**
@@ -58,42 +58,42 @@ public:
    * @param [in]  tab     インデント
    * @return error code
    */
-   CIO::E_CIO_ERRORCODE
+   CDM::E_CDM_ERRORCODE
    Write(FILE* fp, const unsigned tab);
 
 };
 
 
 /** index.dfi ファイルの Unit */
-class cio_Unit { 
+class cdm_Unit { 
 
 public:
 
-  map<std::string,cio_UnitElem> UnitList;
+  map<std::string,cdm_UnitElem> UnitList;
 
   /** コンストラクタ **/
-  cio_Unit();
+  cdm_Unit();
 
   /** デストラクタ **/
-  ~cio_Unit();
+  ~cdm_Unit();
 
   /**
    * @brief read Unit(inde.dfi)
-   * @param [in]   tpCntl  cio_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス 
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE 
-  Read(cio_TextParser tpCntl);
+  CDM::E_CDM_ERRORCODE 
+  Read(cdm_TextParser tpCntl);
 
   /**
    * @brief 該当するUnitElemの取り出し
    * @param [in]  Name 取り出す単位の種類
-   * @param [out] unit 取得したcio_UnitElemクラス
+   * @param [out] unit 取得したcdm_UnitElemクラス
    * @return error code
    */ 
-  CIO::E_CIO_ERRORCODE 
+  CDM::E_CDM_ERRORCODE 
   GetUnitElem(const std::string Name,
-              cio_UnitElem &unit);
+              cdm_UnitElem &unit);
 
   /**
    * @brief 単位の取り出し("m","cm",,,,,)
@@ -104,7 +104,7 @@ public:
    * @param [out] bSetDiff difference有無フラグ true:あり、false:なし
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   GetUnit(const std::string Name,
           std::string &unit,
           double &ref,
@@ -117,9 +117,9 @@ public:
    * @param [in]  tab     インデント
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   Write(FILE* fp, const unsigned tab);
 
 };
 
-#endif // _CIO_UNIT_H_
+#endif // _CDM_UNIT_H_

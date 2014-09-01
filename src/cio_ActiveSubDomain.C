@@ -7,8 +7,8 @@
  */
 
 /**
- * @file  cio_ActiveSubDomain.C
- * @brief cio_ActiveSubDomain class 関数
+ * @file  cdm_ActiveSubDomain.C
+ * @brief cdm_ActiveSubDomain class 関数
  * @author aics
  */
 
@@ -16,27 +16,27 @@
 
 /////////////////////////////////////////////////////////////////////
 // デフォルトコンストラクタ
-cio_ActiveSubDomain::cio_ActiveSubDomain()
+cdm_ActiveSubDomain::cdm_ActiveSubDomain()
 {
   clear();
 }
 
 /////////////////////////////////////////////////////////////////////
 // コンストラクタ
-cio_ActiveSubDomain::cio_ActiveSubDomain( int pos[3] )
+cdm_ActiveSubDomain::cdm_ActiveSubDomain( int pos[3] )
 {
   SetPos(pos);
 }
 
 /////////////////////////////////////////////////////////////////////
 // デストラクタ
-cio_ActiveSubDomain::~cio_ActiveSubDomain()
+cdm_ActiveSubDomain::~cdm_ActiveSubDomain()
 {
 }
 
 /////////////////////////////////////////////////////////////////////
 // 情報のクリア
-void cio_ActiveSubDomain::clear()
+void cdm_ActiveSubDomain::clear()
 {
   m_pos[0]=0; 
   m_pos[1]=0; 
@@ -45,7 +45,7 @@ void cio_ActiveSubDomain::clear()
 
 /////////////////////////////////////////////////////////////////////
 // 位置情報のセット
-void cio_ActiveSubDomain::SetPos( int pos[3] )
+void cdm_ActiveSubDomain::SetPos( int pos[3] )
 {
   m_pos[0] = pos[0];
   m_pos[1] = pos[1];
@@ -54,14 +54,14 @@ void cio_ActiveSubDomain::SetPos( int pos[3] )
 
 /////////////////////////////////////////////////////////////////////
 // 位置情報の取得
-const int* cio_ActiveSubDomain::GetPos() const
+const int* cdm_ActiveSubDomain::GetPos() const
 {
   return m_pos;
 }
 
 /////////////////////////////////////////////////////////////////////
 // 比較演算子
-bool cio_ActiveSubDomain::operator==(cio_ActiveSubDomain dom)
+bool cdm_ActiveSubDomain::operator==(cdm_ActiveSubDomain dom)
 {
   if( m_pos[0] != dom.m_pos[0] ) return false;
   if( m_pos[1] != dom.m_pos[1] ) return false;
@@ -71,7 +71,7 @@ bool cio_ActiveSubDomain::operator==(cio_ActiveSubDomain dom)
 
 /////////////////////////////////////////////////////////////////////
 // 比較演算子
-bool cio_ActiveSubDomain::operator!=(cio_ActiveSubDomain dom)
+bool cdm_ActiveSubDomain::operator!=(cdm_ActiveSubDomain dom)
 {
   if( m_pos[0] == dom.m_pos[0] ) return false;
   if( m_pos[1] == dom.m_pos[1] ) return false;

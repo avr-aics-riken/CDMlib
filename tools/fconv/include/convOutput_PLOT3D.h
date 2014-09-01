@@ -169,7 +169,7 @@ public:
   bool
   WriteHeaderRecord(int step,
                     int dim,
-                    CIO::E_CIO_DTYPE d_type,
+                    CDM::E_CDM_DTYPE d_type,
                     int imax,
                     int jmax,
                     int kmax,
@@ -187,7 +187,7 @@ public:
    */
   bool
   WriteFieldData(FILE* fp, 
-                 cio_Array* src, 
+                 cdm_Array* src, 
                  size_t dLen);
 
   /**
@@ -211,7 +211,7 @@ public:
    * @param [in] p3src plot3d func データ配列ポインタ
    */
   void
-  WriteFuncData(FILE* fp, cio_Array* p3src);
+  WriteFuncData(FILE* fp, cdm_Array* p3src);
 
   /**
    * @brief マーカーの書き込み

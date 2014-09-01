@@ -27,62 +27,62 @@
 // ##################################################################################
 template<class T>
 CONV_INLINE
-bool CONV::copyArray(cio_TypeArray<T> *B,
-                     cio_Array *&src,
+bool CONV::copyArray(cdm_TypeArray<T> *B,
+                     cdm_Array *&src,
                      int sta[3],
                      int end[3],
                      int n)
 {
 
-  CIO::E_CIO_DTYPE src_dtype =  src->getDataType();
+  CDM::E_CDM_DTYPE src_dtype =  src->getDataType();
 
   //uint8
-  if( src_dtype == CIO::E_CIO_UINT8 ) {
-    cio_TypeArray<unsigned char> *S = dynamic_cast<cio_TypeArray<unsigned char>*>(src);
+  if( src_dtype == CDM::E_CDM_UINT8 ) {
+    cdm_TypeArray<unsigned char> *S = dynamic_cast<cdm_TypeArray<unsigned char>*>(src);
     return copyArray(B,S,sta,end,n);
   } 
   //int8
-  else if( src_dtype== CIO::E_CIO_INT8 ) {
-    cio_TypeArray<char> *S = dynamic_cast<cio_TypeArray<char>*>(src);
+  else if( src_dtype== CDM::E_CDM_INT8 ) {
+    cdm_TypeArray<char> *S = dynamic_cast<cdm_TypeArray<char>*>(src);
     return copyArray(B,S,sta,end,n);
   } 
   //uint16
-  else if( src_dtype== CIO::E_CIO_UINT16 ) {
-    cio_TypeArray<unsigned short> *S = dynamic_cast<cio_TypeArray<unsigned short>*>(src);
+  else if( src_dtype== CDM::E_CDM_UINT16 ) {
+    cdm_TypeArray<unsigned short> *S = dynamic_cast<cdm_TypeArray<unsigned short>*>(src);
     return copyArray(B,S,sta,end,n);
   }
   //int16
-  else if( src_dtype== CIO::E_CIO_INT16 ) {
-    cio_TypeArray<short> *S = dynamic_cast<cio_TypeArray<short>*>(src);
+  else if( src_dtype== CDM::E_CDM_INT16 ) {
+    cdm_TypeArray<short> *S = dynamic_cast<cdm_TypeArray<short>*>(src);
     return copyArray(B,S,sta,end,n);
   }
   //uint32
-  else if( src_dtype== CIO::E_CIO_UINT32 ) {
-    cio_TypeArray<unsigned int> *S = dynamic_cast<cio_TypeArray<unsigned int>*>(src);
+  else if( src_dtype== CDM::E_CDM_UINT32 ) {
+    cdm_TypeArray<unsigned int> *S = dynamic_cast<cdm_TypeArray<unsigned int>*>(src);
     return copyArray(B,S,sta,end,n);
   } 
   //int32
-  else if( src_dtype== CIO::E_CIO_INT32 ) { 
-    cio_TypeArray<int> *S = dynamic_cast<cio_TypeArray<int>*>(src);
+  else if( src_dtype== CDM::E_CDM_INT32 ) { 
+    cdm_TypeArray<int> *S = dynamic_cast<cdm_TypeArray<int>*>(src);
     return copyArray(B,S,sta,end,n);
   }
   //uint64
-  else if( src_dtype== CIO::E_CIO_UINT64 ) {
-    cio_TypeArray<unsigned long long> *S = dynamic_cast<cio_TypeArray<unsigned long long>*>(src);
+  else if( src_dtype== CDM::E_CDM_UINT64 ) {
+    cdm_TypeArray<unsigned long long> *S = dynamic_cast<cdm_TypeArray<unsigned long long>*>(src);
     return copyArray(B,S,sta,end,n);
   }
   //int64
-  else if( src_dtype== CIO::E_CIO_INT64 ) {
-    cio_TypeArray<long long> *S = dynamic_cast<cio_TypeArray<long long>*>(src);
+  else if( src_dtype== CDM::E_CDM_INT64 ) {
+    cdm_TypeArray<long long> *S = dynamic_cast<cdm_TypeArray<long long>*>(src);
     return copyArray(B,S,sta,end,n);
   }
   //float32
-  else if( src_dtype== CIO::E_CIO_FLOAT32 ) {
-    cio_TypeArray<float> *S = dynamic_cast<cio_TypeArray<float>*>(src);
+  else if( src_dtype== CDM::E_CDM_FLOAT32 ) {
+    cdm_TypeArray<float> *S = dynamic_cast<cdm_TypeArray<float>*>(src);
     return copyArray(B,S,sta,end,n);
   }
-  else if( src_dtype== CIO::E_CIO_FLOAT64 ) { 
-    cio_TypeArray<double> *S = dynamic_cast<cio_TypeArray<double>*>(src);
+  else if( src_dtype== CDM::E_CDM_FLOAT64 ) { 
+    cdm_TypeArray<double> *S = dynamic_cast<cdm_TypeArray<double>*>(src);
     return copyArray(B,S,sta,end,n);
   }
 
@@ -94,17 +94,17 @@ bool CONV::copyArray(cio_TypeArray<T> *B,
 // 配列のコピー
 template<class T1, class T2>
 CONV_INLINE
-bool CONV::copyArray(cio_TypeArray<T1> *buf,
-               cio_TypeArray<T2> *&src,
+bool CONV::copyArray(cdm_TypeArray<T1> *buf,
+               cdm_TypeArray<T2> *&src,
                int sta[3],
                int end[3],
                int n)
 {
 
   //配列形状
-  CIO::E_CIO_ARRAYSHAPE buf_shape = buf->getArrayShape();
+  CDM::E_CDM_ARRAYSHAPE buf_shape = buf->getArrayShape();
 
-  CIO::E_CIO_ARRAYSHAPE src_shape = src->getArrayShape();
+  CDM::E_CDM_ARRAYSHAPE src_shape = src->getArrayShape();
 
   //入力指示領域の取得
   int IndexStart[3];
@@ -122,7 +122,7 @@ bool CONV::copyArray(cio_TypeArray<T1> *buf,
   int thin_count = m_param->Get_ThinOut();
 
   //IJKN&IJKN
-  if( buf_shape == CIO::E_CIO_IJKN && src_shape == CIO::E_CIO_IJKN )
+  if( buf_shape == CDM::E_CDM_IJKN && src_shape == CDM::E_CDM_IJKN )
   {
     for( int k=sta[2];k<=end[2];k++ ){
     if( (k-(IndexStart[2]-1))%thin_count != 0 ) continue;
@@ -136,7 +136,7 @@ bool CONV::copyArray(cio_TypeArray<T1> *buf,
       src->hval(i/thin_count,j/thin_count,k/thin_count,n) = buf->hval(i,j,k,n);
     }}}
   }
-  else if( buf_shape == CIO::E_CIO_NIJK && src_shape == CIO::E_CIO_NIJK )
+  else if( buf_shape == CDM::E_CDM_NIJK && src_shape == CDM::E_CDM_NIJK )
   //NIJK&NIJK
   {
     for( int k=sta[2];k<=end[2];k++ ){
@@ -151,7 +151,7 @@ bool CONV::copyArray(cio_TypeArray<T1> *buf,
       src->hval(n,i/thin_count,j/thin_count,k/thin_count) = buf->hval(n,i,j,k);
     }}}
   }
-  else if( buf_shape == CIO::E_CIO_IJKN && src_shape == CIO::E_CIO_NIJK )
+  else if( buf_shape == CDM::E_CDM_IJKN && src_shape == CDM::E_CDM_NIJK )
   //IJNK&NIJK
   {
 
@@ -166,7 +166,7 @@ bool CONV::copyArray(cio_TypeArray<T1> *buf,
 
     }}}
   }
-  else if( buf_shape == CIO::E_CIO_NIJK && src_shape == CIO::E_CIO_IJKN )
+  else if( buf_shape == CDM::E_CDM_NIJK && src_shape == CDM::E_CDM_IJKN )
   //NIJK&IJKN
   {
     for( int k=sta[2];k<=end[2];k++ ){
@@ -189,7 +189,7 @@ bool CONV::copyArray(cio_TypeArray<T1> *buf,
 // minmax
 template<class T>
 CONV_INLINE
-bool CONV::calcMinMax(cio_TypeArray<T> *src,
+bool CONV::calcMinMax(cdm_TypeArray<T> *src,
                       double *min,
                       double *max)
 {
@@ -201,14 +201,14 @@ bool CONV::calcMinMax(cio_TypeArray<T> *src,
   //sizeの取得
   const int *sz = src->getArraySizeInt();
   //配列形状の取得
-  CIO::E_CIO_ARRAYSHAPE shape = src->getArrayShape();
+  CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
   //成分数の取得
   int nComp = src->getNcomp();
 
 
   if( nComp > 1 ) {
     //nijkの処理
-    if( shape == CIO::E_CIO_NIJK ) {
+    if( shape == CDM::E_CDM_NIJK ) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
@@ -224,7 +224,7 @@ bool CONV::calcMinMax(cio_TypeArray<T> *src,
       }}}
     
     } 
-    else if( shape == CIO::E_CIO_IJKN ) 
+    else if( shape == CDM::E_CDM_IJKN ) 
     //ijknの処理
     {  
       for(int k=0; k<sz[2]; k++) {
@@ -244,7 +244,7 @@ bool CONV::calcMinMax(cio_TypeArray<T> *src,
 
   } else {
     //nijkの処理
-    if( shape == CIO::E_CIO_NIJK ) {
+    if( shape == CDM::E_CDM_NIJK ) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
@@ -252,7 +252,7 @@ bool CONV::calcMinMax(cio_TypeArray<T> *src,
         if( max[0] < (double)src->val(0,i,j,k) ) max[0] = (double)src->val(0,i,j,k);
       }}}
     } 
-    else if( shape == CIO::E_CIO_IJKN ) 
+    else if( shape == CDM::E_CDM_IJKN ) 
     //ijknの処理
     {  
       for(int k=0; k<sz[2]; k++) {

@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_DFI_AVS.C
- * @brief  cio_DFI_AVS Class
+ * @file   cdm_DFI_AVS.C
+ * @brief  cdm_DFI_AVS Class
  * @author aics    
  */
 
@@ -17,7 +17,7 @@
 
 // #################################################################
 // コンストラクタ
-cio_DFI_AVS::cio_DFI_AVS()
+cdm_DFI_AVS::cdm_DFI_AVS()
 {
 
 }
@@ -25,47 +25,47 @@ cio_DFI_AVS::cio_DFI_AVS()
 
 // #################################################################
 // デストラクタ
-cio_DFI_AVS::~cio_DFI_AVS()
+cdm_DFI_AVS::~cdm_DFI_AVS()
 {
 
 }
 
 // #################################################################
 // ヘッダーレコードの出力
-CIO::E_CIO_ERRORCODE
-cio_DFI_AVS::write_HeaderRecord(FILE* fp,
+CDM::E_CDM_ERRORCODE
+cdm_DFI_AVS::write_HeaderRecord(FILE* fp,
                                 const unsigned step,
                                 const double time,
                                 const int n)
 {
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // SPHデータレコードの出力
-CIO::E_CIO_ERRORCODE
-cio_DFI_AVS::write_DataRecord(FILE* fp,
-                              cio_Array* val,
+CDM::E_CDM_ERRORCODE
+cdm_DFI_AVS::write_DataRecord(FILE* fp,
+                              cdm_Array* val,
                               const int gc,
                               const int n)
 {
 
-  CIO::E_CIO_DTYPE Dtype = (CIO::E_CIO_DTYPE)DFI_Finfo.DataType;
-  int Real_size = get_cio_Datasize(Dtype);
+  CDM::E_CDM_DTYPE Dtype = (CDM::E_CDM_DTYPE)DFI_Finfo.DataType;
+  int Real_size = get_cdm_Datasize(Dtype);
 
   const int *size = val->getArraySizeInt();
   size_t dLen = (size_t)(size[0] * size[1] * size[2]);
   if( DFI_Finfo.Component > 1 ) dLen *= 3;
 
-  if( val->writeBinary(fp) != dLen ) return CIO::E_CIO_ERROR_WRITE_FIELD_DATA_RECORD;
+  if( val->writeBinary(fp) != dLen ) return CDM::E_CDM_ERROR_WRITE_FIELD_DATA_RECORD;
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // ヘッダーレコードの出力
-bool cio_DFI_AVS::write_ascii_header(const unsigned step,
+bool cdm_DFI_AVS::write_ascii_header(const unsigned step,
                                      const double time)
 {
 
@@ -97,7 +97,7 @@ bool cio_DFI_AVS::write_ascii_header(const unsigned step,
 
 // #################################################################
 // 座標値データファイルの出力
-bool cio_DFI_AVS::write_avs_cord(double min_ext[3],
+bool cdm_DFI_AVS::write_avs_cord(double min_ext[3],
                                  double max_ext[3])
 {
 
@@ -110,7 +110,7 @@ bool cio_DFI_AVS::write_avs_cord(double min_ext[3],
   std::string fname,tmp;
   tmp = Generate_FileName("cord",m_RankID,-1,"cod",m_output_fname,mio,
                           DFI_Finfo.TimeSliceDirFlag);
-  if( CIO::cioPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
+  if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
     fname = DFI_Finfo.DirectoryPath + "/" + tmp;
   } else {
     fname = m_directoryPath + "/" + DFI_Finfo.DirectoryPath +"/"+ tmp;
@@ -144,7 +144,7 @@ bool cio_DFI_AVS::write_avs_cord(double min_ext[3],
 
 // #################################################################
 // ヘッダーデータファイルの出力
-bool cio_DFI_AVS::write_avs_header()
+bool cdm_DFI_AVS::write_avs_header()
 {
   FILE* fp=NULL;
   std::string dType;
@@ -153,15 +153,15 @@ bool cio_DFI_AVS::write_avs_header()
   bool mio=false;
 
   //データタイプのセット
-  if( GetDataType() == CIO::E_CIO_INT8 ) {
+  if( GetDataType() == CDM::E_CDM_INT8 ) {
     dType = "byte";
-  } else if( GetDataType() == CIO::E_CIO_INT16 ) {
+  } else if( GetDataType() == CDM::E_CDM_INT16 ) {
     dType = "short";
-  } else if( GetDataType() == CIO::E_CIO_INT32 ) {
+  } else if( GetDataType() == CDM::E_CDM_INT32 ) {
     dType = "integer";
-  } else if( GetDataType() == CIO::E_CIO_FLOAT32 ) {
+  } else if( GetDataType() == CDM::E_CDM_FLOAT32 ) {
     dType = "float";
-  } else if( GetDataType() == CIO::E_CIO_FLOAT64 ) {
+  } else if( GetDataType() == CDM::E_CDM_FLOAT64 ) {
     dType = "double";
   } else {
     dType = GetDataTypeString();
@@ -175,7 +175,7 @@ bool cio_DFI_AVS::write_avs_header()
   std::string fname,tmp;
   tmp = Generate_FileName(DFI_Finfo.Prefix,m_RankID,-1,"fld",m_output_fname,mio,
                           DFI_Finfo.TimeSliceDirFlag);
-  if( CIO::cioPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
+  if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
     fname = DFI_Finfo.DirectoryPath +"/"+ tmp;
   } else {
     fname = m_directoryPath + "/" + DFI_Finfo.DirectoryPath +"/"+ tmp;
@@ -245,7 +245,7 @@ bool cio_DFI_AVS::write_avs_header()
                                   m_output_fname,
                                   mio,
                                   DFI_Finfo.TimeSliceDirFlag);
-      //std::string xxx = CIO::cioPath_FileName(out_fname,"sph");
+      //std::string xxx = CDM::cdmPath_FileName(out_fname,"sph");
       fprintf(fp,"variable %d file=%s filetype=binary skip=%d stride=%d\n",
               j,out_fname.c_str(),skip,DFI_Finfo.Component);
     }

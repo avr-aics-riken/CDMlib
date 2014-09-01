@@ -1,5 +1,5 @@
-#ifndef _CIO_DFI_H_
-#define _CIO_DFI_H_
+#ifndef _CDM_DFI_H_
+#define _CDM_DFI_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,8 +10,8 @@
  */
 
 /** 
- * @file   cio_DFI.h
- * @brief  cio_DFI Class Header
+ * @file   cdm_DFI.h
+ * @brief  cdm_DFI Class Header
  * @author aics
  */
 
@@ -41,8 +41,8 @@
 #include "cio_MPI.h"
 #include "cio_Process.h"
 
-/** CIO main class */
-class cio_DFI {
+/** CDM main class */
+class cdm_DFI {
 
 public:
 
@@ -50,30 +50,30 @@ protected :
   MPI_Comm          m_comm;          ///< MPI コミュニケータ
   std::string       m_directoryPath; ///< index dfi ファイルのディレクトリパス
   std::string       m_indexDfiName;  ///< index dfi ファイル名
-  CIO::E_CIO_READTYPE m_read_type;   ///< 読込みタイプ
+  CDM::E_CDM_READTYPE m_read_type;   ///< 読込みタイプ
 
   int               m_RankID;        ///< ランク番号
 
-  cio_FileInfo      DFI_Finfo;       ///< FileInfo class
-  cio_FilePath      DFI_Fpath;       ///< FilePath class
-  cio_Unit          DFI_Unit;        ///< Unit class
-  cio_Domain        DFI_Domain;      ///< Domain class
-  cio_MPI           DFI_MPI;         ///< MPI class
-  cio_TimeSlice     DFI_TimeSlice;   ///< TimeSlice class
-  cio_Process       DFI_Process;     ///< Process class
+  cdm_FileInfo      DFI_Finfo;       ///< FileInfo class
+  cdm_FilePath      DFI_Fpath;       ///< FilePath class
+  cdm_Unit          DFI_Unit;        ///< Unit class
+  cdm_Domain        DFI_Domain;      ///< Domain class
+  cdm_MPI           DFI_MPI;         ///< MPI class
+  cdm_TimeSlice     DFI_TimeSlice;   ///< TimeSlice class
+  cdm_Process       DFI_Process;     ///< Process class
 
   vector<int>m_readRankList;         ///< 読込みランクリスト
 
   bool m_bgrid_interp_flag;               ///< 節点への補間フラグ
-  CIO::E_CIO_OUTPUT_TYPE  m_output_type;  ///< 出力形式(ascii,binary,FortarnBinary)
-  CIO::E_CIO_OUTPUT_FNAME m_output_fname; ///< 出力ファイル命名規約(step_rank,rank_step)   
+  CDM::E_CDM_OUTPUT_TYPE  m_output_type;  ///< 出力形式(ascii,binary,FortarnBinary)
+  CDM::E_CDM_OUTPUT_FNAME m_output_fname; ///< 出力ファイル命名規約(step_rank,rank_step)   
 
 public:
   /** コンストラクタ */
-  cio_DFI();
+  cdm_DFI();
   
   /**　デストラクタ */
-  ~cio_DFI();
+  ~cdm_DFI();
 
   /**
    * @brief read インスタンス
@@ -84,85 +84,85 @@ public:
    * @param [out] ret     終了コード
    * @return インスタンスされたクラスのポインタ
    */
-  static cio_DFI*
+  static cdm_DFI*
   ReadInit(const MPI_Comm comm, 
            const std::string dfifile,
            const int G_Voxel[3],
            const int G_Div[3],
-           CIO::E_CIO_ERRORCODE &ret); 
+           CDM::E_CDM_ERRORCODE &ret); 
 
   /**
-   * @brief cioFileInfoクラスのポインタを取得
-   * @return cio_FileInfoクラスポインタ
+   * @brief cdmFileInfoクラスのポインタを取得
+   * @return cdm_FileInfoクラスポインタ
    */
-  const cio_FileInfo* GetcioFileInfo();
+  const cdm_FileInfo* GetcdmFileInfo();
 
   /**
-   * @brief cio_FilePathクラスのポインタを取得
-   * @return cio_FilePathクラスポインタ
+   * @brief cdm_FilePathクラスのポインタを取得
+   * @return cdm_FilePathクラスポインタ
    */
-  const cio_FilePath* GetcioFilePath();  
+  const cdm_FilePath* GetcdmFilePath();  
 
   /**
-   * @brief cio_FilePathクラスのセット
+   * @brief cdm_FilePathクラスのセット
    */
-  void SetcioFilePath(cio_FilePath FPath); 
+  void SetcdmFilePath(cdm_FilePath FPath); 
 
   /**
-   * @brief cio_Unitクラスのポインタを取得
-   * @return cio_Unitクラスポインタ
+   * @brief cdm_Unitクラスのポインタを取得
+   * @return cdm_Unitクラスポインタ
    */
-  const cio_Unit* GetcioUnit(); 
+  const cdm_Unit* GetcdmUnit(); 
 
   /**
-   * @brief cio_Unitクラスのセット
+   * @brief cdm_Unitクラスのセット
    */
-  void SetcioUnit(cio_Unit unit); 
+  void SetcdmUnit(cdm_Unit unit); 
 
 
   /**
-   * @brief cio_Domainクラスのポインタ取得
-   * @return cio_Domainクラスポインタ
+   * @brief cdm_Domainクラスのポインタ取得
+   * @return cdm_Domainクラスポインタ
    */
-  const cio_Domain* GetcioDomain(); 
+  const cdm_Domain* GetcdmDomain(); 
 
   /**
-   * @brief cio_Domainクラスのセット
+   * @brief cdm_Domainクラスのセット
    */
-  void SetcioDomain(cio_Domain domain); 
+  void SetcdmDomain(cdm_Domain domain); 
 
   /**
-   * @brief cio_MPIクラスのポインタ取得
-   * @return cio_MPIクラスポインタ 
+   * @brief cdm_MPIクラスのポインタ取得
+   * @return cdm_MPIクラスポインタ 
    */
-  const cio_MPI* GetcioMPI();
+  const cdm_MPI* GetcdmMPI();
 
   /**
-   * @brief cio_MPIクラスセット
+   * @brief cdm_MPIクラスセット
    */
-  void SetcioMPI(cio_MPI mpi);
+  void SetcdmMPI(cdm_MPI mpi);
 
   /**
-   * @brief cio_TimeSliceクラスのポインタ取得
-   * @return cio_TimeSliceクラスポインタ
+   * @brief cdm_TimeSliceクラスのポインタ取得
+   * @return cdm_TimeSliceクラスポインタ
    */
-  const cio_TimeSlice* GetcioTimeSlice(); 
+  const cdm_TimeSlice* GetcdmTimeSlice(); 
 
   /**
-   * @brief cio_TimeSlice クラスセット
+   * @brief cdm_TimeSlice クラスセット
    */
-  void SetcioTimeSlice(cio_TimeSlice TSlice);
+  void SetcdmTimeSlice(cdm_TimeSlice TSlice);
  
   /**
-   * @brief cio_Processクラスのポインタ取得
-   * @return cio_Processクラスポインタ
+   * @brief cdm_Processクラスのポインタ取得
+   * @return cdm_Processクラスポインタ
    */
-  const cio_Process* GetcioProcess(); 
+  const cdm_Process* GetcdmProcess(); 
 
   /**
-   * @brief cio_Processクラスセット
+   * @brief cdm_Processクラスセット
    */
-  void SetcioProcess(cio_Process Process);
+  void SetcdmProcess(cdm_Process Process);
 
   /**
    * @brief 出力DFIファイル名を作成する
@@ -199,9 +199,9 @@ public:
                                 int RankID,
                                 int step,
                                 std::string ext,
-                                CIO::E_CIO_OUTPUT_FNAME output_fname,
+                                CDM::E_CDM_OUTPUT_FNAME output_fname,
                                 bool mio,
-                                CIO::E_CIO_ONOFF TimeSliceDirFlag);
+                                CDM::E_CDM_ONOFF TimeSliceDirFlag);
 
   /**
    * @brief write インスタンス float型
@@ -225,15 +225,15 @@ public:
    * @param [in] TSliceOnOff TimeSliceフラグ
    * @return インスタンスされたクラスのポインタ
    */
-  static cio_DFI*
+  static cdm_DFI*
   WriteInit(const MPI_Comm comm,
             const std::string DfiName,
             const std::string Path,
             const std::string prefix,
-            const CIO::E_CIO_FORMAT format,
+            const CDM::E_CDM_FORMAT format,
             const int GCell,
-            const CIO::E_CIO_DTYPE DataType,
-            const CIO::E_CIO_ARRAYSHAPE ArrayShape,
+            const CDM::E_CDM_DTYPE DataType,
+            const CDM::E_CDM_ARRAYSHAPE ArrayShape,
             const int nComp,
             const std::string proc_fname,
             const int G_size[3],
@@ -243,7 +243,7 @@ public:
             const int head[3],
             const int tail[3],
             const std::string hostname,
-            const CIO::E_CIO_ONOFF TSliceOnOff);
+            const CDM::E_CDM_ONOFF TSliceOnOff);
 
   /**
    * @brief write インスタンス double型
@@ -267,15 +267,15 @@ public:
    * @param [in] TSliceOnOff TimeSliceフラグ
    * @return インスタンスされたクラスのポインタ
    */
-  static cio_DFI* 
+  static cdm_DFI* 
   WriteInit(const MPI_Comm comm,
             const std::string DfiName,
             const std::string Path,
             const std::string prefix,
-            const CIO::E_CIO_FORMAT format,
+            const CDM::E_CDM_FORMAT format,
             const int GCell,
-            const CIO::E_CIO_DTYPE DataType,
-            const CIO::E_CIO_ARRAYSHAPE ArrayShape,
+            const CDM::E_CDM_DTYPE DataType,
+            const CDM::E_CDM_ARRAYSHAPE ArrayShape,
             const int nComp,
             const std::string proc_fname,
             const int G_size[3],
@@ -285,7 +285,7 @@ public:
             const int head[3],
             const int tail[3],
             const std::string hostname,
-            const CIO::E_CIO_ONOFF TSliceOnOff);
+            const CDM::E_CDM_ONOFF TSliceOnOff);
 
   /**
    * @brief RankIDをセットする
@@ -297,14 +297,14 @@ public:
    * @brief 出力形式(ascii,binary,FortranBinary)をセット
    * @param [in] output_type 出力形式
    */
-  void set_output_type(CIO::E_CIO_OUTPUT_TYPE output_type)
+  void set_output_type(CDM::E_CDM_OUTPUT_TYPE output_type)
   {  m_output_type = output_type; };
 
   /**
    * @brief 出力ファイル命名規約(step_rank,rank_step)をセット
    * @param [in] output_fname 出力ファイル命名規約
    */
-  void set_output_fname(CIO::E_CIO_OUTPUT_FNAME output_fname)
+  void set_output_fname(CDM::E_CDM_OUTPUT_FNAME output_fname)
   { m_output_fname = output_fname; };
 
   /**
@@ -334,7 +334,7 @@ public:
    */
 //  template<class T, class TimeT, class TimeAvrT> T*
   template<class TimeT, class TimeAvrT> void*
-  ReadData(CIO::E_CIO_ERRORCODE &ret,
+  ReadData(CDM::E_CDM_ERRORCODE &ret,
            const unsigned step, 
            const int gc, 
            const int Gvoxel[3], 
@@ -363,7 +363,7 @@ public:
    * @return 終了コード 1:正常 1以外:エラー
    */
   template<class T, class TimeT, class TimeAvrT>
-  CIO::E_CIO_ERRORCODE 
+  CDM::E_CDM_ERRORCODE 
   ReadData(T *val,
            const unsigned step,
            const int gc,
@@ -393,8 +393,8 @@ public:
    * @param [out] time_avr      平均時間
    * @return 終了コード 1:正常 1以外:エラー
    */
-  CIO::E_CIO_ERRORCODE 
-  ReadData(cio_Array *val,
+  CDM::E_CDM_ERRORCODE 
+  ReadData(cdm_Array *val,
            const unsigned step,
            const int gc,
            const int Gvoxel[3],
@@ -429,7 +429,7 @@ public:
    * @param [in] time_avr 平均時間
    */ 
   template<class T, class TimeT, class TimeAvrT>
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   WriteData(const unsigned step, 
             TimeT time,
             const int sz[3], 
@@ -454,11 +454,11 @@ public:
    * @param [in] step_avr 平均ステップ
    * @param [in] time_avr 平均時間
    */ 
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   WriteData(const unsigned step, 
             const int gc, 
             double time, 
-            cio_Array* val, 
+            cdm_Array* val, 
             double* minmax, 
             const bool avr_mode, 
             const unsigned step_avr, 
@@ -471,7 +471,7 @@ public:
    * @return true:出力成功 false:出力失敗
    */
 /*
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   WriteProcDfiFile(const MPI_Comm comm, 
                    bool out_host=false);
                    float* org=NULL);
@@ -482,7 +482,7 @@ public:
    * @param [in] out_host      ホスト名出力フラグ　　　　
    * @return true:出力成功 false:出力失敗
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   WriteProcDfiFile(const MPI_Comm comm, 
                    bool out_host=false);
                    //double* org=NULL);
@@ -498,7 +498,7 @@ public:
    * @brief 配列形状を返す
    * @return 配列形状（e_num番号)
    */
-  CIO::E_CIO_ARRAYSHAPE 
+  CDM::E_CDM_ARRAYSHAPE 
   GetArrayShape();
 
   /**
@@ -512,7 +512,7 @@ public:
    * @brief get DataType （データタイプの取り出し関数）
    * @return データタイプ(e_num番号)
    */
-  CIO::E_CIO_DTYPE 
+  CDM::E_CDM_DTYPE 
   GetDataType();
 
   /** 
@@ -525,7 +525,7 @@ public:
   /** @brief get FileFormat (FileFormatの取り出し関数）
    *  @return FileFormat(e_num番号)
    */
-  CIO::E_CIO_FORMAT
+  CDM::E_CDM_FORMAT
   GetFileFormat();
 
   /**
@@ -545,9 +545,9 @@ public:
   /**
    * @brief データタイプを文字列からe_num番号に変換 
    * @param [in] datatype dfiから取得したデータタイプ
-   * @return データタイプ(E_CIO_DTYPE)
+   * @return データタイプ(E_CDM_DTYPE)
    */
-  static CIO::E_CIO_DTYPE 
+  static CDM::E_CDM_DTYPE 
   ConvDatatypeS2E(const std::string datatype); 
 
   /**
@@ -556,7 +556,7 @@ public:
    * @return データタイプ(string)
    */
   static std::string 
-  ConvDatatypeE2S(const CIO::E_CIO_DTYPE Dtype); 
+  ConvDatatypeE2S(const CDM::E_CDM_DTYPE Dtype); 
 
   /**
    * @brief DFI DomainのGlobalVoxelの取り出し
@@ -590,11 +590,11 @@ public:
   /**
    * @brief UuitElemを取得する
    * @param[in]  Name 取得する単位系
-   * @param[out] unit 取得したcio_UnitElem
+   * @param[out] unit 取得したcdm_UnitElem
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE GetUnitElem(const std::string Name,
-                                   cio_UnitElem &unit); 
+  CDM::E_CDM_ERRORCODE GetUnitElem(const std::string Name,
+                                   cdm_UnitElem &unit); 
 
   /**
    * @brief UnitElemのメンバ変数毎に取得する
@@ -605,7 +605,7 @@ public:
    * @param[out] bSetDiff differenceの有無（true:あり false:なし）
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE GetUnit(const std::string Name,
+  CDM::E_CDM_ERRORCODE GetUnit(const std::string Name,
                                std::string &unit,
                                double &ref,
                                double &diff,
@@ -616,7 +616,7 @@ public:
    * @param [in] ONOFF
    */
   void 
-  SetTimeSliceFlag(const CIO::E_CIO_ONOFF ONOFF); 
+  SetTimeSliceFlag(const CDM::E_CDM_ONOFF ONOFF); 
 
   /**
    * @brief FileInfoの成分名を登録する
@@ -637,9 +637,9 @@ public:
    * @param [in]  step 取得するステップ
    * @param [out] vec_min 取得したminmaxの合成値
    * @param [out] vec_max 取得したminmaxの合成値
-   * @return error code 取得出来たときは E_CIO_SUCCESS
+   * @return error code 取得出来たときは E_CDM_SUCCESS
    */
-  CIO::E_CIO_ERRORCODE getVectorMinMax(const unsigned step,
+  CDM::E_CDM_ERRORCODE getVectorMinMax(const unsigned step,
                                        double &vec_min,
                                        double &vec_max);
 
@@ -649,9 +649,9 @@ public:
    * @param [in]  compNo 成分No(0～n)
    * @param [out] min_value 取得したmin
    * @param [out] max_value 取得したmax
-   * @return error code 取得出来たときは E_CIO_SUCCESS
+   * @return error code 取得出来たときは E_CDM_SUCCESS
    */
-  CIO::E_CIO_ERRORCODE getMinMax(const unsigned step,
+  CDM::E_CDM_ERRORCODE getMinMax(const unsigned step,
                                  const int compNo,
                                  double &min_value,
                                  double &max_value);
@@ -668,16 +668,16 @@ public:
    * @param [out] readRankList 読込みランクリスト
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
-  CheckReadRank(cio_Domain dfi_domain,
+  CDM::E_CDM_ERRORCODE
+  CheckReadRank(cdm_Domain dfi_domain,
                 const int head[3],
                 const int tail[3],
-                CIO::E_CIO_READTYPE readflag,
+                CDM::E_CDM_READTYPE readflag,
                 vector<int> &readRankList);
 
   /**
    * @brief 出力インターバルステップの登録
-   * @details 登録しない（本メソッドがコールされない）場合はCIOでのインターバル
+   * @details 登録しない（本メソッドがコールされない）場合はCDMでのインターバル
    *          制御は行わない
    * @param [in] interval_step インターバルステップ
    * @param [in] base_step     基準となるステップ（デフォルト0ステップ）
@@ -760,7 +760,7 @@ public:
    * @return 読み込んだ配列のポインタ
    */
   virtual
-  cio_Array* 
+  cdm_Array* 
   ReadFieldData(std::string fname,
                 const unsigned step,
                 double &time,
@@ -771,7 +771,7 @@ public:
                 bool avr_mode,
                 unsigned &avr_step,
                 double &avr_time,
-                CIO::E_CIO_ERRORCODE &ret );
+                CDM::E_CDM_ERRORCODE &ret );
 
   /**
    * @brief フィールドデータファイルのヘッダーレコード読込み
@@ -785,7 +785,7 @@ public:
    * @param[out] time        時刻
    * @return true:出力成功 false:出力失敗
    */
-  virtual CIO::E_CIO_ERRORCODE 
+  virtual CDM::E_CDM_ERRORCODE 
   read_HeaderRecord(FILE* fp,
                     bool matchEndian,
                     unsigned step,
@@ -804,13 +804,13 @@ public:
    * @param[in]  nz          z方向のボクセルサイズ（実セル＋ガイドセル＊２）
    * @param[out] src         読み込んだデータを格納した配列のポインタ
    */
-  virtual CIO::E_CIO_ERRORCODE 
+  virtual CDM::E_CDM_ERRORCODE 
   read_Datarecord(FILE* fp,
                   bool matchEndian,
-                  cio_Array* buf,
+                  cdm_Array* buf,
                   int head[3],
                   int nz,
-                  cio_Array* &src)=0;
+                  cdm_Array* &src)=0;
 
   /**
    * @brief sphファイルのAverageデータレコードの読込み
@@ -820,7 +820,7 @@ public:
    * @param[out] avr_step    平均ステップ
    * @param[out] avr_time    平均タイム
    */
-  virtual CIO::E_CIO_ERRORCODE
+  virtual CDM::E_CDM_ERRORCODE
   read_averaged(FILE* fp,
                 bool matchEndian,
                 unsigned step,
@@ -840,11 +840,11 @@ protected :
    * @return error code
    */
   virtual
-  CIO::E_CIO_ERRORCODE 
+  CDM::E_CDM_ERRORCODE 
   WriteFieldData(std::string fname,
                  const unsigned step, 
                  double time, 
-                 cio_Array* val, 
+                 cdm_Array* val, 
                  const bool mode, 
                  const unsigned step_avr, 
                  const double time_avr);
@@ -857,7 +857,7 @@ protected :
    * @param[in] RankID ランク番号
    * @return true:出力成功 false:出力失敗
    */
-  virtual CIO::E_CIO_ERRORCODE
+  virtual CDM::E_CDM_ERRORCODE
   write_HeaderRecord(FILE* fp,
                      const unsigned step,
                      const double time,
@@ -871,9 +871,9 @@ protected :
    * @param[in]  RankID ランク番号
    * @return true:出力成功 false:出力失敗
    */
-  virtual CIO::E_CIO_ERRORCODE
+  virtual CDM::E_CDM_ERRORCODE
   write_DataRecord(FILE* fp,
-                   cio_Array* val,
+                   cdm_Array* val,
                    const int gc,
                    const int RankID)=0;
 
@@ -884,7 +884,7 @@ protected :
    * @param[in] time_avr 平均時刻
    * @return true:出力成功 false:出力失敗
    */
-  virtual CIO::E_CIO_ERRORCODE
+  virtual CDM::E_CDM_ERRORCODE
   write_averaged(FILE* fp,
                  const unsigned step_avr,
                  const double time_avr)=0;
@@ -909,7 +909,7 @@ protected :
    * @return 0 エラー
    */
   static int 
-  get_cio_Datasize(CIO::E_CIO_DTYPE Dtype); 
+  get_cdm_Datasize(CDM::E_CDM_DTYPE Dtype); 
 
   /**
    * @brief Create Process 
@@ -917,8 +917,8 @@ protected :
    * @param [out] G_Process     Process class　　　
    */
   void 
-  cio_Create_dfiProcessInfo(const MPI_Comm comm,
-                            cio_Process &G_Process);
+  cdm_Create_dfiProcessInfo(const MPI_Comm comm,
+                            cdm_Process &G_Process);
 
 
   /**
@@ -929,8 +929,8 @@ protected :
    * @param [in] DFI_GlobalDivision 分割数（DFI）
    * @return 読込みタイプコード
    */
-  //cio_EGlobalVoxel CheckGlobalVoxel(const int Gvoxel[3], 
-  CIO::E_CIO_READTYPE 
+  //cdm_EGlobalVoxel CheckGlobalVoxel(const int Gvoxel[3], 
+  CDM::E_CDM_READTYPE 
   CheckReadType(const int G_voxel[3], 
                 const int DFI_GlobalVoxel[3],
                 const int G_Div[3],
@@ -959,7 +959,7 @@ protected :
                      const int DFI_head[3], 
                      const int DFI_tail[3],
                      const int DFI_gc, 
-                     const CIO::E_CIO_READTYPE readflag, 
+                     const CDM::E_CDM_READTYPE readflag, 
                      int copy_sta[3], 
                      int copy_end[3],
                      int read_sta[3],
@@ -970,7 +970,7 @@ protected :
    * @param [in] dfi_name  DFIファイル名
    * @return true:出力成功 false:出力失敗
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   WriteIndexDfiFile(const std::string dfi_name);
 
 
@@ -983,15 +983,15 @@ public:
    */
   template<class T1, class T2>
   bool setGridData(
-                   cio_TypeArray<T1>* P,
-                   cio_TypeArray<T2>* S);
+                   cdm_TypeArray<T1>* P,
+                   cdm_TypeArray<T2>* S);
 
   /**
    * @brief 内部の格子点のデータを重み付けでで割る
    * @param[out] P  格子点data
    */
   template<class T>
-  void VolumeDataDivide(cio_TypeArray<T> *P);
+  void VolumeDataDivide(cdm_TypeArray<T> *P);
 
 
 public:
@@ -1036,4 +1036,4 @@ public:
 #include "inline/cio_DFI_inline.h"
 
 
-#endif // _cio_DFI_H_
+#endif // _cdm_DFI_H_

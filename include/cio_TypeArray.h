@@ -1,5 +1,5 @@
-#ifndef _CIO_TYPEARRAY_H_
-#define _CIO_TYPEARRAY_H_
+#ifndef _CDM_TYPEARRAY_H_
+#define _CDM_TYPEARRAY_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -12,7 +12,7 @@
 #include "cio_Array.h"
 
 template<class T>
-class cio_TypeArray : public cio_Array
+class cdm_TypeArray : public cdm_Array
 {
 /*
  * enum
@@ -25,14 +25,14 @@ public:
  */
 public:
   /// コンストラクタ
-  cio_TypeArray( CIO::E_CIO_DTYPE dtype
-               , CIO::E_CIO_ARRAYSHAPE shape
+  cdm_TypeArray( CDM::E_CDM_DTYPE dtype
+               , CDM::E_CDM_ARRAYSHAPE shape
                , size_t ix
                , size_t jx
                , size_t kx
                , size_t gc
                , size_t ncomp=1 )
-    : cio_Array(dtype,shape,ix,jx,kx,gc,ncomp)
+    : cdm_Array(dtype,shape,ix,jx,kx,gc,ncomp)
   {
 
     m_outptr=false;
@@ -48,15 +48,15 @@ public:
   }
 
   /// コンストラクタ
-  cio_TypeArray( T *data
-               , CIO::E_CIO_DTYPE dtype
-               , CIO::E_CIO_ARRAYSHAPE shape
+  cdm_TypeArray( T *data
+               , CDM::E_CDM_DTYPE dtype
+               , CDM::E_CDM_ARRAYSHAPE shape
                , size_t ix
                , size_t jx
                , size_t kx
                , size_t gc
                , size_t ncomp=1 )
-    : cio_Array(dtype,shape,ix,jx,kx,gc,ncomp)
+    : cdm_Array(dtype,shape,ix,jx,kx,gc,ncomp)
   {
 
     m_outptr=true;
@@ -65,7 +65,7 @@ public:
   }
 
   /// デストラクタ
-  virtual ~cio_TypeArray()
+  virtual ~cdm_TypeArray()
   {
     if( m_data )
     {
@@ -112,17 +112,17 @@ public:
         T& _val(size_t i, size_t j, size_t k, size_t l=0);
 
   /// 配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArray( cio_Array *dst, bool ignoreGc=false );
+  virtual int copyArray( cdm_Array *dst, bool ignoreGc=false );
 
   /// 範囲指定での配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArray( int sta[3], int end[3], cio_Array *dst );
+  virtual int copyArray( int sta[3], int end[3], cdm_Array *dst );
 
 //FCONV 20131216.s
   /// 指定成分の配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArrayNcomp( cio_Array *dst, int comp, bool ignoreGc=false );
+  virtual int copyArrayNcomp( cdm_Array *dst, int comp, bool ignoreGc=false );
 
   /// 指定成分の範囲指定での配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArrayNcomp( int sta[3], int end[3], cio_Array *dst, int comp );
+  virtual int copyArrayNcomp( int sta[3], int end[3], cdm_Array *dst, int comp );
 //FCONV 20131216.e
 
   /// 配列サイズ分のバイナリデータを読み込み(戻り値は読み込んだ要素数)
@@ -138,7 +138,7 @@ public:
 
 protected:
   /// デフォルトコンストラクタ
-  cio_TypeArray() : cio_Array()
+  cdm_TypeArray() : cdm_Array()
   {
     m_data  = NULL;
   }
@@ -160,21 +160,21 @@ protected:
 };
 
 #if 0
-#ifdef CIO_INLINE
- #undef CIO_INLINE
+#ifdef CDM_INLINE
+ #undef CDM_INLINE
 #endif
 
-#ifndef CIO_NO_INLINE
- #define CIO_INLINE inline
+#ifndef CDM_NO_INLINE
+ #define CDM_INLINE inline
 #else
- #define CIO_INLINE
+ #define CDM_INLINE
 #endif
 
-#define CIO_MEMFUN(rettype) \
-        CIO_INLINE rettype 
+#define CDM_MEMFUN(rettype) \
+        CDM_INLINE rettype 
 #endif
 
 #include "inline/cio_Array_inline.h"
 
-#endif /* _CIO_TYPEARRAY_H_ */
+#endif /* _CDM_TYPEARRAY_H_ */
 

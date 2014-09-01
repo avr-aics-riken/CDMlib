@@ -95,18 +95,18 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
   //std::string t_prefix=prefix+"_Grid";
   int fnameformat = m_InputCntl->Get_OutputFilenameFormat();
   tmp = m_InputCntl->Get_OutputDir() +"/"+ 
-        cio_DFI::Generate_FileName(prefix,
+        cdm_DFI::Generate_FileName(prefix,
                                    rank,
                                    //step,
                                    -1,
                                    "xyz",
-                                   (CIO::E_CIO_OUTPUT_FNAME)fnameformat,
+                                   (CDM::E_CDM_OUTPUT_FNAME)fnameformat,
                                    false,
-                                   CIO::E_CIO_OFF);
+                                   CDM::E_CDM_OFF);
     
   //open file
   FILE*fp;
-  if( m_InputCntl->Get_OutputFormatType() == CIO::E_CIO_OUTPUT_TYPE_ASCII ) {
+  if( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
     if( (fp = fopen(tmp.c_str(), "wa")) == NULL ) {
       printf("\tCan't open file.(%s)\n",tmp.c_str());
       Exit(0);
@@ -209,7 +209,7 @@ convOutput_PLOT3D::WriteXYZData(FILE* fp,
   switch (m_InputCntl->Get_OutputFormatType()) {
 
     //Fortran Binary 出力
-    case CIO::E_CIO_OUTPUT_TYPE_FBINARY:
+    case CDM::E_CDM_OUTPUT_TYPE_FBINARY:
       dmy = sizeof(T)*sz*3;
       WriteDataMarker(dmy,fp,true);
       fwrite(x, sizeof(T), sz, fp);
@@ -219,14 +219,14 @@ convOutput_PLOT3D::WriteXYZData(FILE* fp,
       break;
 
     //ascii 出力
-    case CIO::E_CIO_OUTPUT_TYPE_ASCII:
+    case CDM::E_CDM_OUTPUT_TYPE_ASCII:
       WriteXYZ_FORMATTED(fp, id, jd, kd, x);
       WriteXYZ_FORMATTED(fp, id, jd, kd, y);
       WriteXYZ_FORMATTED(fp, id, jd, kd, z);
       break;
 
     //C Binary 出力
-    case CIO::E_CIO_OUTPUT_TYPE_BINARY:
+    case CDM::E_CDM_OUTPUT_TYPE_BINARY:
       fwrite(x, sizeof(T), sz, fp);
       fwrite(y, sizeof(T), sz, fp);
       fwrite(z, sizeof(T), sz, fp);

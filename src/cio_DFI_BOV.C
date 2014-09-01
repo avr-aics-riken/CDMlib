@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_DFI_BOV.C
- * @brief  cio_DFI_BOV Class
+ * @file   cdm_DFI_BOV.C
+ * @brief  cdm_DFI_BOV Class
  * @author aics    
  */
 
@@ -17,7 +17,7 @@
 
 // #################################################################
 // コンストラクタ
-cio_DFI_BOV::cio_DFI_BOV()
+cdm_DFI_BOV::cdm_DFI_BOV()
 {
 
 }
@@ -25,15 +25,15 @@ cio_DFI_BOV::cio_DFI_BOV()
 
 // #################################################################
 // デストラクタ
-cio_DFI_BOV::~cio_DFI_BOV()
+cdm_DFI_BOV::~cdm_DFI_BOV()
 {
 
 }
 
 // #################################################################
 // ファイルのヘッダーレコード読込み
-CIO::E_CIO_ERRORCODE
-cio_DFI_BOV::read_HeaderRecord(FILE* fp,
+CDM::E_CDM_ERRORCODE
+cdm_DFI_BOV::read_HeaderRecord(FILE* fp,
                                bool matchEndian,
                                unsigned step,
                                const int head[3],
@@ -52,27 +52,27 @@ cio_DFI_BOV::read_HeaderRecord(FILE* fp,
 
   for(int i=0; i<3; i++) voxsize[i]=tail[i]-head[i]+1+(2*gc);
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // ファイルのデータレコード読込み
-CIO::E_CIO_ERRORCODE
-cio_DFI_BOV::read_Datarecord(FILE* fp,
+CDM::E_CDM_ERRORCODE
+cdm_DFI_BOV::read_Datarecord(FILE* fp,
                              bool matchEndian,
-                             cio_Array* buf,
+                             cdm_Array* buf,
                              int head[3],
                              int nz,
-                             cio_Array* &src)
+                             cdm_Array* &src)
 {
 
   //１層ずつ読み込み
   int hzB = head[2];
 
-  CIO::E_CIO_ARRAYSHAPE shape = buf->getArrayShape();
+  CDM::E_CDM_ARRAYSHAPE shape = buf->getArrayShape();
 
   //NIJKの読込み
-  if( shape == CIO::E_CIO_NIJK ) {
+  if( shape == CDM::E_CDM_NIJK ) {
     for( int k=0; k<nz; k++ ) {
       //headインデクスをずらす
       head[2]=hzB+k;
@@ -80,14 +80,14 @@ cio_DFI_BOV::read_Datarecord(FILE* fp,
 
       //１層読み込
       size_t ndata = buf->getArrayLength();
-      if( buf->readBinary(fp,matchEndian) != ndata ) return CIO::E_CIO_ERROR_READ_FIELD_DATA_RECORD;
+      if( buf->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
 
       // コピー
       buf->copyArray(src);
     }
   }
   //IJKNの読込み 
-  else if( shape == CIO::E_CIO_IJKN ) {
+  else if( shape == CDM::E_CDM_IJKN ) {
     for(int n=0; n<src->getNcomp(); n++) {
     for(int k=0; k<nz; k++) {
       //headインデックスをずらす
@@ -96,21 +96,21 @@ cio_DFI_BOV::read_Datarecord(FILE* fp,
 
       //１層読み込
       size_t ndata = buf->getArrayLength();
-      if( buf->readBinary(fp,matchEndian) != ndata ) return CIO::E_CIO_ERROR_READ_FIELD_DATA_RECORD;
+      if( buf->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
 
       //コピー
       buf->copyArrayNcomp(src,n);
     }}
   }
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
 
 // #################################################################
 // Averaged レコードの読込み
-CIO::E_CIO_ERRORCODE
-cio_DFI_BOV::read_averaged(FILE* fp,
+CDM::E_CDM_ERRORCODE
+cdm_DFI_BOV::read_averaged(FILE* fp,
                            bool matchEndian,
                            unsigned step,
                            unsigned &step_avr,
@@ -127,31 +127,31 @@ cio_DFI_BOV::read_averaged(FILE* fp,
      }
   }
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // ヘッダーレコード出力BOVは何も出力しない
-CIO::E_CIO_ERRORCODE
-cio_DFI_BOV::write_HeaderRecord(FILE* fp,
+CDM::E_CDM_ERRORCODE
+cdm_DFI_BOV::write_HeaderRecord(FILE* fp,
                                 const unsigned step,
                                 const double time,
                                 const int n)
 {
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // BOVデータレコード出力
-CIO::E_CIO_ERRORCODE
-cio_DFI_BOV::write_DataRecord(FILE* fp, 
-                              cio_Array* val, 
+CDM::E_CDM_ERRORCODE
+cdm_DFI_BOV::write_DataRecord(FILE* fp, 
+                              cdm_Array* val, 
                               const int gc, 
                               const int n)
 {
 
-  CIO::E_CIO_DTYPE Dtype = (CIO::E_CIO_DTYPE)DFI_Finfo.DataType;
-  int Real_size = get_cio_Datasize(Dtype);
+  CDM::E_CDM_DTYPE Dtype = (CDM::E_CDM_DTYPE)DFI_Finfo.DataType;
+  int Real_size = get_cdm_Datasize(Dtype);
 
   int size[3];
   for(int i=0; i<3; i++ ) size[i] = (int)DFI_Process.RankList[n].VoxelSize[i]+(int)(2*gc);
@@ -161,24 +161,24 @@ cio_DFI_BOV::write_DataRecord(FILE* fp,
 
   unsigned int dmy = dLen * Real_size;
 
-  if( val->writeBinary(fp) != dLen ) return CIO::E_CIO_ERROR_WRITE_FIELD_DATA_RECORD;
-  return CIO::E_CIO_SUCCESS;
+  if( val->writeBinary(fp) != dLen ) return CDM::E_CDM_ERROR_WRITE_FIELD_DATA_RECORD;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // 平均の出力BOVは何も出力しない
-CIO::E_CIO_ERRORCODE
-cio_DFI_BOV::write_averaged(FILE* fp,
+CDM::E_CDM_ERRORCODE
+cdm_DFI_BOV::write_averaged(FILE* fp,
                             const unsigned step_avr,
                             const double time_avr)
 {
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // BOV ascii header file output
 bool
-cio_DFI_BOV::write_ascii_header(const unsigned step,
+cdm_DFI_BOV::write_ascii_header(const unsigned step,
                                 const double time)
 {
 
@@ -197,7 +197,7 @@ cio_DFI_BOV::write_ascii_header(const unsigned step,
                           mio,
                           DFI_Finfo.TimeSliceDirFlag);
 
-  if( CIO::cioPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
+  if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
     fname = DFI_Finfo.DirectoryPath + "/" + tmp;
   } else {
     fname = m_directoryPath + "/" + DFI_Finfo.DirectoryPath +"/"+ tmp;
@@ -230,16 +230,16 @@ cio_DFI_BOV::write_ascii_header(const unsigned step,
 
   //DATA_FORMAT
   std::string dType;
-  if(      GetDataType() == CIO::E_CIO_INT8    ) dType=D_CIO_BYTE;
-  else if( GetDataType() == CIO::E_CIO_UINT8   ) dType=D_CIO_UINT8;
-  else if( GetDataType() == CIO::E_CIO_INT16   ) dType=D_CIO_INT16;
-  else if( GetDataType() == CIO::E_CIO_UINT16  ) dType=D_CIO_UINT16;
-  else if( GetDataType() == CIO::E_CIO_INT32   ) dType=D_CIO_INT;
-  else if( GetDataType() == CIO::E_CIO_UINT32  ) dType=D_CIO_UINT32;
-  else if( GetDataType() == CIO::E_CIO_INT64   ) dType=D_CIO_INT64;
-  else if( GetDataType() == CIO::E_CIO_UINT64  ) dType=D_CIO_UINT64;
-  else if( GetDataType() == CIO::E_CIO_FLOAT32 ) dType=D_CIO_FLOAT;
-  else if( GetDataType() == CIO::E_CIO_FLOAT64 ) dType=D_CIO_DOUBLE;
+  if(      GetDataType() == CDM::E_CDM_INT8    ) dType=D_CDM_BYTE;
+  else if( GetDataType() == CDM::E_CDM_UINT8   ) dType=D_CDM_UINT8;
+  else if( GetDataType() == CDM::E_CDM_INT16   ) dType=D_CDM_INT16;
+  else if( GetDataType() == CDM::E_CDM_UINT16  ) dType=D_CDM_UINT16;
+  else if( GetDataType() == CDM::E_CDM_INT32   ) dType=D_CDM_INT;
+  else if( GetDataType() == CDM::E_CDM_UINT32  ) dType=D_CDM_UINT32;
+  else if( GetDataType() == CDM::E_CDM_INT64   ) dType=D_CDM_INT64;
+  else if( GetDataType() == CDM::E_CDM_UINT64  ) dType=D_CDM_UINT64;
+  else if( GetDataType() == CDM::E_CDM_FLOAT32 ) dType=D_CDM_FLOAT;
+  else if( GetDataType() == CDM::E_CDM_FLOAT64 ) dType=D_CDM_DOUBLE;
   fprintf(fp,"DATA_FORMAT: %s\n",dType.c_str());
 
   //DATA_COMPONENT
@@ -249,7 +249,7 @@ cio_DFI_BOV::write_ascii_header(const unsigned step,
   fprintf(fp,"VARIABLE: %s\n",DFI_Finfo.Prefix.c_str());
 
   //DATA_ENDIAN
-  if( DFI_Finfo.Endian == CIO::E_CIO_LITTLE ) {
+  if( DFI_Finfo.Endian == CDM::E_CDM_LITTLE ) {
     fprintf(fp,"DATA_ENDIAN: LITTLE\n");
   } else {
     fprintf(fp,"DATA_ENDIAN: BIG\n");
@@ -281,11 +281,11 @@ cio_DFI_BOV::write_ascii_header(const unsigned step,
           DFI_Process.RankList[m_RankID].VoxelSize[1]*pch[1],
           DFI_Process.RankList[m_RankID].VoxelSize[2]*pch[2]);
 
-  //#CIO_ARRAY_SHAPE
-  if( DFI_Finfo.ArrayShape == CIO::E_CIO_IJKN ) {
-    fprintf(fp,"#CIO_ARRAY_SHAPE: IJKN\n");
+  //#CDM_ARRAY_SHAPE
+  if( DFI_Finfo.ArrayShape == CDM::E_CDM_IJKN ) {
+    fprintf(fp,"#CDM_ARRAY_SHAPE: IJKN\n");
   } else {
-    fprintf(fp,"#CIO_ARRAY_SHAPE: NIJK\n");
+    fprintf(fp,"#CDM_ARRAY_SHAPE: NIJK\n");
   }
 
   //file close

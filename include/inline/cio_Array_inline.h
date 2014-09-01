@@ -6,71 +6,71 @@
  *
  */
 
-#ifndef _CIO_ARRAY_INLINE_H_
-#define _CIO_ARRAY_INLINE_H_
+#ifndef _CDM_ARRAY_INLINE_H_
+#define _CDM_ARRAY_INLINE_H_
 
 #include "cio_Array.h"
 #include <typeinfo>
 
-#ifdef CIO_INLINE
- #undef CIO_INLINE
+#ifdef CDM_INLINE
+ #undef CDM_INLINE
 #endif
 
-#ifndef CIO_NO_INLINE
- #define CIO_INLINE inline
+#ifndef CDM_NO_INLINE
+ #define CDM_INLINE inline
 #else
- #define CIO_INLINE
+ #define CDM_INLINE
 #endif
 
-#define CIO_MEMFUN(rettype) \
-        CIO_INLINE rettype 
+#define CDM_MEMFUN(rettype) \
+        CDM_INLINE rettype 
 
 // インスタンス
-CIO_MEMFUN(cio_Array*)
-cio_Array::instanceArray( CIO::E_CIO_DTYPE dtype
-                        , CIO::E_CIO_ARRAYSHAPE shape
+CDM_MEMFUN(cdm_Array*)
+cdm_Array::instanceArray( CDM::E_CDM_DTYPE dtype
+                        , CDM::E_CDM_ARRAYSHAPE shape
                         , size_t ix
                         , size_t jx
                         , size_t kx
                         , size_t gc
                         , size_t ncomp )
 {
-  cio_Array *ptr = NULL;
+  cdm_Array *ptr = NULL;
   switch( dtype )
   {
-  case CIO::E_CIO_INT8:
-    ptr = new cio_TypeArray<char>(dtype,shape,ix,jx,kx,gc,ncomp);
+  case CDM::E_CDM_INT8:
+    ptr = new cdm_TypeArray<char>(dtype,shape,ix,jx,kx,gc,ncomp);
     break;
-  case CIO::E_CIO_INT16:
-    ptr = new cio_TypeArray<short>(dtype,shape,ix,jx,kx,gc,ncomp);
+  case CDM::E_CDM_INT16:
+    ptr = new cdm_TypeArray<short>(dtype,shape,ix,jx,kx,gc,ncomp);
     break;
-  case CIO::E_CIO_INT32:
-    ptr = new cio_TypeArray<int>(dtype,shape,ix,jx,kx,gc,ncomp);
+  case CDM::E_CDM_INT32:
+    ptr = new cdm_TypeArray<int>(dtype,shape,ix,jx,kx,gc,ncomp);
     break;
-  case CIO::E_CIO_INT64:
-    ptr = new cio_TypeArray<long long>(dtype,shape,ix,jx,kx,gc,ncomp);
+  case CDM::E_CDM_INT64:
+    ptr = new cdm_TypeArray<long long>(dtype,shape,ix,jx,kx,gc,ncomp);
     break;
-  case CIO::E_CIO_UINT8:
-    ptr = new cio_TypeArray<unsigned char>(dtype,shape,ix,jx,kx,gc,ncomp);
+  case CDM::E_CDM_UINT8:
+    ptr = new cdm_TypeArray<unsigned char>(dtype,shape,ix,jx,kx,gc,ncomp);
     break;
-  case CIO::E_CIO_UINT16:
-    ptr = new cio_TypeArray<unsigned short>(dtype,shape,ix,jx,kx,gc,ncomp);
+  case CDM::E_CDM_UINT16:
+    ptr = new cdm_TypeArray<unsigned short>(dtype,shape,ix,jx,kx,gc,ncomp);
     break;
-  case CIO::E_CIO_UINT32:
-    ptr = new cio_TypeArray<unsigned int>(dtype,shape,ix,jx,kx,gc,ncomp);
+  case CDM::E_CDM_UINT32:
+    ptr = new cdm_TypeArray<unsigned int>(dtype,shape,ix,jx,kx,gc,ncomp);
     break;
-  case CIO::E_CIO_UINT64:
-    ptr = new cio_TypeArray<unsigned long long>(dtype,shape,ix,jx,kx,gc,ncomp);
+  case CDM::E_CDM_UINT64:
+    ptr = new cdm_TypeArray<unsigned long long>(dtype,shape,ix,jx,kx,gc,ncomp);
     break;
-  case CIO::E_CIO_FLOAT32:
-    ptr = new cio_TypeArray<float>(dtype,shape,ix,jx,kx,gc,ncomp);
+  case CDM::E_CDM_FLOAT32:
+    ptr = new cdm_TypeArray<float>(dtype,shape,ix,jx,kx,gc,ncomp);
     break;
-  case CIO::E_CIO_FLOAT64:
-    ptr = new cio_TypeArray<double>(dtype,shape,ix,jx,kx,gc,ncomp);
+  case CDM::E_CDM_FLOAT64:
+    ptr = new cdm_TypeArray<double>(dtype,shape,ix,jx,kx,gc,ncomp);
     break;
   }
 
-#ifdef _CIO_DEBUG
+#ifdef _CDM_DEBUG
   if( ptr )
   {
     printf("dtype = %d\n",(int)dtype);
@@ -89,9 +89,9 @@ cio_Array::instanceArray( CIO::E_CIO_DTYPE dtype
 }
 
 // インスタンス
-CIO_MEMFUN(cio_Array*)
-cio_Array::instanceArray( CIO::E_CIO_DTYPE dtype
-                        , CIO::E_CIO_ARRAYSHAPE shape
+CDM_MEMFUN(cdm_Array*)
+cdm_Array::instanceArray( CDM::E_CDM_DTYPE dtype
+                        , CDM::E_CDM_ARRAYSHAPE shape
                         , size_t sz[3]
                         , size_t gc
                         , size_t ncomp )
@@ -100,9 +100,9 @@ cio_Array::instanceArray( CIO::E_CIO_DTYPE dtype
 }
 
 // インスタンス
-CIO_MEMFUN(cio_Array*)
-cio_Array::instanceArray( CIO::E_CIO_DTYPE dtype
-                        , CIO::E_CIO_ARRAYSHAPE shape
+CDM_MEMFUN(cdm_Array*)
+cdm_Array::instanceArray( CDM::E_CDM_DTYPE dtype
+                        , CDM::E_CDM_ARRAYSHAPE shape
                         , int ix
                         , int jx
                         , int kx
@@ -113,9 +113,9 @@ cio_Array::instanceArray( CIO::E_CIO_DTYPE dtype
 }
 
 // インスタンス
-CIO_MEMFUN(cio_Array*)
-cio_Array::instanceArray( CIO::E_CIO_DTYPE dtype
-                        , CIO::E_CIO_ARRAYSHAPE shape
+CDM_MEMFUN(cdm_Array*)
+cdm_Array::instanceArray( CDM::E_CDM_DTYPE dtype
+                        , CDM::E_CDM_ARRAYSHAPE shape
                         , int sz[3]
                         , int gc
                         , int ncomp )
@@ -125,65 +125,65 @@ cio_Array::instanceArray( CIO::E_CIO_DTYPE dtype
 
 // インスタンス
 template<class T>
-CIO_MEMFUN(cio_Array*)
-cio_Array::instanceArray( T *data
-                        , CIO::E_CIO_ARRAYSHAPE shape
+CDM_MEMFUN(cdm_Array*)
+cdm_Array::instanceArray( T *data
+                        , CDM::E_CDM_ARRAYSHAPE shape
                         , size_t ix
                         , size_t jx
                         , size_t kx
                         , size_t gc
                         , size_t ncomp )
 {
-  cio_Array *ptr = NULL;
-  CIO::E_CIO_DTYPE dtype = CIO::E_CIO_DTYPE_UNKNOWN; 
+  cdm_Array *ptr = NULL;
+  CDM::E_CDM_DTYPE dtype = CDM::E_CDM_DTYPE_UNKNOWN; 
 
   if( typeid(data) == typeid(char*) )
   {
-    dtype = CIO::E_CIO_INT8;
+    dtype = CDM::E_CDM_INT8;
   }
   else if( typeid(data) == typeid(short*) )
   {
-    dtype = CIO::E_CIO_INT16;
+    dtype = CDM::E_CDM_INT16;
   }
   else if( typeid(data) == typeid(int*) )
   {
-    dtype = CIO::E_CIO_INT32;
+    dtype = CDM::E_CDM_INT32;
   }
   else if( typeid(data) == typeid(long long*) )
   {
-    dtype = CIO::E_CIO_INT64;
+    dtype = CDM::E_CDM_INT64;
   }
   else if( typeid(data) == typeid(unsigned char*) )
   {
-    dtype = CIO::E_CIO_UINT8;
+    dtype = CDM::E_CDM_UINT8;
   }
   else if( typeid(data) == typeid(unsigned short*) )
   {
-    dtype = CIO::E_CIO_UINT16;
+    dtype = CDM::E_CDM_UINT16;
   }
   else if( typeid(data) == typeid(unsigned int*) )
   {
-    dtype = CIO::E_CIO_UINT32;
+    dtype = CDM::E_CDM_UINT32;
   }
   else if( typeid(data) == typeid(unsigned long long*) )
   {
-    dtype = CIO::E_CIO_UINT64;
+    dtype = CDM::E_CDM_UINT64;
   }
   else if( typeid(data) == typeid(float*) )
   {
-    dtype = CIO::E_CIO_FLOAT32;
+    dtype = CDM::E_CDM_FLOAT32;
   }
   else if( typeid(data) == typeid(double*) )
   {
-    dtype = CIO::E_CIO_FLOAT64;
+    dtype = CDM::E_CDM_FLOAT64;
   }
 
-  if( dtype != CIO::E_CIO_DTYPE_UNKNOWN )
+  if( dtype != CDM::E_CDM_DTYPE_UNKNOWN )
   {
-    ptr = new cio_TypeArray<T>(data,dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<T>(data,dtype,shape,ix,jx,kx,gc,ncomp);
   }
 
-#ifdef _CIO_DEBUG
+#ifdef _CDM_DEBUG
   if( ptr )
   {
     printf("dtype = %d\n",(int)dtype);
@@ -203,9 +203,9 @@ cio_Array::instanceArray( T *data
 
 // インスタンス
 template<class T>
-CIO_MEMFUN(cio_Array*)
-cio_Array::instanceArray( T *data
-                        , CIO::E_CIO_ARRAYSHAPE shape
+CDM_MEMFUN(cdm_Array*)
+cdm_Array::instanceArray( T *data
+                        , CDM::E_CDM_ARRAYSHAPE shape
                         , size_t sz[3]
                         , size_t gc
                         , size_t ncomp )
@@ -215,9 +215,9 @@ cio_Array::instanceArray( T *data
 
 // インスタンス
 template<class T>
-CIO_MEMFUN(cio_Array*)
-cio_Array::instanceArray( T *data
-                        , CIO::E_CIO_ARRAYSHAPE shape
+CDM_MEMFUN(cdm_Array*)
+cdm_Array::instanceArray( T *data
+                        , CDM::E_CDM_ARRAYSHAPE shape
                         , int ix
                         , int jx
                         , int kx
@@ -229,9 +229,9 @@ cio_Array::instanceArray( T *data
 
 // インスタンス
 template<class T>
-CIO_MEMFUN(cio_Array*)
-cio_Array::instanceArray( T *data
-                        , CIO::E_CIO_ARRAYSHAPE shape
+CDM_MEMFUN(cdm_Array*)
+cdm_Array::instanceArray( T *data
+                        , CDM::E_CDM_ARRAYSHAPE shape
                         , int sz[3]
                         , int gc
                         , int ncomp )
@@ -240,68 +240,68 @@ cio_Array::instanceArray( T *data
 }
 
 /// データポインタを取得
-CIO_MEMFUN(void*)
-cio_Array::getData( bool extract )
+CDM_MEMFUN(void*)
+cdm_Array::getData( bool extract )
 {
   switch( m_dtype )
   {
-  case CIO::E_CIO_INT8:
+  case CDM::E_CDM_INT8:
     {
-      cio_TypeArray<char> *ptr = dynamic_cast<cio_TypeArray<char>*>(this);
+      cdm_TypeArray<char> *ptr = dynamic_cast<cdm_TypeArray<char>*>(this);
       return ptr->getData( extract );
     }
     break;
-  case CIO::E_CIO_INT16:
+  case CDM::E_CDM_INT16:
     {
-      cio_TypeArray<short> *ptr = dynamic_cast<cio_TypeArray<short>*>(this);
+      cdm_TypeArray<short> *ptr = dynamic_cast<cdm_TypeArray<short>*>(this);
       return ptr->getData( extract );
     }
     break;
-  case CIO::E_CIO_INT32:
+  case CDM::E_CDM_INT32:
     {
-      cio_TypeArray<int> *ptr = dynamic_cast<cio_TypeArray<int>*>(this);
+      cdm_TypeArray<int> *ptr = dynamic_cast<cdm_TypeArray<int>*>(this);
       return ptr->getData( extract );
     }
     break;
-  case CIO::E_CIO_INT64:
+  case CDM::E_CDM_INT64:
     {
-      cio_TypeArray<long long> *ptr = dynamic_cast<cio_TypeArray<long long>*>(this);
+      cdm_TypeArray<long long> *ptr = dynamic_cast<cdm_TypeArray<long long>*>(this);
       return ptr->getData( extract );
     }
     break;
-  case CIO::E_CIO_UINT8:
+  case CDM::E_CDM_UINT8:
     {
-      cio_TypeArray<unsigned char> *ptr = dynamic_cast<cio_TypeArray<unsigned char>*>(this);
+      cdm_TypeArray<unsigned char> *ptr = dynamic_cast<cdm_TypeArray<unsigned char>*>(this);
       return ptr->getData( extract );
     }
     break;
-  case CIO::E_CIO_UINT16:
+  case CDM::E_CDM_UINT16:
     {
-      cio_TypeArray<unsigned short> *ptr = dynamic_cast<cio_TypeArray<unsigned short>*>(this);
+      cdm_TypeArray<unsigned short> *ptr = dynamic_cast<cdm_TypeArray<unsigned short>*>(this);
       return ptr->getData( extract );
     }
     break;
-  case CIO::E_CIO_UINT32:
+  case CDM::E_CDM_UINT32:
     {
-      cio_TypeArray<unsigned int> *ptr = dynamic_cast<cio_TypeArray<unsigned int>*>(this);
+      cdm_TypeArray<unsigned int> *ptr = dynamic_cast<cdm_TypeArray<unsigned int>*>(this);
       return ptr->getData( extract );
     }
     break;
-  case CIO::E_CIO_UINT64:
+  case CDM::E_CDM_UINT64:
     {
-      cio_TypeArray<unsigned long long> *ptr = dynamic_cast<cio_TypeArray<unsigned long long>*>(this);
+      cdm_TypeArray<unsigned long long> *ptr = dynamic_cast<cdm_TypeArray<unsigned long long>*>(this);
       return ptr->getData( extract );
     }
     break;
-  case CIO::E_CIO_FLOAT32:
+  case CDM::E_CDM_FLOAT32:
     {
-      cio_TypeArray<float> *ptr = dynamic_cast<cio_TypeArray<float>*>(this);
+      cdm_TypeArray<float> *ptr = dynamic_cast<cdm_TypeArray<float>*>(this);
       return ptr->getData( extract );
     }
     break;
-  case CIO::E_CIO_FLOAT64:
+  case CDM::E_CDM_FLOAT64:
     {
-      cio_TypeArray<double> *ptr = dynamic_cast<cio_TypeArray<double>*>(this);
+      cdm_TypeArray<double> *ptr = dynamic_cast<cdm_TypeArray<double>*>(this);
       return ptr->getData( extract );
     }
     break;
@@ -312,8 +312,8 @@ cio_Array::getData( bool extract )
 
 // 参照
 template<class T>
-CIO_MEMFUN(T&)
-cio_TypeArray<T>::val(int i, int j, int k, int n)
+CDM_MEMFUN(T&)
+cdm_TypeArray<T>::val(int i, int j, int k, int n)
 {
   return m_data[ m_Sz[2] * m_Sz[1] * m_Sz[0] * size_t(n+m_gcl[3])
                          + m_Sz[1] * m_Sz[0] * size_t(k+m_gcl[2])
@@ -323,16 +323,16 @@ cio_TypeArray<T>::val(int i, int j, int k, int n)
 
 // 参照(const)
 template<class T>
-CIO_MEMFUN(const T&)
-cio_TypeArray<T>::val(int i, int j, int k, int n) const
+CDM_MEMFUN(const T&)
+cdm_TypeArray<T>::val(int i, int j, int k, int n) const
 {
   return val(i,j,k,n);
 }
 
 // 参照(headインデクス考慮版)
 template<class T>
-CIO_MEMFUN(T&)
-cio_TypeArray<T>::hval(int i, int j, int k, int n)
+CDM_MEMFUN(T&)
+cdm_TypeArray<T>::hval(int i, int j, int k, int n)
 {
   return m_data[ m_Sz[2] * m_Sz[1] * m_Sz[0] * size_t(n-m_headIndex[3]+m_gcl[3])
                          + m_Sz[1] * m_Sz[0] * size_t(k-m_headIndex[2]+m_gcl[2])
@@ -342,16 +342,16 @@ cio_TypeArray<T>::hval(int i, int j, int k, int n)
 
 // 参照(headインデクス考慮版,const)
 template<class T>
-CIO_MEMFUN(const T&)
-cio_TypeArray<T>::hval(int i, int j, int k, int n) const
+CDM_MEMFUN(const T&)
+cdm_TypeArray<T>::hval(int i, int j, int k, int n) const
 {
   return hval(i,j,k,n);
 }
 
 // ガイドセルを含んだ参照
 template<class T>
-CIO_MEMFUN(T&)
-cio_TypeArray<T>::_val(size_t i, size_t j, size_t k, size_t n)
+CDM_MEMFUN(T&)
+cdm_TypeArray<T>::_val(size_t i, size_t j, size_t k, size_t n)
 {
   return m_data[ m_Sz[2] * m_Sz[1] * m_Sz[0] * n
                          + m_Sz[1] * m_Sz[0] * k
@@ -361,18 +361,18 @@ cio_TypeArray<T>::_val(size_t i, size_t j, size_t k, size_t n)
 
 // ガイドセルを含んだ参照(const)
 template<class T>
-CIO_MEMFUN(const T&)
-cio_TypeArray<T>::_val(size_t i, size_t j, size_t k, size_t n) const
+CDM_MEMFUN(const T&)
+cdm_TypeArray<T>::_val(size_t i, size_t j, size_t k, size_t n) const
 {
   return _val(i,j,k,n);
 }
 
 // 配列コピー
 template<class T>
-CIO_MEMFUN(int)
-cio_TypeArray<T>::copyArray( cio_Array *dst, bool ignoreGc )
+CDM_MEMFUN(int)
+cdm_TypeArray<T>::copyArray( cdm_Array *dst, bool ignoreGc )
 {
-  cio_TypeArray<T> *src = this;
+  cdm_TypeArray<T> *src = this;
 
   // コピーの範囲
   int       gcS    = src->getGcInt();
@@ -397,13 +397,13 @@ cio_TypeArray<T>::copyArray( cio_Array *dst, bool ignoreGc )
 
 // 範囲指定での配列コピー
 template<class T>
-CIO_MEMFUN(int)
-cio_TypeArray<T>::copyArray( int _sta[3], int _end[3], cio_Array *dstptr )
+CDM_MEMFUN(int)
+cdm_TypeArray<T>::copyArray( int _sta[3], int _end[3], cdm_Array *dstptr )
 {
-  cio_TypeArray<T> *src = this;
+  cdm_TypeArray<T> *src = this;
 
   //mod.s 
-  cio_TypeArray<T> *dst = dynamic_cast<cio_TypeArray<T>*>(dstptr);
+  cdm_TypeArray<T> *dst = dynamic_cast<cdm_TypeArray<T>*>(dstptr);
   if( !dst )
   {
     return 1;
@@ -414,14 +414,14 @@ cio_TypeArray<T>::copyArray( int _sta[3], int _end[3], cio_Array *dstptr )
   {
     return 2;
   }
-  CIO::E_CIO_DTYPE dtype = src->getDataType();
+  CDM::E_CDM_DTYPE dtype = src->getDataType();
 
   // 配列形状
   if( src->getArrayShape() != dst->getArrayShape() )
   {
     return 3;
   }
-  CIO::E_CIO_ARRAYSHAPE shape = src->getArrayShape();
+  CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
 
   // 成分数
   if( src->getNcomp() != src->getNcomp() )
@@ -450,7 +450,7 @@ cio_TypeArray<T>::copyArray( int _sta[3], int _end[3], cio_Array *dstptr )
   }
 
   // コピー
-  if( m_shape == CIO::E_CIO_IJKN )
+  if( m_shape == CDM::E_CDM_IJKN )
   {
     for( int n=0;n<ncomp;n++ ){
     for( int k=sta[2];k<=end[2];k++ ){
@@ -475,10 +475,10 @@ cio_TypeArray<T>::copyArray( int _sta[3], int _end[3], cio_Array *dstptr )
 //FCONV 20131216.s
 //成分指定の配列コピー
 template<class T>
-CIO_MEMFUN(int)
-cio_TypeArray<T>::copyArrayNcomp( cio_Array *dst, int comp, bool ignoreGc )
+CDM_MEMFUN(int)
+cdm_TypeArray<T>::copyArrayNcomp( cdm_Array *dst, int comp, bool ignoreGc )
 {
-  cio_TypeArray<T> *src = this;
+  cdm_TypeArray<T> *src = this;
 
   // コピーの範囲
   int       gcS    = src->getGcInt();
@@ -503,12 +503,12 @@ cio_TypeArray<T>::copyArrayNcomp( cio_Array *dst, int comp, bool ignoreGc )
 
 //成分指定の範囲指定での配列コピー
 template<class T>
-CIO_MEMFUN(int)
-cio_TypeArray<T>::copyArrayNcomp( int _sta[3], int _end[3], cio_Array *dstptr, int comp )
+CDM_MEMFUN(int)
+cdm_TypeArray<T>::copyArrayNcomp( int _sta[3], int _end[3], cdm_Array *dstptr, int comp )
 {
-  cio_TypeArray<T> *src = this;
+  cdm_TypeArray<T> *src = this;
 
-  cio_TypeArray<T> *dst = dynamic_cast<cio_TypeArray<T>*>(dstptr);
+  cdm_TypeArray<T> *dst = dynamic_cast<cdm_TypeArray<T>*>(dstptr);
   if( !dst )
   {
     return 1;
@@ -519,14 +519,14 @@ cio_TypeArray<T>::copyArrayNcomp( int _sta[3], int _end[3], cio_Array *dstptr, i
   {
     return 2;
   }
-  CIO::E_CIO_DTYPE dtype = src->getDataType();
+  CDM::E_CDM_DTYPE dtype = src->getDataType();
 
   //配列形状
   if( src->getArrayShape() != dst->getArrayShape() )
   {
     return 3;
   }
-  CIO::E_CIO_ARRAYSHAPE shape = src->getArrayShape();
+  CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
 
   //成分数
   if( src->getNcomp() != src->getNcomp() )
@@ -554,7 +554,7 @@ cio_TypeArray<T>::copyArrayNcomp( int _sta[3], int _end[3], cio_Array *dstptr, i
   }
 
   // コピー
-  if( m_shape == CIO::E_CIO_IJKN )
+  if( m_shape == CDM::E_CDM_IJKN )
   {
     for( int k=sta[2];k<=end[2];k++ ){
     for( int j=sta[1];j<=end[1];j++ ){
@@ -576,22 +576,22 @@ cio_TypeArray<T>::copyArrayNcomp( int _sta[3], int _end[3], cio_Array *dstptr, i
 }
 
 // 粗密データの補間処理を行う
-CIO_MEMFUN(cio_Array*)
-cio_Array::interp_coarse( cio_Array *src, int &err, bool head0start )
+CDM_MEMFUN(cdm_Array*)
+cdm_Array::interp_coarse( cdm_Array *src, int &err, bool head0start )
 {
   err = 1;
 
   // データタイプ
   // 実数型のみ対応
-  CIO::E_CIO_DTYPE dtype = src->getDataType();
-  if( dtype != CIO::E_CIO_FLOAT32 && dtype != CIO::E_CIO_FLOAT64 )
+  CDM::E_CDM_DTYPE dtype = src->getDataType();
+  if( dtype != CDM::E_CDM_FLOAT32 && dtype != CDM::E_CDM_FLOAT64 )
   {
     err = -1;
     return NULL;
   }
 
   // 配列形状
-  CIO::E_CIO_ARRAYSHAPE shape = src->getArrayShape();
+  CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
 
   // 成分数
   // 成分数は1か3のみ対応
@@ -612,7 +612,7 @@ cio_Array::interp_coarse( cio_Array *src, int &err, bool head0start )
   // 密配列のインスタンス
   int gcD = gcS*2;
   int szD[3] = {szS[0]*2, szS[1]*2, szS[2]*2};
-  cio_Array *dst = cio_Array::instanceArray( dtype, shape, szD, gcD, ncomp );
+  cdm_Array *dst = cdm_Array::instanceArray( dtype, shape, szD, gcD, ncomp );
   void *ptrD = dst->getData();
 
   // headインデクスのセット
@@ -628,26 +628,26 @@ cio_Array::interp_coarse( cio_Array *src, int &err, bool head0start )
   dst->setHeadIndex( headD );
 
   // f90コードのコール(配列形状、実数型毎)
-  if( shape == CIO::E_CIO_IJKN )
+  if( shape == CDM::E_CDM_IJKN )
   {
-    if( dtype == CIO::E_CIO_FLOAT32 )
+    if( dtype == CDM::E_CDM_FLOAT32 )
     {
-      cio_interp_ijkn_r4_(szS,&gcS,szD,&gcD,&ncomp,(float*)ptrS,(float*)ptrD);
+      cdm_interp_ijkn_r4_(szS,&gcS,szD,&gcD,&ncomp,(float*)ptrS,(float*)ptrD);
     }
     else
     {
-      cio_interp_ijkn_r8_(szS,&gcS,szD,&gcD,&ncomp,(double*)ptrS,(double*)ptrD);
+      cdm_interp_ijkn_r8_(szS,&gcS,szD,&gcD,&ncomp,(double*)ptrS,(double*)ptrD);
     }
   }
   else
   {
-    if( dtype == CIO::E_CIO_FLOAT32 )
+    if( dtype == CDM::E_CDM_FLOAT32 )
     {
-      cio_interp_nijk_r4_(szS,&gcS,szD,&gcD,&ncomp,(float*)ptrS,(float*)ptrD);
+      cdm_interp_nijk_r4_(szS,&gcS,szD,&gcD,&ncomp,(float*)ptrS,(float*)ptrD);
     }
     else
     {
-      cio_interp_nijk_r8_(szS,&gcS,szD,&gcD,&ncomp,(double*)ptrS,(double*)ptrD);
+      cdm_interp_nijk_r8_(szS,&gcS,szD,&gcD,&ncomp,(double*)ptrS,(double*)ptrD);
     }
   }
 
@@ -656,7 +656,7 @@ cio_Array::interp_coarse( cio_Array *src, int &err, bool head0start )
 
 // 配列サイズ分のバイナリデータを読み込み(戻り値は読み込んだ要素数)
 template<class T>
-size_t cio_TypeArray<T>::readBinary( FILE *fp, bool bMatchEndian )
+size_t cdm_TypeArray<T>::readBinary( FILE *fp, bool bMatchEndian )
 {
   if( !fp ) return size_t(0);
   size_t ndata = getArrayLength();
@@ -682,7 +682,7 @@ size_t cio_TypeArray<T>::readBinary( FILE *fp, bool bMatchEndian )
 
 // 配列サイズ分のバイナリデータを書き出す(戻り値は読み込んだ要素数)
 template<class T>
-size_t cio_TypeArray<T>::writeBinary( FILE *fp )
+size_t cdm_TypeArray<T>::writeBinary( FILE *fp )
 {
   if( !fp ) return size_t(0);
   return fwrite(m_data,sizeof(T),getArrayLength(),fp);
@@ -690,7 +690,7 @@ size_t cio_TypeArray<T>::writeBinary( FILE *fp )
 
 // 配列サイズ分のasciiデータを書き出す(戻り値は読み込んだ要素数)
 template<class T>
-size_t cio_TypeArray<T>::writeAscii( FILE *fp )
+size_t cdm_TypeArray<T>::writeAscii( FILE *fp )
 {
   if( !fp ) return size_t(0);
   //return fwrite(m_data,sizeof(T),getArrayLength(),fp);
@@ -703,4 +703,4 @@ size_t cio_TypeArray<T>::writeAscii( FILE *fp )
 
 }
 
-#endif /* _CIO_ARRAY_INLINE_H_ */
+#endif /* _CDM_ARRAY_INLINE_H_ */

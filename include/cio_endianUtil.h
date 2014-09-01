@@ -7,12 +7,12 @@
  */
 
 /** 
- * @file   cio_endianUtil.h
+ * @file   cdm_endianUtil.h
  * @brief  エンディアンユーティリティマクロ・関数ファイル
  * @author aics    
  */
-#ifndef _CIO_ENDIAN_UTIL_H_
-#define _CIO_ENDIAN_UTIL_H_
+#ifndef _CDM_ENDIAN_UTIL_H_
+#define _CDM_ENDIAN_UTIL_H_
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -24,14 +24,14 @@
 #include <iostream>
 #include <string>
 
-#ifndef _CIO_NO_INLINE_
-  #define CIO_INLINE inline
+#ifndef _CDM_NO_INLINE_
+  #define CDM_INLINE inline
 #else
-  #define CIO_INLINE
+  #define CDM_INLINE
 #endif
 
 #ifdef SUPER_UX
-  template<class X> CIO_INLINE void BSWAP16(X& x) {
+  template<class X> CDM_INLINE void BSWAP16(X& x) {
     register unsigned char* _x_v = (unsigned char*)(&(x));
     unsigned char tmp;
     tmp = _x_v[0];
@@ -50,7 +50,7 @@
 #endif // SUPER_UX
 
 #ifdef SUPER_UX
-  template<class X> CIO_INLINE void BSWAP32(X& x) {
+  template<class X> CDM_INLINE void BSWAP32(X& x) {
     register unsigned char* _x_v = (unsigned char*)(&(x));
     unsigned char tmp[2];
     tmp[0] = _x_v[0];
@@ -74,7 +74,7 @@
 #endif // SUPER_UX
 
 #ifdef SUPER_UX
-  template<class X> CIO_INLINE void BSWAP64(X& x) {
+  template<class X> CDM_INLINE void BSWAP64(X& x) {
     register unsigned char* _x_v = (unsigned char*)(&(x));
     unsigned char tmp[4];
     tmp[0] = _x_v[0];
@@ -108,7 +108,7 @@
 #endif // SUPER_UX
 
 #ifdef SUPER_UX
-  template<class X, class Y> CIO_INLINE void SBSWAPVEC(X* a, Y n) {
+  template<class X, class Y> CDM_INLINE void SBSWAPVEC(X* a, Y n) {
     register unsigned int nn = (unsigned int)n;
     for(register unsigned int _i=0;_i<nn;_i++){
       register unsigned short _x_v = (unsigned short)a[_i];
@@ -125,7 +125,7 @@
 #endif // SUPER_UX
 
 #ifdef SUPER_UX
-  template<class X, class Y> CIO_INLINE void BSWAPVEC(X* a, Y n) {
+  template<class X, class Y> CDM_INLINE void BSWAPVEC(X* a, Y n) {
     register unsigned int nn = (unsigned int)n;
     for(register unsigned int _i=0;_i<nn;_i++){
       register unsigned int _x_v = (unsigned int)a[_i];
@@ -143,7 +143,7 @@
 #endif // SUPER_UX
 
 #ifdef SUPER_UX
-  template<class X, class Y> CIO_INLINE void DBSWAPVEC(X* a, Y n) {
+  template<class X, class Y> CDM_INLINE void DBSWAPVEC(X* a, Y n) {
     register unsigned int nn = (unsigned int)n;
     for(register unsigned int _i=0;_i<nn;_i++){
       register unsigned long long _x_v = (unsigned long long)a[_i];
@@ -159,5 +159,5 @@
   #endif // DBSWAPVEC
 #endif // SUPER_UX
 
-#endif // _CIO_ENDIAN_UTIL_H_
+#endif // _CDM_ENDIAN_UTIL_H_
 

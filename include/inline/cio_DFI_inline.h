@@ -1,5 +1,5 @@
-#ifndef _CIO_DFI_INLINE_H_
-#define _CIO_DFI_INLINE_H_
+#ifndef _CDM_DFI_INLINE_H_
+#define _CDM_DFI_INLINE_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,19 +10,19 @@
  */
 
 /** 
- * @file   cio_DFI.h
- * @brief  cio_DFI Class Header
+ * @file   cdm_DFI.h
+ * @brief  cdm_DFI Class Header
  * @author aics    
  */
 
-#ifdef CIO_INLINE
- #undef CIO_INLINE
+#ifdef CDM_INLINE
+ #undef CDM_INLINE
 #endif
 
-#ifndef CIO_NO_INLINE
- #define CIO_INLINE inline
+#ifndef CDM_NO_INLINE
+ #define CDM_INLINE inline
 #else
- #define CIO_INLINE
+ #define CDM_INLINE
 #endif
 
 // #################################################################
@@ -30,10 +30,10 @@
 // 返す）
 
 //template<class T, class TimeT, class TimeAvrT> 
-//CIO_INLINE T*
+//CDM_INLINE T*
 template<class TimeT, class TimeAvrT> 
-CIO_INLINE void*
-cio_DFI::ReadData(CIO::E_CIO_ERRORCODE &ret,
+CDM_INLINE void*
+cdm_DFI::ReadData(CDM::E_CDM_ERRORCODE &ret,
                   const unsigned step, 
                   const int gc, 
                   const int Gvoxel[3], 
@@ -48,7 +48,7 @@ cio_DFI::ReadData(CIO::E_CIO_ERRORCODE &ret,
 
    int sz[3];
    for(int i=0; i<3; i++) sz[i]=tail[i]-head[i]+1;
-   cio_Array *data = cio_Array::instanceArray
+   cdm_Array *data = cdm_Array::instanceArray
                      ( DFI_Finfo.DataType
                      , DFI_Finfo.ArrayShape
                      , sz
@@ -62,7 +62,7 @@ cio_DFI::ReadData(CIO::E_CIO_ERRORCODE &ret,
    ret = ReadData(data, step, gc, Gvoxel, Gdivision, head, tail,
                        d_time, mode, step_avr, d_time_avr);
 
-   if( ret != CIO::E_CIO_SUCCESS ) {
+   if( ret != CDM::E_CDM_SUCCESS ) {
      delete data;
      return NULL;
    }
@@ -79,8 +79,8 @@ cio_DFI::ReadData(CIO::E_CIO_ERRORCODE &ret,
 // #################################################################
 // フィールドデータの読込み(引数で渡された配列にデータを読込む）
 template<class T, class TimeT, class TimeAvrT> 
-CIO_INLINE
-CIO::E_CIO_ERRORCODE cio_DFI::ReadData(T *val,
+CDM_INLINE
+CDM::E_CDM_ERRORCODE cdm_DFI::ReadData(T *val,
                                        const unsigned step,
                                        const int gc,
                                        const int Gvoxel[3],
@@ -96,7 +96,7 @@ CIO::E_CIO_ERRORCODE cio_DFI::ReadData(T *val,
    int sz[3];
    for(int i=0; i<3; i++) sz[i]=tail[i]-head[i]+1;
 
-   cio_Array *data = cio_Array::instanceArray
+   cdm_Array *data = cdm_Array::instanceArray
                      ( val
                      , DFI_Finfo.ArrayShape
                      , sz
@@ -106,11 +106,11 @@ CIO::E_CIO_ERRORCODE cio_DFI::ReadData(T *val,
    double d_time = (double)time;
    double d_time_avr = (double)time_avr;
 
-   CIO::E_CIO_ERRORCODE ret;
+   CDM::E_CDM_ERRORCODE ret;
    ret = ReadData(data, step, gc, Gvoxel, Gdivision, head, tail,
                   d_time, mode, step_avr, d_time_avr);
 
-   if( ret == CIO::E_CIO_SUCCESS ) {
+   if( ret == CDM::E_CDM_SUCCESS ) {
      time = d_time;
      time_avr = d_time_avr;
    }
@@ -124,9 +124,9 @@ CIO::E_CIO_ERRORCODE cio_DFI::ReadData(T *val,
 // #################################################################
 // フィールドデータの出力
 template<class T, class TimeT, class TimeAvrT> 
-CIO_INLINE
-CIO::E_CIO_ERRORCODE
-cio_DFI::WriteData(const unsigned step, 
+CDM_INLINE
+CDM::E_CDM_ERRORCODE
+cdm_DFI::WriteData(const unsigned step, 
                    TimeT time, 
                    const int sz[3],
                    const int nComp,
@@ -138,7 +138,7 @@ cio_DFI::WriteData(const unsigned step,
                    TimeAvrT time_avr)
 {
 
-  cio_Array *data = cio_Array::instanceArray
+  cdm_Array *data = cdm_Array::instanceArray
                     ( val
                     , DFI_Finfo.ArrayShape
                     , DFI_Process.RankList[m_RankID].VoxelSize[0]
@@ -163,7 +163,7 @@ cio_DFI::WriteData(const unsigned step,
     }
   }
 
-  CIO::E_CIO_ERRORCODE ret;
+  CDM::E_CDM_ERRORCODE ret;
   ret = WriteData(step, gc, d_time, data, d_minmax, avr_mode, step_avr, d_time_avr);
 
   //val = (T*)data->getData(true);
@@ -179,10 +179,10 @@ cio_DFI::WriteData(const unsigned step,
 // #################################################################
 //セル中心データを 格子点にセット
 template<class T1, class T2>
-CIO_INLINE
+CDM_INLINE
 bool
-cio_DFI::setGridData(cio_TypeArray<T1>* P,
-                     cio_TypeArray<T2>* S)
+cdm_DFI::setGridData(cdm_TypeArray<T1>* P,
+                     cdm_TypeArray<T2>* S)
 {
 
   if( P->getArrayShape() != S->getArrayShape() ) return false;
@@ -211,7 +211,7 @@ cio_DFI::setGridData(cio_TypeArray<T1>* P,
 
   //S(セル中心）のデータをP(格子点)に加える
   //NIJKの処理
-  if( P->getArrayShape() == CIO::E_CIO_NIJK ) {
+  if( P->getArrayShape() == CDM::E_CDM_NIJK ) {
     for (int km=0; km<kx; km++) {
     for (int jm=0; jm<jx; jm++) {
     for (int im=0; im<ix; im++) {
@@ -252,9 +252,9 @@ cio_DFI::setGridData(cio_TypeArray<T1>* P,
 // #################################################################
 //内部の格子点のデータを重み付けで割る
 template<class T>
-CIO_INLINE
+CDM_INLINE
 void
-cio_DFI::VolumeDataDivide(cio_TypeArray<T> *P)
+cdm_DFI::VolumeDataDivide(cdm_TypeArray<T> *P)
 {
   int i,j,k,n;
   const int* szP = P->getArraySizeInt();
@@ -265,7 +265,7 @@ cio_DFI::VolumeDataDivide(cio_TypeArray<T> *P)
   int ncomp = P->getNcompInt();
 
   //NIJK
-  if( P->getArrayShape() == CIO::E_CIO_NIJK ) {
+  if( P->getArrayShape() == CDM::E_CDM_NIJK ) {
 
     //I
     for (k=0; k<kd;    k++){
@@ -322,4 +322,4 @@ cio_DFI::VolumeDataDivide(cio_TypeArray<T> *P)
 }
 
 
-#endif // _CIO_DFI_INLINE_H_
+#endif // _CDM_DFI_INLINE_H_

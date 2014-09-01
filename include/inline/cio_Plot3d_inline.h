@@ -1,5 +1,5 @@
-#ifndef _CIO_PLOT3D_INLINE_H_
-#define _CIO_PLOT3D_INLINE_H_
+#ifndef _CDM_PLOT3D_INLINE_H_
+#define _CDM_PLOT3D_INLINE_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,34 +10,34 @@
  */
 
 /** 
- * @file   cio_Plot3d_inlune.h
- * @brief  cio_DFI_PLOT3D template Header
+ * @file   cdm_Plot3d_inlune.h
+ * @brief  cdm_DFI_PLOT3D template Header
  * @author aics    
  */
 
-#ifdef CIO_INLINE
- #undef CIO_INLINE
+#ifdef CDM_INLINE
+ #undef CDM_INLINE
 #endif
 
-#ifndef CIO_NO_INLINE
- #define CIO_INLINE inline
+#ifndef CDM_NO_INLINE
+ #define CDM_INLINE inline
 #else
- #define CIO_INLINE
+ #define CDM_INLINE
 #endif
 
 // #################################################################
 // xyz 座標値を計算して出力
 template<class T>
-CIO_INLINE
+CDM_INLINE
 void
-cio_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
+cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
 {
 
   int ngrid=1;
   T xyz;
 
   //ascii
-  if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_ASCII ) {
+  if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
     fprintf(fp,"%5d\n",ngrid);
     fprintf(fp,"%5d%5d%5d\n",sz[0],sz[1],sz[2]);
 
@@ -66,7 +66,7 @@ cio_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
     }}}
 
   //Fortran Binary
-  } else if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_FBINARY ) {
+  } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
     unsigned int dmy;
     dmy = sizeof(int);
     fwrite(&dmy, sizeof(int), 1, fp);
@@ -144,16 +144,16 @@ cio_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
 // #################################################################
 // fund data 出力
 template<class T>
-CIO_INLINE
+CDM_INLINE
 void
-cio_DFI_PLOT3D::write_Func(FILE* fp, cio_TypeArray<T>* data, const int sz[3],
+cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
                            int ncomp)
 {
 
   //IJNK
-  if( data->getArrayShape() == CIO::E_CIO_IJKN ) {
+  if( data->getArrayShape() == CDM::E_CDM_IJKN ) {
     //ascii
-    if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_ASCII ) {
+    if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
       for(int n=0; n<ncomp; n++) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
@@ -162,7 +162,7 @@ cio_DFI_PLOT3D::write_Func(FILE* fp, cio_TypeArray<T>* data, const int sz[3],
       }}}}
 
     //Fortran Binary
-    } else if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_FBINARY ) {
+    } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
       unsigned int dmy;
       dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*ncomp);
       fwrite(&dmy, sizeof(int), 1, fp);
@@ -187,7 +187,7 @@ cio_DFI_PLOT3D::write_Func(FILE* fp, cio_TypeArray<T>* data, const int sz[3],
   //NIJK
   } else {
     //ascii
-    if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_ASCII ) {
+    if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
       for(int n=0; n<ncomp; n++) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
@@ -196,7 +196,7 @@ cio_DFI_PLOT3D::write_Func(FILE* fp, cio_TypeArray<T>* data, const int sz[3],
       }}}}
 
     //Fortran Binary
-    } else if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_FBINARY ) {
+    } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
       unsigned int dmy;
       dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*ncomp);
       fwrite(&dmy, sizeof(int), 1, fp);
@@ -221,4 +221,4 @@ cio_DFI_PLOT3D::write_Func(FILE* fp, cio_TypeArray<T>* data, const int sz[3],
 
 }
 
-#endif // _CIO_PLOT3D_INLINE_H_
+#endif // _CDM_PLOT3D_INLINE_H_

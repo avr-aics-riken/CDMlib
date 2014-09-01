@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_FilePath.C
- * @brief  cio_FilePath Class
+ * @file   cdm_FilePath.C
+ * @brief  cdm_FilePath Class
  * @author aics    
  */
 
@@ -18,29 +18,29 @@
 
 // #################################################################
 // コンストラクタ
-cio_FilePath::cio_FilePath()
+cdm_FilePath::cdm_FilePath()
 {
   ProcDFIFile="";
 }
 
 // #################################################################
 // コンストラクタ
-cio_FilePath::cio_FilePath(const std::string _ProcDFIFile)
+cdm_FilePath::cdm_FilePath(const std::string _ProcDFIFile)
 {
   ProcDFIFile=_ProcDFIFile;
 }
 
 // #################################################################
 // デストラクタ
-cio_FilePath::~cio_FilePath()
+cdm_FilePath::~cdm_FilePath()
 {
 
 }
 
 // #################################################################
 // proc.dfi ファイル名の読込み
-CIO::E_CIO_ERRORCODE
-cio_FilePath::Read(cio_TextParser tpCntl) 
+CDM::E_CDM_ERRORCODE
+cdm_FilePath::Read(cdm_TextParser tpCntl) 
 {
 
   std::string str;
@@ -50,33 +50,33 @@ cio_FilePath::Read(cio_TextParser tpCntl)
   label = "/FilePath/Process";
   if ( !(tpCntl.GetValue(label, &str )) )
   {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_FILEPATH_PROCESS;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_FILEPATH_PROCESS;
   }
   ProcDFIFile=str;
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
 
 // #################################################################
 // proc.dfi ファイル名の出力
-CIO::E_CIO_ERRORCODE
-cio_FilePath::Write(FILE* fp, 
+CDM::E_CDM_ERRORCODE
+cdm_FilePath::Write(FILE* fp, 
                     const unsigned tab)
 {
 
   fprintf(fp, "FilePath {\n");
   fprintf(fp, "\n");
 
-  _CIO_WRITE_TAB(fp, tab);
+  _CDM_WRITE_TAB(fp, tab);
   fprintf(fp, "Process = \"%s\"\n",ProcDFIFile.c_str());
 
   fprintf(fp, "\n");
   fprintf(fp, "}\n");
   fprintf(fp, "\n");
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
 

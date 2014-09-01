@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_MPI.C
- * @brief  cio_MPI Class
+ * @file   cdm_MPI.C
+ * @brief  cdm_MPI Class
  * @author aics    
  */
 
@@ -18,7 +18,7 @@
 
 // #################################################################
 // コンストラクタ
-cio_MPI::cio_MPI()
+cdm_MPI::cdm_MPI()
 {
   NumberOfRank=0;
   NumberOfGroup=1;
@@ -26,7 +26,7 @@ cio_MPI::cio_MPI()
 
 // #################################################################
 // コンストラクタ
-cio_MPI::cio_MPI(const int _NumberOfRank, int _NumberOfGroup)
+cdm_MPI::cdm_MPI(const int _NumberOfRank, int _NumberOfGroup)
 {
   NumberOfRank=_NumberOfRank;
   NumberOfGroup=_NumberOfGroup;
@@ -34,16 +34,16 @@ cio_MPI::cio_MPI(const int _NumberOfRank, int _NumberOfGroup)
 
 // #################################################################
 // デストラクタ
-cio_MPI::~cio_MPI()
+cdm_MPI::~cdm_MPI()
 {
 
 }
 
 // #################################################################
 // DFIファイル：MPI要素の読込み
-CIO::E_CIO_ERRORCODE
-cio_MPI::Read(cio_TextParser tpCntl, 
-              const cio_Domain domain) 
+CDM::E_CDM_ERRORCODE
+cdm_MPI::Read(cdm_TextParser tpCntl, 
+              const cdm_Domain domain) 
 {
 
   std::string str;
@@ -68,30 +68,30 @@ cio_MPI::Read(cio_TextParser tpCntl,
     NumberOfGroup = ct;
   }
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
 
 // #################################################################
 // DFIファイル:MPI要素を出力する
-CIO::E_CIO_ERRORCODE
-cio_MPI::Write(FILE* fp, const unsigned tab)
+CDM::E_CDM_ERRORCODE
+cdm_MPI::Write(FILE* fp, const unsigned tab)
 {
 
   fprintf(fp, "MPI {\n");
   fprintf(fp, "\n");
 
-  _CIO_WRITE_TAB(fp, tab+1);
+  _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp, "NumberOfRank   = %d\n", NumberOfRank);
 
-  _CIO_WRITE_TAB(fp, tab+1);
+  _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp, "NumberOfGroup  = %d\n", 1);  
 
   fprintf(fp, "\n");
   fprintf(fp, "}\n");
   fprintf(fp, "\n");
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
 

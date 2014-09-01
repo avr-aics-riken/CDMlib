@@ -25,13 +25,13 @@ InputParam::InputParam(cpm_ParaManager* paraMngr)
   m_paraMngr=paraMngr;
 
   m_thin_count=1;
-  m_out_format_type=CIO::E_CIO_OUTPUT_TYPE_BINARY;
+  m_out_format_type=CDM::E_CDM_OUTPUT_TYPE_BINARY;
   m_outputDiv[0]=-1;m_outputDiv[1]=-1;m_outputDiv[2]=-1;
-  m_outputArrayShape=CIO::E_CIO_ARRAYSHAPE_UNKNOWN;
-  m_outputFilenameFormat=CIO::E_CIO_FNAME_STEP_RANK;
+  m_outputArrayShape=CDM::E_CDM_ARRAYSHAPE_UNKNOWN;
+  m_outputFilenameFormat=CDM::E_CDM_FNAME_STEP_RANK;
   m_conv_type=E_CONV_OUTPUT_UNKNOWN;
   m_outputGuideCell=0;
-  m_output_data_type = CIO::E_CIO_DTYPE_UNKNOWN;
+  m_output_data_type = CDM::E_CDM_DTYPE_UNKNOWN;
   //m_in_dfi_name.clear();
   //m_out_dfi_name.clear();
   //m_out_proc_name.clear();
@@ -179,11 +179,11 @@ bool InputParam::Read(std::string input_file_name)
          Hostonly_ stamped_printf("\tParsing error : fail to get '%s'\n", label.c_str());
          Exit(0);
       }
-      if     ( !strcasecmp(str.c_str(), "sph" ) )    m_out_format = CIO::E_CIO_FMT_SPH;
-      else if( !strcasecmp(str.c_str(), "bov" ) )    m_out_format = CIO::E_CIO_FMT_BOV;
-      else if( !strcasecmp(str.c_str(), "avs" ) )    m_out_format = CIO::E_CIO_FMT_AVS;
-      else if( !strcasecmp(str.c_str(), "plot3d" ) ) m_out_format = CIO::E_CIO_FMT_PLOT3D;
-      else if( !strcasecmp(str.c_str(), "vtk" ) )    m_out_format = CIO::E_CIO_FMT_VTK;
+      if     ( !strcasecmp(str.c_str(), "sph" ) )    m_out_format = CDM::E_CDM_FMT_SPH;
+      else if( !strcasecmp(str.c_str(), "bov" ) )    m_out_format = CDM::E_CDM_FMT_BOV;
+      else if( !strcasecmp(str.c_str(), "avs" ) )    m_out_format = CDM::E_CDM_FMT_AVS;
+      else if( !strcasecmp(str.c_str(), "plot3d" ) ) m_out_format = CDM::E_CDM_FMT_PLOT3D;
+      else if( !strcasecmp(str.c_str(), "vtk" ) )    m_out_format = CDM::E_CDM_FMT_VTK;
       else
       {
         Hostonly_ stamped_printf("\tInvalid keyword is described for  '%s'\n", label.c_str());
@@ -197,18 +197,18 @@ bool InputParam::Read(std::string input_file_name)
     if( !strcasecmp(str.c_str(),"OutputDataType") ) {
       label = "/ConvData/OutputDataType";
       if( !(tpCntl.getInspectedValue(label, str )) ) {
-        m_output_data_type = CIO::E_CIO_DTYPE_UNKNOWN;
+        m_output_data_type = CDM::E_CDM_DTYPE_UNKNOWN;
       } else {
-        if     ( !strcasecmp(str.c_str(), "UInt8"  ) ) m_output_data_type = CIO::E_CIO_UINT8;
-        else if( !strcasecmp(str.c_str(),  "Int8"  ) ) m_output_data_type = CIO::E_CIO_INT8;
-        else if( !strcasecmp(str.c_str(), "UInt16" ) ) m_output_data_type = CIO::E_CIO_UINT16;
-        else if( !strcasecmp(str.c_str(),  "Int16" ) ) m_output_data_type = CIO::E_CIO_INT16;
-        else if( !strcasecmp(str.c_str(), "UInt32" ) ) m_output_data_type = CIO::E_CIO_UINT32;
-        else if( !strcasecmp(str.c_str(),  "Int32" ) ) m_output_data_type = CIO::E_CIO_INT32;
-        else if( !strcasecmp(str.c_str(), "UInt64" ) ) m_output_data_type = CIO::E_CIO_UINT64;
-        else if( !strcasecmp(str.c_str(),  "Int64" ) ) m_output_data_type = CIO::E_CIO_INT64;
-        else if( !strcasecmp(str.c_str(), "Float32") ) m_output_data_type = CIO::E_CIO_FLOAT32;
-        else if( !strcasecmp(str.c_str(), "Float64") ) m_output_data_type = CIO::E_CIO_FLOAT64;
+        if     ( !strcasecmp(str.c_str(), "UInt8"  ) ) m_output_data_type = CDM::E_CDM_UINT8;
+        else if( !strcasecmp(str.c_str(),  "Int8"  ) ) m_output_data_type = CDM::E_CDM_INT8;
+        else if( !strcasecmp(str.c_str(), "UInt16" ) ) m_output_data_type = CDM::E_CDM_UINT16;
+        else if( !strcasecmp(str.c_str(),  "Int16" ) ) m_output_data_type = CDM::E_CDM_INT16;
+        else if( !strcasecmp(str.c_str(), "UInt32" ) ) m_output_data_type = CDM::E_CDM_UINT32;
+        else if( !strcasecmp(str.c_str(),  "Int32" ) ) m_output_data_type = CDM::E_CDM_INT32;
+        else if( !strcasecmp(str.c_str(), "UInt64" ) ) m_output_data_type = CDM::E_CDM_UINT64;
+        else if( !strcasecmp(str.c_str(),  "Int64" ) ) m_output_data_type = CDM::E_CDM_INT64;
+        else if( !strcasecmp(str.c_str(), "Float32") ) m_output_data_type = CDM::E_CDM_FLOAT32;
+        else if( !strcasecmp(str.c_str(), "Float64") ) m_output_data_type = CDM::E_CDM_FLOAT64;
         else
         {
           printf("\tInvalid keyword is described for '%s'\n", label.c_str());
@@ -223,11 +223,11 @@ bool InputParam::Read(std::string input_file_name)
     if( !strcasecmp(str.c_str(),"OutputFormatType") ) {
       label = "/ConvData/OutputFormatType";
       if( !(tpCntl.getInspectedValue(label, str )) ) {
-        m_out_format_type = CIO::E_CIO_OUTPUT_TYPE_BINARY;
+        m_out_format_type = CDM::E_CDM_OUTPUT_TYPE_BINARY;
       } else {
-        if     ( !strcasecmp(str.c_str(), "binary") )        m_out_format_type=CIO::E_CIO_OUTPUT_TYPE_BINARY;
-        else if( !strcasecmp(str.c_str(), "ascii") )         m_out_format_type=CIO::E_CIO_OUTPUT_TYPE_ASCII;
-        else if( !strcasecmp(str.c_str(), "FortranBinary") ) m_out_format_type=CIO::E_CIO_OUTPUT_TYPE_FBINARY;
+        if     ( !strcasecmp(str.c_str(), "binary") )        m_out_format_type=CDM::E_CDM_OUTPUT_TYPE_BINARY;
+        else if( !strcasecmp(str.c_str(), "ascii") )         m_out_format_type=CDM::E_CDM_OUTPUT_TYPE_ASCII;
+        else if( !strcasecmp(str.c_str(), "FortranBinary") ) m_out_format_type=CDM::E_CDM_OUTPUT_TYPE_FBINARY;
         else
         {
            printf("\tInvalid keyword is described for '%s'\n", label.c_str());
@@ -272,10 +272,10 @@ bool InputParam::Read(std::string input_file_name)
     if( !strcasecmp(str.c_str(),"OutputArrayShape") ) {
       label = "/ConvData/OutputArrayShape";
       if( !(tpCntl.getInspectedValue(label, str )) ) {
-        m_outputArrayShape = CIO::E_CIO_ARRAYSHAPE_UNKNOWN;  
+        m_outputArrayShape = CDM::E_CDM_ARRAYSHAPE_UNKNOWN;  
       } else {
-        if     ( !strcasecmp(str.c_str(), "ijkn") ) m_outputArrayShape = CIO::E_CIO_IJKN;
-        else if( !strcasecmp(str.c_str(), "nijk") ) m_outputArrayShape = CIO::E_CIO_NIJK;
+        if     ( !strcasecmp(str.c_str(), "ijkn") ) m_outputArrayShape = CDM::E_CDM_IJKN;
+        else if( !strcasecmp(str.c_str(), "nijk") ) m_outputArrayShape = CDM::E_CDM_NIJK;
         else {
           printf("\tInvalid keyword is described for '%s'\n", label.c_str());
           Exit(0);
@@ -289,10 +289,10 @@ bool InputParam::Read(std::string input_file_name)
     if( !strcasecmp(str.c_str(),"OutputFilenameFormat") ) {
       label = "/ConvData/OutputFilenameFormat";
       if( !(tpCntl.getInspectedValue(label, str )) ) {
-        m_outputFilenameFormat = CIO::E_CIO_FNAME_STEP_RANK;
+        m_outputFilenameFormat = CDM::E_CDM_FNAME_STEP_RANK;
       } else {
-        if     ( !strcasecmp(str.c_str(), "step_rank") ) m_outputFilenameFormat = CIO::E_CIO_FNAME_STEP_RANK;
-        else if( !strcasecmp(str.c_str(), "rank_step") ) m_outputFilenameFormat = CIO::E_CIO_FNAME_RANK_STEP;
+        if     ( !strcasecmp(str.c_str(), "step_rank") ) m_outputFilenameFormat = CDM::E_CDM_FNAME_STEP_RANK;
+        else if( !strcasecmp(str.c_str(), "rank_step") ) m_outputFilenameFormat = CDM::E_CDM_FNAME_RANK_STEP;
         else {
           printf("\tInvalid keyword is described for '%s'\n", label.c_str());
           Exit(0);
@@ -451,9 +451,9 @@ bool InputParam::InputParamCheck()
   }
 
   //出力形式のチェック
-  if( m_out_format_type == CIO::E_CIO_OUTPUT_TYPE_ASCII ) {
-    if( m_out_format != CIO::E_CIO_FMT_PLOT3D &&
-        m_out_format != CIO::E_CIO_FMT_VTK ) {
+  if( m_out_format_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+    if( m_out_format != CDM::E_CDM_FMT_PLOT3D &&
+        m_out_format != CDM::E_CDM_FMT_VTK ) {
       printf("\tCan't Converter OutputFormatType ascii.\n");
       ierr=false;
     }
@@ -462,25 +462,25 @@ bool InputParam::InputParamCheck()
   //出力配列形状のチェック
   //BOV以外での出力配列形状指示は無効とし、自動的に対応する配列形状で出力
   //なので、指定があった場合はメッセージを出力する
-  if( m_outputArrayShape != CIO::E_CIO_ARRAYSHAPE_UNKNOWN ) {
-    if( m_out_format != CIO::E_CIO_FMT_BOV ) printf("\tCan't OutputArrayShape.\n");
+  if( m_outputArrayShape != CDM::E_CDM_ARRAYSHAPE_UNKNOWN ) {
+    if( m_out_format != CDM::E_CDM_FMT_BOV ) printf("\tCan't OutputArrayShape.\n");
   }
 
   //出力配列形状のセット
-  if     ( m_out_format == CIO::E_CIO_FMT_SPH ) m_outputArrayShape = CIO::E_CIO_NIJK;
-  else if( m_out_format == CIO::E_CIO_FMT_AVS ) m_outputArrayShape = CIO::E_CIO_NIJK;
-  else if( m_out_format == CIO::E_CIO_FMT_VTK ) m_outputArrayShape = CIO::E_CIO_NIJK;
-  else if( m_out_format == CIO::E_CIO_FMT_PLOT3D ) m_outputArrayShape = CIO::E_CIO_IJKN;
-  else if( m_out_format == CIO::E_CIO_FMT_BOV && 
-           m_outputArrayShape == CIO::E_CIO_ARRAYSHAPE_UNKNOWN ) 
-       m_outputArrayShape = CIO::E_CIO_NIJK;
+  if     ( m_out_format == CDM::E_CDM_FMT_SPH ) m_outputArrayShape = CDM::E_CDM_NIJK;
+  else if( m_out_format == CDM::E_CDM_FMT_AVS ) m_outputArrayShape = CDM::E_CDM_NIJK;
+  else if( m_out_format == CDM::E_CDM_FMT_VTK ) m_outputArrayShape = CDM::E_CDM_NIJK;
+  else if( m_out_format == CDM::E_CDM_FMT_PLOT3D ) m_outputArrayShape = CDM::E_CDM_IJKN;
+  else if( m_out_format == CDM::E_CDM_FMT_BOV && 
+           m_outputArrayShape == CDM::E_CDM_ARRAYSHAPE_UNKNOWN ) 
+       m_outputArrayShape = CDM::E_CDM_NIJK;
 
   //未対応のデータ型への変換チェック
-  if( m_output_data_type != CIO::E_CIO_DTYPE_UNKNOWN ) {
+  if( m_output_data_type != CDM::E_CDM_DTYPE_UNKNOWN ) {
     //(sph,plot3d)
-    if( m_out_format == CIO::E_CIO_FMT_SPH || m_out_format == CIO::E_CIO_FMT_PLOT3D ) {
-      if( m_output_data_type != CIO::E_CIO_FLOAT32 &&
-          m_output_data_type != CIO::E_CIO_FLOAT64 ) {
+    if( m_out_format == CDM::E_CDM_FMT_SPH || m_out_format == CDM::E_CDM_FMT_PLOT3D ) {
+      if( m_output_data_type != CDM::E_CDM_FLOAT32 &&
+          m_output_data_type != CDM::E_CDM_FLOAT64 ) {
         printf("\tCan't Converter OutputDataType %s.\n",
                 Get_OutputDataType_string().c_str());
         ierr=false;
@@ -488,12 +488,12 @@ bool InputParam::InputParamCheck()
     }
 
     //(avs)
-    if( m_out_format == CIO::E_CIO_FMT_AVS ) {
-      if( m_output_data_type != CIO::E_CIO_INT8    &&
-          m_output_data_type != CIO::E_CIO_INT16   &&
-          m_output_data_type != CIO::E_CIO_INT32   &&
-          m_output_data_type != CIO::E_CIO_FLOAT32 &&
-          m_output_data_type != CIO::E_CIO_FLOAT64 ) {
+    if( m_out_format == CDM::E_CDM_FMT_AVS ) {
+      if( m_output_data_type != CDM::E_CDM_INT8    &&
+          m_output_data_type != CDM::E_CDM_INT16   &&
+          m_output_data_type != CDM::E_CDM_INT32   &&
+          m_output_data_type != CDM::E_CDM_FLOAT32 &&
+          m_output_data_type != CDM::E_CDM_FLOAT64 ) {
         printf("\tCan't Converter OutputDataType %s.\n",
                 Get_OutputDataType_string().c_str());
         ierr=false;
@@ -504,26 +504,26 @@ bool InputParam::InputParamCheck()
   //DFI出力のチェック、出力するDFIファイル名のチェック
   if( m_output_dfi_on ) {
     //DFI出力がSPH，BOV以外で指定された場合はエラー
-    if( m_out_format != CIO::E_CIO_FMT_SPH && m_out_format != CIO::E_CIO_FMT_BOV ) {
+    if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV ) {
       printf("\tCan't output dfi OutputFormat. %s\n",Get_OutputFormat_string().c_str());
       ierr=false;
     }
     //出力DFI名のチェック、パスが指定されている場合はエラー
     for(int i=0; i<m_dfiList.size(); i++) {
-      std::string inPath = CIO::cioPath_DirName(m_dfiList[i].out_dfi_name);
+      std::string inPath = CDM::cdmPath_DirName(m_dfiList[i].out_dfi_name);
       if( inPath != "" && inPath !="./" ) {
         printf("\tIllegal OutputDFI : %s\n",m_dfiList[i].out_dfi_name.c_str());
         ierr=false;
       }
       if( m_dfiList[i].out_proc_name != "" ) {
-        inPath = CIO::cioPath_DirName(m_dfiList[i].out_proc_name);
+        inPath = CDM::cdmPath_DirName(m_dfiList[i].out_proc_name);
         if( inPath != "" && inPath !="./" ) {
           printf("\tIllegal OutputProc : %s\n",m_dfiList[i].out_proc_name.c_str());
           ierr=false;
         }
       } else {
       //出力するprocファイル名が省略された場合、出力するdfiファイル名から生成
-        std::string proc = CIO::ExtractPathWithoutExt(m_dfiList[i].out_dfi_name);
+        std::string proc = CDM::ExtractPathWithoutExt(m_dfiList[i].out_dfi_name);
         std::string fname = proc+"_proc.dfi";
         m_dfiList[i].out_proc_name = fname;
       }
@@ -533,7 +533,7 @@ bool InputParam::InputParamCheck()
   //出力ガイドセル数のチェック
   if( m_outputGuideCell > 0 ) {
     //sph,bov以外は出力指定不可
-    if( m_out_format != CIO::E_CIO_FMT_SPH && m_out_format != CIO::E_CIO_FMT_BOV ) {
+    if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV ) {
       printf("\tCan't output guide cell : %s\n",Get_OutputFormat_string().c_str());
       ierr=false;
     }
@@ -594,68 +594,68 @@ void InputParam::PrintParam(FILE* fp)
 
    fprintf(fp,"\tOutputDivision       : (%d,%d,%d)\n",m_outputDiv[0],m_outputDiv[1],m_outputDiv[2]);
 
-   if( m_out_format == CIO::E_CIO_FMT_SPH ) {
+   if( m_out_format == CDM::E_CDM_FMT_SPH ) {
      fprintf(fp,"\tOutputFormat         : \"sph\"\n");
-   }else if( m_out_format == CIO::E_CIO_FMT_BOV ) {
+   }else if( m_out_format == CDM::E_CDM_FMT_BOV ) {
      fprintf(fp,"\tOutputFormat         : \"bov\"\n");
-   }else if( m_out_format == CIO::E_CIO_FMT_AVS ) {
+   }else if( m_out_format == CDM::E_CDM_FMT_AVS ) {
      fprintf(fp,"\tOutputFormat         : \"avs\"\n");
-   }else if( m_out_format == CIO::E_CIO_FMT_PLOT3D ) {
+   }else if( m_out_format == CDM::E_CDM_FMT_PLOT3D ) {
      fprintf(fp,"\tOutputFormat         : \"plot3d\"\n");
-   }else if( m_out_format == CIO::E_CIO_FMT_VTK ) {
+   }else if( m_out_format == CDM::E_CDM_FMT_VTK ) {
      fprintf(fp,"\tOutputFormat         : \"vtk\"\n");
    }else {
      Exit(0);
    }
 
-   if( m_output_data_type == CIO::E_CIO_INT8 ) {
+   if( m_output_data_type == CDM::E_CDM_INT8 ) {
      fprintf(fp,"\tOutputDataType       : \"Int8\"\n");
-   }else if( m_output_data_type == CIO::E_CIO_INT16 ) {
+   }else if( m_output_data_type == CDM::E_CDM_INT16 ) {
      fprintf(fp,"\tOutputDataType       : \"Int16\"\n");
-   }else if( m_output_data_type == CIO::E_CIO_INT32 ) {
+   }else if( m_output_data_type == CDM::E_CDM_INT32 ) {
      fprintf(fp,"\tOutputDataType       : \"Int32\"\n");
-   }else if( m_output_data_type == CIO::E_CIO_INT64 ) {
+   }else if( m_output_data_type == CDM::E_CDM_INT64 ) {
      fprintf(fp,"\tOutputDataType       : \"Int64\"\n");
-   }else if( m_output_data_type == CIO::E_CIO_UINT8 ) {
+   }else if( m_output_data_type == CDM::E_CDM_UINT8 ) {
      fprintf(fp,"\tOutputDataType       : \"UInt8\"\n");
-   }else if( m_output_data_type == CIO::E_CIO_UINT16 ) {
+   }else if( m_output_data_type == CDM::E_CDM_UINT16 ) {
      fprintf(fp,"\tOutputDataType       : \"UInt16\"\n");
-   }else if( m_output_data_type == CIO::E_CIO_UINT32 ) {
+   }else if( m_output_data_type == CDM::E_CDM_UINT32 ) {
      fprintf(fp,"\tOutputDataType       : \"UInt32\"\n");
-   }else if( m_output_data_type == CIO::E_CIO_UINT64 ) {
+   }else if( m_output_data_type == CDM::E_CDM_UINT64 ) {
      fprintf(fp,"\tOutputDataType       : \"UInt64\"\n");
-   }else if( m_output_data_type == CIO::E_CIO_FLOAT32 ) {
+   }else if( m_output_data_type == CDM::E_CDM_FLOAT32 ) {
      fprintf(fp,"\tOutputDataType       : \"Float32\"\n");
-   }else if( m_output_data_type == CIO::E_CIO_FLOAT64 ) {
+   }else if( m_output_data_type == CDM::E_CDM_FLOAT64 ) {
      fprintf(fp,"\tOutputDataType       : \"Float64\"\n");
    } else {
      fprintf(fp,"\tOutputDataType       : \"undefine\"\n");
    }
 
-   if( m_out_format_type == CIO::E_CIO_OUTPUT_TYPE_DEFAULT ) {
+   if( m_out_format_type == CDM::E_CDM_OUTPUT_TYPE_DEFAULT ) {
      fprintf(fp,"\tOutputForamtType     : \"undefine\"\n");
-   } else if( m_out_format_type == CIO::E_CIO_OUTPUT_TYPE_ASCII ) {
+   } else if( m_out_format_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
      fprintf(fp,"\tOutputForamtType     : \"ascii\"\n");
-   } else if( m_out_format_type == CIO::E_CIO_OUTPUT_TYPE_BINARY ) {
+   } else if( m_out_format_type == CDM::E_CDM_OUTPUT_TYPE_BINARY ) {
      fprintf(fp,"\tOutputForamtType     : \"binary\"\n");
-   } else if( m_out_format_type == CIO::E_CIO_OUTPUT_TYPE_FBINARY ) {
+   } else if( m_out_format_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
      fprintf(fp,"\tOutputForamtType     : \"Fortran Binary\"\n");
    }
 
    fprintf(fp,"\tOutputdir            : \"%s\"\n",m_outdir_name.c_str());
    fprintf(fp,"\tThinning             : %d\n",m_thin_count);
 
-   if( m_outputArrayShape == CIO::E_CIO_IJKN ) {
+   if( m_outputArrayShape == CDM::E_CDM_IJKN ) {
      fprintf(fp,"\tOutputArrayShape     : \"ijkn\"\n");
-   }else if( m_outputArrayShape == CIO::E_CIO_NIJK ) {
+   }else if( m_outputArrayShape == CDM::E_CDM_NIJK ) {
      fprintf(fp,"\tOutputArrayShape     : \"nijk\"\n");
    }else {
      fprintf(fp,"\tOutputArrayShape     : \"undefine\"\n");
    }
 
-   if( m_outputFilenameFormat == CIO::E_CIO_FNAME_STEP_RANK ) { 
+   if( m_outputFilenameFormat == CDM::E_CDM_FNAME_STEP_RANK ) { 
      fprintf(fp,"\tOutputFilenameFormat : \"step_rank\"\n");
-   }else if( m_outputFilenameFormat == CIO::E_CIO_FNAME_RANK_STEP ) { 
+   }else if( m_outputFilenameFormat == CDM::E_CDM_FNAME_RANK_STEP ) { 
      fprintf(fp,"\tOutputFilenameFormat : \"rank_step\"\n");
    }else {
      fprintf(fp,"\tOutputFilenameFormat : \"undefine\"\n");

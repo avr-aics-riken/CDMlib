@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef _CIO_PATHUTIL_H_
-#define _CIO_PATHUTIL_H_
+#ifndef _CDM_PATHUTIL_H_
+#define _CDM_PATHUTIL_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,9 +16,9 @@
 
 #define MAXPATHLEN 512
 
-namespace CIO
+namespace CDM
 {
-  inline char cioPath_getDelimChar()
+  inline char cdmPath_getDelimChar()
   {
 #ifdef WIN32
     return '\\';
@@ -27,14 +27,14 @@ namespace CIO
 #endif
   }
 
-  inline std::string cioPath_getDelimString()
+  inline std::string cdmPath_getDelimString()
   {
-    const char dc = CIO::cioPath_getDelimChar();
+    const char dc = CDM::cdmPath_getDelimChar();
     char rs[2] = {dc, '\0'};
     return rs;
   }
 
-  inline bool cioPath_hasDrive(const std::string& path) {
+  inline bool cdmPath_hasDrive(const std::string& path) {
     if ( path.size() < 2 ) return false;
     char x = path[0];
     if ( ((x >= 'A' && x <= 'Z' ) || (x >= 'a' && x <= 'z')) &&
@@ -46,7 +46,7 @@ namespace CIO
   inline std::string vfvPath_emitDrive(std::string& path)
   {
     // returns drive (ex. 'C:')
-    if ( ! cioPath_hasDrive(path) ) return std::string();
+    if ( ! cdmPath_hasDrive(path) ) return std::string();
     std::string driveStr = path.substr(0, 2);
     path = path.substr(2);
     return driveStr;
@@ -54,18 +54,18 @@ namespace CIO
 
   // true  : Absolute Path(絶対パス)
   // false : Relative Path(相対パス)
-  inline bool cioPath_isAbsolute(const std::string& path)
+  inline bool cdmPath_isAbsolute(const std::string& path)
   {
     std::string xpath(path);
     vfvPath_emitDrive(xpath);
     char c1, c2;
     c1 = xpath[0];
-    c2 = cioPath_getDelimChar();
+    c2 = cdmPath_getDelimChar();
     return (c1 == c2);
   }
 
-  inline std::string cioPath_DirName(const std::string& path,
-                                     const char dc = cioPath_getDelimChar()) {
+  inline std::string cdmPath_DirName(const std::string& path,
+                                     const char dc = cdmPath_getDelimChar()) {
     char* name = strdup( path.c_str() );
     char* p = name;
 
@@ -106,7 +106,7 @@ namespace CIO
     } else {
       std::string s( name );
       free( name );
-      if( !CIO::cioPath_isAbsolute(s) )
+      if( !CDM::cdmPath_isAbsolute(s) )
       {
         const char *q = s.c_str();
         if( q[0] != '.' && q[1] != '/' )
@@ -119,9 +119,9 @@ namespace CIO
     }
   }
 
-  inline std::string cioPath_FileName(const std::string& path,
+  inline std::string cdmPath_FileName(const std::string& path,
                                       const std::string& addext = std::string(""),
-                                      const char dc = cioPath_getDelimChar()) {
+                                      const char dc = cdmPath_getDelimChar()) {
     char* name = strdup( path.c_str() );
     char* p = name;
 
@@ -166,14 +166,14 @@ namespace CIO
     return s;
   }
 
-  inline std::string cioPath_ConnectPath( std::string dirName, std::string fname )
+  inline std::string cdmPath_ConnectPath( std::string dirName, std::string fname )
   {
     std::string path = dirName;
 
     const char *p = dirName.c_str();
-    if( p[strlen(p)-1] != CIO::cioPath_getDelimChar() )
+    if( p[strlen(p)-1] != CDM::cdmPath_getDelimChar() )
     {
-      path += CIO::cioPath_getDelimString();
+      path += CDM::cdmPath_getDelimString();
     }
 
     path += fname;
@@ -194,5 +194,5 @@ namespace CIO
 
 };
 
-#endif /* _CIO_PATHUTIL_H_ */
+#endif /* _CDM_PATHUTIL_H_ */
 

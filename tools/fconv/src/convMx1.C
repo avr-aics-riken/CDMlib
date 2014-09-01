@@ -55,7 +55,7 @@ bool convMx1::exec()
   
   int l_rank;
   int l_d_type;
-  CIO::E_CIO_DTYPE d_type;
+  CDM::E_CDM_DTYPE d_type;
   int l_step, l_imax, l_jmax, l_kmax;
   float l_time;
   double l_dorg[3], l_dpit[3];
@@ -71,7 +71,7 @@ bool convMx1::exec()
  
   // 入力モード
   bool mio = false;
-  //const cio_MPI* DFI_MPI = m_in_dfi[0]->GetcioMPI();
+  //const cdm_MPI* DFI_MPI = m_in_dfi[0]->GetcdmMPI();
   //if( DFI_MPI->NumberOfRank > 1) mio=true;
 
   headT mapHeadX;
@@ -85,7 +85,7 @@ bool convMx1::exec()
   vector<dfi_MinMax*> minmaxList;
 
   for(int i=0; i<m_in_dfi.size(); i++){
-    const cio_TimeSlice* TSlice = m_in_dfi[i]->GetcioTimeSlice();
+    const cdm_TimeSlice* TSlice = m_in_dfi[i]->GetcdmTimeSlice();
     int nComp = m_in_dfi[i]->GetNumComponent();
 
     dfi_MinMax *MinMax;
@@ -108,8 +108,8 @@ bool convMx1::exec()
   //dfi*stepのループ 
   for (int i=0;i<m_StepRankList.size();i++) {
 
-    cio_Domain* DFI_Domian = (cio_Domain *)m_StepRankList[i].dfi->GetcioDomain();
-    cio_Process* DFI_Process = (cio_Process *)m_StepRankList[i].dfi->GetcioProcess();
+    cdm_Domain* DFI_Domian = (cdm_Domain *)m_StepRankList[i].dfi->GetcdmDomain();
+    cdm_Process* DFI_Process = (cdm_Process *)m_StepRankList[i].dfi->GetcdmProcess();
     //全体サイズのキープ
     l_imax= DFI_Domian->GlobalVoxel[0];
     l_jmax= DFI_Domian->GlobalVoxel[1];
@@ -157,7 +157,7 @@ bool convMx1::exec()
     l_dorg[2]=DFI_Domian->GlobalOrigin[2]+0.5*l_dpit[2];
 
     //GRID データ 出力
-    const cio_FileInfo* DFI_FInfo = m_StepRankList[i].dfi->GetcioFileInfo();
+    const cdm_FileInfo* DFI_FInfo = m_StepRankList[i].dfi->GetcdmFileInfo();
     int sz[3];
     sz[0]=l_imax;
     sz[1]=l_jmax;
@@ -166,9 +166,9 @@ bool convMx1::exec()
                            DFI_FInfo->GuideCell, l_dorg, l_dpit, sz);
 
     //dfiファイルのディレクトリの取得
-    inPath = CIO::cioPath_DirName(m_StepRankList[i].dfi->get_dfi_fname());
+    inPath = CDM::cdmPath_DirName(m_StepRankList[i].dfi->get_dfi_fname());
 
-    //const cio_FileInfo* DFI_FInfo = m_StepRankList[i].dfi->GetcioFileInfo();
+    //const cdm_FileInfo* DFI_FInfo = m_StepRankList[i].dfi->GetcdmFileInfo();
     prefix=DFI_FInfo->Prefix;
     LOG_OUTV_ fprintf(m_fplog,"  COMBINE SPH START : %s\n", prefix.c_str());
     STD_OUTV_ printf("  COMBINE SPH START : %s\n", prefix.c_str());
@@ -176,7 +176,7 @@ bool convMx1::exec()
     //Scalar or Vector
     dim=m_StepRankList[i].dfi->GetNumComponent();
 
-    const cio_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcioTimeSlice();
+    const cdm_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcdmTimeSlice();
 
     div[0]=DFI_Domian->GlobalDivision[0];
     div[1]=DFI_Domian->GlobalDivision[1];
@@ -188,7 +188,7 @@ bool convMx1::exec()
                                 mapHeadZ);
 
     //入力ファイルの並列フラグセット
-    const cio_MPI* DFI_MPI = m_StepRankList[i].dfi->GetcioMPI();
+    const cdm_MPI* DFI_MPI = m_StepRankList[i].dfi->GetcdmMPI();
     if( DFI_MPI->NumberOfRank > 1) mio=true;
     else mio=false;
 
@@ -215,13 +215,13 @@ bool convMx1::exec()
       fp = ConvOut->OutputFile_Open(prefix, l_step, 0, false);
 
       //m_d_typeのセット (float or double)
-      if( m_StepRankList[i].dfi->GetDataType() == CIO::E_CIO_FLOAT32 ) {
+      if( m_StepRankList[i].dfi->GetDataType() == CDM::E_CDM_FLOAT32 ) {
         l_d_type = SPH_FLOAT;
-      } else if( m_StepRankList[i].dfi->GetDataType() == CIO::E_CIO_FLOAT64 ) {
+      } else if( m_StepRankList[i].dfi->GetDataType() == CDM::E_CDM_FLOAT64 ) {
         l_d_type = SPH_DOUBLE;
       }
       
-      if( m_param->Get_OutputDataType() == CIO::E_CIO_DTYPE_UNKNOWN )
+      if( m_param->Get_OutputDataType() == CDM::E_CDM_DTYPE_UNKNOWN )
       {
         d_type = m_StepRankList[i].dfi->GetDataType();
       } else {
@@ -253,8 +253,8 @@ bool convMx1::exec()
       //dLen = size_t(l_imax_th) * size_t(l_jmax_th) * size_t(l_kmax_th);
       dLen = size_t(l_imax_th+2*outGc) * size_t(l_jmax_th+2*outGc) * size_t(l_kmax_th+2*outGc);
       if( dim == 3 ) dLen *= 3;
-      //if( m_param->Get_OutputDataType() == CIO::E_CIO_FLOAT32 ) {
-      if( d_type == CIO::E_CIO_FLOAT32 ) {
+      //if( m_param->Get_OutputDataType() == CDM::E_CDM_FLOAT32 ) {
+      if( d_type == CDM::E_CDM_FLOAT32 ) {
          dummy = dLen * sizeof(float);
       } else {
          dummy = dLen * sizeof(double);
@@ -293,7 +293,7 @@ bool convMx1::exec()
         return false;
       }
       double TotalMemory=0.0; // = mc * (double)sizeof(REAL_TYPE);
-      if( m_param->Get_OutputDataType() == CIO::E_CIO_FLOAT32 ) {
+      if( m_param->Get_OutputDataType() == CDM::E_CDM_FLOAT32 ) {
         TotalMemory = TotalMemory + mc1 * (double)sizeof(float);
       } else {
         TotalMemory = TotalMemory + mc1 * (double)sizeof(double);
@@ -312,9 +312,9 @@ bool convMx1::exec()
       szS[1]=l_jmax_th;
       szS[2]=1;
      
-      CIO::E_CIO_ARRAYSHAPE output_AShape = m_param->Get_OutputArrayShape();
+      CDM::E_CDM_ARRAYSHAPE output_AShape = m_param->Get_OutputArrayShape();
 
-      if( output_AShape == CIO::E_CIO_NIJK ||
+      if( output_AShape == CDM::E_CDM_NIJK ||
           DFI_FInfo->Component == 1 ){
 
         //output nijk
@@ -387,7 +387,7 @@ bool convMx1::exec()
   //ランク間で通信してMINMAXを求めてランク０に送信
   for(int i=0; i<minmaxList.size(); i++) {
    int nComp = minmaxList[i]->dfi->GetNumComponent();
-   const cio_TimeSlice* TSlice = minmaxList[i]->dfi->GetcioTimeSlice();
+   const cdm_TimeSlice* TSlice = minmaxList[i]->dfi->GetcdmTimeSlice();
    int nStep = TSlice->SliceList.size();
 
    int n = nComp*nStep;
@@ -412,10 +412,10 @@ bool convMx1::exec()
     WriteIndexDfiFile(minmaxList);
 
     for(int i=0; i<m_in_dfi.size(); i++) {
-      cio_Domain* out_domain = NULL;
-      cio_MPI* out_mpi = NULL;
-      cio_Process* out_process = NULL;
-      const cio_MPI* dfi_mpi = m_in_dfi[i]->GetcioMPI();
+      cdm_Domain* out_domain = NULL;
+      cdm_MPI* out_mpi = NULL;
+      cdm_Process* out_process = NULL;
+      const cdm_MPI* dfi_mpi = m_in_dfi[i]->GetcdmMPI();
       int numProc = dfi_mpi->NumberOfRank;
 
       //Proc情報の生成
@@ -439,18 +439,18 @@ convMx1::convMx1_out_nijk(FILE* fp,
                            std::string inPath,
                            int l_step,
                            double l_dtime,
-                           CIO::E_CIO_DTYPE d_type,
+                           CDM::E_CDM_DTYPE d_type,
                            bool mio,
                            int div[3],
                            int sz[3],
-                           cio_DFI* dfi, 
-                           cio_Process* DFI_Process,
+                           cdm_DFI* dfi, 
+                           cdm_Process* DFI_Process,
                            headT mapHeadX, headT mapHeadY, headT mapHeadZ,
                            double* min, double* max)
 {
 
-  //cio_Domain* DFI_Domian = (cio_Domain *)m_in_dfi[0]->GetcioDomain();
-  cio_Domain* DFI_Domian = (cio_Domain *)dfi->GetcioDomain();
+  //cdm_Domain* DFI_Domian = (cdm_Domain *)m_in_dfi[0]->GetcdmDomain();
+  cdm_Domain* DFI_Domian = (cdm_Domain *)dfi->GetcdmDomain();
 
   int thin_count = m_param->Get_ThinOut();
 
@@ -460,7 +460,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
   //出力ガイドセルの設定
   if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
   if( outGc > 0 ) {
-    const cio_FileInfo* DFI_FInfo = dfi->GetcioFileInfo();
+    const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
     if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
   }
 
@@ -503,9 +503,9 @@ convMx1::convMx1_out_nijk(FILE* fp,
   int nComp = dfi->GetNumComponent();
 
   //配列形状の設定
-  CIO::E_CIO_ARRAYSHAPE out_shape;
-  if( nComp == 1 ) out_shape = CIO::E_CIO_IJKN;
-  else if( nComp > 1 ) out_shape = CIO::E_CIO_NIJK;
+  CDM::E_CDM_ARRAYSHAPE out_shape;
+  if( nComp == 1 ) out_shape = CDM::E_CDM_IJKN;
+  else if( nComp > 1 ) out_shape = CDM::E_CDM_NIJK;
 
   //セル中心出力のときガイドセル数を考慮してサイズ更新
   if( !m_bgrid_interp_flag ) {
@@ -514,7 +514,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
   }
 
   //出力バッファのインスタンス
-  cio_Array* src = cio_Array::instanceArray
+  cdm_Array* src = cdm_Array::instanceArray
                    ( d_type
                    //, dfi->GetArrayShape()
                    , out_shape
@@ -523,10 +523,10 @@ convMx1::convMx1_out_nijk(FILE* fp,
                    , nComp );
 
   //補間用バッファ,格子点出力バッファのインスタンス
-  cio_Array* src_old = NULL;
-  cio_Array* outArray = NULL;
+  cdm_Array* src_old = NULL;
+  cdm_Array* outArray = NULL;
   if( m_bgrid_interp_flag ) {
-    src_old = cio_Array::instanceArray
+    src_old = cdm_Array::instanceArray
               ( d_type
               //, dfi->GetArrayShape()
               , out_shape
@@ -537,7 +537,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
     int szOut[3];
     for(int i=0; i<2; i++) szOut[i]=sz[i]+1;
     szOut[2]=sz[2];
-    outArray = cio_Array::instanceArray
+    outArray = cdm_Array::instanceArray
              ( d_type
               //, dfi->GetArrayShape()
               , out_shape
@@ -557,7 +557,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
     kdiv = itz->second;
     int kp_sta,kp_end;
     kp_sta = itz->first;
-    int nrank = _CIO_IDX_IJK(0,0,kdiv,div[0],div[1],div[2],0);
+    int nrank = _CDM_IDX_IJK(0,0,kdiv,div[0],div[1],div[2],0);
     kp_end = kp_sta + DFI_Process->RankList[nrank].VoxelSize[2];
 
     //z層のスタートエンドをガイドセルの考慮
@@ -582,7 +582,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
         jdiv = ity->second;
         int jp_sta,jp_end;
         jp_sta = ity->first;
-        int nrank = _CIO_IDX_IJK(0,jdiv,kdiv,div[0],div[1],div[2],0);
+        int nrank = _CDM_IDX_IJK(0,jdiv,kdiv,div[0],div[1],div[2],0);
         jp_end = jp_sta + DFI_Process->RankList[nrank].VoxelSize[1];
 
         //x方向の分割数のループ
@@ -592,10 +592,10 @@ convMx1::convMx1_out_nijk(FILE* fp,
           idiv = itx->second;
           int ip_sta,ip_end;
           ip_sta = itx->first;
-          int nrank = _CIO_IDX_IJK(idiv,jdiv,kdiv,div[0],div[1],div[2],0);
+          int nrank = _CDM_IDX_IJK(idiv,jdiv,kdiv,div[0],div[1],div[2],0);
           ip_end = ip_sta + DFI_Process->RankList[nrank].VoxelSize[0];
 
-          int RankID = _CIO_IDX_IJK(idiv,jdiv,kdiv,div[0],div[1],div[2],0);
+          int RankID = _CDM_IDX_IJK(idiv,jdiv,kdiv,div[0],div[1],div[2],0);
 
           //読込み範囲の設定
           if( IndexStart[0] > ip_end || IndexEnd[0] < ip_sta ) continue;
@@ -621,18 +621,18 @@ convMx1::convMx1_out_nijk(FILE* fp,
 
           l_rank=DFI_Process->RankList[RankID].RankID;
           //連結対象ファイル名の生成
-          infile = CIO::cioPath_ConnectPath(inPath,dfi->Generate_FieldFileName(l_rank,l_step,mio));
+          infile = CDM::cdmPath_ConnectPath(inPath,dfi->Generate_FieldFileName(l_rank,l_step,mio));
 
           unsigned int avr_step;
           double avr_time;
-          CIO::E_CIO_ERRORCODE ret;
+          CDM::E_CDM_ERRORCODE ret;
           //連結対象ファイルの読込み
-          cio_Array* buf = dfi->ReadFieldData(infile, l_step, l_dtime,
+          cdm_Array* buf = dfi->ReadFieldData(infile, l_step, l_dtime,
                                               read_sta, read_end,
                                               DFI_Process->RankList[RankID].HeadIndex,
                                               DFI_Process->RankList[RankID].TailIndex,
                                               true, avr_step, avr_time, ret);
-          if( ret != CIO::E_CIO_SUCCESS ) {
+          if( ret != CDM::E_CDM_SUCCESS ) {
             printf("\tCan't Read Field Data Record %s\n",infile.c_str());
             return false;
           } 
@@ -690,7 +690,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
 
       //補間ありのとき、読込んだ層の配列ポインタをsrc_oldにコピー
       if( m_bgrid_interp_flag ) {
-        cio_Array* tmp = src;
+        cdm_Array* tmp = src;
         src = src_old;
         src_old = tmp;
       }
@@ -731,18 +731,18 @@ convMx1::convMx1_out_ijkn(FILE* fp,
                            std::string inPath,
                            int l_step,
                            double l_dtime,
-                           CIO::E_CIO_DTYPE d_type,
+                           CDM::E_CDM_DTYPE d_type,
                            bool mio,
                            int div[3],
                            int sz[3],
-                           cio_DFI* dfi,
-                           cio_Process* DFI_Process,
+                           cdm_DFI* dfi,
+                           cdm_Process* DFI_Process,
                            headT mapHeadX, headT mapHeadY, headT mapHeadZ,
                            double* min, double* max)
 {
 
-  //cio_Domain* DFI_Domian = (cio_Domain *)m_in_dfi[0]->GetcioDomain();
-  cio_Domain* DFI_Domian = (cio_Domain *)dfi->GetcioDomain();
+  //cdm_Domain* DFI_Domian = (cdm_Domain *)m_in_dfi[0]->GetcdmDomain();
+  cdm_Domain* DFI_Domian = (cdm_Domain *)dfi->GetcdmDomain();
 
   int thin_count = m_param->Get_ThinOut();
 
@@ -752,7 +752,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
   //出力ガイドセルの設定
   if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
   if( outGc > 1 ) {
-    const cio_FileInfo* DFI_FInfo = dfi->GetcioFileInfo();
+    const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
     if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
   }
 
@@ -801,7 +801,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
   }
 
   //出力バッファのインスタンス(読込み配列形状でのDFIでインスタンス）
-  cio_Array* src = cio_Array::instanceArray
+  cdm_Array* src = cdm_Array::instanceArray
                    ( d_type
                    , dfi->GetArrayShape()
                    , sz
@@ -809,10 +809,10 @@ convMx1::convMx1_out_ijkn(FILE* fp,
                    , nComp );
 
   //補間用バッファ（読込み配列形状でのDFIでインスタンス）
-  cio_Array* src_old = NULL;
-  cio_Array* outArray = NULL;
+  cdm_Array* src_old = NULL;
+  cdm_Array* outArray = NULL;
   if( m_bgrid_interp_flag ) {
-    src_old = cio_Array::instanceArray
+    src_old = cdm_Array::instanceArray
               ( d_type
               , dfi->GetArrayShape()
               , sz
@@ -822,10 +822,10 @@ convMx1::convMx1_out_ijkn(FILE* fp,
     int szOut[3];
     for(int i=0; i<2; i++) szOut[i]=sz[i]+1;
     szOut[2]=sz[2];
-    outArray = cio_Array::instanceArray
+    outArray = cdm_Array::instanceArray
              ( d_type
               , dfi->GetArrayShape()
-              //, CIO::E_CIO_IJKN,
+              //, CDM::E_CDM_IJKN,
               , szOut
               , interp_Gc
               , 1 );
@@ -845,7 +845,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
       kdiv = itz->second;
       int kp_sta,kp_end;
       kp_sta = itz->first;
-      int nrank = _CIO_IDX_IJK(0,0,kdiv,div[0],div[1],div[2],0);
+      int nrank = _CDM_IDX_IJK(0,0,kdiv,div[0],div[1],div[2],0);
       kp_end = kp_sta + DFI_Process->RankList[nrank].VoxelSize[2];
 
       //z層のスタートエンドをガイドセルの考慮
@@ -870,7 +870,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
           jdiv = ity->second;
           int jp_sta,jp_end;
           jp_sta = ity->first;
-          int nrank = _CIO_IDX_IJK(0,jdiv,kdiv,div[0],div[1],div[2],0);
+          int nrank = _CDM_IDX_IJK(0,jdiv,kdiv,div[0],div[1],div[2],0);
           jp_end = jp_sta + DFI_Process->RankList[nrank].VoxelSize[1];
 
           //x方向の分割数のループ
@@ -880,10 +880,10 @@ convMx1::convMx1_out_ijkn(FILE* fp,
             idiv = itx->second;
             int ip_sta,ip_end;
             ip_sta = itx->first;
-            int nrank = _CIO_IDX_IJK(idiv,jdiv,kdiv,div[0],div[1],div[2],0);
+            int nrank = _CDM_IDX_IJK(idiv,jdiv,kdiv,div[0],div[1],div[2],0);
             ip_end = ip_sta + DFI_Process->RankList[nrank].VoxelSize[0];
 
-            int RankID = _CIO_IDX_IJK(idiv,jdiv,kdiv,div[0],div[1],div[2],0);
+            int RankID = _CDM_IDX_IJK(idiv,jdiv,kdiv,div[0],div[1],div[2],0);
 
             //読込み範囲の設定
             if( IndexStart[0] > ip_end || IndexEnd[0] < ip_sta ) continue;
@@ -909,18 +909,18 @@ convMx1::convMx1_out_ijkn(FILE* fp,
 
             l_rank=DFI_Process->RankList[RankID].RankID;
             //連結対象ファイル名の生成
-            infile = CIO::cioPath_ConnectPath(inPath,dfi->Generate_FieldFileName(l_rank,l_step,mio));
+            infile = CDM::cdmPath_ConnectPath(inPath,dfi->Generate_FieldFileName(l_rank,l_step,mio));
             unsigned int avr_step;
             double avr_time;
-            CIO::E_CIO_ERRORCODE ret;
+            CDM::E_CDM_ERRORCODE ret;
             //連結対象ファイルの読込み
-            cio_Array* buf = dfi->ReadFieldData(infile, l_step, l_dtime,
+            cdm_Array* buf = dfi->ReadFieldData(infile, l_step, l_dtime,
                                                 read_sta, read_end,
                                                 DFI_Process->RankList[RankID].HeadIndex,
                                                 DFI_Process->RankList[RankID].TailIndex,
                                                 true, avr_step, avr_time, ret);
 
-            if( ret != CIO::E_CIO_SUCCESS ) {
+            if( ret != CDM::E_CDM_SUCCESS ) {
               printf("\tCan't Read Field Data Record %s\n",infile.c_str());
               return false;
             } 
@@ -973,7 +973,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
         }
         //補間ありのとき、読込んだ層の配列ポインタをsrc_oldにコピー
         if( m_bgrid_interp_flag ) {
-          cio_Array* tmp = src;
+          cdm_Array* tmp = src;
           src = src_old;
           src_old = tmp;
         }
@@ -1007,7 +1007,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
 // #################################################################
 // 補間処理
 bool
-convMx1::InterPolate(cio_Array* src_old, cio_Array* src, cio_Array* outArray,
+convMx1::InterPolate(cdm_Array* src_old, cdm_Array* src, cdm_Array* outArray,
                      int ivar_src, int ivar_out )
 {
 
@@ -1016,13 +1016,13 @@ convMx1::InterPolate(cio_Array* src_old, cio_Array* src, cio_Array* outArray,
 
   //データタイプの取得
   //int nComp = src->getNcomp();
-  CIO::E_CIO_DTYPE dtype = src->getDataType();
+  CDM::E_CDM_DTYPE dtype = src->getDataType();
 
   //char
-  if( dtype == CIO::E_CIO_INT8 ) {
-    cio_TypeArray<char> *O = dynamic_cast<cio_TypeArray<char>*>(outArray);
-    cio_TypeArray<char> *S = dynamic_cast<cio_TypeArray<char>*>(src);
-    cio_TypeArray<char> *S_old = dynamic_cast<cio_TypeArray<char>*>(src_old);
+  if( dtype == CDM::E_CDM_INT8 ) {
+    cdm_TypeArray<char> *O = dynamic_cast<cdm_TypeArray<char>*>(outArray);
+    cdm_TypeArray<char> *S = dynamic_cast<cdm_TypeArray<char>*>(src);
+    cdm_TypeArray<char> *S_old = dynamic_cast<cdm_TypeArray<char>*>(src_old);
 
     //足しこみ領域のゼロクリア
     zeroClearArray(O,ivar_out);
@@ -1034,10 +1034,10 @@ convMx1::InterPolate(cio_Array* src_old, cio_Array* src, cio_Array* outArray,
     VolumeDataDivide8(O,ivar_out);
   }
   //short
-  else if( dtype == CIO::E_CIO_INT16 ) {
-    cio_TypeArray<short> *O = dynamic_cast<cio_TypeArray<short>*>(outArray);
-    cio_TypeArray<short> *S = dynamic_cast<cio_TypeArray<short>*>(src);
-    cio_TypeArray<short> *S_old = dynamic_cast<cio_TypeArray<short>*>(src_old);
+  else if( dtype == CDM::E_CDM_INT16 ) {
+    cdm_TypeArray<short> *O = dynamic_cast<cdm_TypeArray<short>*>(outArray);
+    cdm_TypeArray<short> *S = dynamic_cast<cdm_TypeArray<short>*>(src);
+    cdm_TypeArray<short> *S_old = dynamic_cast<cdm_TypeArray<short>*>(src_old);
 
     //足しこみ領域のゼロクリア
     zeroClearArray(O,ivar_out);
@@ -1049,10 +1049,10 @@ convMx1::InterPolate(cio_Array* src_old, cio_Array* src, cio_Array* outArray,
     VolumeDataDivide8(O,ivar_out);
   }
   //int
-  else if( dtype == CIO::E_CIO_INT32 ) {
-    cio_TypeArray<int> *O = dynamic_cast<cio_TypeArray<int>*>(outArray);
-    cio_TypeArray<int> *S = dynamic_cast<cio_TypeArray<int>*>(src);
-    cio_TypeArray<int> *S_old = dynamic_cast<cio_TypeArray<int>*>(src_old);
+  else if( dtype == CDM::E_CDM_INT32 ) {
+    cdm_TypeArray<int> *O = dynamic_cast<cdm_TypeArray<int>*>(outArray);
+    cdm_TypeArray<int> *S = dynamic_cast<cdm_TypeArray<int>*>(src);
+    cdm_TypeArray<int> *S_old = dynamic_cast<cdm_TypeArray<int>*>(src_old);
 
     //足しこみ領域のゼロクリア
     zeroClearArray(O,ivar_out);
@@ -1064,10 +1064,10 @@ convMx1::InterPolate(cio_Array* src_old, cio_Array* src, cio_Array* outArray,
     VolumeDataDivide8(O,ivar_out);
   }
   //float
-  else if( dtype == CIO::E_CIO_FLOAT32 ) {
-    cio_TypeArray<float> *O = dynamic_cast<cio_TypeArray<float>*>(outArray);
-    cio_TypeArray<float> *S = dynamic_cast<cio_TypeArray<float>*>(src);
-    cio_TypeArray<float> *S_old = dynamic_cast<cio_TypeArray<float>*>(src_old);
+  else if( dtype == CDM::E_CDM_FLOAT32 ) {
+    cdm_TypeArray<float> *O = dynamic_cast<cdm_TypeArray<float>*>(outArray);
+    cdm_TypeArray<float> *S = dynamic_cast<cdm_TypeArray<float>*>(src);
+    cdm_TypeArray<float> *S_old = dynamic_cast<cdm_TypeArray<float>*>(src_old);
 
     //足しこみ領域のゼロクリア
     zeroClearArray(O,ivar_out);
@@ -1080,10 +1080,10 @@ convMx1::InterPolate(cio_Array* src_old, cio_Array* src, cio_Array* outArray,
     VolumeDataDivide8(O,ivar_out);
   }
   //double
-  else if( dtype == CIO::E_CIO_FLOAT64 ) {
-    cio_TypeArray<double> *O = dynamic_cast<cio_TypeArray<double>*>(outArray);
-    cio_TypeArray<double> *S = dynamic_cast<cio_TypeArray<double>*>(src);
-    cio_TypeArray<double> *S_old = dynamic_cast<cio_TypeArray<double>*>(src_old);
+  else if( dtype == CDM::E_CDM_FLOAT64 ) {
+    cdm_TypeArray<double> *O = dynamic_cast<cdm_TypeArray<double>*>(outArray);
+    cdm_TypeArray<double> *S = dynamic_cast<cdm_TypeArray<double>*>(src);
+    cdm_TypeArray<double> *S_old = dynamic_cast<cdm_TypeArray<double>*>(src_old);
 
     //足しこみ領域のゼロクリア
     zeroClearArray(O,ivar_out);
@@ -1101,78 +1101,78 @@ convMx1::InterPolate(cio_Array* src_old, cio_Array* src, cio_Array* outArray,
 
 // #################################################################
 // NIJK配列をスカラーのIJK配列にコピー
-cio_Array*
-convMx1::nijk_to_ijk(cio_Array* src, int ivar)
+cdm_Array*
+convMx1::nijk_to_ijk(cdm_Array* src, int ivar)
 {
 
   //コピー元配列のサイズとデータタイプの取得
   const int *sz = src->getArraySizeInt();
-  CIO::E_CIO_DTYPE d_type = src->getDataType();
+  CDM::E_CDM_DTYPE d_type = src->getDataType();
 
-  cio_Array* outArray = cio_Array::instanceArray
+  cdm_Array* outArray = cdm_Array::instanceArray
                        ( d_type
-                       , CIO::E_CIO_IJKN
+                       , CDM::E_CDM_IJKN
                        , (int *)sz
                        , 0 
                        , 1 );
   //unsigned char
-  if( d_type == CIO::E_CIO_UINT8 ) {
-    cio_TypeArray<unsigned char> *S = dynamic_cast<cio_TypeArray<unsigned char>*>(src);
-    cio_TypeArray<unsigned char> *O = dynamic_cast<cio_TypeArray<unsigned char>*>(outArray);
+  if( d_type == CDM::E_CDM_UINT8 ) {
+    cdm_TypeArray<unsigned char> *S = dynamic_cast<cdm_TypeArray<unsigned char>*>(src);
+    cdm_TypeArray<unsigned char> *O = dynamic_cast<cdm_TypeArray<unsigned char>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
   //char
-  else if( d_type == CIO::E_CIO_INT8 ) {
-    cio_TypeArray<char> *S = dynamic_cast<cio_TypeArray<char>*>(src);
-    cio_TypeArray<char> *O = dynamic_cast<cio_TypeArray<char>*>(outArray);
+  else if( d_type == CDM::E_CDM_INT8 ) {
+    cdm_TypeArray<char> *S = dynamic_cast<cdm_TypeArray<char>*>(src);
+    cdm_TypeArray<char> *O = dynamic_cast<cdm_TypeArray<char>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
   //unsigned short 
-  else if( d_type == CIO::E_CIO_UINT16 ) {
-    cio_TypeArray<unsigned short> *S = dynamic_cast<cio_TypeArray<unsigned short>*>(src);
-    cio_TypeArray<unsigned short> *O = dynamic_cast<cio_TypeArray<unsigned short>*>(outArray);
+  else if( d_type == CDM::E_CDM_UINT16 ) {
+    cdm_TypeArray<unsigned short> *S = dynamic_cast<cdm_TypeArray<unsigned short>*>(src);
+    cdm_TypeArray<unsigned short> *O = dynamic_cast<cdm_TypeArray<unsigned short>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
   //short
-  else if( d_type == CIO::E_CIO_INT16 ) {
-    cio_TypeArray<short> *S = dynamic_cast<cio_TypeArray<short>*>(src);
-    cio_TypeArray<short> *O = dynamic_cast<cio_TypeArray<short>*>(outArray);
+  else if( d_type == CDM::E_CDM_INT16 ) {
+    cdm_TypeArray<short> *S = dynamic_cast<cdm_TypeArray<short>*>(src);
+    cdm_TypeArray<short> *O = dynamic_cast<cdm_TypeArray<short>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
   //unsigned int 
-  else if( d_type == CIO::E_CIO_UINT32 ) {
-    cio_TypeArray<unsigned int> *S = dynamic_cast<cio_TypeArray<unsigned int>*>(src);
-    cio_TypeArray<unsigned int> *O = dynamic_cast<cio_TypeArray<unsigned int>*>(outArray);
+  else if( d_type == CDM::E_CDM_UINT32 ) {
+    cdm_TypeArray<unsigned int> *S = dynamic_cast<cdm_TypeArray<unsigned int>*>(src);
+    cdm_TypeArray<unsigned int> *O = dynamic_cast<cdm_TypeArray<unsigned int>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
   //int
-  else if( d_type == CIO::E_CIO_INT32 ) {
-    cio_TypeArray<int> *S = dynamic_cast<cio_TypeArray<int>*>(src);
-    cio_TypeArray<int> *O = dynamic_cast<cio_TypeArray<int>*>(outArray);
+  else if( d_type == CDM::E_CDM_INT32 ) {
+    cdm_TypeArray<int> *S = dynamic_cast<cdm_TypeArray<int>*>(src);
+    cdm_TypeArray<int> *O = dynamic_cast<cdm_TypeArray<int>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
   //unsigned long 
-  else if( d_type == CIO::E_CIO_UINT64 ) {
-    cio_TypeArray<unsigned long long> *S = dynamic_cast<cio_TypeArray<unsigned long long>*>(src);
-    cio_TypeArray<unsigned long long> *O = dynamic_cast<cio_TypeArray<unsigned long long>*>(outArray);
+  else if( d_type == CDM::E_CDM_UINT64 ) {
+    cdm_TypeArray<unsigned long long> *S = dynamic_cast<cdm_TypeArray<unsigned long long>*>(src);
+    cdm_TypeArray<unsigned long long> *O = dynamic_cast<cdm_TypeArray<unsigned long long>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
   //long
-  else if( d_type == CIO::E_CIO_INT64 ) {
-    cio_TypeArray<long long> *S = dynamic_cast<cio_TypeArray<long long>*>(src);
-    cio_TypeArray<long long> *O = dynamic_cast<cio_TypeArray<long long>*>(outArray);
+  else if( d_type == CDM::E_CDM_INT64 ) {
+    cdm_TypeArray<long long> *S = dynamic_cast<cdm_TypeArray<long long>*>(src);
+    cdm_TypeArray<long long> *O = dynamic_cast<cdm_TypeArray<long long>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
   //float
-  else if( d_type == CIO::E_CIO_FLOAT32 ) {
-    cio_TypeArray<float> *S = dynamic_cast<cio_TypeArray<float>*>(src);
-    cio_TypeArray<float> *O = dynamic_cast<cio_TypeArray<float>*>(outArray);
+  else if( d_type == CDM::E_CDM_FLOAT32 ) {
+    cdm_TypeArray<float> *S = dynamic_cast<cdm_TypeArray<float>*>(src);
+    cdm_TypeArray<float> *O = dynamic_cast<cdm_TypeArray<float>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
   //double
-  else if( d_type == CIO::E_CIO_FLOAT64 ) {
-    cio_TypeArray<double> *S = dynamic_cast<cio_TypeArray<double>*>(src);
-    cio_TypeArray<double> *O = dynamic_cast<cio_TypeArray<double>*>(outArray);
+  else if( d_type == CDM::E_CDM_FLOAT64 ) {
+    cdm_TypeArray<double> *S = dynamic_cast<cdm_TypeArray<double>*>(src);
+    cdm_TypeArray<double> *O = dynamic_cast<cdm_TypeArray<double>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
 

@@ -29,7 +29,7 @@ public:
   int m_Head[3];
   int m_Tail[3];
 
-  vector<cio_DFI *>m_out_dfi; //出力DFIのポインタ
+  vector<cdm_DFI *>m_out_dfi; //出力DFIのポインタ
 
 public:
 

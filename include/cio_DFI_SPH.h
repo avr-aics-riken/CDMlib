@@ -1,5 +1,5 @@
-#ifndef _CIO_DFI_SPH_H_
-#define _CIO_DFI_SPH_H_
+#ifndef _CDM_DFI_SPH_H_
+#define _CDM_DFI_SPH_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,14 +10,14 @@
  */
 
 /** 
- * @file   cio_DFI_SPH.h
- * @brief  cio_DFI_SPH Class Header
+ * @file   cdm_DFI_SPH.h
+ * @brief  cdm_DFI_SPH Class Header
  * @author aics    
  */
 
 #include "cio_DFI.h"
 
-class cio_DFI_SPH : public cio_DFI {
+class cdm_DFI_SPH : public cdm_DFI {
 
 protected:
 
@@ -30,7 +30,7 @@ protected:
 public:
 
   /** コンストラクタ */
-  cio_DFI_SPH();
+  cdm_DFI_SPH();
 
   /** 
    * @brief コンストラクタ 
@@ -42,13 +42,13 @@ public:
    * @param [in] TSlice  TimeSlice
    * @param [in] process Process
    */
-  cio_DFI_SPH(const cio_FileInfo F_Info, 
-              const cio_FilePath F_Path, 
-              const cio_Unit unit, 
-              const cio_Domain domain, 
-              const cio_MPI mpi,
-              const cio_TimeSlice TSlice, 
-              const cio_Process process)
+  cdm_DFI_SPH(const cdm_FileInfo F_Info, 
+              const cdm_FilePath F_Path, 
+              const cdm_Unit unit, 
+              const cdm_Domain domain, 
+              const cdm_MPI mpi,
+              const cdm_TimeSlice TSlice, 
+              const cdm_Process process)
   {
     DFI_Finfo      = F_Info; 
     DFI_Fpath      = F_Path;
@@ -61,7 +61,7 @@ public:
   };
   
   /**　デストラクタ */
-  ~cio_DFI_SPH();
+  ~cdm_DFI_SPH();
 
 public:
 
@@ -79,7 +79,7 @@ protected:
    * @param[out] time        時刻
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   read_HeaderRecord(FILE* fp, 
                     bool matchEndian,
                     unsigned step,
@@ -99,13 +99,13 @@ protected:
    * @param[out] src         読み込んだデータを格納した配列のポインタ
    * @return error code
    */ 
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   read_Datarecord(FILE* fp,
                   bool matchEndian,
-                  cio_Array* buf,
+                  cdm_Array* buf,
                   int head[3],
                   int nz,
-                  cio_Array* &src);
+                  cdm_Array* &src);
 
   /**
    * @brief sphファイルのAverageデータレコードの読込み
@@ -116,7 +116,7 @@ protected:
    * @param[out] avr_time    平均タイム
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   read_averaged(FILE* fp,
                 bool matchEndian,
                 unsigned step, 
@@ -131,7 +131,7 @@ protected:
    * @param[in] RankID ランク番号
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   write_HeaderRecord(FILE* fp, 
                      const unsigned step, 
                      const double time, 
@@ -145,9 +145,9 @@ protected:
    * @param[in]  RankID ランク番号
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   write_DataRecord(FILE* fp, 
-                   cio_Array* val, 
+                   cdm_Array* val, 
                    const int gc, 
                    const int RankID); 
 
@@ -158,10 +158,10 @@ protected:
    * @param[in] time_avr 平均時刻
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   write_averaged(FILE* fp,
                  const unsigned step_avr,
                  const double time_avr); 
 };
 
-#endif // _cio_DFI_SPH_H_
+#endif // _cdm_DFI_SPH_H_

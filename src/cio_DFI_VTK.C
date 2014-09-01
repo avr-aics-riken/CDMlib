@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_DFI_VTK.C
- * @brief  cio_DFI_VTK Class
+ * @file   cdm_DFI_VTK.C
+ * @brief  cdm_DFI_VTK Class
  * @author aics    
  */
 
@@ -17,7 +17,7 @@
 
 // #################################################################
 // コンストラクタ
-cio_DFI_VTK::cio_DFI_VTK()
+cdm_DFI_VTK::cdm_DFI_VTK()
 {
 
 }
@@ -25,28 +25,28 @@ cio_DFI_VTK::cio_DFI_VTK()
 
 // #################################################################
 // デストラクタ
-cio_DFI_VTK::~cio_DFI_VTK()
+cdm_DFI_VTK::~cdm_DFI_VTK()
 {
 
 }
 
 // #################################################################
 // ヘッダーレコード出力
-CIO::E_CIO_ERRORCODE
-cio_DFI_VTK::write_HeaderRecord(FILE* fp,
+CDM::E_CDM_ERRORCODE
+cdm_DFI_VTK::write_HeaderRecord(FILE* fp,
                                 const unsigned step,
                                 const double time,
                                 const int n)
 {
 
-  if( !fp ) return CIO::E_CIO_ERROR;
+  if( !fp ) return CDM::E_CDM_ERROR;
 
   fprintf( fp, "# vtk DataFile Version 2.0\n" );
   fprintf( fp, "step=%d,time=%g\n", step, time );
 
-  if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_BINARY ) {
+  if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_BINARY ) {
     fprintf( fp, "BINARY\n" );
-  } else if( m_output_type ==  CIO::E_CIO_OUTPUT_TYPE_ASCII ) {
+  } else if( m_output_type ==  CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
     fprintf( fp, "ASCII\n" );
   }
 
@@ -75,16 +75,16 @@ cio_DFI_VTK::write_HeaderRecord(FILE* fp,
   fprintf( fp, "POINT_DATA %d\n", nw );
 
   std::string d_type;
-  if(      DFI_Finfo.DataType == CIO::E_CIO_UINT8  ) d_type="unsigned_char";
-  else if( DFI_Finfo.DataType == CIO::E_CIO_INT8   ) d_type="char";
-  else if( DFI_Finfo.DataType == CIO::E_CIO_UINT16 ) d_type="unsigned_short";
-  else if( DFI_Finfo.DataType == CIO::E_CIO_INT16  ) d_type="short";
-  else if( DFI_Finfo.DataType == CIO::E_CIO_UINT32 ) d_type="unsigned_int";
-  else if( DFI_Finfo.DataType == CIO::E_CIO_INT32  ) d_type="int";
-  else if( DFI_Finfo.DataType == CIO::E_CIO_UINT64 ) d_type="unsigned_long";
-  else if( DFI_Finfo.DataType == CIO::E_CIO_INT64  ) d_type="long";
-  else if( DFI_Finfo.DataType == CIO::E_CIO_FLOAT32) d_type="float";
-  else if( DFI_Finfo.DataType == CIO::E_CIO_FLOAT64) d_type="double";
+  if(      DFI_Finfo.DataType == CDM::E_CDM_UINT8  ) d_type="unsigned_char";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT8   ) d_type="char";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT16 ) d_type="unsigned_short";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT16  ) d_type="short";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT32 ) d_type="unsigned_int";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT32  ) d_type="int";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT64 ) d_type="unsigned_long";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT64  ) d_type="long";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32) d_type="float";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64) d_type="double";
 
   if( DFI_Finfo.Component == 1 )
   {
@@ -102,14 +102,14 @@ cio_DFI_VTK::write_HeaderRecord(FILE* fp,
              nw, d_type.c_str() );
   }
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // データレコード出力
-CIO::E_CIO_ERRORCODE
-cio_DFI_VTK::write_DataRecord(FILE* fp, 
-                              cio_Array* val, 
+CDM::E_CDM_ERRORCODE
+cdm_DFI_VTK::write_DataRecord(FILE* fp, 
+                              cdm_Array* val, 
                               const int gc, 
                               const int n)
 {
@@ -117,79 +117,79 @@ cio_DFI_VTK::write_DataRecord(FILE* fp,
   const int* sz = val->getArraySizeInt();
   size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*val->getNcomp();
 
-  if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_BINARY ) {
+  if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_BINARY ) {
 
     //出力実数タイプがuint8のとき
-    if( val->getDataType() == CIO::E_CIO_UINT8 ) {
+    if( val->getDataType() == CDM::E_CDM_UINT8 ) {
       unsigned char *data = (unsigned char*)val->getData();
       BSWAPVEC(data,dLen);
       fwrite( data, sizeof(unsigned char), dLen, fp );
 
     //出力実数タイプがint8のとき
-    }else if( val->getDataType() == CIO::E_CIO_INT8 ) {
+    }else if( val->getDataType() == CDM::E_CDM_INT8 ) {
       char *data = (char*)val->getData();
       BSWAPVEC(data,dLen);
       fwrite( data, sizeof(char), dLen, fp );
 
     //出力実数タイプがuint16のとき
-    }else if( val->getDataType() == CIO::E_CIO_UINT16 ) {
+    }else if( val->getDataType() == CDM::E_CDM_UINT16 ) {
       unsigned short *data = (unsigned short*)val->getData();
       BSWAPVEC(data,dLen);
       fwrite( data, sizeof(unsigned short), dLen, fp );
 
     //出力実数タイプがint16のとき
-    }else if( val->getDataType() == CIO::E_CIO_INT16 ) {
+    }else if( val->getDataType() == CDM::E_CDM_INT16 ) {
       short *data = (short*)val->getData();
       BSWAPVEC(data,dLen);
       fwrite( data, sizeof(short), dLen, fp );
 
     //出力実数タイプがuint32のとき
-    }else if( val->getDataType() == CIO::E_CIO_UINT32 ) {
+    }else if( val->getDataType() == CDM::E_CDM_UINT32 ) {
       unsigned int *data = (unsigned int*)val->getData();
       BSWAPVEC(data,dLen);
       fwrite( data, sizeof(unsigned int), dLen, fp );
 
     //出力実数タイプがint32のとき
-    }else if( val->getDataType() == CIO::E_CIO_INT32 ) {
+    }else if( val->getDataType() == CDM::E_CDM_INT32 ) {
       int *data = (int*)val->getData();
       BSWAPVEC(data,dLen);
       fwrite( data, sizeof(int), dLen, fp );
 
     //出力実数タイプがuint64のとき
-    }else if( val->getDataType() == CIO::E_CIO_UINT64 ) {
+    }else if( val->getDataType() == CDM::E_CDM_UINT64 ) {
       unsigned long long *data = (unsigned long long*)val->getData();
       BSWAPVEC(data,dLen);
       fwrite( data, sizeof(unsigned long long), dLen, fp );
 
     //出力実数タイプがint64のとき
-    }else if( val->getDataType() == CIO::E_CIO_INT64 ) {
+    }else if( val->getDataType() == CDM::E_CDM_INT64 ) {
       long long *data = (long long*)val->getData();
       BSWAPVEC(data,dLen);
       fwrite( data, sizeof(long long), dLen, fp );
 
     //出力実数タイプがfloatのとき
-    }else if( val->getDataType() == CIO::E_CIO_FLOAT32 ) {
+    }else if( val->getDataType() == CDM::E_CDM_FLOAT32 ) {
       float *data = (float*)val->getData();
       BSWAPVEC(data,dLen);
       fwrite( data, sizeof(float), dLen, fp );
 
     //出力実数タイプがdoubleのとき
-    }else if( val->getDataType() == CIO::E_CIO_FLOAT64 ) {
+    }else if( val->getDataType() == CDM::E_CDM_FLOAT64 ) {
       double *data = (double*)val->getData();
       DBSWAPVEC(data,dLen);
       fwrite( data, sizeof(double), dLen, fp );
     }
 
     fprintf( fp, "\n" );
-  } else if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_ASCII ) {
+  } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
 
     
     if( val->writeAscii(fp) != dLen ) {
-      return CIO::E_CIO_ERROR;
+      return CDM::E_CDM_ERROR;
     }
     fprintf( fp, "\n" );
   
   }
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 

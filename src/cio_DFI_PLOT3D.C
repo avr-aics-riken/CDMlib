@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_DFI_PLOT3D.C
- * @brief  cio_DFI_PLOT3D Class
+ * @file   cdm_DFI_PLOT3D.C
+ * @brief  cdm_DFI_PLOT3D Class
  * @author aics    
  */
 
@@ -17,7 +17,7 @@
 
 // #################################################################
 // コンストラクタ
-cio_DFI_PLOT3D::cio_DFI_PLOT3D()
+cdm_DFI_PLOT3D::cdm_DFI_PLOT3D()
 {
 
 }
@@ -25,27 +25,27 @@ cio_DFI_PLOT3D::cio_DFI_PLOT3D()
 
 // #################################################################
 // デストラクタ
-cio_DFI_PLOT3D::~cio_DFI_PLOT3D()
+cdm_DFI_PLOT3D::~cdm_DFI_PLOT3D()
 {
 
 }
 
 // #################################################################
 // ヘッダーレコード出力
-CIO::E_CIO_ERRORCODE
-cio_DFI_PLOT3D::write_HeaderRecord(FILE* fp,
+CDM::E_CDM_ERRORCODE
+cdm_DFI_PLOT3D::write_HeaderRecord(FILE* fp,
                                    const unsigned step,
                                    const double time,
                                    const int n)
 {
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // データレコード出力
-CIO::E_CIO_ERRORCODE
-cio_DFI_PLOT3D::write_DataRecord(FILE* fp, 
-                                 cio_Array* val, 
+CDM::E_CDM_ERRORCODE
+cdm_DFI_PLOT3D::write_DataRecord(FILE* fp, 
+                                 cdm_Array* val, 
                                  const int gc, 
                                  const int n)
 {
@@ -69,11 +69,11 @@ cio_DFI_PLOT3D::write_DataRecord(FILE* fp,
   //ngrid,nblock出力
   int ngrid=1;
   //ascii
-  if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_ASCII ) {
+  if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
     fprintf(fp,"%5d\n",ngrid);
     fprintf(fp,"%5d%5d%5d%5d\n",szVal[0],szVal[1],szVal[2],ncomp);
   //Fortran Binary
-  } else if( m_output_type == CIO::E_CIO_OUTPUT_TYPE_FBINARY ) {
+  } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
     unsigned int dmy;
     dmy = sizeof(int);
     fwrite(&dmy, sizeof(int), 1, fp);
@@ -97,21 +97,21 @@ cio_DFI_PLOT3D::write_DataRecord(FILE* fp,
   }
   //フィールドデータ出力
 
-  if( val->getDataType() == CIO::E_CIO_FLOAT32 ) {
-    cio_TypeArray<float> *data = dynamic_cast<cio_TypeArray<float>*>(val);
+  if( val->getDataType() == CDM::E_CDM_FLOAT32 ) {
+    cdm_TypeArray<float> *data = dynamic_cast<cdm_TypeArray<float>*>(val);
     write_Func(fp, data, szVal, ncomp);
-  } else if( val->getDataType() == CIO::E_CIO_FLOAT64 ) {
-    cio_TypeArray<double> *data = dynamic_cast<cio_TypeArray<double>*>(val);
+  } else if( val->getDataType() == CDM::E_CDM_FLOAT64 ) {
+    cdm_TypeArray<double> *data = dynamic_cast<cdm_TypeArray<double>*>(val);
     write_Func(fp, data, szVal, ncomp);
   }   
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // GIRD データファイル出力コントロール
 bool
-cio_DFI_PLOT3D::write_GridData()
+cdm_DFI_PLOT3D::write_GridData()
 {
 
   bool mio = false;
@@ -121,7 +121,7 @@ cio_DFI_PLOT3D::write_GridData()
   std::string fname,tmp;
   tmp = Generate_FileName(DFI_Finfo.Prefix,m_RankID,-1,"xyz",m_output_fname,mio,
                           DFI_Finfo.TimeSliceDirFlag);
-  if( CIO::cioPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
+  if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
     fname = DFI_Finfo.DirectoryPath + "/" + tmp;
   } else {
     fname = m_directoryPath + "/" + DFI_Finfo.DirectoryPath +"/"+ tmp;
@@ -138,7 +138,7 @@ cio_DFI_PLOT3D::write_GridData()
   int sz[3];
   for(int i=0; i<3; i++) sz[i] = DFI_Process.RankList[m_RankID].VoxelSize[i]+1;
 
-  if( DFI_Finfo.DataType == CIO::E_CIO_FLOAT32 ) {
+  if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) {
     float pit[3],org[3];
     for(int i=0; i<3; i++) {
       pit[i]=(float)DFI_Domain.GlobalRegion[i]/(float)DFI_Domain.GlobalVoxel[i];
@@ -146,7 +146,7 @@ cio_DFI_PLOT3D::write_GridData()
     }
     //xyzを計算して出力
     write_XYZ(fp,org,pit,sz);
-  }else if( DFI_Finfo.DataType == CIO::E_CIO_FLOAT64 ) {
+  }else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) {
     double pit[3],org[3];
     for(int i=0; i<3; i++) {
       pit[i]=(double)DFI_Domain.GlobalRegion[i]/(double)DFI_Domain.GlobalVoxel[i];

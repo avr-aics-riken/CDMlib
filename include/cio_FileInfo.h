@@ -1,5 +1,5 @@
-#ifndef _CIO_FILEINFO_H_
-#define _CIO_FILEINFO_H_
+#ifndef _CDM_FILEINFO_H_
+#define _CDM_FILEINFO_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,36 +10,36 @@
  */
 
 /** 
- * @file   cio_FileInfo.h
- * @brief  cio_FileInfo Class Header
+ * @file   cdm_FileInfo.h
+ * @brief  cdm_FileInfo Class Header
  * @author aics    
  */
 
 
 /** index.dfi ファイルの FileInfo */
-class cio_FileInfo {
+class cdm_FileInfo {
 
 public:
 
   //FCONV 20140116.s
-  CIO::E_CIO_DFITYPE    DFIType;          ///<dfi種別
-  CIO::E_CIO_OUTPUT_FNAME FieldFilenameFormat; ///<ファイル命名基準
+  CDM::E_CDM_DFITYPE    DFIType;          ///<dfi種別
+  CDM::E_CDM_OUTPUT_FNAME FieldFilenameFormat; ///<ファイル命名基準
   //FCONV 20140116.e
  
   std::string           DirectoryPath;    ///<フィールデータの存在するディレクトリパス
                                           ///< index.dfiからの相対パスまたは絶対パス
-  CIO::E_CIO_ONOFF      TimeSliceDirFlag; ///<TimeSlice on or off
+  CDM::E_CDM_ONOFF      TimeSliceDirFlag; ///<TimeSlice on or off
   std::string           Prefix;           ///<ファイル接頭文字
-  CIO::E_CIO_FORMAT     FileFormat;       ///<ファイルフォーマット "bov","sph",,,
+  CDM::E_CDM_FORMAT     FileFormat;       ///<ファイルフォーマット "bov","sph",,,
   int                   GuideCell;        ///<仮想セルの数
-  CIO::E_CIO_DTYPE      DataType;         ///<配列のデータタイプ "float",,,,
-  CIO::E_CIO_ENDIANTYPE Endian;           ///<エンディアンタイプ "big","little"
-  CIO::E_CIO_ARRAYSHAPE ArrayShape;       ///<配列形状
+  CDM::E_CDM_DTYPE      DataType;         ///<配列のデータタイプ "float",,,,
+  CDM::E_CDM_ENDIANTYPE Endian;           ///<エンディアンタイプ "big","little"
+  CDM::E_CDM_ARRAYSHAPE ArrayShape;       ///<配列形状
   int                   Component;        ///<成分数
   vector<std::string>   ComponentVariable;///<成分名
 
   /** コンストラクタ **/
-  cio_FileInfo();
+  cdm_FileInfo();
 
   /** 
    * @brief コンストラクタ 
@@ -55,30 +55,30 @@ public:
    * @param [in] _ArrayShape       配列形状
    * @param [in] _Component        成分数
    */
-  cio_FileInfo(const CIO::E_CIO_DFITYPE _DFIType,
-               const CIO::E_CIO_OUTPUT_FNAME _FieldFilenameFormat,
+  cdm_FileInfo(const CDM::E_CDM_DFITYPE _DFIType,
+               const CDM::E_CDM_OUTPUT_FNAME _FieldFilenameFormat,
                const std::string _DirectoryPath, 
-               const CIO::E_CIO_ONOFF _TimeSliceDirFlag, 
+               const CDM::E_CDM_ONOFF _TimeSliceDirFlag, 
                const std::string _Prefix, 
-               const CIO::E_CIO_FORMAT _FileFormat,
+               const CDM::E_CDM_FORMAT _FileFormat,
                const int _GuideCell, 
-               const CIO::E_CIO_DTYPE _DataType, 
-               const CIO::E_CIO_ENDIANTYPE _Endian, 
-               const CIO::E_CIO_ARRAYSHAPE _ArrayShape, 
+               const CDM::E_CDM_DTYPE _DataType, 
+               const CDM::E_CDM_ENDIANTYPE _Endian, 
+               const CDM::E_CDM_ARRAYSHAPE _ArrayShape, 
                const int _Component);
 
   /** デストラクタ **/
-  ~cio_FileInfo();
+  ~cdm_FileInfo();
 
 public:
 
   /**
    * @brief read FileInfo(inde.dfi)
-   * @param [in]   tpCntl  cio_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス 
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
-  Read(cio_TextParser tpCntl); 
+  CDM::E_CDM_ERRORCODE
+  Read(cdm_TextParser tpCntl); 
 
   /**
    * @brief DFIファイル:FileInfo要素を出力する
@@ -86,7 +86,7 @@ public:
    * @param [in]  tab     インデント
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   Write(FILE* fp, 
         const unsigned tab); 
 
@@ -106,4 +106,4 @@ public:
 
 };
 
-#endif // _cio_FILEINFO_H_
+#endif // _cdm_FILEINFO_H_

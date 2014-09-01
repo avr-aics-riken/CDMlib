@@ -1,5 +1,5 @@
-#ifndef _CIO_DOMAIN_H_
-#define _CIO_DOMAIN_H_
+#ifndef _CDM_DOMAIN_H_
+#define _CDM_DOMAIN_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,13 +10,13 @@
  */
 
 /** 
- * @file   cio_Domain.h
- * @brief  cio_Domain Class Header
+ * @file   cdm_Domain.h
+ * @brief  cdm_Domain Class Header
  * @author aics    
  */
   
 /** proc.dfi ファイルの Domain */
-class cio_Domain {
+class cdm_Domain {
 
 public:
 
@@ -27,7 +27,7 @@ public:
   std::string ActiveSubdomainFile;    ///<ActiveSubdomainファイル名
 
   /** コンストラクタ **/
-  cio_Domain();
+  cdm_Domain();
 
   /** 
   * @brief コンストラクタ 
@@ -36,21 +36,21 @@ public:
   * @param [in] _GlobalVoxel    ボクセル数
   * @param [in] _GlobalDivision 分割数
   */ 
-  cio_Domain(const double* _GlobalOrigin, 
+  cdm_Domain(const double* _GlobalOrigin, 
              const double* _GlobalRegion, 
              const int* _GlobalVoxel, 
              const int* _GlobalDivision);
 
   /** デストラクタ **/
-  ~cio_Domain();
+  ~cdm_Domain();
 
   /**
    * @brief read Domain(proc.dfi)
-   * @param [in]   tpCntl  cio_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス 
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
-  Read(cio_TextParser tpCntl);
+  CDM::E_CDM_ERRORCODE
+  Read(cdm_TextParser tpCntl);
 
   /**
    * @brief DFIファイル:Domainを出力する
@@ -58,10 +58,10 @@ public:
    * @param [in] tab        インデント
    * @return true:出力成功 false:出力失敗
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   Write(FILE* fp, 
         const unsigned tab);
 
 };
 
-#endif // _CIO_DOMAIN_H_
+#endif // _CDM_DOMAIN_H_

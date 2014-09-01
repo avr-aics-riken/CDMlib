@@ -1,5 +1,5 @@
-#ifndef _CIO_TIMESLICE_H_
-#define _CIO_TIMESLICE_H_
+#ifndef _CDM_TIMESLICE_H_
+#define _CDM_TIMESLICE_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,13 +10,13 @@
  */
 
 /** 
- * @file   cio_TimeSlice.h
- * @brief  cio_Slice & cio_TimeSliceClass Header
+ * @file   cdm_TimeSlice.h
+ * @brief  cdm_Slice & cdm_TimeSliceClass Header
  * @author aics    
  */
 
 /** index.dfi ファイルの Slice */
-class cio_Slice {
+class cdm_Slice {
 
 public :
   
@@ -31,19 +31,19 @@ public :
   vector<double> Max;                   ///<最大値
 
   /** コンストラクタ */
-  cio_Slice();
+  cdm_Slice();
 
   /** デストラクタ */
-  ~cio_Slice();
+  ~cdm_Slice();
 
   /**
   * @brief TimeSlice要素を読込む(inde.dfi)
-  * @param [in]  tpCntl     cio_TextParserクラス
+  * @param [in]  tpCntl     cdm_TextParserクラス
   * @param [in]  label_leaf ベースとなる名前（"/TimeSlice/Slice")   
   * @return error code
   */  
-  CIO::E_CIO_ERRORCODE
-  Read(cio_TextParser tpCntl, 
+  CDM::E_CDM_ERRORCODE
+  Read(cdm_TextParser tpCntl, 
        std::string label_leaf);
 
   /**
@@ -52,32 +52,32 @@ public :
    * @param [in] tab      インデント
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   Write(FILE* fp, 
         const unsigned tab);
 
 };
 
 /** index.dfi ファイルの TimeSlice */
-class cio_TimeSlice {
+class cdm_TimeSlice {
 
 public:
 
-  vector<cio_Slice> SliceList;
+  vector<cdm_Slice> SliceList;
 
   /** コンストラクタ */
-  cio_TimeSlice();
+  cdm_TimeSlice();
 
   /** デストラクタ */
-  ~cio_TimeSlice();
+  ~cdm_TimeSlice();
 
   /**
   * @brief TimeSlice要素を読込む(inde.dfi)
-  * @param [in]      tpCntl cio_TextParserクラス
+  * @param [in]      tpCntl cdm_TextParserクラス
   * @return error code
   */  
-  CIO::E_CIO_ERRORCODE
-  Read(cio_TextParser tpCntl); 
+  CDM::E_CDM_ERRORCODE
+  Read(cdm_TextParser tpCntl); 
 
   /**
    * @brief DFIファイル:TimeSlice要素を出力する
@@ -85,7 +85,7 @@ public:
    * @param [in] tab      インデント
    * @return true:出力成功 false:出力失敗
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   Write(FILE* fp, 
         const unsigned tab);
 
@@ -94,9 +94,9 @@ public:
    * @param [in]  step 取得するステップ
    * @param [out] vec_min 取得したminの合成値
    * @param [out] vec_max 取得したminの合成値
-   * @return error code 取得出来たときは E_CIO_SUCCESS 
+   * @return error code 取得出来たときは E_CDM_SUCCESS 
    */
-  CIO::E_CIO_ERRORCODE getVectorMinMax(const unsigned step,
+  CDM::E_CDM_ERRORCODE getVectorMinMax(const unsigned step,
                                        double &vec_min,
                                        double &vec_max);
 
@@ -106,9 +106,9 @@ public:
    * @param [in]  compNo 取得する成分番号(0～n)
    * @param [out] min_value 取得したmin
    * @param [out] max_value 取得したmax
-   * @return error code 取得出来たときは E_CIO_SUCCESS 
+   * @return error code 取得出来たときは E_CDM_SUCCESS 
    */
-  CIO::E_CIO_ERRORCODE getMinMax(const unsigned step,
+  CDM::E_CDM_ERRORCODE getMinMax(const unsigned step,
                                  const int compNo,
                                  double &min_value,
                                  double &max_value);
@@ -131,9 +131,9 @@ public:
                 bool avr_mode,
                 int step_avr,
                 double time_avr);
-                //vector<cio_Slice> &SliceList);
+                //vector<cdm_Slice> &SliceList);
 
 
 };
 
-#endif // _CIO_TIMESLICE_H_
+#endif // _CDM_TIMESLICE_H_

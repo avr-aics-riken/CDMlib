@@ -1,5 +1,5 @@
-#ifndef _CIO_MPI_H_
-#define _CIO_MPI_H_
+#ifndef _CDM_MPI_H_
+#define _CDM_MPI_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,13 +10,13 @@
  */
 
 /** 
- * @file   cio_MPI.h
- * @brief  cio_MPI Class Header
+ * @file   cdm_MPI.h
+ * @brief  cdm_MPI Class Header
  * @author aics    
  */
 
 /** proc.dfi ファイルの MPI */
-class cio_MPI {
+class cdm_MPI {
 
 public:
 
@@ -24,27 +24,27 @@ public:
   int NumberOfGroup;                     ///<グループ数
 
   /** コンストラクタ **/
-  cio_MPI();
+  cdm_MPI();
 
   /**
    * @brief コンストラクタ
    * @param [in] _NumberOfRank  プロセス数
    * @param [in] _NumberOfGroup グループ数
    */ 
-  cio_MPI(const int _NumberOfRank, int _NumberOfGroup=0);
+  cdm_MPI(const int _NumberOfRank, int _NumberOfGroup=0);
 
   /** デストラクタ **/
-  ~cio_MPI();
+  ~cdm_MPI();
 
   /**
    * @brief read MPI(proc.dfi)
-   * @param [in]   tpCntl  cio_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス 
    * @param [in]   domain  Domain
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
-  Read(cio_TextParser tpCntl, 
-       const cio_Domain domain); 
+  CDM::E_CDM_ERRORCODE
+  Read(cdm_TextParser tpCntl, 
+       const cdm_Domain domain); 
 
   /**
    * @brief DFIファイル:MPIを出力する
@@ -52,10 +52,10 @@ public:
    * @param [in] tab     インデント
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   Write(FILE* fp, 
         const unsigned tab);
 
 };
 
-#endif // _CIO_MPI_H_
+#endif // _CDM_MPI_H_

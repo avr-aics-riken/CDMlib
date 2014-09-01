@@ -1,5 +1,5 @@
-#ifndef _CIO_PROCESS_H_
-#define _CIO_PROCESS_H_
+#ifndef _CDM_PROCESS_H_
+#define _CDM_PROCESS_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,13 +10,13 @@
  */
 
 /** 
- * @file   cio_Process.h
- * @brief  cio_RANK & cio_Process Class Header
+ * @file   cdm_Process.h
+ * @brief  cdm_RANK & cdm_Process Class Header
  * @author aics    
  */
 
 /** proc.dfi ファイルの Rank */
-class cio_Rank {
+class cdm_Rank {
 
 public:
 
@@ -28,19 +28,19 @@ public:
   int TailIndex[3];                     ///<終点インデックス
 
   /** コンストラクタ **/
-  cio_Rank();
+  cdm_Rank();
 
   /** デストラクタ **/
-  ~cio_Rank();
+  ~cdm_Rank();
 
   /**
    * @brief read Rank(proc.dfi)
-   * @param [in]   tpCntl  cio_TextParserクラス
+   * @param [in]   tpCntl  cdm_TextParserクラス
    * @param [in]   label_leaf ベースとなる名前（"/Process/Rank") 
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
-  Read(cio_TextParser tpCntl,
+  CDM::E_CDM_ERRORCODE
+  Read(cdm_TextParser tpCntl,
        std::string label_leaf);
 
   /**
@@ -49,36 +49,36 @@ public:
    * @param [in] tab      インデント
    * @return true:出力成功 false:出力失敗
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   Write(FILE* fp, 
         const unsigned tab);
 
 };
 
 /** proc.dfi ファイルのProcess */
-class cio_Process {
+class cdm_Process {
 
 public:
 
   typedef std::map<int,int> headT;
 
-  vector<cio_Rank> RankList;
+  vector<cdm_Rank> RankList;
 
   int *m_rankMap;
 
   /** コンストラクタ */
-  cio_Process();
+  cdm_Process();
 
   /** デストラクタ */
-  ~cio_Process();
+  ~cdm_Process();
 
   /**
    * @brief read Rank(proc.dfi)
-   * @param [in]   tpCntl  cio_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス 
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
-  Read(cio_TextParser tpCntl); 
+  CDM::E_CDM_ERRORCODE
+  Read(cdm_TextParser tpCntl); 
 
   /**
    * @brief 読込みランクリストの作成
@@ -92,11 +92,11 @@ public:
    * @param [out] readRankList 読込みランクリスト
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE 
-  CheckReadRank(cio_Domain dfi_domain,
+  CDM::E_CDM_ERRORCODE 
+  CheckReadRank(cdm_Domain dfi_domain,
                 const int head[3],
                 const int tail[3],
-                CIO::E_CIO_READTYPE readflag,
+                CDM::E_CDM_READTYPE readflag,
                 vector<int> &readRankList); 
 
   /**
@@ -110,8 +110,8 @@ public:
    * @param [out] mapHeadZ   headXをキーにした位置情報マップ 
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE 
-  CreateRankList(cio_Domain dfi_domain,
+  CDM::E_CDM_ERRORCODE 
+  CreateRankList(cdm_Domain dfi_domain,
                  map<int,int> &mapHeadX,
                  map<int,int> &mapHeadY,
                  map<int,int> &mapHeadZ);
@@ -127,7 +127,7 @@ public:
    * @param [out] mapHeadZ   headXをキーにした位置情報マップ 
    * @return error code 
    */
-  CIO::E_CIO_ERRORCODE 
+  CDM::E_CDM_ERRORCODE 
   CreateRankList(int div[3],
                  int gvox[3],
                  map<int,int> &mapHeadX,
@@ -139,9 +139,9 @@ public:
    * @param [in]  dfi_domain DFIのdomain情報
    * @param [out] subDomainInfo 活性ドメイン情報
    */
-  CIO::E_CIO_ERRORCODE 
-  CreateSubDomainInfo(cio_Domain dfi_domain,
-                      vector<cio_ActiveSubDomain> &subDomainInfo); 
+  CDM::E_CDM_ERRORCODE 
+  CreateSubDomainInfo(cdm_Domain dfi_domain,
+                      vector<cdm_ActiveSubDomain> &subDomainInfo); 
 
   /**
    * @brief ActiveSubdomainファイルのエンディアンをチェック
@@ -157,13 +157,13 @@ public:
    * @param [in]  subDomainFile ActiveSubdomainファイル名
    * @param [out] subDomainInfo 活性ドメイン情報
    * @param [out] div           ActiveSubdiomainファイル中の領域分割数
-   * @return   終了コード(CIO_SUCCESS=正常終了)
+   * @return   終了コード(CDM_SUCCESS=正常終了)
    */
   static 
-  CIO::E_CIO_ERRORCODE 
+  CDM::E_CDM_ERRORCODE 
   ReadActiveSubdomainFile(
                           std::string subDomainFile,
-                          std::vector<cio_ActiveSubDomain>& subDomainInfo,
+                          std::vector<cdm_ActiveSubDomain>& subDomainInfo,
                           int div[3]);
 
   /**
@@ -174,7 +174,7 @@ public:
    * @return NULL
    */
   int* CreateRankMap(int div[3],
-                     std::vector<cio_ActiveSubDomain> &subDomainInfo);
+                     std::vector<cdm_ActiveSubDomain> &subDomainInfo);
 
   /**
    * @brief 生成済のRankListからランクマップを生成
@@ -219,11 +219,11 @@ public:
    * @param [in]  mapHeadZ     headZをキーにした位置情報マップ
    * @param [out] readRankList 読込みに必要なランク番号リスト
    */
-  CIO::E_CIO_ERRORCODE 
-  CheckStartEnd(cio_Domain dfi_domain,
+  CDM::E_CDM_ERRORCODE 
+  CheckStartEnd(cdm_Domain dfi_domain,
                 const int head[3],
                 const int tail[3],
-                CIO::E_CIO_READTYPE readflag,
+                CDM::E_CDM_READTYPE readflag,
                 headT mapHeadX,
                 headT mapHeadY,
                 headT mapHeadZ,
@@ -236,11 +236,11 @@ public:
    * @param [in] tab         インデント
    * @return true:出力成功 false:出力失敗
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   Write(FILE* fp, 
         const unsigned tab);
 
 
 };
 
-#endif // _CIO_PROCESS_H_
+#endif // _CDM_PROCESS_H_

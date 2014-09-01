@@ -1,5 +1,5 @@
-#ifndef _CIO_ARRAY_H_
-#define _CIO_ARRAY_H_
+#ifndef _CDM_ARRAY_H_
+#define _CDM_ARRAY_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -13,13 +13,13 @@
 
 extern "C"
 {
-  void cio_interp_ijkn_r4_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, float *src, float *dst );
-  void cio_interp_ijkn_r8_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, double *src, double *dst );
-  void cio_interp_nijk_r4_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, float *src, float *dst );
-  void cio_interp_nijk_r8_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, double *src, double *dst );
+  void cdm_interp_ijkn_r4_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, float *src, float *dst );
+  void cdm_interp_ijkn_r8_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, double *src, double *dst );
+  void cdm_interp_nijk_r4_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, float *src, float *dst );
+  void cdm_interp_nijk_r8_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, double *src, double *dst );
 }
 
-class cio_Array
+class cdm_Array
 {
 /*
  * enum
@@ -27,27 +27,27 @@ class cio_Array
 public:
 /*
   /// データタイプ
-  enum E_CIO_DTYPE
+  enum E_CDM_DTYPE
   {
-    E_CIO_DTYPE_UNKNOWN=0,
-    E_CIO_INT8,
-    E_CIO_INT16,
-    E_CIO_INT32,
-    E_CIO_INT64,
-    E_CIO_UINT8,
-    E_CIO_UINT16,
-    E_CIO_UINT32,
-    E_CIO_UINT64,
-    E_CIO_FLOAT32,
-    E_CIO_FLOAT64
+    E_CDM_DTYPE_UNKNOWN=0,
+    E_CDM_INT8,
+    E_CDM_INT16,
+    E_CDM_INT32,
+    E_CDM_INT64,
+    E_CDM_UINT8,
+    E_CDM_UINT16,
+    E_CDM_UINT32,
+    E_CDM_UINT64,
+    E_CDM_FLOAT32,
+    E_CDM_FLOAT64
   };
 
   /// 配列形状タイプ
-  enum E_CIO_ARRAYSHAPE
+  enum E_CDM_ARRAYSHAPE
   {
-    E_CIO_ARRAYSHAPE_UNKNOWN=0,
-    E_CIO_IJKN,
-    E_CIO_NIJK,
+    E_CDM_ARRAYSHAPE_UNKNOWN=0,
+    E_CDM_IJKN,
+    E_CDM_NIJK,
   };
 */
 
@@ -56,14 +56,14 @@ public:
  */
 public:
   /// デストラクタ
-  virtual ~cio_Array()
+  virtual ~cdm_Array()
   {
   }
 
   /// インスタンス
-  static cio_Array*
-  instanceArray( CIO::E_CIO_DTYPE dtype
-               , CIO::E_CIO_ARRAYSHAPE shape
+  static cdm_Array*
+  instanceArray( CDM::E_CDM_DTYPE dtype
+               , CDM::E_CDM_ARRAYSHAPE shape
                , size_t ix
                , size_t jx
                , size_t kx
@@ -71,17 +71,17 @@ public:
                , size_t ncomp=1 );
 
   /// インスタンス
-  static cio_Array*
-  instanceArray( CIO::E_CIO_DTYPE dtype
-               , CIO::E_CIO_ARRAYSHAPE shape
+  static cdm_Array*
+  instanceArray( CDM::E_CDM_DTYPE dtype
+               , CDM::E_CDM_ARRAYSHAPE shape
                , size_t sz[3]
                , size_t gc
                , size_t ncomp=1 );
 
   /// インスタンス
-  static cio_Array*
-  instanceArray( CIO::E_CIO_DTYPE dtype
-               , CIO::E_CIO_ARRAYSHAPE shape
+  static cdm_Array*
+  instanceArray( CDM::E_CDM_DTYPE dtype
+               , CDM::E_CDM_ARRAYSHAPE shape
                , int ix
                , int jx
                , int kx
@@ -89,18 +89,18 @@ public:
                , int ncomp=1 );
 
   /// インスタンス
-  static cio_Array*
-  instanceArray( CIO::E_CIO_DTYPE dtype
-               , CIO::E_CIO_ARRAYSHAPE shape
+  static cdm_Array*
+  instanceArray( CDM::E_CDM_DTYPE dtype
+               , CDM::E_CDM_ARRAYSHAPE shape
                , int sz[3]
                , int gc
                , int ncomp=1 );
 
   /// インスタンス
   template<class T>
-  static cio_Array*
+  static cdm_Array*
   instanceArray( T *data
-               , CIO::E_CIO_ARRAYSHAPE shape
+               , CDM::E_CDM_ARRAYSHAPE shape
                , size_t ix
                , size_t jx
                , size_t kx
@@ -109,18 +109,18 @@ public:
 
   /// インスタンス
   template<class T>
-  static cio_Array*
+  static cdm_Array*
   instanceArray( T *data
-               , CIO::E_CIO_ARRAYSHAPE shape
+               , CDM::E_CDM_ARRAYSHAPE shape
                , size_t sz[3]
                , size_t gc
                , size_t ncomp=1 );
 
   /// インスタンス
   template<class T>
-  static cio_Array*
+  static cdm_Array*
   instanceArray( T *data
-               , CIO::E_CIO_ARRAYSHAPE shape
+               , CDM::E_CDM_ARRAYSHAPE shape
                , int ix
                , int jx
                , int kx
@@ -129,9 +129,9 @@ public:
 
   /// インスタンス
   template<class T>
-  static cio_Array*
+  static cdm_Array*
   instanceArray( T *data
-               , CIO::E_CIO_ARRAYSHAPE shape
+               , CDM::E_CDM_ARRAYSHAPE shape
                , int sz[3]
                , int gc
                , int ncomp=1 );
@@ -140,7 +140,7 @@ public:
   void* getData( bool extract=false );
 
   /// データタイプの取得
-  CIO::E_CIO_DTYPE getDataType() const
+  CDM::E_CDM_DTYPE getDataType() const
   {
     return m_dtype;
   }
@@ -150,34 +150,34 @@ public:
   {
     switch( m_dtype )
     {
-    case CIO::E_CIO_INT8:
+    case CDM::E_CDM_INT8:
       return "INT8";
       break;
-    case CIO::E_CIO_INT16:
+    case CDM::E_CDM_INT16:
       return "INT16";
       break;
-    case CIO::E_CIO_INT32:
+    case CDM::E_CDM_INT32:
       return "INT32";
       break;
-    case CIO::E_CIO_INT64:
+    case CDM::E_CDM_INT64:
       return "INT64";
       break;
-    case CIO::E_CIO_UINT8:
+    case CDM::E_CDM_UINT8:
       return "UINT8";
       break;
-    case CIO::E_CIO_UINT16:
+    case CDM::E_CDM_UINT16:
       return "UINT16";
       break;
-    case CIO::E_CIO_UINT32:
+    case CDM::E_CDM_UINT32:
       return "UINT32";
       break;
-    case CIO::E_CIO_UINT64:
+    case CDM::E_CDM_UINT64:
       return "UINT64";
       break;
-    case CIO::E_CIO_FLOAT32:
+    case CDM::E_CDM_FLOAT32:
       return "FLOAT32";
       break;
-    case CIO::E_CIO_FLOAT64:
+    case CDM::E_CDM_FLOAT64:
       return "FLOAT64";
       break;
     }
@@ -185,7 +185,7 @@ public:
   }
 
   /// 配列形状の取得
-  CIO::E_CIO_ARRAYSHAPE getArrayShape() const
+  CDM::E_CDM_ARRAYSHAPE getArrayShape() const
   {
     return m_shape;
   }
@@ -195,10 +195,10 @@ public:
   {
     switch(m_shape)
     {
-    case CIO::E_CIO_IJKN:
+    case CDM::E_CDM_IJKN:
       return "IJKN";
       break;
-    case CIO::E_CIO_NIJK:
+    case CDM::E_CDM_NIJK:
       return "NIJK";
       break;
     }
@@ -246,10 +246,10 @@ public:
   {
     switch(m_shape)
     {
-    case CIO::E_CIO_IJKN:
+    case CDM::E_CDM_IJKN:
       return m_headIndex;
       break;
-    case CIO::E_CIO_NIJK:
+    case CDM::E_CDM_NIJK:
       return m_headIndex + 1;
       break;
     }
@@ -261,10 +261,10 @@ public:
   {
     switch(m_shape)
     {
-    case CIO::E_CIO_IJKN:
+    case CDM::E_CDM_IJKN:
       return m_tailIndex;
       break;
-    case CIO::E_CIO_NIJK:
+    case CDM::E_CDM_NIJK:
       return m_tailIndex + 1;
       break;
     }
@@ -276,10 +276,10 @@ public:
   {
     switch(m_shape)
     {
-    case CIO::E_CIO_IJKN:
+    case CDM::E_CDM_IJKN:
       return m_Sz;
       break;
-    case CIO::E_CIO_NIJK:
+    case CDM::E_CDM_NIJK:
       return m_Sz + 1;
       break;
     }
@@ -291,10 +291,10 @@ public:
   {
     switch(m_shape)
     {
-    case CIO::E_CIO_IJKN:
+    case CDM::E_CDM_IJKN:
       return m_SzI;
       break;
-    case CIO::E_CIO_NIJK:
+    case CDM::E_CDM_NIJK:
       return m_SzI + 1;
       break;
     }
@@ -317,7 +317,7 @@ public:
   {
     switch(m_shape)
     {
-    case CIO::E_CIO_IJKN:
+    case CDM::E_CDM_IJKN:
       m_headIndex[0] = head[0];
       m_headIndex[1] = head[1];
       m_headIndex[2] = head[2];
@@ -327,7 +327,7 @@ public:
       m_tailIndex[2] = m_headIndex[2] + m_sz[2] - 1;
       m_tailIndex[3] = 0;
       break;
-    case CIO::E_CIO_NIJK:
+    case CDM::E_CDM_NIJK:
       m_headIndex[0] = 0;
       m_headIndex[1] = head[0];
       m_headIndex[2] = head[1];
@@ -340,21 +340,21 @@ public:
   }
 
   /// 配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArray( cio_Array *dst, bool ignoreGc=false ) = 0;
+  virtual int copyArray( cdm_Array *dst, bool ignoreGc=false ) = 0;
 
   /// 範囲指定での配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArray( int sta[3], int end[3], cio_Array *dst ) = 0;
+  virtual int copyArray( int sta[3], int end[3], cdm_Array *dst ) = 0;
 
 //FCONV 20131216.s
   /// 指定成分の配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArrayNcomp( cio_Array *dst, int comp, bool ignoreGc=false ) = 0;
+  virtual int copyArrayNcomp( cdm_Array *dst, int comp, bool ignoreGc=false ) = 0;
 
   /// 指定成分の範囲指定での配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArrayNcomp( int sta[3], int end[3], cio_Array *dst, int comp ) = 0;
+  virtual int copyArrayNcomp( int sta[3], int end[3], cdm_Array *dst, int comp ) = 0;
 //FCONV 20131216.e
 
   /// 粗密データの補間処理を行う
-  static cio_Array* interp_coarse( cio_Array *src, int &err, bool head0start=true );
+  static cdm_Array* interp_coarse( cdm_Array *src, int &err, bool head0start=true );
 
   /// 配列サイズ分のバイナリデータを読み込み(戻り値は読み込んだ要素数)
   virtual size_t readBinary( FILE *fp , bool bMatchEndian) = 0;
@@ -369,10 +369,10 @@ public:
 
 protected:
   /// デフォルトコンストラクタ
-  cio_Array()
+  cdm_Array()
   {
-    m_dtype = CIO::E_CIO_DTYPE_UNKNOWN;
-    m_shape = CIO::E_CIO_ARRAYSHAPE_UNKNOWN;
+    m_dtype = CDM::E_CDM_DTYPE_UNKNOWN;
+    m_shape = CDM::E_CDM_ARRAYSHAPE_UNKNOWN;
     m_sz[0] = m_sz[1] = m_sz[2] = 0;
     m_Sz[0] = m_Sz[1] = m_Sz[2] = m_Sz[3] = 0;
     m_gc = 0;
@@ -383,8 +383,8 @@ protected:
   }
 
   /// コンストラクタ
-  cio_Array( CIO::E_CIO_DTYPE dtype
-            , CIO::E_CIO_ARRAYSHAPE shape
+  cdm_Array( CDM::E_CDM_DTYPE dtype
+            , CDM::E_CDM_ARRAYSHAPE shape
             , size_t ix
             , size_t jx
             , size_t kx
@@ -397,7 +397,7 @@ protected:
 
     switch(shape)
     {
-    case CIO::E_CIO_IJKN:
+    case CDM::E_CDM_IJKN:
       m_Sz[0] = m_SzI[0] = ix+2*gc;
       m_Sz[1] = m_SzI[1] = jx+2*gc;
       m_Sz[2] = m_SzI[2] = kx+2*gc;
@@ -407,7 +407,7 @@ protected:
       m_gcl[2] = gc;
       m_gcl[3] = 0;
       break;
-    case CIO::E_CIO_NIJK:
+    case CDM::E_CDM_NIJK:
       m_Sz[0] = m_SzI[0] = ncomp;
       m_Sz[1] = m_SzI[1] = ix+2*gc;
       m_Sz[2] = m_SzI[2] = jx+2*gc;
@@ -435,10 +435,10 @@ public:
 
 protected:
   /// データタイプ
-  CIO::E_CIO_DTYPE m_dtype;
+  CDM::E_CDM_DTYPE m_dtype;
 
   /// 配列形状
-  CIO::E_CIO_ARRAYSHAPE m_shape;
+  CDM::E_CDM_ARRAYSHAPE m_shape;
 
   /// ガイドセル数
   size_t m_gc;
@@ -476,5 +476,5 @@ protected:
   int m_tailIndex[4];
 };
 
-#endif /* _CIO_ARRAY_H_ */
+#endif /* _CDM_ARRAY_H_ */
 

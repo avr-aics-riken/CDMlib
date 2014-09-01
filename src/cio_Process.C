@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_Process.C
- * @brief  cio_Rank & cio_Process Class
+ * @file   cdm_Process.C
+ * @brief  cdm_Rank & cdm_Process Class
  * @author aics    
  */
 
@@ -18,7 +18,7 @@
 
 // #################################################################
 // コンストラクタ
-cio_Rank::cio_Rank()
+cdm_Rank::cdm_Rank()
 {
 
  RankID = 0;
@@ -34,15 +34,15 @@ cio_Rank::cio_Rank()
 
 // #################################################################
 // デストラクタ
-cio_Rank::~cio_Rank()
+cdm_Rank::~cdm_Rank()
 {
 
 }
 
 // #################################################################
 // DFIファイル:Rank要素を読み込む
-CIO::E_CIO_ERRORCODE
-cio_Rank::Read(cio_TextParser tpCntl,
+CDM::E_CDM_ERRORCODE
+cdm_Rank::Read(cdm_TextParser tpCntl,
                std::string label_leaf)
 {
 #if 0
@@ -54,8 +54,8 @@ cio_Rank::Read(cio_TextParser tpCntl,
   //ID
   label = label_leaf + "/ID";
   if ( !(tpCntl.GetValue(label, &ct )) ) {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_ID;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_ID;
   }
   else {
     RankID= ct;
@@ -64,8 +64,8 @@ cio_Rank::Read(cio_TextParser tpCntl,
   //HostName
   label = label_leaf + "/HostName";
   if ( !(tpCntl.GetValue(label, &str )) ) {
-    printf("\tCIO Parsing error : fail to get '%s'\n", label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_HOSTNAME;
+    printf("\tCDM Parsing error : fail to get '%s'\n", label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_HOSTNAME;
   }
   HostName= str;
 
@@ -74,8 +74,8 @@ cio_Rank::Read(cio_TextParser tpCntl,
   for (int n=0; n<3; n++) iv[n]=0.0;
   if ( !(tpCntl.GetVector(label, iv, 3 )) ) 
   {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_VOXELSIZE;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_VOXELSIZE;
   }
   VoxelSize[0]=iv[0];
   VoxelSize[1]=iv[1];
@@ -86,8 +86,8 @@ cio_Rank::Read(cio_TextParser tpCntl,
   for (int n=0; n<3; n++) iv[n]=0.0;
   if ( !(tpCntl.GetVector(label, iv, 3 )) ) 
   {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_HEADINDEX;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_HEADINDEX;
   }
   HeadIndex[0]=iv[0];
   HeadIndex[1]=iv[1];
@@ -98,8 +98,8 @@ cio_Rank::Read(cio_TextParser tpCntl,
   for (int n=0; n<3; n++) iv[n]=0.0;
   if ( !(tpCntl.GetVector(label, iv, 3 )) ) 
   {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_TAILINDEX;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_TAILINDEX;
   }
   TailIndex[0]=iv[0];
   TailIndex[1]=iv[1];
@@ -118,8 +118,8 @@ cio_Rank::Read(cio_TextParser tpCntl,
   //ID
   label = "ID";
   if ( !(tpCntl.GetValue(label, &ct, false )) ) {
-    printf("\tCIO Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_ID;
+    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_ID;
   }
   else {
     RankID= ct;
@@ -128,8 +128,8 @@ cio_Rank::Read(cio_TextParser tpCntl,
   //HostName
   label = "HostName";
   if ( !(tpCntl.GetValue(label, &str, false )) ) {
-    printf("\tCIO Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_HOSTNAME;
+    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_HOSTNAME;
   }
   HostName= str;
 
@@ -138,8 +138,8 @@ cio_Rank::Read(cio_TextParser tpCntl,
   for (int n=0; n<3; n++) iv[n]=0.0;
   if ( !(tpCntl.GetVector(label, iv, 3, false )) ) 
   {
-    printf("\tCIO Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_VOXELSIZE;
+    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_VOXELSIZE;
   }
   VoxelSize[0]=iv[0];
   VoxelSize[1]=iv[1];
@@ -150,8 +150,8 @@ cio_Rank::Read(cio_TextParser tpCntl,
   for (int n=0; n<3; n++) iv[n]=0.0;
   if ( !(tpCntl.GetVector(label, iv, 3, false )) ) 
   {
-    printf("\tCIO Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_HEADINDEX;
+    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_HEADINDEX;
   }
   HeadIndex[0]=iv[0];
   HeadIndex[1]=iv[1];
@@ -162,52 +162,52 @@ cio_Rank::Read(cio_TextParser tpCntl,
   for (int n=0; n<3; n++) iv[n]=0.0;
   if ( !(tpCntl.GetVector(label, iv, 3, false )) ) 
   {
-    printf("\tCIO Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_TAILINDEX;
+    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_TAILINDEX;
   }
   TailIndex[0]=iv[0];
   TailIndex[1]=iv[1];
   TailIndex[2]=iv[2];
 #endif
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // DFIファイル:Rank要素を出力する
-CIO::E_CIO_ERRORCODE
-cio_Rank::Write(FILE* fp, 
+CDM::E_CDM_ERRORCODE
+cdm_Rank::Write(FILE* fp, 
                 const unsigned tab) 
 {
 
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "ID        = %d\n", RankID);
 
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "HostName  = \"%s\"\n", HostName.c_str());
 
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "VoxelSize = (%d, %d, %d)\n", VoxelSize[0],
                                               VoxelSize[1],
                                               VoxelSize[2]);
 
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "HeadIndex = (%d, %d, %d)\n", HeadIndex[0],
                                               HeadIndex[1],
                                               HeadIndex[2]);
 
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "TailIndex = (%d, %d, %d)\n", TailIndex[0],
                                               TailIndex[1],
                                               TailIndex[2]);
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
 
 // #################################################################
 // コンストラクタ
-cio_Process::cio_Process()
+cdm_Process::cdm_Process()
 {
 
   m_rankMap=NULL;
@@ -216,23 +216,23 @@ cio_Process::cio_Process()
 
 // #################################################################
 // デストラクタ
-cio_Process::~cio_Process()
+cdm_Process::~cdm_Process()
 {
   if( m_rankMap ) delete m_rankMap;
 }
 
 // #################################################################
 // DFIファイル:Process要素を読み込む
-CIO::E_CIO_ERRORCODE
-cio_Process::Read(cio_TextParser tpCntl)
+CDM::E_CDM_ERRORCODE
+cdm_Process::Read(cdm_TextParser tpCntl)
 {
 #if 0
   std::string str;
   std::string label_base,label_leaf;
   int nnode=0;
-  CIO::E_CIO_ERRORCODE iret;  ///<リターンコード
+  CDM::E_CDM_ERRORCODE iret;  ///<リターンコード
 
-  cio_Rank rank;
+  cdm_Rank rank;
 
   //Process 
   nnode=0;
@@ -246,35 +246,35 @@ cio_Process::Read(cio_TextParser tpCntl)
 
     if(!tpCntl.GetNodeStr(label_base,i+1,&str))
     {
-      printf("\tCIO Parsing error : No Elem name\n");
-      return CIO::E_CIO_ERROR_READ_DFI_NO_RANK;
+      printf("\tCDM Parsing error : No Elem name\n");
+      return CDM::E_CDM_ERROR_READ_DFI_NO_RANK;
     }
     if( strcasecmp(str.substr(0,4).c_str(), "Rank") ) continue;
     label_leaf=label_base+"/"+str;
 
     /** Rankの読込み */
     iret = rank.Read(tpCntl, label_leaf);
-    if( iret == CIO::E_CIO_SUCCESS ) {
+    if( iret == CDM::E_CDM_SUCCESS ) {
       RankList.push_back(rank); 
     } else  return iret;
 
   }
 #else
-  CIO::E_CIO_ERRORCODE iret;
+  CDM::E_CDM_ERRORCODE iret;
 
   // TP
   TextParser *tp = tpCntl.getTPPtr();
   if( !tp )
   {
-    return CIO::E_CIO_ERROR_TEXTPARSER;
+    return CDM::E_CDM_ERROR_TEXTPARSER;
   }
 
   // Process要素の存在チェック
   std::string label_base = "/Process";
   if( !tpCntl.chkNode(label_base) )
   {
-    printf("\tCIO Parsing error : No Elem name [%s]\n", label_base.c_str());
-    return CIO::E_CIO_ERROR_READ_PROCESS;
+    printf("\tCDM Parsing error : No Elem name [%s]\n", label_base.c_str());
+    return CDM::E_CDM_ERROR_READ_PROCESS;
   }
 
   // /Processに移動
@@ -292,9 +292,9 @@ cio_Process::Read(cio_TextParser tpCntl)
     if( strcasecmp(label.substr(0,4).c_str(), "Rank") ) continue;
 
     // Rank要素の読込み
-    cio_Rank rank;
+    cdm_Rank rank;
     std::string leaf = label_base + "/" + label;
-    if( (iret = rank.Read(tpCntl,leaf)) == CIO::E_CIO_SUCCESS )
+    if( (iret = rank.Read(tpCntl,leaf)) == CDM::E_CDM_SUCCESS )
     {
       RankList.push_back(rank);
     }
@@ -305,16 +305,16 @@ cio_Process::Read(cio_TextParser tpCntl)
   }
 #endif
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // 読込みランクリストの作成
-CIO::E_CIO_ERRORCODE 
-cio_Process::CheckReadRank(cio_Domain dfi_domain, 
+CDM::E_CDM_ERRORCODE 
+cdm_Process::CheckReadRank(cdm_Domain dfi_domain, 
                            const int head[3],
                            const int tail[3],
-                           CIO::E_CIO_READTYPE readflag,
+                           CDM::E_CDM_READTYPE readflag,
                            vector<int> &ReadRankList)
 {
 
@@ -322,8 +322,8 @@ cio_Process::CheckReadRank(cio_Domain dfi_domain,
 
   //DFIにProcess/Rank[@]がない処理
   if( RankList.empty() ) {
-    CIO::E_CIO_ERRORCODE ret = CreateRankList(dfi_domain, mapHeadX, mapHeadY, mapHeadZ);   
-    if( ret != CIO::E_CIO_SUCCESS ) return ret;
+    CDM::E_CDM_ERRORCODE ret = CreateRankList(dfi_domain, mapHeadX, mapHeadY, mapHeadZ);   
+    if( ret != CDM::E_CDM_SUCCESS ) return ret;
   }
 
   //rankMapが未定義（DFIにProcess/Rank[@]がある場合）
@@ -350,19 +350,19 @@ cio_Process::CheckReadRank(cio_Domain dfi_domain,
 
 // #################################################################
 // DFIのProcessにHeadIndex,TailIndex指定が無い場合RankListを生成
-CIO::E_CIO_ERRORCODE 
-cio_Process::CreateRankList(cio_Domain dfi_domain,
+CDM::E_CDM_ERRORCODE 
+cdm_Process::CreateRankList(cdm_Domain dfi_domain,
                             map<int,int> &mapHeadX,
                             map<int,int> &mapHeadY,
                             map<int,int> &mapHeadZ)
 {
 
-  vector<cio_ActiveSubDomain> subDomainInfo;
+  vector<cdm_ActiveSubDomain> subDomainInfo;
 
-  CIO::E_CIO_ERRORCODE ret;
+  CDM::E_CDM_ERRORCODE ret;
  
   ret = CreateSubDomainInfo(dfi_domain,subDomainInfo);
-  if( ret != CIO::E_CIO_SUCCESS ) return ret;
+  if( ret != CDM::E_CDM_SUCCESS ) return ret;
   
   m_rankMap = CreateRankMap(dfi_domain.GlobalDivision,subDomainInfo);
 
@@ -375,42 +375,42 @@ cio_Process::CreateRankList(cio_Domain dfi_domain,
 
 // #################################################################
 // ActiveSubDomain情報を作成
-CIO::E_CIO_ERRORCODE 
-cio_Process::CreateSubDomainInfo(cio_Domain domain,
-                                 vector<cio_ActiveSubDomain> &subDomainInfo)
+CDM::E_CDM_ERRORCODE 
+cdm_Process::CreateSubDomainInfo(cdm_Domain domain,
+                                 vector<cdm_ActiveSubDomain> &subDomainInfo)
 {
   if( !domain.ActiveSubdomainFile.empty() ) {
     int divSudomain[3] = {0,0,0};
-    CIO::E_CIO_ERRORCODE ret = ReadActiveSubdomainFile( domain.ActiveSubdomainFile,
+    CDM::E_CDM_ERRORCODE ret = ReadActiveSubdomainFile( domain.ActiveSubdomainFile,
                                                    subDomainInfo, divSudomain);
-    if( ret != CIO::E_CIO_SUCCESS ) return ret;
+    if( ret != CDM::E_CDM_SUCCESS ) return ret;
   } else {
     //活性サブドメイン情報
     for( int k=0;k<domain.GlobalDivision[2];k++ ){
     for( int j=0;j<domain.GlobalDivision[1];j++ ){
     for( int i=0;i<domain.GlobalDivision[0];i++ ){
       int pos[3] = {i,j,k};
-      cio_ActiveSubDomain dom( pos );
+      cdm_ActiveSubDomain dom( pos );
       subDomainInfo.push_back(dom);
     }}}
 
   }
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 // #################################################################
 // subDomainをもとにCPM同様の分割方法でRankListを生成する
-CIO::E_CIO_ERRORCODE 
-cio_Process::CreateRankList(int div[3],
+CDM::E_CDM_ERRORCODE 
+cdm_Process::CreateRankList(int div[3],
                             int gvox[3],
                             map<int,int> &mapHeadX,
                             map<int,int> &mapHeadY,
                             map<int,int> &mapHeadZ )
 {
-  if( !m_rankMap ) return CIO::E_CIO_ERROR;
+  if( !m_rankMap ) return CDM::E_CDM_ERROR;
   int ndiv = div[0]*div[1]*div[2];
 
-  cio_Rank rank;
+  cdm_Rank rank;
 
   //ローカルのVOXEL数
   int *nvX = new int[div[0]];
@@ -460,7 +460,7 @@ cio_Process::CreateRankList(int div[3],
   for( int k=0;k<div[2];k++ ){
   for( int j=0;j<div[1];j++ ){
   for( int i=0;i<div[0];i++ ){
-    int rankNo = m_rankMap[_CIO_IDX_IJK(i,j,k,div[0],div[1],div[2],0)];
+    int rankNo = m_rankMap[_CDM_IDX_IJK(i,j,k,div[0],div[1],div[2],0)];
     if( rankNo < 0 ) continue;
     rank.RankID = rankNo;
     rank.VoxelSize[0]=(headX[i]+nvX[i]-1)-headX[i]+1;
@@ -482,43 +482,43 @@ cio_Process::CreateRankList(int div[3],
   delete [] headY;
   delete [] headZ;
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // ActiveSubdomainファイルの読み込み(static関数)
-CIO::E_CIO_ERRORCODE 
-cio_Process::ReadActiveSubdomainFile(
+CDM::E_CDM_ERRORCODE 
+cdm_Process::ReadActiveSubdomainFile(
                      std::string subDomainFile,
-                     std::vector<cio_ActiveSubDomain>& subDomainInfo,
+                     std::vector<cdm_ActiveSubDomain>& subDomainInfo,
                      int div[3] )
 {
-  if( subDomainFile.empty() ) return CIO::E_CIO_ERROR_OPEN_SBDM;
+  if( subDomainFile.empty() ) return CDM::E_CDM_ERROR_OPEN_SBDM;
 
   // ファイルオープン
   FILE*fp = fopen( subDomainFile.c_str(), "rb" );
-  if( !fp ) return CIO::E_CIO_ERROR_OPEN_SBDM;
+  if( !fp ) return CDM::E_CDM_ERROR_OPEN_SBDM;
 
   //エンディアン識別子
   int ident;
     if( fread( &ident, sizeof(int), 1, fp ) != 1 )
   {
     fclose(fp);
-    return CIO::E_CIO_ERROR_READ_SBDM_HEADER;
+    return CDM::E_CDM_ERROR_READ_SBDM_HEADER;
   }
 
  //エンディアンチェック
   if( isMatchEndianSbdmMagick( ident ) < 0 )
   {
     fclose(fp);
-    return CIO::E_CIO_ERROR_READ_SBDM_FORMAT;
+    return CDM::E_CDM_ERROR_READ_SBDM_FORMAT;
   }
 
   // 領域分割数
   if( fread( div, sizeof(int), 3, fp ) != 3 )
   {
     fclose(fp);
-    return CIO::E_CIO_ERROR_READ_SBDM_DIV;
+    return CDM::E_CDM_ERROR_READ_SBDM_DIV;
   }
 
   if( isMatchEndianSbdmMagick( ident ) == 0 ) BSWAPVEC(div,3);
@@ -530,7 +530,7 @@ cio_Process::ReadActiveSubdomainFile(
   {
     delete [] contents;
     fclose(fp);
-    return CIO::E_CIO_ERROR_READ_SBDM_CONTENTS;
+    return CDM::E_CDM_ERROR_READ_SBDM_CONTENTS;
   }
 
   // ファイルクローズ
@@ -544,7 +544,7 @@ cio_Process::ReadActiveSubdomainFile(
     if( contents[ptr] == 0x01 )
     {
       int pos[3] = {i,j,k};
-      cio_ActiveSubDomain dom( pos );
+      cdm_ActiveSubDomain dom( pos );
       subDomainInfo.push_back(dom);
     }
     ptr++;
@@ -556,15 +556,15 @@ cio_Process::ReadActiveSubdomainFile(
   // 活性ドメインの数をチェック
   if( subDomainInfo.size() == 0 )
   {
-    return CIO::E_CIO_ERROR_SBDM_NUMDOMAIN_ZERO;
+    return CDM::E_CDM_ERROR_SBDM_NUMDOMAIN_ZERO;
   }
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // ActiveSubdomainファイルのエンディアンチェック
-int cio_Process::isMatchEndianSbdmMagick( int ident )
+int cdm_Process::isMatchEndianSbdmMagick( int ident )
 {
   char magick_c[] = "SBDM";
   int  magick_i=0;
@@ -589,9 +589,9 @@ int cio_Process::isMatchEndianSbdmMagick( int ident )
 
 // #################################################################
 // ランクマップを生成 （非活性を含む）
-int* cio_Process::CreateRankMap(
+int* cdm_Process::CreateRankMap(
                                 int div[3],
-                                std::vector<cio_ActiveSubDomain> &subDomainInfo)
+                                std::vector<cdm_ActiveSubDomain> &subDomainInfo)
 {
 
   size_t ndiv = size_t(div[0]) * size_t(div[1]) * size_t(div[2]);
@@ -604,7 +604,7 @@ int* cio_Process::CreateRankMap(
   for( int i=0; i<subDomainInfo.size(); i++ )
   {
     //サブドメイン情報
-    const cio_ActiveSubDomain dom = subDomainInfo[i];
+    const cdm_ActiveSubDomain dom = subDomainInfo[i];
 
     //位置を取得
     const int *pos = dom.GetPos();
@@ -615,7 +615,7 @@ int* cio_Process::CreateRankMap(
     }
 
     //0をセット
-    rankMap[_CIO_IDX_IJK(pos[0],pos[1],pos[2],div[0],div[1],div[2],0)] = 0;
+    rankMap[_CDM_IDX_IJK(pos[0],pos[1],pos[2],div[0],div[1],div[2],0)] = 0;
   }
 
  //i->j->kの優先順で活性サブドメインにランク番号をセット
@@ -623,9 +623,9 @@ int* cio_Process::CreateRankMap(
   for( int k=0;k<div[2];k++ ){
   for( int j=0;j<div[1];j++ ){
   for( int i=0;i<div[0];i++ ){
-    if( rankMap[_CIO_IDX_IJK(i,j,k,div[0],div[1],div[2],0)] == 0 )
+    if( rankMap[_CDM_IDX_IJK(i,j,k,div[0],div[1],div[2],0)] == 0 )
     {
-      rankMap[_CIO_IDX_IJK(i,j,k,div[0],div[1],div[2],0)] = rankCount;
+      rankMap[_CDM_IDX_IJK(i,j,k,div[0],div[1],div[2],0)] = rankCount;
       rankCount++;
     }
   }}}
@@ -635,7 +635,7 @@ int* cio_Process::CreateRankMap(
 
 // #################################################################
 //head map の生成 set版
-void cio_Process::CreateHeadMap(std::set<int>head,
+void cdm_Process::CreateHeadMap(std::set<int>head,
                                 headT &map)
 {
 
@@ -652,7 +652,7 @@ void cio_Process::CreateHeadMap(std::set<int>head,
 
 // #################################################################
 //head map の生成 int配列版
-void cio_Process::CreateHeadMap(int* head,
+void cdm_Process::CreateHeadMap(int* head,
                                 int ndiv,
                                 headT &map)
 {
@@ -668,7 +668,7 @@ void cio_Process::CreateHeadMap(int* head,
 
 // #################################################################
 //DFI用ランクマップを生成
-int* cio_Process::CreateRankMap(int div[3],
+int* cdm_Process::CreateRankMap(int div[3],
                                 headT &mapHeadX,
                                 headT &mapHeadY,
                                 headT &mapHeadZ)
@@ -704,9 +704,9 @@ int* cio_Process::CreateRankMap(int div[3],
     it=mapHeadZ.find(RankList[n].HeadIndex[2]);
     k=it->second;
 
-    int rnkPos=_CIO_IDX_IJK(i,j,k,div[0],div[1],div[2],0);
+    int rnkPos=_CDM_IDX_IJK(i,j,k,div[0],div[1],div[2],0);
 
-    rankMap[_CIO_IDX_IJK(i,j,k,div[0],div[1],div[2],0)] = n;
+    rankMap[_CDM_IDX_IJK(i,j,k,div[0],div[1],div[2],0)] = n;
   }
 
   return rankMap;
@@ -715,11 +715,11 @@ int* cio_Process::CreateRankMap(int div[3],
 
 // #################################################################
 //  読込みランクファイルリストの作成
-CIO::E_CIO_ERRORCODE 
-cio_Process::CheckStartEnd(cio_Domain dfi_domain,
+CDM::E_CDM_ERRORCODE 
+cdm_Process::CheckStartEnd(cdm_Domain dfi_domain,
                            const int head[3],
                            const int tail[3],
-                           CIO::E_CIO_READTYPE readflag,
+                           CDM::E_CDM_READTYPE readflag,
                            headT mapHeadX,
                            headT mapHeadY,
                            headT mapHeadZ,
@@ -732,7 +732,7 @@ cio_Process::CheckStartEnd(cio_Domain dfi_domain,
              dfi_domain.GlobalDivision[1]*
              dfi_domain.GlobalDivision[2];
   int head2[3],tail2[3];
-  if( readflag == CIO::E_CIO_SAMEDIV_SAMERES || readflag == CIO::E_CIO_DIFFDIV_SAMERES ) {
+  if( readflag == CDM::E_CDM_SAMEDIV_SAMERES || readflag == CDM::E_CDM_DIFFDIV_SAMERES ) {
     for(int i=0; i<3; i++) {
       head2[i]=head[i];
       tail2[i]=tail[i];
@@ -775,7 +775,7 @@ cio_Process::CheckStartEnd(cio_Domain dfi_domain,
   for(int k=StartEnd[2]; k<=StartEnd[5]; k++) {
   for(int j=StartEnd[1]; j<=StartEnd[4]; j++) {
   for(int i=StartEnd[0]; i<=StartEnd[3]; i++) {
-    int rank = m_rankMap[_CIO_IDX_IJK(i,j,k,dfi_domain.GlobalDivision[0],
+    int rank = m_rankMap[_CDM_IDX_IJK(i,j,k,dfi_domain.GlobalDivision[0],
                                           dfi_domain.GlobalDivision[1],
                                           dfi_domain.GlobalDivision[2],0)];
     if( rank<0 ) continue;
@@ -784,40 +784,40 @@ cio_Process::CheckStartEnd(cio_Domain dfi_domain,
 
   }}}
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // DFIファイル:Process要素を出力する
-CIO::E_CIO_ERRORCODE
-cio_Process::Write(FILE* fp, 
+CDM::E_CDM_ERRORCODE
+cdm_Process::Write(FILE* fp, 
                    const unsigned tab) 
 {
 
   fprintf(fp, "Process {\n");
   fprintf(fp, "\n");
 
-  cio_Rank rank;
+  cdm_Rank rank;
 
   for(int i=0; i<RankList.size(); i++) {
-    _CIO_WRITE_TAB(fp, tab+1);
+    _CDM_WRITE_TAB(fp, tab+1);
     fprintf(fp, "Rank[@] {\n");
     fprintf(fp, "\n");
 
     rank = RankList[i];
 
     //Rank要素の出力
-    if( rank.Write(fp,tab+2) != CIO::E_CIO_SUCCESS ) return CIO::E_CIO_ERROR;
+    if( rank.Write(fp,tab+2) != CDM::E_CDM_SUCCESS ) return CDM::E_CDM_ERROR;
 
     fprintf(fp, "\n");
-    _CIO_WRITE_TAB(fp, tab+1);
+    _CDM_WRITE_TAB(fp, tab+1);
     fprintf(fp, "}\n");
   }
 
   fprintf(fp, "\n");
   fprintf(fp, "}\n");
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 

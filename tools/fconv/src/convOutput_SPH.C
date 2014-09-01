@@ -45,15 +45,15 @@ FILE* convOutput_SPH::OutputFile_Open(
 
   //ファイル名の生成
   std::string outfile;
-  CIO::E_CIO_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
+  CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
   outfile = m_InputCntl->Get_OutputDir()+"/"+
-            cio_DFI::Generate_FileName(prefix,
+            cdm_DFI::Generate_FileName(prefix,
                                        id,
                                        step,
                                        "sph",
                                        fnameformat,
                                        mio,
-                                       CIO::E_CIO_OFF);
+                                       CDM::E_CDM_OFF);
 
 
   //ファイルオープン
@@ -71,7 +71,7 @@ FILE* convOutput_SPH::OutputFile_Open(
 bool convOutput_SPH::WriteHeaderRecord(
                                        int step, 
                                        int dim, 
-                                       CIO::E_CIO_DTYPE out_type, 
+                                       CDM::E_CDM_DTYPE out_type, 
                                        int imax, 
                                        int jmax, 
                                        int kmax,
@@ -92,8 +92,8 @@ bool convOutput_SPH::WriteHeaderRecord(
 
   //出力データ型フラグの設定
   int d_type;
-  if( out_type == CIO::E_CIO_FLOAT32 ) d_type = SPH_FLOAT;
-  else if( out_type == CIO::E_CIO_FLOAT64 ) d_type = SPH_DOUBLE;
+  if( out_type == CDM::E_CDM_FLOAT32 ) d_type = SPH_FLOAT;
+  else if( out_type == CDM::E_CDM_FLOAT64 ) d_type = SPH_DOUBLE;
 
   dmy = 2 * sizeof(int);
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;

@@ -1,5 +1,5 @@
-#ifndef _CIO_TEXTPARSER_H_
-#define _CIO_TEXTPARSER_H_
+#ifndef _CDM_TEXTPARSER_H_
+#define _CDM_TEXTPARSER_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,7 +10,7 @@
  */
 
 /**
- * @file   cio_TextParser.h 
+ * @file   cdm_TextParser.h 
  * @brief  TextParser Control class Header
  * @author aics
  */
@@ -27,17 +27,17 @@
 
 using namespace std;
 
-class cio_TextParser {
+class cdm_TextParser {
 
 private:
 	TextParser* tp;  ///< テキストパーサ
 
 public:
   /** コンストラクタ */
-	cio_TextParser(){};
+	cdm_TextParser(){};
 
   /**　デストラクタ */
-	~cio_TextParser(){};
+	~cdm_TextParser(){};
 	
 
   /**
@@ -157,4 +157,4 @@ public:
 #endif
 };
 
-#endif // _CIO_TXETPARSER_H_
+#endif // _CDM_TXETPARSER_H_

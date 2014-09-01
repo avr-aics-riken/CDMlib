@@ -12,25 +12,25 @@
  * @author aics
  */
 
-#ifndef _CIO_ACTIVESUBDOMAIN_
-#define _CIO_ACTIVESUBDOMAIN_
+#ifndef _CDM_ACTIVESUBDOMAIN_
+#define _CDM_ACTIVESUBDOMAIN_
 
 /** ActiveSubDomian class */
-class cio_ActiveSubDomain 
+class cdm_ActiveSubDomain 
 {
 
 public:
 
   /** デフォルトコンストラクタ */
-  cio_ActiveSubDomain();
+  cdm_ActiveSubDomain();
 
   /** コンストラクタ
    * @param[in] pos  領域分割内での位置
    */ 
-  cio_ActiveSubDomain( int pos[3]);
+  cdm_ActiveSubDomain( int pos[3]);
   
   /** デストラクタ */
-  virtual ~cio_ActiveSubDomain();
+  virtual ~cdm_ActiveSubDomain();
 
   /** 情報のクリア */
   virtual void clear();
@@ -50,14 +50,14 @@ public:
    * @retval    true  同じ位置情報を持つ
    * @retval    false 違う位置情報を持つ
    */
-  bool operator==(cio_ActiveSubDomain dom);
+  bool operator==(cdm_ActiveSubDomain dom);
 
   /** 比較演算子
    * @param[in] dom   比較対象の活性サブドメイン情報
    * @retval    true  違う位置情報を持つ
    * @retval    false 同じ位置情報を持つ
    */
-  bool operator!=(cio_ActiveSubDomain dom);
+  bool operator!=(cdm_ActiveSubDomain dom);
 
 private:
   int m_pos[3]; ///<領域分割内での位置

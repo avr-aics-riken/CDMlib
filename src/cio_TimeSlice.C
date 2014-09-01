@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_TimeSlice.C 
- * @brief  cio_Slice Class
+ * @file   cdm_TimeSlice.C 
+ * @brief  cdm_Slice Class
  * @author aics    
  */
 
@@ -18,7 +18,7 @@
 
 // #################################################################
 // コンストラクタ
-cio_Slice::cio_Slice()
+cdm_Slice::cdm_Slice()
 {
 
   step = 0;
@@ -36,15 +36,15 @@ cio_Slice::cio_Slice()
 
 // #################################################################
 // デストラクタ
-cio_Slice::~cio_Slice()
+cdm_Slice::~cdm_Slice()
 {
 
 }
 
 // #################################################################
 // TimeSliceの読込み
-CIO::E_CIO_ERRORCODE
-cio_Slice::Read(cio_TextParser tpCntl,
+CDM::E_CDM_ERRORCODE
+cdm_Slice::Read(cdm_TextParser tpCntl,
                         std::string label_leaf) 
 {
 #if 0
@@ -59,8 +59,8 @@ cio_Slice::Read(cio_TextParser tpCntl,
   //Step
   label = label_leaf + "/Step";
   if ( !(tpCntl.GetValue(label, &ct )) ) {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_STEP;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_STEP;
   }
   else {
     step=ct;
@@ -71,8 +71,8 @@ cio_Slice::Read(cio_TextParser tpCntl,
   //Time
   label = label_leaf + "/Time";
   if ( !(tpCntl.GetValue(label, &dt )) ) {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_TIME;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_TIME;
   }
   else {
     time= dt;
@@ -132,16 +132,16 @@ cio_Slice::Read(cio_TextParser tpCntl,
 
     if(!tpCntl.GetNodeStr(label_leaf,j+ncnt,&str))
     {
-      printf("\tCIO Parsing error : No Elem name\n");
-      return CIO::E_CIO_ERROR_READ_DFI_NO_MINMAX;
+      printf("\tCDM Parsing error : No Elem name\n");
+      return CDM::E_CDM_ERROR_READ_DFI_NO_MINMAX;
     }
     if( strcasecmp(str.substr(0,6).c_str(), "minmax") ) continue;
     label_leaf_leaf = label_leaf+"/"+str;
 
     label = label_leaf_leaf + "/Min";
     if ( !(tpCntl.GetValue(label, &dt )) ) {
-      printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-      return CIO::E_CIO_ERROR_READ_DFI_MIN;
+      printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+      return CDM::E_CDM_ERROR_READ_DFI_MIN;
     }
     else {
       Min.push_back(dt);
@@ -149,8 +149,8 @@ cio_Slice::Read(cio_TextParser tpCntl,
 
     label = label_leaf_leaf + "/Max";
     if ( !(tpCntl.GetValue(label, &dt )) ) {
-      printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-      return CIO::E_CIO_ERROR_READ_DFI_MAX;
+      printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+      return CDM::E_CDM_ERROR_READ_DFI_MAX;
     }
     else {
       Max.push_back(dt);
@@ -170,8 +170,8 @@ cio_Slice::Read(cio_TextParser tpCntl,
   //Step
   label = "Step";
   if ( !(tpCntl.GetValue(label, &ct, false )) ) {
-    printf("\tCIO Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_STEP;
+    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_STEP;
   }
   else {
     step=ct;
@@ -180,8 +180,8 @@ cio_Slice::Read(cio_TextParser tpCntl,
   //Time
   label = "Time";
   if ( !(tpCntl.GetValue(label, &dt, false )) ) {
-    printf("\tCIO Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_TIME;
+    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_TIME;
   }
   else {
     time= dt;
@@ -239,8 +239,8 @@ cio_Slice::Read(cio_TextParser tpCntl,
     // Min
     label = "Min";
     if ( !(tpCntl.GetValue(label, &dt, false )) ) {
-      printf("\tCIO Parsing error : fail to get '%s/%s'\n",leaf.c_str(),label.c_str());
-      return CIO::E_CIO_ERROR_READ_DFI_MIN;
+      printf("\tCDM Parsing error : fail to get '%s/%s'\n",leaf.c_str(),label.c_str());
+      return CDM::E_CDM_ERROR_READ_DFI_MIN;
     }
     else {
       Min.push_back(dt);
@@ -248,8 +248,8 @@ cio_Slice::Read(cio_TextParser tpCntl,
 
     label = "Max";
     if ( !(tpCntl.GetValue(label, &dt, false )) ) {
-      printf("\tCIO Parsing error : fail to get '%s/%s'\n",leaf.c_str(),label.c_str());
-      return CIO::E_CIO_ERROR_READ_DFI_MAX;
+      printf("\tCDM Parsing error : fail to get '%s/%s'\n",leaf.c_str(),label.c_str());
+      return CDM::E_CDM_ERROR_READ_DFI_MAX;
     }
     else {
       Max.push_back(dt);
@@ -257,83 +257,83 @@ cio_Slice::Read(cio_TextParser tpCntl,
   }
 #endif
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // TimeSliceを出力する 
-CIO::E_CIO_ERRORCODE
-cio_Slice::Write(FILE* fp,
+CDM::E_CDM_ERRORCODE
+cdm_Slice::Write(FILE* fp,
                  const unsigned tab)
 {
 
-  _CIO_WRITE_TAB(fp, tab);
+  _CDM_WRITE_TAB(fp, tab);
   fprintf(fp, "Step = %u\n",step);
 
-  _CIO_WRITE_TAB(fp, tab);
+  _CDM_WRITE_TAB(fp, tab);
   fprintf(fp, "Time = %e\n",time);
 
   if( !avr_mode ) {
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "AveragedStep = %u\n",AveragedStep);
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "AveragedTime = %e\n",AveragedTime);
   }
 
   if( Min.size()>1 ) {
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "VectorMinMax {\n");
-    _CIO_WRITE_TAB(fp, tab+1);
+    _CDM_WRITE_TAB(fp, tab+1);
     fprintf(fp, "Min = %e\n",VectorMin);
-    _CIO_WRITE_TAB(fp, tab+1);
+    _CDM_WRITE_TAB(fp, tab+1);
     fprintf(fp, "Max = %e\n",VectorMax);
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "}\n");
   }
 
   for(int j=0; j<Min.size(); j++){
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "MinMax[@] {\n");
-    _CIO_WRITE_TAB(fp, tab+1);
+    _CDM_WRITE_TAB(fp, tab+1);
     fprintf(fp, "Min = %e\n",Min[j]);
-    _CIO_WRITE_TAB(fp, tab+1);
+    _CDM_WRITE_TAB(fp, tab+1);
     fprintf(fp, "Max = %e\n",Max[j]);
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "}\n");
   }
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
 
 // #################################################################
 // コンストラクタ
-cio_TimeSlice::cio_TimeSlice()
+cdm_TimeSlice::cdm_TimeSlice()
 {
   SliceList.clear();
 } 
 
 // #################################################################
 // デストラクタ
-cio_TimeSlice::~cio_TimeSlice()
+cdm_TimeSlice::~cdm_TimeSlice()
 {
 
 }
 
 // #################################################################
 // TimeSliceの読込み
-CIO::E_CIO_ERRORCODE
-cio_TimeSlice::Read(cio_TextParser tpCntl)
+CDM::E_CDM_ERRORCODE
+cdm_TimeSlice::Read(cdm_TextParser tpCntl)
 {
 #if 0
   std::string str;
   std::string label_base,label_leaf;
 
-  cio_Slice slice;
+  cdm_Slice slice;
 
   int nnode=0;
 
-  CIO::E_CIO_ERRORCODE iret;
+  CDM::E_CDM_ERRORCODE iret;
 
   //TimeSlice
   nnode=0;
@@ -349,8 +349,8 @@ cio_TimeSlice::Read(cio_TextParser tpCntl)
 
     if(!tpCntl.GetNodeStr(label_base,i+1,&str))
     {
-      printf("\tCIO Parsing error : No Elem name\n");
-      return CIO::E_CIO_ERROR_READ_DFI_NO_SLICE;
+      printf("\tCDM Parsing error : No Elem name\n");
+      return CDM::E_CDM_ERROR_READ_DFI_NO_SLICE;
     }
     if( strcasecmp(str.substr(0,5).c_str(), "Slice") ) continue;
     label_leaf=label_base+"/"+str;
@@ -358,27 +358,27 @@ cio_TimeSlice::Read(cio_TextParser tpCntl)
     //Slice要素の読込み
     iret = slice.Read(tpCntl,label_leaf);
 
-    if( iret == CIO::E_CIO_SUCCESS ) {
+    if( iret == CDM::E_CDM_SUCCESS ) {
       SliceList.push_back(slice); 
     } else return iret;
 
   }
 #else
-  CIO::E_CIO_ERRORCODE iret;
+  CDM::E_CDM_ERRORCODE iret;
 
   // TP
   TextParser *tp = tpCntl.getTPPtr();
   if( !tp )
   {
-    return CIO::E_CIO_ERROR_TEXTPARSER;
+    return CDM::E_CDM_ERROR_TEXTPARSER;
   }
 
   // TimeSlice要素の存在チェック
   std::string label_base = "/TimeSlice";
   if( !tpCntl.chkNode(label_base) )
   {
-    printf("\tCIO Parsing error : No Elem name [%s]\n", label_base.c_str());
-    return CIO::E_CIO_ERROR_READ_TIMESLICE;
+    printf("\tCDM Parsing error : No Elem name [%s]\n", label_base.c_str());
+    return CDM::E_CDM_ERROR_READ_TIMESLICE;
   }
 
   // TimeSliceに移動
@@ -396,9 +396,9 @@ cio_TimeSlice::Read(cio_TextParser tpCntl)
     if( strcasecmp(label.substr(0,5).c_str(), "Slice") ) continue;
 
     //Slice要素の読込み
-    cio_Slice slice;
+    cdm_Slice slice;
     std::string leaf = label_base + "/" + label;
-    if( (iret = slice.Read(tpCntl,leaf)) == CIO::E_CIO_SUCCESS )
+    if( (iret = slice.Read(tpCntl,leaf)) == CDM::E_CDM_SUCCESS )
     {
       SliceList.push_back(slice);
     }
@@ -412,14 +412,14 @@ cio_TimeSlice::Read(cio_TextParser tpCntl)
   tp->changeNode("/");
 #endif
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
 
 // #################################################################
 // TimeSliceを出力する 
-CIO::E_CIO_ERRORCODE
-cio_TimeSlice::Write(FILE* fp,
+CDM::E_CDM_ERRORCODE
+cdm_TimeSlice::Write(FILE* fp,
                      const unsigned tab)
 {
 
@@ -428,13 +428,13 @@ cio_TimeSlice::Write(FILE* fp,
 
   for(int i=0; i<SliceList.size(); i++) {
 
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "Slice[@] {\n");
 
     //Slice要素の出力
-    if( SliceList[i].Write(fp,tab+1) != CIO::E_CIO_SUCCESS) return CIO::E_CIO_ERROR;
+    if( SliceList[i].Write(fp,tab+1) != CDM::E_CDM_SUCCESS) return CDM::E_CDM_ERROR;
 
-    _CIO_WRITE_TAB(fp, tab);
+    _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "}\n");
 
   }
@@ -442,13 +442,13 @@ cio_TimeSlice::Write(FILE* fp,
   fprintf(fp, "}\n\n");
   fclose(fp);
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // DFIに出力されているminmaxの合成値を取得
-CIO::E_CIO_ERRORCODE 
-cio_TimeSlice::getVectorMinMax(const unsigned step,
+CDM::E_CDM_ERRORCODE 
+cdm_TimeSlice::getVectorMinMax(const unsigned step,
                                double &vec_min,
                                double &vec_max)
 {
@@ -456,17 +456,17 @@ cio_TimeSlice::getVectorMinMax(const unsigned step,
     if( (int)step == SliceList[i].step ) {
       vec_min=SliceList[i].VectorMin;
       vec_max=SliceList[i].VectorMax;
-      return CIO::E_CIO_SUCCESS;
+      return CDM::E_CDM_SUCCESS;
     }
   }
 
-  return CIO::E_CIO_ERROR;
+  return CDM::E_CDM_ERROR;
 }
 
 // #################################################################
 // DFIに出力されているminmaxとminmaxの合成値を取得
-CIO::E_CIO_ERRORCODE 
-cio_TimeSlice::getMinMax(const unsigned step,
+CDM::E_CDM_ERRORCODE 
+cdm_TimeSlice::getMinMax(const unsigned step,
                          const int compNo,
                          double &min_value,
                          double &max_value)
@@ -476,16 +476,16 @@ cio_TimeSlice::getMinMax(const unsigned step,
     if( (int)step == SliceList[i].step ) {
       min_value=SliceList[i].Min[compNo];
       max_value=SliceList[i].Max[compNo];
-      return CIO::E_CIO_SUCCESS;
+      return CDM::E_CDM_SUCCESS;
     }
   }
 
-  return CIO::E_CIO_ERROR;
+  return CDM::E_CDM_ERROR;
 
 }
 // #################################################################
 // SliceListへの追加
-void cio_TimeSlice::AddSlice(int step,
+void cdm_TimeSlice::AddSlice(int step,
                              double time,
                              double *minmax,
                              int Ncomp,
@@ -494,7 +494,7 @@ void cio_TimeSlice::AddSlice(int step,
                              double time_avr)
 {
 
-  cio_Slice slice;
+  cdm_Slice slice;
 
   slice.step = step;
   slice.time = time;

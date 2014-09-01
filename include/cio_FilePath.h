@@ -1,5 +1,5 @@
-#ifndef _CIO_FILEPATH_H_
-#define _CIO_FILEPATH_H_
+#ifndef _CDM_FILEPATH_H_
+#define _CDM_FILEPATH_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,39 +10,39 @@
  */
 
 /** 
- * @file   cio_FilePath.h
- * @brief  cio_FilePath Class Header
+ * @file   cdm_FilePath.h
+ * @brief  cdm_FilePath Class Header
  * @author aics    
  */
 
 /** index.dfi ファイルの FilePath */
-class cio_FilePath {
+class cdm_FilePath {
 
 public:
 
   std::string ProcDFIFile;                       ///<proc.dfi ファイル名
 
   /** コンストラクタ **/
-  cio_FilePath();
+  cdm_FilePath();
 
   /** 
    * @brief コンストラクタ
    * @param [in] _ProcDFIFile proc.dfiファイル名
    */ 
-  cio_FilePath(const std::string _ProcDFIFile);
+  cdm_FilePath(const std::string _ProcDFIFile);
 
   /** デストラクタ **/
 
-  ~cio_FilePath();
+  ~cdm_FilePath();
 
   /**
    * @brief read FilePath(inde.dfi)
    * @details proc.dfiファイル名の読込み
-   * @param [in]   tpCntl  cio_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス 
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
-  Read(cio_TextParser tpCntl);
+  CDM::E_CDM_ERRORCODE
+  Read(cdm_TextParser tpCntl);
 
   /**
    * @brief DFIファイル:Processを出力する
@@ -51,10 +51,10 @@ public:
    * @param [in] tab    インデント
    * @return error code
    */
-  CIO::E_CIO_ERRORCODE
+  CDM::E_CDM_ERRORCODE
   Write(FILE* fp, 
         const unsigned tab); 
 
 };
 
-#endif // _CIO_FILEPATH_H_
+#endif // _CDM_FILEPATH_H_

@@ -7,7 +7,7 @@
  */
 
 /**
- * @file   cio_TextParser.C
+ * @file   cdm_TextParser.C
  * @brief  TextParser Control class
  * @author aics
  */
@@ -18,7 +18,7 @@
 
 // #################################################################
 // ラベルの有無をチェック
-bool cio_TextParser::chkLabel(const std::string label, bool fullPath)
+bool cdm_TextParser::chkLabel(const std::string label, bool fullPath)
 {
   int ierror;
   std::string value;
@@ -70,7 +70,7 @@ bool cio_TextParser::chkLabel(const std::string label, bool fullPath)
 
 // #################################################################
 // ノードの有無をチェック
-bool cio_TextParser::chkNode(const std::string label)
+bool cdm_TextParser::chkNode(const std::string label)
 {
   int ierror;
   std::string node;
@@ -112,7 +112,7 @@ bool cio_TextParser::chkNode(const std::string label)
 
 // #################################################################
 // ノード以下のラベルの数を数える
-int cio_TextParser::countLabels(const std::string label)
+int cdm_TextParser::countLabels(const std::string label)
 {
   int ierror;
   std::string node,str,chkstr="";
@@ -158,7 +158,7 @@ int cio_TextParser::countLabels(const std::string label)
 
 // #################################################################
 // TextParserLibraryのインスタンス生成
-void cio_TextParser::getTPinstance()
+void cdm_TextParser::getTPinstance()
 {
   tp = new TextParser;
 }
@@ -167,7 +167,7 @@ void cio_TextParser::getTPinstance()
 
 // #################################################################
 // ノード以下のnnode番目の文字列を取得する
-bool cio_TextParser::GetNodeStr(const std::string label, const int nnode, std::string *ct)
+bool cdm_TextParser::GetNodeStr(const std::string label, const int nnode, std::string *ct)
 {
   if ( !tp ) return -1;
   
@@ -227,7 +227,7 @@ bool cio_TextParser::GetNodeStr(const std::string label, const int nnode, std::s
 
 // #################################################################
 // TextParser入力ファイルからベクトル値を取得する（整数型）
-bool cio_TextParser::GetVector(const std::string label, int *vec, const int nvec, bool checkPath)
+bool cdm_TextParser::GetVector(const std::string label, int *vec, const int nvec, bool checkPath)
 {
   int ierr = TP_NO_ERROR;
   std::string value;
@@ -267,7 +267,7 @@ bool cio_TextParser::GetVector(const std::string label, int *vec, const int nvec
 
 // #################################################################
 // TextParser入力ファイルからベクトル値を取得する（実数型）
-bool cio_TextParser::GetVector(const std::string label, double *vec, const int nvec, bool checkPath)
+bool cdm_TextParser::GetVector(const std::string label, double *vec, const int nvec, bool checkPath)
 {
   int ierr = TP_NO_ERROR;
   std::string value;
@@ -310,7 +310,7 @@ bool cio_TextParser::GetVector(const std::string label, double *vec, const int n
 
 // #################################################################
 // TextParser入力ファイルからベクトル値を取得する（文字列型）
-bool cio_TextParser::GetVector(std::string label, std::string *vec, const int nvec, bool checkPath)
+bool cdm_TextParser::GetVector(std::string label, std::string *vec, const int nvec, bool checkPath)
 {
   int ierr = TP_NO_ERROR;
   std::string value;
@@ -349,7 +349,7 @@ bool cio_TextParser::GetVector(std::string label, std::string *vec, const int nv
 
 // #################################################################
 // TextParser入力ファイルから変数を取得する（整数型）
-bool cio_TextParser::GetValue(const std::string label, int *ct, bool checkPath)
+bool cdm_TextParser::GetValue(const std::string label, int *ct, bool checkPath)
 {
   int ierror;
   std::string value;
@@ -398,7 +398,7 @@ bool cio_TextParser::GetValue(const std::string label, int *ct, bool checkPath)
 
 // #################################################################
 // TextParser入力ファイルから変数を取得する（実数型）
-bool cio_TextParser::GetValue(const std::string label, double *ct, bool checkPath)
+bool cdm_TextParser::GetValue(const std::string label, double *ct, bool checkPath)
 {
   int ierror;
   std::string value;
@@ -449,7 +449,7 @@ bool cio_TextParser::GetValue(const std::string label, double *ct, bool checkPat
 
 // #################################################################
 // TextParser入力ファイルから変数を取得する（文字列型）
-bool cio_TextParser::GetValue(const std::string label, std::string *ct, bool checkPath)
+bool cdm_TextParser::GetValue(const std::string label, std::string *ct, bool checkPath)
 {
   int ierror;
   std::string value;
@@ -497,7 +497,7 @@ bool cio_TextParser::GetValue(const std::string label, std::string *ct, bool che
 
 // #################################################################
 // TextParserオブジェクトに入力ファイルをセットする
-int cio_TextParser::readTPfile(const std::string filename)
+int cdm_TextParser::readTPfile(const std::string filename)
 {
   int ierr = TP_NO_ERROR;
   if( !tp ) return TP_ERROR;

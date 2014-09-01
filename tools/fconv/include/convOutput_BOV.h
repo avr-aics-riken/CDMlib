@@ -63,7 +63,7 @@ public:
   bool
   WriteHeaderRecord(int step,
                     int dim,
-                    CIO::E_CIO_DTYPE d_type,
+                    CDM::E_CDM_DTYPE d_type,
                     int imax,
                     int jmax,
                     int kmax,

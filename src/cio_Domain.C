@@ -7,8 +7,8 @@
  */
 
 /** 
- * @file   cio_Domain.C
- * @brief  cio_Domain Class
+ * @file   cdm_Domain.C
+ * @brief  cdm_Domain Class
  * @author aics    
  */
 
@@ -18,7 +18,7 @@
 
 // #################################################################
 // コンストラクタ
-cio_Domain::cio_Domain()
+cdm_Domain::cdm_Domain()
 {
 
   for(int i=0; i<3; i++) GlobalOrigin[i]=0.0;
@@ -31,7 +31,7 @@ cio_Domain::cio_Domain()
 
 // #################################################################
 // コンストラクタ
-cio_Domain::cio_Domain(const double* _GlobalOrigin, 
+cdm_Domain::cdm_Domain(const double* _GlobalOrigin, 
                        const double* _GlobalRegion, 
                        const int* _GlobalVoxel,
                        const int* _GlobalDivision)
@@ -55,15 +55,15 @@ cio_Domain::cio_Domain(const double* _GlobalOrigin,
 
 // #################################################################
 // デストラクタ
-cio_Domain::~cio_Domain()
+cdm_Domain::~cdm_Domain()
 {
 
 }
 
 // #################################################################
 // Domain の読込み関数
-CIO::E_CIO_ERRORCODE
-cio_Domain::Read(cio_TextParser tpCntl) 
+CDM::E_CDM_ERRORCODE
+cdm_Domain::Read(cdm_TextParser tpCntl) 
 {
 
   std::string str;
@@ -76,8 +76,8 @@ cio_Domain::Read(cio_TextParser tpCntl)
   for (int n=0; n<3; n++) v[n]=0.0;
   if ( !(tpCntl.GetVector(label, v, 3 )) ) 
   {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_GLOBALORIGIN;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_GLOBALORIGIN;
   }
   GlobalOrigin[0]=v[0];
   GlobalOrigin[1]=v[1];
@@ -88,8 +88,8 @@ cio_Domain::Read(cio_TextParser tpCntl)
   for (int n=0; n<3; n++) v[n]=0.0;
   if ( !(tpCntl.GetVector(label, v, 3 )) ) 
   {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_GLOBALREGION;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_GLOBALREGION;
   }
   GlobalRegion[0]=v[0];
   GlobalRegion[1]=v[1];
@@ -100,8 +100,8 @@ cio_Domain::Read(cio_TextParser tpCntl)
   for (int n=0; n<3; n++) iv[n]=0;
   if ( !(tpCntl.GetVector(label, iv, 3 )) ) 
   {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_GLOBALVOXEL;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_GLOBALVOXEL;
   }
   GlobalVoxel[0]=iv[0];
   GlobalVoxel[1]=iv[1];
@@ -112,8 +112,8 @@ cio_Domain::Read(cio_TextParser tpCntl)
   for (int n=0; n<3; n++) iv[n]=0;
   if ( !(tpCntl.GetVector(label, iv, 3 )) ) 
   {
-    printf("\tCIO Parsing error : fail to get '%s'\n",label.c_str());
-    return CIO::E_CIO_ERROR_READ_DFI_GLOBALDIVISION;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_GLOBALDIVISION;
   }
   GlobalDivision[0]=iv[0];
   GlobalDivision[1]=iv[1];
@@ -127,51 +127,51 @@ cio_Domain::Read(cio_TextParser tpCntl)
   }
   ActiveSubdomainFile=str;
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
 
 // #################################################################
 // DFIファイル:Domain要素を出力する
-CIO::E_CIO_ERRORCODE
-cio_Domain::Write(FILE* fp, 
+CDM::E_CDM_ERRORCODE
+cdm_Domain::Write(FILE* fp, 
                   const unsigned tab)
 {
 
   fprintf(fp, "Domain {\n");
   fprintf(fp, "\n");  
 
-  _CIO_WRITE_TAB(fp, tab+1);
+  _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp, "GlobalOrigin        = (%e, %e, %e)\n",
           GlobalOrigin[0],
           GlobalOrigin[1],
           GlobalOrigin[2]);
 
-  _CIO_WRITE_TAB(fp, tab+1);
+  _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp, "GlobalRegion        = (%e, %e, %e)\n",
           GlobalRegion[0],
           GlobalRegion[1],
           GlobalRegion[2]);
 
-  _CIO_WRITE_TAB(fp, tab+1);
+  _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp, "GlobalVoxel         = (%d, %d, %d)\n",
           GlobalVoxel[0],
           GlobalVoxel[1],
           GlobalVoxel[2]);  
 
-  _CIO_WRITE_TAB(fp, tab+1);
+  _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp, "GlobalDivision      = (%d, %d, %d)\n",
           GlobalDivision[0],
           GlobalDivision[1],
           GlobalDivision[2]);
 
-  _CIO_WRITE_TAB(fp, tab+1);
+  _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp,"ActiveSubdomainFile = \"%s\"\n",ActiveSubdomainFile.c_str());
 
   fprintf(fp, "\n");
   fprintf(fp, "}\n");
   fprintf(fp, "\n");
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 
 }
