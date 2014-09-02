@@ -12,7 +12,7 @@
  * @author aics
  */
 
-#include "cio_ActiveSubDomain.h"
+#include "cdm_ActiveSubDomain.h"
 
 /////////////////////////////////////////////////////////////////////
 // デフォルトコンストラクタ

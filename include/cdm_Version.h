@@ -7,7 +7,7 @@
  */
 
 /**
- * @file   cio_Version.h
+ * @file   cdm_Version.h
  * バージョン情報のヘッダーファイル
  */
 
@@ -17,7 +17,7 @@
 /** CDMライブラリのバージョン */
 #define CDM_VERSION_NO  "0.1.0"
 
-/** CIOライブラリのリビジョン */
+/** CDMライブラリのリビジョン */
 #define CDM_REVISION    "20140823_1700"
 
 #endif /* _CDM_VERSION_H_ */

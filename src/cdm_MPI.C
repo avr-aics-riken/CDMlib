@@ -12,7 +12,7 @@
  * @author aics    
  */
 
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 #include <unistd.h> // for gethostname() of FX10/K
 
 

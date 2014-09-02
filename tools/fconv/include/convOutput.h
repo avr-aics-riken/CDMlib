@@ -27,7 +27,7 @@
 #include <errno.h>
 
 #include "cpm_ParaManager.h"
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 #include "conv_Define.h"
 #include "InputParam.h"
 

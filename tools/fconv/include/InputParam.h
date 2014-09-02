@@ -37,7 +37,7 @@
 #include "conv_Define.h"
 #include "TextParser.h"
 #include "cpm_ParaManager.h"
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 
 using namespace std;
 

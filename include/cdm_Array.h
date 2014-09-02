@@ -9,7 +9,7 @@
  *
  */
 
-#include "cio_Define.h"
+#include "cdm_Define.h"
 
 extern "C"
 {

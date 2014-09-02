@@ -12,8 +12,8 @@
  * @author aics    
  */
 
-#include "cio_DFI.h"
-#include "cio_DFI_SPH.h"
+#include "cdm_DFI.h"
+#include "cdm_DFI_SPH.h"
 
 // #################################################################
 // コンストラクタ

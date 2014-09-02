@@ -15,7 +15,7 @@
  * @author aics    
  */
 
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 
 class cdm_DFI_AVS : public cdm_DFI {
 

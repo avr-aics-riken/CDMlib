@@ -9,7 +9,7 @@
  *
  */
 
-#include "cio_Array.h"
+#include "cdm_Array.h"
 
 template<class T>
 class cdm_TypeArray : public cdm_Array
@@ -174,7 +174,7 @@ protected:
         CDM_INLINE rettype 
 #endif
 
-#include "inline/cio_Array_inline.h"
+#include "inline/cdm_Array_inline.h"
 
 #endif /* _CDM_TYPEARRAY_H_ */
 

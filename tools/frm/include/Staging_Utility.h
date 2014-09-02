@@ -18,7 +18,7 @@
 #ifndef _STAGING_UTILITY_H
 #define _STAGING_UTILITY_H
 
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 
 #include <stdio.h>
 #include <stdlib.h>

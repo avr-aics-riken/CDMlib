@@ -1,5 +1,5 @@
-#ifndef _CDM_DFI_VTK_H_
-#define _CDM_DFI_VTK_H_
+#ifndef _CDM_DFI_PLOT3D_H_
+#define _CDM_DFI_PLOT3D_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -10,21 +10,23 @@
  */
 
 /** 
- * @file   cdm_DFI_VTK.h
- * @brief  cdm_DFI_VTK Class Header
+ * @file   cdm_DFI_PLOT3D.h
+ * @brief  cdm_DFI_PLOT3D Class Header
  * @author aics    
  */
 
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 
-class cdm_DFI_VTK : public cdm_DFI {
+class cdm_DFI_PLOT3D : public cdm_DFI {
 
 protected:
+
+  bool m_OutputGrid;  ///< plot3d grid file 出力指示
 
 public:
 
   /** コンストラクタ */
-  cdm_DFI_VTK();
+  cdm_DFI_PLOT3D();
 
   /** 
    * @brief コンストラクタ 
@@ -36,13 +38,13 @@ public:
    * @param [in] TSlice  TimeSlice
    * @param [in] process Process
    */
-  cdm_DFI_VTK(const cdm_FileInfo F_Info, 
-              const cdm_FilePath F_Path, 
-              const cdm_Unit unit, 
-              const cdm_Domain domain, 
-              const cdm_MPI mpi,
-              const cdm_TimeSlice TSlice, 
-              const cdm_Process process)
+  cdm_DFI_PLOT3D(const cdm_FileInfo F_Info, 
+                 const cdm_FilePath F_Path, 
+                 const cdm_Unit unit, 
+                 const cdm_Domain domain, 
+                 const cdm_MPI mpi,
+                 const cdm_TimeSlice TSlice, 
+                 const cdm_Process process)
   {
     DFI_Finfo      = F_Info; 
     DFI_Fpath      = F_Path;
@@ -51,11 +53,12 @@ public:
     DFI_MPI        = mpi;
     DFI_TimeSlice  = TSlice;
     DFI_Process    = process;
+    m_OutputGrid   = true;
     m_bgrid_interp_flag = true;
   };
   
   /**　デストラクタ */
-  ~cdm_DFI_VTK();
+  ~cdm_DFI_PLOT3D();
 
 public:
 
@@ -121,7 +124,7 @@ protected:
   { return CDM::E_CDM_SUCCESS; };
 
   /**
-   * @brief VTKヘッダファイルの出力
+   * @brief SPHヘッダファイルの出力
    * @param[in] fp     ファイルポインタ
    * @param[in] step   ステップ番号
    * @param[in] time   時刻
@@ -135,7 +138,7 @@ protected:
                      const int RankID); 
 
   /**
-   * @brief VTKデータレコードの出力
+   * @brief SPHデータレコードの出力
    * @param[in]  fp ファイルポインタ
    * @param[in]  val データポインタ
    * @param[in]  gc ガイドセル
@@ -160,6 +163,39 @@ protected:
                  const unsigned step_avr,
                  const double time_avr) 
   { return CDM::E_CDM_SUCCESS; };
+
+  /**
+   * @brief Grid data file 出力 コントロール
+   */
+  bool
+  write_GridData(); 
+
+  /**
+   * @brief xyzを計算して出力
+   * @param [in] fp  出力ファイルポインタ
+   * @param [in] org 原点座標値
+   * @param [in] pit ピッチ
+   * @param [in] sz  サイズ
+   */ 
+  template<class T>
+  void
+  write_XYZ(FILE* fp, T* org, T* pit, int sz[3]);
+
+  /**
+   * @brief func data 出力
+   * @param[in] fp    出力ファイルポインタ
+   * @param[in] data  出力データポインタ
+   * @param[in] sz    出力データのサイズ
+   * @param[in] ncomp 出力成分数
+   */ 
+  template<class T>
+  void write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3], int ncomp);
+
 };
 
-#endif // _cdm_DFI_VTK_H_
+
+//inline 関数
+#include "inline/cdm_Plot3d_inline.h"
+
+
+#endif // _cdm_DFI_PLOT3D_H_

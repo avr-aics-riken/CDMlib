@@ -15,7 +15,7 @@
  * @author aics
  */
 
-#include "cio_Define.h"
+#include "cdm_Define.h"
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/stat.h>
@@ -24,22 +24,22 @@
 #include <map>
 #include <string>
 
-#include "cio_Version.h"
+#include "cdm_Version.h"
 
 
-#include "cio_PathUtil.h"
-#include "cio_TextParser.h"
-#include "cio_ActiveSubDomain.h"
-#include "cio_endianUtil.h"
-#include "cio_TypeArray.h"
+#include "cdm_PathUtil.h"
+#include "cdm_TextParser.h"
+#include "cdm_ActiveSubDomain.h"
+#include "cdm_endianUtil.h"
+#include "cdm_TypeArray.h"
 
-#include "cio_FileInfo.h"
-#include "cio_FilePath.h"
-#include "cio_Unit.h"
-#include "cio_TimeSlice.h"
-#include "cio_Domain.h"
-#include "cio_MPI.h"
-#include "cio_Process.h"
+#include "cdm_FileInfo.h"
+#include "cdm_FilePath.h"
+#include "cdm_Unit.h"
+#include "cdm_TimeSlice.h"
+#include "cdm_Domain.h"
+#include "cdm_MPI.h"
+#include "cdm_Process.h"
 
 /** CDM main class */
 class cdm_DFI {
@@ -1033,7 +1033,7 @@ public:
 };
 
 //inline 関数
-#include "inline/cio_DFI_inline.h"
+#include "inline/cdm_DFI_inline.h"
 
 
 #endif // _cdm_DFI_H_

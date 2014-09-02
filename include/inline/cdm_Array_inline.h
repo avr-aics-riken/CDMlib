@@ -9,7 +9,7 @@
 #ifndef _CDM_ARRAY_INLINE_H_
 #define _CDM_ARRAY_INLINE_H_
 
-#include "cio_Array.h"
+#include "cdm_Array.h"
 #include <typeinfo>
 
 #ifdef CDM_INLINE

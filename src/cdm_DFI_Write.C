@@ -12,7 +12,7 @@
  * @author aics     
  */
 
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 
 // #################################################################
 // Index DFIファイルの出力

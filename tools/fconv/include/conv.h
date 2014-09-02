@@ -35,7 +35,7 @@
 #endif
 
 #include "cpm_ParaManager.h"
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 #include "limits.h" // for UBUNTU
 
 #include "conv_Define.h"

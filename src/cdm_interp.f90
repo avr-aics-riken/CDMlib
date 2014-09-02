@@ -41,7 +41,7 @@ subroutine cdm_interp_ijkn_r4(szS,gcS,szD,gcD,nc,src,dst)
   integer :: ii,jj,kk
   real*4  :: q
 
-  include 'cio_interp_ijkn.h'
+  include 'cdm_interp_ijkn.h'
 
   return
 end subroutine cdm_interp_ijkn_r4
@@ -76,7 +76,7 @@ subroutine cdm_interp_ijkn_r8(szS,gcS,szD,gcD,nc,src,dst)
   integer :: ii,jj,kk
   real*8  :: q
 
-  include 'cio_interp_ijkn.h'
+  include 'cdm_interp_ijkn.h'
 
   return
 end subroutine cdm_interp_ijkn_r8
@@ -111,7 +111,7 @@ subroutine cdm_interp_nijk_r4(szS,gcS,szD,gcD,nc,src,dst)
   integer :: ii,jj,kk
   real*4  :: q
 
-  include 'cio_interp_nijk.h'
+  include 'cdm_interp_nijk.h'
 
   return
 end subroutine cdm_interp_nijk_r4
@@ -146,7 +146,7 @@ subroutine cdm_interp_nijk_r8(szS,gcS,szD,gcD,nc,src,dst)
   integer :: ii,jj,kk
   real*8  :: q
 
-  include 'cio_interp_nijk.h'
+  include 'cdm_interp_nijk.h'
 
   return
 end subroutine cdm_interp_nijk_r8

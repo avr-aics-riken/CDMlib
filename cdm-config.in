@@ -60,15 +60,15 @@ EOF
       ;;
 
     --cxx)
-      echo @CIO_CXX@
+      echo @CDM_CXX@
       ;;
 
     --cflags)
-      echo @CIO_CFLAGS@ @MPI_CFLAGS@ @TP_CFLAGS@
+      echo @CDM_CFLAGS@ @MPI_CFLAGS@ @TP_CFLAGS@
       ;;
 
     --libs)
-      echo @CIO_LDFLAGS@ @CIO_LIBS@ @MPI_LDFLAGS@ @MPI_LIBS@ @TP_LDFLAGS@
+      echo @CDM_LDFLAGS@ @CDM_LIBS@ @MPI_LDFLAGS@ @MPI_LIBS@ @TP_LDFLAGS@
       ;;
 
     *)

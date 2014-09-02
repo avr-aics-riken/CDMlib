@@ -14,7 +14,7 @@
  * @brief  TextParser Control class Header
  * @author aics
  */
-#include "cio_Define.h"
+#include "cdm_Define.h"
 
 #include <math.h>
 #include <iostream>
