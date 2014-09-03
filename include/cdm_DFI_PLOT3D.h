@@ -124,6 +124,14 @@ protected:
   { return CDM::E_CDM_SUCCESS; };
 
   /**
+   * @brief func data 入力
+   * @param[in] fp    入力ファイルポインタ
+   * @param[in] data  入力データポインタ
+   */ 
+  template<class T>
+  void read_Func(FILE* fp, cdm_TypeArray<T>* data);
+
+  /**
    * @brief SPHヘッダファイルの出力
    * @param[in] fp     ファイルポインタ
    * @param[in] step   ステップ番号
