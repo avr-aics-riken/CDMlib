@@ -31,6 +31,94 @@ cdm_DFI_PLOT3D::~cdm_DFI_PLOT3D()
 }
 
 // #################################################################
+// ファイルのヘッダーレコード読込み
+CDM::E_CDM_ERRORCODE
+cdm_DFI_PLOT3D::read_HeaderRecord(FILE* fp,
+                               bool matchEndian,
+                               unsigned step,
+                               const int head[3],
+                               const int tail[3],
+                               int gc,
+                               int voxsize[3],
+                               double &time)
+{
+
+  time=0.0;
+  for(int i=0; i<DFI_TimeSlice.SliceList.size(); i++) {
+     if( DFI_TimeSlice.SliceList[i].step == step ) {
+       time=(double)DFI_TimeSlice.SliceList[i].time;
+     }
+  }
+
+  for(int i=0; i<3; i++) voxsize[i]=tail[i]-head[i]+1+(2*gc);
+
+  return CDM::E_CDM_SUCCESS;
+}
+
+// #################################################################
+// データレコード読込み
+CDM::E_CDM_ERRORCODE
+cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
+                                bool matchEndian,
+                                cdm_Array* buf,
+                                int head[3],
+                                int nz,
+                                cdm_Array* &src)
+{
+  //ngrid,nblock読込み
+  int ngrid,szVal[3],ncomp;
+  
+  //ascii
+  if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+    fscanf(fp,"%5d\n",ngrid);
+    fscanf(fp,"%5d%5d%5d%5d\n",szVal[0],szVal[1],szVal[2],ncomp);
+  //Fortran Binary
+  } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
+    unsigned int dmy;
+    dmy = sizeof(int);
+    fread(&dmy, sizeof(int), 1, fp);
+    fread(&ngrid, sizeof(int), 1, fp);
+    fread(&dmy, sizeof(int), 1, fp);
+
+    dmy = sizeof(int)*4;
+    fread(&dmy, sizeof(int), 1, fp);
+    fread(&szVal[0], sizeof(int), 1, fp);
+    fread(&szVal[1], sizeof(int), 1, fp);
+    fread(&szVal[2], sizeof(int), 1, fp);
+    fread(&ncomp, sizeof(int), 1, fp);
+    fread(&dmy, sizeof(int), 1, fp);
+  //Bunary
+  } else {
+    fread(&ngrid, sizeof(int), 1, fp);
+    fread(&szVal[0], sizeof(int), 1, fp);
+    fread(&szVal[1], sizeof(int), 1, fp);
+    fread(&szVal[2], sizeof(int), 1, fp);
+    fread(&ncomp, sizeof(int), 1, fp);
+  }
+
+  //フィールドデータ読込み
+
+  CDM::E_CDM_ARRAYSHAPE shape = buf->getArrayShape();
+
+  //NIJKの場合は読込みエラー
+  if( shape == CDM::E_CDM_NIJK ) {
+    return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
+    //return CDM::E_CDM_ERROR_READ_PLOT3D_FILE;
+  }
+  //IJKNの場合は読込み 
+  else if( shape == CDM::E_CDM_IJKN ) {
+    if( buf->getDataType() == CDM::E_CDM_FLOAT32 ) {
+      cdm_TypeArray<float> *data = dynamic_cast<cdm_TypeArray<float>*>(src);
+      read_Func(fp, data);
+    } else if( buf->getDataType() == CDM::E_CDM_FLOAT64 ) {
+      cdm_TypeArray<double> *data = dynamic_cast<cdm_TypeArray<double>*>(src);
+      read_Func(fp, data);
+    }
+  }
+  return CDM::E_CDM_SUCCESS;
+}
+
+// #################################################################
 // ヘッダーレコード出力
 CDM::E_CDM_ERRORCODE
 cdm_DFI_PLOT3D::write_HeaderRecord(FILE* fp,

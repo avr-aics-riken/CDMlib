@@ -84,8 +84,7 @@ protected:
                     const int tail[3],
                     int gc, 
                     int voxsize[3],
-                    double &time)
-  { return CDM::E_CDM_SUCCESS; };
+                    double &time);
 
   /**
    * @brief フィールドデータファイルのデータレコード読込み
@@ -103,8 +102,7 @@ protected:
                   cdm_Array* buf,
                   int head[3],
                   int nz,
-                  cdm_Array* &src)
-  { return CDM::E_CDM_SUCCESS; };
+                  cdm_Array* &src);
 
   /**
    * @brief sphファイルのAverageデータレコードの読込み
@@ -124,9 +122,9 @@ protected:
   { return CDM::E_CDM_SUCCESS; };
 
   /**
-   * @brief func data 入力
-   * @param[in] fp    入力ファイルポインタ
-   * @param[in] data  入力データポインタ
+   * @brief func data 読込み
+   * @param[in] fp    読込みファイルポインタ
+   * @param[in] data  読込みデータポインタ
    */ 
   template<class T>
   void read_Func(FILE* fp, cdm_TypeArray<T>* data);

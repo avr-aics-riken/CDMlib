@@ -190,6 +190,9 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
   else if( !strcasecmp(str.c_str(),"bov" ) ) {
     FileFormat=CDM::E_CDM_FMT_BOV;
   }
+  else if( !strcasecmp(str.c_str(),"fun" ) ) {
+    FileFormat=CDM::E_CDM_FMT_PLOT3D;
+  }
   else FileFormat=CDM::E_CDM_FMT_UNKNOWN;
 
   ncnt++;
@@ -342,6 +345,8 @@ cdm_FileInfo::Write(FILE* fp,
     fprintf(fp, "FileFormat         = \"sph\"\n");
   } else if( FileFormat == CDM::E_CDM_FMT_BOV ) {
     fprintf(fp, "FileFormat         = \"bov\"\n");
+  } else if( FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
+    fprintf(fp, "FileFormat         = \"fun\"\n");
   }
 
 //FCONV 20140116.s

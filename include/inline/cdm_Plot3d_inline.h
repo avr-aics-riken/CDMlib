@@ -26,6 +26,88 @@
 #endif
 
 // #################################################################
+// func data 読込み
+template<class T>
+CDM_INLINE
+void
+cdm_DFI_PLOT3D::read_Func(FILE* fp, cdm_TypeArray<T>* data)
+{
+
+  const int *sz = data->getArraySizeInt();
+  int ncomp = data->getNcomp();
+
+  //IJNK
+  if( data->getArrayShape() == CDM::E_CDM_IJKN ) {
+    //ascii
+    if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+      for(int n=0; n<ncomp; n++) {
+      for(int k=0; k<sz[2]; k++) {
+      for(int j=0; j<sz[1]; j++) {
+      for(int i=0; i<sz[0]; i++) {
+        fscanf(fp,"%f\n",&data->val(i,j,k,n));
+      }}}}
+
+    //Fortran Binary
+    } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
+      unsigned int dmy;
+      dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*ncomp);
+      fread(&dmy, sizeof(int), 1, fp);
+      for(int n=0; n<ncomp; n++) {
+      for(int k=0; k<sz[2]; k++) {
+      for(int j=0; j<sz[1]; j++) {
+      for(int i=0; i<sz[0]; i++) {
+        fread(&data->val(i,j,k,n), sizeof(T), 1, fp);
+      }}}}
+      fread(&dmy, sizeof(int), 1, fp);
+
+    //binary
+    } else {
+      for(int n=0; n<ncomp; n++) {
+      for(int k=0; k<sz[2]; k++) {
+      for(int j=0; j<sz[1]; j++) {
+      for(int i=0; i<sz[0]; i++) {
+        fread(&data->val(i,j,k,n), sizeof(T), 1, fp);
+      }}}}
+    }
+
+  //NIJK
+  } else {
+    //ascii
+    if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+      for(int n=0; n<ncomp; n++) {
+      for(int k=0; k<sz[2]; k++) {
+      for(int j=0; j<sz[1]; j++) {
+      for(int i=0; i<sz[0]; i++) {
+        fscanf(fp,"%f\n",&data->val(n,i,j,k));
+      }}}}
+
+    //Fortran Binary
+    } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
+      unsigned int dmy;
+      dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*ncomp);
+      fread(&dmy, sizeof(int), 1, fp);
+      for(int n=0; n<ncomp; n++) {
+      for(int k=0; k<sz[2]; k++) {
+      for(int j=0; j<sz[1]; j++) {
+      for(int i=0; i<sz[0]; i++) {
+        fread(&data->val(n,i,j,k), sizeof(T), 1, fp);
+      }}}}
+      fread(&dmy, sizeof(int), 1, fp);
+
+    //binary
+    } else {
+      for(int n=0; n<ncomp; n++) {
+      for(int k=0; k<sz[2]; k++) {
+      for(int j=0; j<sz[1]; j++) {
+      for(int i=0; i<sz[0]; i++) {
+        fread(&data->val(n,i,j,k), sizeof(T), 1, fp);
+      }}}}
+    }
+  }
+
+}
+
+// #################################################################
 // xyz 座標値を計算して出力
 template<class T>
 CDM_INLINE
