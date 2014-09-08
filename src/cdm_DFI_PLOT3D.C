@@ -108,11 +108,13 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
   //IJKNの場合は読込み 
   else if( shape == CDM::E_CDM_IJKN ) {
     if( buf->getDataType() == CDM::E_CDM_FLOAT32 ) {
-      cdm_TypeArray<float> *data = dynamic_cast<cdm_TypeArray<float>*>(src);
-      read_Func(fp, data);
+      cdm_TypeArray<float> *dataS = dynamic_cast<cdm_TypeArray<float>*>(src);
+      cdm_TypeArray<float> *dataB = dynamic_cast<cdm_TypeArray<float>*>(buf);
+      read_Func(fp, dataS, dataB, head);
     } else if( buf->getDataType() == CDM::E_CDM_FLOAT64 ) {
-      cdm_TypeArray<double> *data = dynamic_cast<cdm_TypeArray<double>*>(src);
-      read_Func(fp, data);
+      cdm_TypeArray<double> *dataS = dynamic_cast<cdm_TypeArray<double>*>(src);
+      cdm_TypeArray<double> *dataB = dynamic_cast<cdm_TypeArray<double>*>(buf);
+      read_Func(fp, dataS, dataB, head);
     }
   }
   return CDM::E_CDM_SUCCESS;

@@ -11,6 +11,31 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-09-08
+Edit method read_Func in class cdm_DFI_PLOT3D to read Plot3d function files
+クラスcdm_DFI_PLOT3D内のメンバ関数read_Funcを用いてPlot3dファイル読み込めるように編集した。
+
+------------------
+2014-09-04
+Editing class cdm_DFI_PLOT3D
+クラスcdm_DFI_PLOT3Dを編集中。メンバ関数read_Funcを用いてPlot3dファイルが読み込める状態(バッファ未使用)。
+
+------------------
+2014-09-03
+add method read_func to class cdm_DFI_PLOT3D (test commit)
+メンバ関数read_Funcをクラスcdm_DFI_PLOT3Dに追加。（テストコミット）
+
+------------------
+2014-09-02
+change cio to cdm in filenames
+ソースコード内およびソースコードのファイル名に含まれる文字“cio(CIO)”を“cdm(CDM)”に変更。
+
+------------------
+2014-09-01
+change cio to cdm
+ソースコード(.C, .h, .f90)内の文字“cio(CIO)”を“cdm(CDM)”に変更。
+
+------------------
 2014-08-23
 Equivalent to CIOlib 1.5.8
 

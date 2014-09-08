@@ -54,7 +54,7 @@ public:
     DFI_TimeSlice  = TSlice;
     DFI_Process    = process;
     m_OutputGrid   = true;
-    m_bgrid_interp_flag = true;
+    m_bgrid_interp_flag = false; //true;
   };
   
   /**　デストラクタ */
@@ -124,10 +124,12 @@ protected:
   /**
    * @brief func data 読込み
    * @param[in] fp    読込みファイルポインタ
-   * @param[in] data  読込みデータポインタ
+   * @param[in] dataS 読込みデータポインタ
+   * @param[in] dataB 読込みバッファポインタ
+   * @param[in] head  読込みバッファHeadIndex
    */ 
   template<class T>
-  void read_Func(FILE* fp, cdm_TypeArray<T>* data);
+  void read_Func(FILE* fp, cdm_TypeArray<T>* dataS, cdm_TypeArray<T>* dataB, int head[3]);
 
   /**
    * @brief SPHヘッダファイルの出力
