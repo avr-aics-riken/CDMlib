@@ -54,7 +54,8 @@ public:
     DFI_TimeSlice  = TSlice;
     DFI_Process    = process;
     m_OutputGrid   = true;
-    m_bgrid_interp_flag = false; //true;
+    m_bgrid_interp_flag = true;
+    m_extend_arraysize_flag = true;
   };
   
   /**　デストラクタ */
@@ -65,7 +66,7 @@ public:
 protected:
 
   /**
-   * @brief sphファイルのヘッダーレコード読込み
+   * @brief plot3dファイルのヘッダーレコード読込み
    * @param[in]  fp          ファイルポインタ
    * @param[in]  matchEndian エンディアンチェックフラグ true:合致
    * @param[in]  step        ステップ番号
@@ -105,7 +106,7 @@ protected:
                   cdm_Array* &src);
 
   /**
-   * @brief sphファイルのAverageデータレコードの読込み
+   * @brief plot3dファイルのAverageデータレコードの読込み
    * @param[in]  fp          ファイルポインタ
    * @param[in]  matchEndian true:Endian一致
    * @param[in]  step        読込みstep番号
@@ -118,8 +119,7 @@ protected:
                 bool matchEndian,
                 unsigned step, 
                 unsigned &avr_step,
-                double &avr_time) 
-  { return CDM::E_CDM_SUCCESS; };
+                double &avr_time);
 
   /**
    * @brief func data 読込み
@@ -127,12 +127,19 @@ protected:
    * @param[in] dataS 読込みデータポインタ
    * @param[in] dataB 読込みバッファポインタ
    * @param[in] head  読込みバッファHeadIndex
+   * @param[in] matchEndian true:Endian一致
    */ 
   template<class T>
-  void read_Func(FILE* fp, cdm_TypeArray<T>* dataS, cdm_TypeArray<T>* dataB, int head[3]);
+  CDM::E_CDM_ERRORCODE
+  read_Func(FILE* fp,
+  //void read_Func(FILE* fp,
+           cdm_TypeArray<T>* dataS,
+           cdm_TypeArray<T>* dataB,
+           int head[3],
+           bool matchEndian);
 
   /**
-   * @brief SPHヘッダファイルの出力
+   * @brief plot3dヘッダファイルの出力
    * @param[in] fp     ファイルポインタ
    * @param[in] step   ステップ番号
    * @param[in] time   時刻
@@ -146,7 +153,7 @@ protected:
                      const int RankID); 
 
   /**
-   * @brief SPHデータレコードの出力
+   * @brief plot3dデータ出力
    * @param[in]  fp ファイルポインタ
    * @param[in]  val データポインタ
    * @param[in]  gc ガイドセル
@@ -169,8 +176,7 @@ protected:
   CDM::E_CDM_ERRORCODE
   write_averaged(FILE* fp,
                  const unsigned step_avr,
-                 const double time_avr) 
-  { return CDM::E_CDM_SUCCESS; };
+                 const double time_avr);
 
   /**
    * @brief Grid data file 出力 コントロール

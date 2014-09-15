@@ -67,12 +67,12 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
 {
   //ngrid,nblock読込み
   int ngrid,szVal[3],ncomp;
-  
+
   //ascii
   if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
-    fscanf(fp,"%5d\n",ngrid);
-    fscanf(fp,"%5d%5d%5d%5d\n",szVal[0],szVal[1],szVal[2],ncomp);
-  //Fortran Binary
+    fscanf(fp,"%5d\n",&ngrid);
+    fscanf(fp,"%5d%5d%5d%5d\n",&szVal[0],&szVal[1],&szVal[2],&ncomp);
+    //Fortran Binary
   } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
     unsigned int dmy;
     dmy = sizeof(int);
@@ -97,7 +97,7 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
   }
 
   //フィールドデータ読込み
-
+  
   CDM::E_CDM_ARRAYSHAPE shape = buf->getArrayShape();
 
   //NIJKの場合は読込みエラー
@@ -110,13 +110,36 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
     if( buf->getDataType() == CDM::E_CDM_FLOAT32 ) {
       cdm_TypeArray<float> *dataS = dynamic_cast<cdm_TypeArray<float>*>(src);
       cdm_TypeArray<float> *dataB = dynamic_cast<cdm_TypeArray<float>*>(buf);
-      read_Func(fp, dataS, dataB, head);
+      read_Func(fp, dataS, dataB, head, matchEndian);
     } else if( buf->getDataType() == CDM::E_CDM_FLOAT64 ) {
       cdm_TypeArray<double> *dataS = dynamic_cast<cdm_TypeArray<double>*>(src);
       cdm_TypeArray<double> *dataB = dynamic_cast<cdm_TypeArray<double>*>(buf);
-      read_Func(fp, dataS, dataB, head);
+      read_Func(fp, dataS, dataB, head, matchEndian);
     }
   }
+  return CDM::E_CDM_SUCCESS;
+}
+
+// #################################################################
+// Averaged レコードの読込み
+CDM::E_CDM_ERRORCODE
+cdm_DFI_PLOT3D::read_averaged(FILE* fp,
+                           bool matchEndian,
+                           unsigned step,
+                           unsigned &step_avr,
+                           double &time_avr)
+{
+
+  step_avr=0;
+  time_avr=0.0;
+
+  for(int i=0; i<DFI_TimeSlice.SliceList.size(); i++) {
+     if( DFI_TimeSlice.SliceList[i].step == step ) {
+       step_avr=(int)DFI_TimeSlice.SliceList[i].AveragedStep;
+       time_avr=(double)DFI_TimeSlice.SliceList[i].AveragedTime;
+     }
+  }
+
   return CDM::E_CDM_SUCCESS;
 }
 
@@ -195,6 +218,16 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
     write_Func(fp, data, szVal, ncomp);
   }   
 
+  return CDM::E_CDM_SUCCESS;
+}
+
+// #################################################################
+// 平均の出力PLOT3Dは何も出力しない
+CDM::E_CDM_ERRORCODE
+cdm_DFI_PLOT3D::write_averaged(FILE* fp,
+                            const unsigned step_avr,
+                            const double time_avr)
+{
   return CDM::E_CDM_SUCCESS;
 }
 

@@ -181,6 +181,9 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
   int szB[3],headB[3];
   for(int i=0; i<3; i++) {
     szB[i] = voxsize[i];
+    if( m_extend_arraysize_flag ) { //格子点の場合、配列サイズを1大きくする
+      szB[i]+=1;
+    }
     headB[i] = DFI_head[i] - DFI_Finfo.GuideCell;
   }
   //１層ずつ読み込むので、バッファのZサイズは１にしておく
@@ -211,6 +214,9 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
   int headS[3];
   for(int i=0; i<3; i++) {
     szS[i]=end[i]-sta[i]+1;
+    if( m_extend_arraysize_flag ) { //格子点の場合、配列サイズを1大きくする
+      szS[i]+=1;
+    }
     headS[i]=sta[i];
   }
 

@@ -11,6 +11,14 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-09-15
+Edit method ReadFieldData to read data at nodes
+読み込んだデータが格子点上のデータかどうかを判断するフラグm_extend_arraysize_flagを追加した。
+そして、格子点上のデータを読み込む際、読み込み用データ配列をボクセル数より1大きい値で
+作成するように関数ReadFieldDataを編集し、格子点上のデータを読み込めるようにした。
+また、ヘッダーファイルcdm_DFI_PLOT3D.hの整理をした。
+
+------------------
 2014-09-08
 Edit method read_Func in class cdm_DFI_PLOT3D to read Plot3d function files
 クラスcdm_DFI_PLOT3D内のメンバ関数read_Funcを用いてPlot3dファイル読み込めるように編集した。

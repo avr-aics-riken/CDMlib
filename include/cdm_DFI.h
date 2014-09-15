@@ -65,6 +65,7 @@ protected :
   vector<int>m_readRankList;         ///< 読込みランクリスト
 
   bool m_bgrid_interp_flag;               ///< 節点への補間フラグ
+  bool m_extend_arraysize_flag;           ///< ArraySizeを格子データ用に拡張指示フラグ
   CDM::E_CDM_OUTPUT_TYPE  m_output_type;  ///< 出力形式(ascii,binary,FortarnBinary)
   CDM::E_CDM_OUTPUT_FNAME m_output_fname; ///< 出力ファイル命名規約(step_rank,rank_step)   
 

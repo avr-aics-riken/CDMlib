@@ -29,8 +29,12 @@
 // func data 読込み
 template<class T>
 CDM_INLINE
-void
-cdm_DFI_PLOT3D::read_Func(FILE* fp, cdm_TypeArray<T>* dataS, cdm_TypeArray<T>* dataB, int head[3])
+CDM::E_CDM_ERRORCODE
+cdm_DFI_PLOT3D::read_Func(FILE* fp,
+                         cdm_TypeArray<T>* dataS,
+                         cdm_TypeArray<T>* dataB,
+                         int head[3],
+                         bool matchEndian)
 {
 
   const int *szS = dataS->getArraySizeInt();
@@ -50,7 +54,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp, cdm_TypeArray<T>* dataS, cdm_TypeArray<T>* d
          //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);
-         //一層読み込み(szB[2]=1,ncompB=1)
+         //一層読み込み
         for(int j=0; j<szB[1]; j++) {
         for(int i=0; i<szB[0]; i++) {
           fscanf(fp,"%f\n",&dataB->val(i,j,0,0));
@@ -66,14 +70,12 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp, cdm_TypeArray<T>* dataS, cdm_TypeArray<T>* d
       for(int n=0; n<ncompS; n++) {
       for(int k=0; k<szS[2]; k++) {
       //for(int k=0; k<nz; k++) {
-         //headインデクスをずらす
+        //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);
-         //一層読み込み(szB[2]=1,ncompB=1)
-        for(int j=0; j<szB[1]; j++) {
-        for(int i=0; i<szB[0]; i++) {
-          fread(&dataB->val(i,j,0,0), sizeof(T), 1, fp);
-        }}
+        //一層読み込み
+        size_t ndata = dataB->getArrayLength();
+        if( dataB->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;        
         //コピー
         dataB->copyArrayNcomp(dataS,n);
       }}
@@ -83,14 +85,12 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp, cdm_TypeArray<T>* dataS, cdm_TypeArray<T>* d
     } else {
       for(int n=0; n<ncompS; n++) {
       for(int k=0; k<szS[2]; k++) {
-         //headインデクスをずらす
+        //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);
-         //一層読み込み(szB[2]=1,ncompB=1)
-        for(int j=0; j<szB[1]; j++) {
-        for(int i=0; i<szB[0]; i++) {
-          fread(&dataB->val(i,j,0,0), sizeof(T), 1, fp);
-        }}
+        //一層読み込み
+        size_t ndata = dataB->getArrayLength();
+        if( dataB->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
         //コピー
         dataB->copyArrayNcomp(dataS,n);
       }}
@@ -131,6 +131,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp, cdm_TypeArray<T>* dataS, cdm_TypeArray<T>* d
     }
   }
   */
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
