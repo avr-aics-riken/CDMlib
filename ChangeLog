@@ -12,6 +12,11 @@ REVISION HISTORY
 
 ------------------
 2014-09-20
+Correct the term written in the copyright statement in cdm_Version.h and cdm_Version.h.in
+ファイルcdm_Version.hとcdm_Version.h.inに記載されているCopyrightの期間を訂正した。
+
+------------------
+2014-09-20
 Change encode of file ChangeLog from Shift-JIS to UTF-8
 ファイルChangeLogのエンコードをShift-JISからUTF-8に変更した。
 
