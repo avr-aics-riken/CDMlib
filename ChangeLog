@@ -11,37 +11,42 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-09-20
+Change encode of file ChangeLog from Shift-JIS to UTF-8
+ファイルChangeLogのエンコードをShift-JISからUTF-8に変更した。
+
+------------------
 2014-09-15
 Edit method ReadFieldData to read data at nodes
-�ǂݍ��񂾃f�[�^���i�q�_��̃f�[�^���ǂ����𔻒f����t���Om_extend_arraysize_flag��ǉ������B
-�����āA�i�q�_��̃f�[�^��ǂݍ��ލہA�ǂݍ��ݗp�f�[�^�z����{�N�Z�������1�傫���l��
-�쐬����悤�Ɋ֐�ReadFieldData��ҏW���A�i�q�_��̃f�[�^��ǂݍ��߂�悤�ɂ����B
-�܂��A�w�b�_�[�t�@�C��cdm_DFI_PLOT3D.h�̐����������B
+読み込んだデータが格子点上のデータかどうかを判断するフラグm_extend_arraysize_flagを追加した。
+そして、格子点上のデータを読み込む際、読み込み用データ配列をボクセル数より1大きい値で
+作成するように関数ReadFieldDataを編集し、格子点上のデータを読み込めるようにした。
+また、ヘッダーファイルcdm_DFI_PLOT3D.hの整理をした。
 
 ------------------
 2014-09-08
 Edit method read_Func in class cdm_DFI_PLOT3D to read Plot3d function files
-�N���Xcdm_DFI_PLOT3D���̃����o�֐�read_Func��p����Plot3d�t�@�C���ǂݍ��߂�悤�ɕҏW�����B
+クラスcdm_DFI_PLOT3D内のメンバ関数read_Funcを用いてPlot3dファイル読み込めるように編集した。
 
 ------------------
 2014-09-04
 Editing class cdm_DFI_PLOT3D
-�N���Xcdm_DFI_PLOT3D��ҏW���B�����o�֐�read_Func��p����Plot3d�t�@�C�����ǂݍ��߂���(�o�b�t�@���g�p)�B
+クラスcdm_DFI_PLOT3Dを編集中。メンバ関数read_Funcを用いてPlot3dファイルが読み込める状態(バッファ未使用)。
 
 ------------------
 2014-09-03
 add method read_func to class cdm_DFI_PLOT3D (test commit)
-�����o�֐�read_Func���N���Xcdm_DFI_PLOT3D�ɒǉ��B�i�e�X�g�R�~�b�g�j
+メンバ関数read_Funcをクラスcdm_DFI_PLOT3Dに追加。（テストコミット）
 
 ------------------
 2014-09-02
 change cio to cdm in filenames
-�\�[�X�R�[�h������у\�[�X�R�[�h�̃t�@�C�����Ɋ܂܂�镶���gcio(CIO)�h���gcdm(CDM)�h�ɕύX�B
+ソースコード内およびソースコードのファイル名に含まれる文字“cio(CIO)”を“cdm(CDM)”に変更。
 
 ------------------
 2014-09-01
 change cio to cdm
-�\�[�X�R�[�h(.C, .h, .f90)���̕����gcio(CIO)�h���gcdm(CDM)�h�ɕύX�B
+ソースコード(.C, .h, .f90)内の文字“cio(CIO)”を“cdm(CDM)”に変更。
 
 ------------------
 2014-08-23
