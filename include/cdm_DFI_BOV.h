@@ -49,7 +49,6 @@ public:
     DFI_TimeSlice  = TSlice;
     DFI_Process    = process;
     m_bgrid_interp_flag = false;
-    m_extend_arraysize_flag = false;
   };
 
   /**　デストラクタ */

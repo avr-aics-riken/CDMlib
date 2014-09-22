@@ -12,6 +12,11 @@ REVISION HISTORY
 
 ------------------
 2014-09-22
+Modify method ReadFieldData to read node data as cell-centered data
+格子点上のデータをセル中心のデータと見立てて読み込むように関数ReadFieldDataを修正した。
+
+------------------
+2014-09-22
 Correct the position of the origin in xyz file
 Plot3d形式で出力されるxyzファイルの原点の位置を訂正した。
 
