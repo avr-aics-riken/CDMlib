@@ -11,6 +11,11 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-09-22
+Correct the position of the origin in xyz file
+Plot3d形式で出力されるxyzファイルの原点の位置を訂正した。
+
+------------------
 2014-09-20
 Correct the term written in the copyright statement in cdm_Version.h and cdm_Version.h.in
 ファイルcdm_Version.hとcdm_Version.h.inに記載されているCopyrightの期間を訂正した。

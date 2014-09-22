@@ -259,13 +259,13 @@ cdm_DFI_PLOT3D::write_GridData()
 
   //xyzを求めて出力
   int sz[3];
-  for(int i=0; i<3; i++) sz[i] = DFI_Process.RankList[m_RankID].VoxelSize[i]+1;
+  for(int i=0; i<3; i++) sz[i] = DFI_Process.RankList[m_RankID].VoxelSize[i];
 
   if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) {
     float pit[3],org[3];
     for(int i=0; i<3; i++) {
       pit[i]=(float)DFI_Domain.GlobalRegion[i]/(float)DFI_Domain.GlobalVoxel[i];
-      org[i]=(float)DFI_Domain.GlobalOrigin[i]-pit[i]*0.5;
+      org[i]=(float)DFI_Domain.GlobalOrigin[i]+pit[i]*0.5;
     }
     //xyzを計算して出力
     write_XYZ(fp,org,pit,sz);
@@ -273,7 +273,7 @@ cdm_DFI_PLOT3D::write_GridData()
     double pit[3],org[3];
     for(int i=0; i<3; i++) {
       pit[i]=(double)DFI_Domain.GlobalRegion[i]/(double)DFI_Domain.GlobalVoxel[i];
-      org[i]=(double)DFI_Domain.GlobalOrigin[i]-pit[i]*0.5;
+      org[i]=(double)DFI_Domain.GlobalOrigin[i]+pit[i]*0.5;
     }
     //xyzを計算して出力
     write_XYZ(fp,org,pit,sz);
