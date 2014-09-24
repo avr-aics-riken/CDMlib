@@ -69,13 +69,12 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
       fread(&dmy, sizeof(int), 1, fp);
       for(int n=0; n<ncompS; n++) {
       for(int k=0; k<szS[2]; k++) {
-      //for(int k=0; k<nz; k++) {
         //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);
         //一層読み込み
         size_t ndata = dataB->getArrayLength();
-        if( dataB->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;        
+        if( dataB->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
         //コピー
         dataB->copyArrayNcomp(dataS,n);
       }}
@@ -259,7 +258,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
                            int ncomp)
 {
 
-  //IJNK
+  //IJKN
   if( data->getArrayShape() == CDM::E_CDM_IJKN ) {
     //ascii
     if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
@@ -267,7 +266,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
-        fprintf(fp,"%15.6E\n",data->val(i,j,k,n));
+        fprintf(fp,"%15.6E\n",data->_val(i,j,k,n));
       }}}}
 
     //Fortran Binary
@@ -279,7 +278,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
-        fwrite(&data->val(i,j,k,n), sizeof(T), 1, fp);
+        fwrite(&data->_val(i,j,k,n), sizeof(T), 1, fp);
       }}}}
       fwrite(&dmy, sizeof(int), 1, fp);
 
@@ -289,7 +288,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
-        fwrite(&data->val(i,j,k,n), sizeof(T), 1, fp);
+        fwrite(&data->_val(i,j,k,n), sizeof(T), 1, fp);
       }}}}
     }
 
@@ -301,7 +300,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
-        fprintf(fp,"%15.6E\n",data->val(n,i,j,k));
+        fprintf(fp,"%15.6E\n",data->_val(n,i,j,k));
       }}}}
 
     //Fortran Binary
@@ -313,7 +312,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
-        fwrite(&data->val(n,i,j,k), sizeof(T), 1, fp);
+        fwrite(&data->_val(n,i,j,k), sizeof(T), 1, fp);
       }}}}
       fwrite(&dmy, sizeof(int), 1, fp);
 
@@ -323,7 +322,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
-        fwrite(&data->val(n,i,j,k), sizeof(T), 1, fp);
+        fwrite(&data->_val(n,i,j,k), sizeof(T), 1, fp);
       }}}}
     }
   }
