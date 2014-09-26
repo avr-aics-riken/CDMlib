@@ -173,6 +173,13 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
       fprintf(fp,"%15.6E\n",xyz);
     }}}
 
+    //iblank
+    if (DFI_Domain.iblank != NULL) {
+      for(int i=0; i<sz[0]*sz[1]*sz[2]; i++) {
+        fprintf(fp,"%2d\n",DFI_Domain.iblank[i]);
+      }
+    }
+
   //Fortran Binary
   } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
     unsigned int dmy;
@@ -188,6 +195,9 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
     fwrite(&dmy, sizeof(int), 1, fp);
 
     dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*3);
+    if (DFI_Domain.iblank != NULL) {
+      dmy += sizeof(int)*(sz[0]*sz[1]*sz[2]);
+    }
     fwrite(&dmy, sizeof(int), 1, fp);
     //x
     for(int k=0; k<sz[2]; k++) {
@@ -212,6 +222,11 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
       xyz = org[2]+pit[2]*(T)k;
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
+
+    //iblank
+    if (DFI_Domain.iblank != NULL) {
+      fwrite(DFI_Domain.iblank, sizeof(int), sz[0]*sz[1]*sz[2], fp);
+    }
     fwrite(&dmy, sizeof(int), 1, fp);
 
   //Binary
@@ -244,6 +259,11 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
       xyz = org[2]+pit[2]*(T)k;
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
+
+    //iblank
+    if (DFI_Domain.iblank != NULL) {
+      fwrite(DFI_Domain.iblank, sizeof(int), sz[0]*sz[1]*sz[2], fp);
+    }
 
   }
 

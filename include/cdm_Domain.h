@@ -25,6 +25,7 @@ public:
   int GlobalVoxel[3];                 ///<計算領域全体のボクセル数
   int GlobalDivision[3];              ///<計算領域の分割数
   std::string ActiveSubdomainFile;    ///<ActiveSubdomainファイル名
+  const int* iblank;
 
   /** コンストラクタ **/
   cdm_Domain();

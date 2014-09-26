@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-09-26
+Edit method write_XYZ in class cdm_DFI_PLOT3D to add iblank information to xyz file
+Plot3dのxyzファイルにiblankの情報を追加できるようにメンバ関数write_XYZを編集した。
+iblankの情報は、メンバ関数WriteInitの引数に追加したポインタiblankを介してライブラリに
+取り込むようにしており、そのポインタはクラスcdm_Domainが保持するようにしている。
+
+------------------
 2014-09-24
 Edit methods in class cdm_DFI_PLOT3D to write data including those at guide cells
 Plot3d形式において、ガイドセル上の座標および物理量を出力するようにメンバ関数を編集した。

@@ -223,6 +223,7 @@ public:
    * @param [in] tail        計算領域の終了位置　　　　
    * @param [in] hostname    ホスト名
    * @param [in] TSliceOnOff TimeSliceフラグ
+   * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
    * @return インスタンスされたクラスのポインタ
    */
   static cdm_DFI*
@@ -243,7 +244,8 @@ public:
             const int head[3],
             const int tail[3],
             const std::string hostname,
-            const CDM::E_CDM_ONOFF TSliceOnOff);
+            const CDM::E_CDM_ONOFF TSliceOnOff,
+            const int* iblank = NULL);
 
   /**
    * @brief write インスタンス double型
@@ -264,6 +266,7 @@ public:
    * @param [in] head        計算領域の開始位置　　　　
    * @param [in] tail        計算領域の終了位置　　　　
    * @param [in] hostname    ホスト名　　　　　　　　　
+   * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
    * @param [in] TSliceOnOff TimeSliceフラグ
    * @return インスタンスされたクラスのポインタ
    */
@@ -285,7 +288,8 @@ public:
             const int head[3],
             const int tail[3],
             const std::string hostname,
-            const CDM::E_CDM_ONOFF TSliceOnOff);
+            const CDM::E_CDM_ONOFF TSliceOnOff,
+            const int* iblank = NULL);
 
   /**
    * @brief RankIDをセットする
