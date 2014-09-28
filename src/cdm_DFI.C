@@ -14,6 +14,7 @@
 
 #include "cdm_DFI.h"
 #include <unistd.h> // for gethostname() of FX10/K
+#include <typeinfo>
 #include "cdm_DFI_SPH.h"
 #include "cdm_DFI_BOV.h"
 //FCONV 20131122.s
@@ -40,7 +41,7 @@ cdm_DFI::cdm_DFI()
 // デストラクタ
 cdm_DFI::~cdm_DFI()
 {
-
+  if( DFI_Domain != NULL ){ delete DFI_Domain; }
 }
 
 // #################################################################
@@ -147,8 +148,8 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   }
 
   /** Domainの読込み */
-  cdm_Domain domain;
-  if( domain.Read(tpCntl) != CDM::E_CDM_SUCCESS ) 
+  cdm_Domain* domain=NULL;
+  if( cdm_Domain::Read(tpCntl,domain) != CDM::E_CDM_SUCCESS ) 
   {
     printf("\tDomain Data Read error %s\n",procfile.c_str());
     ret = CDM::E_CDM_ERROR_READ_DOMAIN;
@@ -189,8 +190,8 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   }
 
   //読込みタイプのチェック
-  dfi->m_read_type = dfi->CheckReadType(G_Voxel,dfi->DFI_Domain.GlobalVoxel,
-                                         G_Div,dfi->DFI_Domain.GlobalDivision);
+  dfi->m_read_type = dfi->CheckReadType(G_Voxel,dfi->DFI_Domain->GlobalVoxel,
+                                         G_Div,dfi->DFI_Domain->GlobalDivision);
   if( dfi->m_read_type == CDM::E_CDM_READTYPE_UNKNOWN ) {
     //printf("\tDimension size error (%d %d %d)\n", 
     //       G_Voxel[0], G_Voxel[1], G_Voxel[2]);
@@ -266,13 +267,13 @@ void cdm_DFI::SetcdmUnit(cdm_Unit unit)
 const
 cdm_Domain* cdm_DFI::GetcdmDomain()
 {
-  return &DFI_Domain;
+  return DFI_Domain;
 }
 
 // #################################################################
 //
 void 
-cdm_DFI::SetcdmDomain(cdm_Domain domain)
+cdm_DFI::SetcdmDomain(cdm_Domain* domain)
 {
   DFI_Domain = domain;
 }
@@ -473,20 +474,20 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   if( gethostname(tmpname, 512) != 0 ) printf("*** error gethostname() \n");
 
   if( out_F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
-    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_unit, &out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
-    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_unit, &out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.s
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_AVS ) {
-    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_unit, &out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
-    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_unit, &out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_VTK ) {
-    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_unit, &out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.e
   } else return NULL;
@@ -624,16 +625,16 @@ int cdm_DFI::get_cdm_Datasize(CDM::E_CDM_DTYPE Dtype)
 
 // #################################################################
 // DFI DomainのGlobalVoxelの取り出し
-int* cdm_DFI::GetDFIGlobalVoxel()
+const int* cdm_DFI::GetDFIGlobalVoxel()
 {
-  return DFI_Domain.GlobalVoxel;
+  return DFI_Domain->GlobalVoxel;
 }
 
 // #################################################################
 // DFI DomainのGlobalDivisionの取り出し
-int* cdm_DFI::GetDFIGlobalDivision()
+const int* cdm_DFI::GetDFIGlobalDivision()
 {
-  return DFI_Domain.GlobalDivision;
+  return DFI_Domain->GlobalDivision;
 }
 // #################################################################
 // Create Domain & Process  
@@ -772,8 +773,8 @@ void cdm_DFI::CreateReadStartEnd(bool isSame,
     }
  
     //仮想セルが読込みの実セル内のときの処理
-    if( ( isSame  && copy_end[i] == DFI_Domain.GlobalVoxel[i] )  ||
-        ( !isSame && copy_end[i] == DFI_Domain.GlobalVoxel[i]*2 ) ) {
+    if( ( isSame  && copy_end[i] == DFI_Domain->GlobalVoxel[i] )  ||
+        ( !isSame && copy_end[i] == DFI_Domain->GlobalVoxel[i]*2 ) ) {
       copy_end[i] += min(gc,src_gc);
     } else if( tail[i]<src_tail[i] ) {
       copy_end[i] = min(tail[i]+gc,src_tail[i]);
@@ -1110,7 +1111,7 @@ CDM::E_CDM_ERRORCODE cdm_DFI::getMinMax(const unsigned step,
 // #################################################################
 // 読込みランクリストの作成
 CDM::E_CDM_ERRORCODE
-cdm_DFI::CheckReadRank(cdm_Domain dfi_domain,
+cdm_DFI::CheckReadRank(const cdm_Domain* dfi_domain,
                        const int head[3],
                        const int tail[3],
                        CDM::E_CDM_READTYPE readflag,

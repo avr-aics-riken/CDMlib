@@ -93,7 +93,7 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE 
-  CheckReadRank(cdm_Domain dfi_domain,
+  CheckReadRank(const cdm_Domain* dfi_domain,
                 const int head[3],
                 const int tail[3],
                 CDM::E_CDM_READTYPE readflag,
@@ -111,7 +111,7 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE 
-  CreateRankList(cdm_Domain dfi_domain,
+  CreateRankList(const cdm_Domain* dfi_domain,
                  map<int,int> &mapHeadX,
                  map<int,int> &mapHeadY,
                  map<int,int> &mapHeadZ);
@@ -128,8 +128,8 @@ public:
    * @return error code 
    */
   CDM::E_CDM_ERRORCODE 
-  CreateRankList(int div[3],
-                 int gvox[3],
+  CreateRankList(const int div[3],
+                 const int gvox[3],
                  map<int,int> &mapHeadX,
                  map<int,int> &mapHeadY,
                  map<int,int> &mapHeadZ);
@@ -140,7 +140,7 @@ public:
    * @param [out] subDomainInfo 活性ドメイン情報
    */
   CDM::E_CDM_ERRORCODE 
-  CreateSubDomainInfo(cdm_Domain dfi_domain,
+  CreateSubDomainInfo(const cdm_Domain* dfi_domain,
                       vector<cdm_ActiveSubDomain> &subDomainInfo); 
 
   /**
@@ -173,7 +173,7 @@ public:
    * @return ランクマップ
    * @return NULL
    */
-  int* CreateRankMap(int div[3],
+  int* CreateRankMap(const int div[3],
                      std::vector<cdm_ActiveSubDomain> &subDomainInfo);
 
   /**
@@ -185,7 +185,7 @@ public:
    * @return ランクマップ
    * @return NULL
    */
-  int* CreateRankMap( int ndiv[3],
+  int* CreateRankMap( const int ndiv[3],
                       headT &mapHeadX,
                       headT &mapHeadY,
                       headT &mapHeadZ);
@@ -220,7 +220,7 @@ public:
    * @param [out] readRankList 読込みに必要なランク番号リスト
    */
   CDM::E_CDM_ERRORCODE 
-  CheckStartEnd(cdm_Domain dfi_domain,
+  CheckStartEnd(const cdm_Domain* dfi_domain,
                 const int head[3],
                 const int tail[3],
                 CDM::E_CDM_READTYPE readflag,

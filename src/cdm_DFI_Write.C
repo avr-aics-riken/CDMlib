@@ -135,15 +135,15 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
   } else {
   */
     for(int i=0; i<3; i++) {
-      out_domain.GlobalOrigin[i] = DFI_Domain.GlobalOrigin[i];
+      out_domain.GlobalOrigin[i] = DFI_Domain->GlobalOrigin[i];
     }
   //}
 
   //Domain の設定
   for(int i=0; i<3; i++) {
-    out_domain.GlobalVoxel[i]    = DFI_Domain.GlobalVoxel[i];
-    out_domain.GlobalDivision[i] = DFI_Domain.GlobalDivision[i];
-    out_domain.GlobalRegion[i]   = DFI_Domain.GlobalRegion[i];
+    out_domain.GlobalVoxel[i]    = DFI_Domain->GlobalVoxel[i];
+    out_domain.GlobalDivision[i] = DFI_Domain->GlobalDivision[i];
+    out_domain.GlobalRegion[i]   = DFI_Domain->GlobalRegion[i];
   }
 
   //ホスト名出力指示ありの時、各ランクのホスト名を集める

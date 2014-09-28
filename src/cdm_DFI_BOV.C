@@ -261,12 +261,12 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
   //pchを計算
   double pch[3];
   for(int i=0; i<3; i++) {
-    pch[i]=(DFI_Domain.GlobalRegion[i]/DFI_Domain.GlobalVoxel[i]);
+    pch[i]=(DFI_Domain->GlobalRegion[i]/DFI_Domain->GlobalVoxel[i]);
   }
 
   //BRICK_ORIGN
   double org[3];
-  for(int i=0; i<3; i++) org[i]=DFI_Domain.GlobalOrigin[i]+0.5*pch[i];
+  for(int i=0; i<3; i++) org[i]=DFI_Domain->GlobalOrigin[i]+0.5*pch[i];
   if( DFI_Finfo.GuideCell>1 ) for(int i=0; i<3; i++) org[i]=org[i]-pch[i]*(double)DFI_Finfo.GuideCell;
   /*
   fprintf(fp,"BRICK_ORIGN: %e %e %e\n",DFI_Domain.GlobalOrigin[0],

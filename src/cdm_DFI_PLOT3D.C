@@ -265,8 +265,8 @@ cdm_DFI_PLOT3D::write_GridData()
   if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) {
     float pit[3],org[3];
     for(int i=0; i<3; i++) {
-      pit[i]=(float)DFI_Domain.GlobalRegion[i]/(float)DFI_Domain.GlobalVoxel[i];
-      org[i]=(float)DFI_Domain.GlobalOrigin[i]+pit[i]*0.5;
+      pit[i]=(float)DFI_Domain->GlobalRegion[i]/(float)DFI_Domain->GlobalVoxel[i];
+      org[i]=(float)DFI_Domain->GlobalOrigin[i]+pit[i]*0.5;
       if( DFI_Finfo.GuideCell>1 ) org[i]=org[i]-pit[i]*(float)DFI_Finfo.GuideCell;
     }
     //xyzを計算して出力
@@ -274,8 +274,8 @@ cdm_DFI_PLOT3D::write_GridData()
   }else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) {
     double pit[3],org[3];
     for(int i=0; i<3; i++) {
-      pit[i]=(double)DFI_Domain.GlobalRegion[i]/(double)DFI_Domain.GlobalVoxel[i];
-      org[i]=(double)DFI_Domain.GlobalOrigin[i]+pit[i]*0.5;
+      pit[i]=(double)DFI_Domain->GlobalRegion[i]/(double)DFI_Domain->GlobalVoxel[i];
+      org[i]=(double)DFI_Domain->GlobalOrigin[i]+pit[i]*0.5;
       if( DFI_Finfo.GuideCell>1 ) org[i]=org[i]-pit[i]*(double)DFI_Finfo.GuideCell;
     }
     //xyzを計算して出力

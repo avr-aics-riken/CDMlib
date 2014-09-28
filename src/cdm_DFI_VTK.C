@@ -60,12 +60,12 @@ cdm_DFI_VTK::write_HeaderRecord(FILE* fp,
 
   //double t_org[3];
   double t_pit[3];
-  for(int i=0; i<3; i++ ) t_pit[i]=DFI_Domain.GlobalRegion[i]/
-                                   (double)DFI_Domain.GlobalVoxel[i];
+  for(int i=0; i<3; i++ ) t_pit[i]=DFI_Domain->GlobalRegion[i]/
+                                   (double)DFI_Domain->GlobalVoxel[i];
   //for(int i=0; i<3; i++ ) t_org[i]=DFI_Domain.GlobalOrigin[i]-(t_pit[0]*0.5);
-  fprintf( fp, "ORIGIN %e %e %e\n",DFI_Domain.GlobalOrigin[0],
-                                   DFI_Domain.GlobalOrigin[1],
-                                   DFI_Domain.GlobalOrigin[2]);
+  fprintf( fp, "ORIGIN %e %e %e\n",DFI_Domain->GlobalOrigin[0],
+                                   DFI_Domain->GlobalOrigin[1],
+                                   DFI_Domain->GlobalOrigin[2]);
 
   fprintf( fp, "ASPECT_RATIO %e %e %e\n", t_pit[0], t_pit[1], t_pit[2] );
 

@@ -27,6 +27,12 @@ public:
   std::string ActiveSubdomainFile;    ///<ActiveSubdomainファイル名
   const int* iblank;
 
+private:
+  double Pitch[3];                    ///<計算空間のピッチ
+
+protected:
+  virtual void Clear();
+public:
   /** コンストラクタ **/
   cdm_Domain();
 
@@ -43,7 +49,53 @@ public:
              const int* _GlobalDivision);
 
   /** デストラクタ **/
-  ~cdm_Domain();
+  virtual ~cdm_Domain();
+
+  double CellX(int i){
+    return GlobalOrigin[0] + Pitch[0]*(i+0.5);
+  }
+  double CellY(int j){
+    return GlobalOrigin[1] + Pitch[1]*(j+0.5);
+  }
+  double CellZ(int k){
+    return GlobalOrigin[2] + Pitch[2]*(k+0.5);
+  }
+  double NodeX(int i){
+    return GlobalOrigin[0] + Pitch[0]*i;
+  }
+  double NodeY(int j){
+    return GlobalOrigin[1] + Pitch[1]*j;
+  }
+  double NodeZ(int k){
+    return GlobalOrigin[2] + Pitch[2]*k;
+  }
+  template<class T>
+  CDM::E_CDM_ERRORCODE CellXYZ(int i,int j,int k,T xyz[3]){
+    xyz[0] = CellX(i);
+    xyz[1] = CellY(j);
+    xyz[2] = CellZ(k);
+    return CDM::E_CDM_SUCCESS;
+  }
+  template<class T>
+  CDM::E_CDM_ERRORCODE NodeXYZ(int i,int j,int k,T xyz[3]){
+    xyz[0] = NodeX(i);
+    xyz[1] = NodeY(j);
+    xyz[2] = NodeZ(k);
+    return CDM::E_CDM_SUCCESS;
+  }
+
+  cdm_Domain& operator=(const cdm_Domain& other){
+    for(int i=0;i<3;++i){
+      this->GlobalOrigin[i] = other.GlobalOrigin[i];
+      this->GlobalRegion[i] = other.GlobalRegion[i];
+      this->GlobalVoxel[i] = other.GlobalVoxel[i];
+      this->GlobalDivision[i] = other.GlobalDivision[i];
+      this->Pitch[i] = other.Pitch[i];
+    }
+    this->iblank = other.iblank;
+  }
+
+  static CDM::E_CDM_ERRORCODE Read(cdm_TextParser tpCntl,cdm_Domain* &domain);
 
   /**
    * @brief read Domain(proc.dfi)

@@ -20,13 +20,12 @@
 // コンストラクタ
 cdm_Domain::cdm_Domain()
 {
-
   for(int i=0; i<3; i++) GlobalOrigin[i]=0.0;
   for(int i=0; i<3; i++) GlobalRegion[i]=0.0;
   for(int i=0; i<3; i++) GlobalVoxel[i]=0;
   for(int i=0; i<3; i++) GlobalDivision[i]=0;
+  for(int i=0; i<3; i++) Pitch[i]=0.0;
   ActiveSubdomainFile="";
-
 }
 
 // #################################################################
@@ -51,16 +50,34 @@ cdm_Domain::cdm_Domain(const double* _GlobalOrigin,
   GlobalDivision[0]=_GlobalDivision[0];
   GlobalDivision[1]=_GlobalDivision[1];
   GlobalDivision[2]=_GlobalDivision[2];
+
+  Pitch[0] = GlobalRegion[0] / GlobalVoxel[0];
+  Pitch[1] = GlobalRegion[1] / GlobalVoxel[1];
+  Pitch[2] = GlobalRegion[2] / GlobalVoxel[2];
+}
+
+void cdm_Domain::Clear()
+{
+  for(int i=0; i<3; i++) GlobalOrigin[i]=0.0;
+  for(int i=0; i<3; i++) GlobalRegion[i]=0.0;
+  for(int i=0; i<3; i++) GlobalVoxel[i]=0;
+  for(int i=0; i<3; i++) GlobalDivision[i]=0;
+  for(int i=0; i<3; i++) Pitch[i]=0.0;
+  ActiveSubdomainFile="";
 }
 
 // #################################################################
 // デストラクタ
 cdm_Domain::~cdm_Domain()
 {
-
 }
 
 // #################################################################
+CDM::E_CDM_ERRORCODE
+cdm_Domain::Read(cdm_TextParser tpCntl,cdm_Domain* &domain)
+{
+  return CDM::E_CDM_ERROR; 
+}
 // Domain の読込み関数
 CDM::E_CDM_ERRORCODE
 cdm_Domain::Read(cdm_TextParser tpCntl) 

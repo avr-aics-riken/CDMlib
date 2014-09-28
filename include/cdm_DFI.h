@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/stat.h>
-#include <typeinfo>
 #include <set>
 #include <map>
 #include <string>
@@ -57,7 +56,7 @@ protected :
   cdm_FileInfo      DFI_Finfo;       ///< FileInfo class
   cdm_FilePath      DFI_Fpath;       ///< FilePath class
   cdm_Unit          DFI_Unit;        ///< Unit class
-  cdm_Domain        DFI_Domain;      ///< Domain class
+  const cdm_Domain* DFI_Domain;      ///< Domain class
   cdm_MPI           DFI_MPI;         ///< MPI class
   cdm_TimeSlice     DFI_TimeSlice;   ///< TimeSlice class
   cdm_Process       DFI_Process;     ///< Process class
@@ -129,7 +128,7 @@ public:
   /**
    * @brief cdm_Domainクラスのセット
    */
-  void SetcdmDomain(cdm_Domain domain); 
+  void SetcdmDomain(cdm_Domain* domain); 
 
   /**
    * @brief cdm_MPIクラスのポインタ取得
@@ -566,14 +565,14 @@ public:
    * @brief DFI DomainのGlobalVoxelの取り出し
    * @return GlobalVoxelのポインタ
    */
-  int* 
+  const int* 
   GetDFIGlobalVoxel(); 
 
   /**
    * @brief DFI DomainのGlobalDivisionの取り出し
    * @return GlobalDivisionのポインタ
    */
-  int* 
+  const int* 
   GetDFIGlobalDivision(); 
 
   /**
@@ -673,7 +672,7 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  CheckReadRank(cdm_Domain dfi_domain,
+  CheckReadRank(const cdm_Domain* dfi_domain,
                 const int head[3],
                 const int tail[3],
                 CDM::E_CDM_READTYPE readflag,
