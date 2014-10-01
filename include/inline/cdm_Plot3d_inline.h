@@ -49,15 +49,19 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
   if( dataS->getArrayShape() == CDM::E_CDM_IJKN ) {
     //ascii
     if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+      double temp;
       for(int n=0; n<ncompS; n++) {
       for(int k=0; k<szS[2]; k++) {
-         //headインデクスをずらす
+        //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);
-         //一層読み込み
+        //一層読み込み
+        size_t ndata = dataB->getArrayLength();
+        if( szB[0]*szB[1] != ndata) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
         for(int j=0; j<szB[1]; j++) {
         for(int i=0; i<szB[0]; i++) {
-          fscanf(fp,"%f\n",&dataB->val(i,j,0,0));
+          fscanf(fp,"%lf\n",&temp);
+          dataB->val(i,j,0,0) = (T)temp;
         }}
         //コピー
         dataB->copyArrayNcomp(dataS,n);
@@ -95,41 +99,11 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
       }}
     }
 
-  //NIJK
-  } /* else {
-    //ascii
-    if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
-      for(int n=0; n<ncomp; n++) {
-      for(int k=0; k<sz[2]; k++) {
-      for(int j=0; j<sz[1]; j++) {
-      for(int i=0; i<sz[0]; i++) {
-        fscanf(fp,"%f\n",&data->val(n,i,j,k));
-      }}}}
-
-    //Fortran Binary
-    } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
-      unsigned int dmy;
-      dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*ncomp);
-      fread(&dmy, sizeof(int), 1, fp);
-      for(int n=0; n<ncomp; n++) {
-      for(int k=0; k<sz[2]; k++) {
-      for(int j=0; j<sz[1]; j++) {
-      for(int i=0; i<sz[0]; i++) {
-        fread(&data->val(n,i,j,k), sizeof(T), 1, fp);
-      }}}}
-      fread(&dmy, sizeof(int), 1, fp);
-
-    //binary
-    } else {
-      for(int n=0; n<ncomp; n++) {
-      for(int k=0; k<sz[2]; k++) {
-      for(int j=0; j<sz[1]; j++) {
-      for(int i=0; i<sz[0]; i++) {
-        fread(&data->val(n,i,j,k), sizeof(T), 1, fp);
-      }}}}
-    }
+  //NIJK (Plot3dの配列形状はIJNK。)
+  } else {
+    return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
   }
-  */
+
   return CDM::E_CDM_SUCCESS;
 }
 

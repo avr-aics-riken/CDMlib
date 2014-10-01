@@ -70,16 +70,15 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
 
   //ascii
   if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
-    fscanf(fp,"%5d\n",&ngrid);
-    fscanf(fp,"%5d%5d%5d%5d\n",&szVal[0],&szVal[1],&szVal[2],&ncomp);
-    //Fortran Binary
+    fscanf(fp,"%d\n",&ngrid);
+    fscanf(fp,"%d%d%d%d\n",&szVal[0],&szVal[1],&szVal[2],&ncomp);
+  //Fortran Binary
   } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
     unsigned int dmy;
     dmy = sizeof(int);
     fread(&dmy, sizeof(int), 1, fp);
     fread(&ngrid, sizeof(int), 1, fp);
     fread(&dmy, sizeof(int), 1, fp);
-
     dmy = sizeof(int)*4;
     fread(&dmy, sizeof(int), 1, fp);
     fread(&szVal[0], sizeof(int), 1, fp);
@@ -97,27 +96,19 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
   }
 
   //フィールドデータ読込み
-  
-  CDM::E_CDM_ARRAYSHAPE shape = buf->getArrayShape();
+  CDM::E_CDM_ERRORCODE ret;
 
-  //NIJKの場合は読込みエラー
-  if( shape == CDM::E_CDM_NIJK ) {
-    return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
-    //return CDM::E_CDM_ERROR_READ_PLOT3D_FILE;
+  if( buf->getDataType() == CDM::E_CDM_FLOAT32 ) {
+    cdm_TypeArray<float> *dataS = dynamic_cast<cdm_TypeArray<float>*>(src);
+    cdm_TypeArray<float> *dataB = dynamic_cast<cdm_TypeArray<float>*>(buf);
+    ret = read_Func(fp, dataS, dataB, head, matchEndian);
+  } else if( buf->getDataType() == CDM::E_CDM_FLOAT64 ) {
+    cdm_TypeArray<double> *dataS = dynamic_cast<cdm_TypeArray<double>*>(src);
+    cdm_TypeArray<double> *dataB = dynamic_cast<cdm_TypeArray<double>*>(buf);
+    ret = read_Func(fp, dataS, dataB, head, matchEndian);
   }
-  //IJKNの場合は読込み 
-  else if( shape == CDM::E_CDM_IJKN ) {
-    if( buf->getDataType() == CDM::E_CDM_FLOAT32 ) {
-      cdm_TypeArray<float> *dataS = dynamic_cast<cdm_TypeArray<float>*>(src);
-      cdm_TypeArray<float> *dataB = dynamic_cast<cdm_TypeArray<float>*>(buf);
-      read_Func(fp, dataS, dataB, head, matchEndian);
-    } else if( buf->getDataType() == CDM::E_CDM_FLOAT64 ) {
-      cdm_TypeArray<double> *dataS = dynamic_cast<cdm_TypeArray<double>*>(src);
-      cdm_TypeArray<double> *dataB = dynamic_cast<cdm_TypeArray<double>*>(buf);
-      read_Func(fp, dataS, dataB, head, matchEndian);
-    }
-  }
-  return CDM::E_CDM_SUCCESS;
+
+  return ret;
 }
 
 // #################################################################
@@ -232,7 +223,7 @@ cdm_DFI_PLOT3D::write_averaged(FILE* fp,
 }
 
 // #################################################################
-// GIRD データファイル出力コントロール
+// GRID データファイル出力コントロール
 bool
 cdm_DFI_PLOT3D::write_GridData()
 {

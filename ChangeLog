@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-01
+Modify methods in class cdm_DFI_PLOT3D and Edit method ReadInit
+クラスcdm_DFI_PLOT3D内のメンバ関数の修正を行った。主に読込み部分で、バグ修正や
+コードの整理など。また、読込みに対応するファイル形式をbov,sph->bov,plot3dに
+変更するように、メンバ関数ReadInitのインスタンス生成部を編集した。
+
+------------------
 2014-09-26
 Edit method write_XYZ in class cdm_DFI_PLOT3D to add iblank information to xyz file
 Plot3dのxyzファイルにiblankの情報を追加できるようにメンバ関数write_XYZを編集した。

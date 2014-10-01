@@ -178,9 +178,11 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
 
   /** dfiのインスタンス **/
   cdm_DFI *dfi = NULL;
-  if( F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
+  // CIOlibではSPHをサポートしていたが、CDMlibではSPHはサポートしない。
+  /*if( F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
     dfi = new cdm_DFI_SPH(F_info, F_path, unit, domain, mpi, TimeSlice, process);
-  } else if( F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
+  } else*/
+  if( F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
     dfi = new cdm_DFI_BOV(F_info, F_path, unit, domain, mpi, TimeSlice, process);
   } else if( F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
     dfi = new cdm_DFI_PLOT3D(F_info, F_path, unit, domain, mpi, TimeSlice, process);

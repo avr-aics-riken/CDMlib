@@ -76,7 +76,7 @@ public:
   ~cdm_DFI();
 
   /**
-   * @brief read インスタンス
+   * @brief read インスタンス(BOVもしくはPLOT3Dの場合にインスタンス生成)
    * @param [in]  comm    MPIコミュニケータ
    * @param [in]  dfifile DFIファイル名
    * @param [in]  G_Voxel 計算空間全体のボクセルサイズ
@@ -748,7 +748,7 @@ public:
 
 
   /**
-   * @brief read field data record(sph or bov)
+   * @brief read field data record
    * @param [in]  fname    FieldData ファイル名
    * @param [in]  step     読込みステップ番号
    * @param [out] time     読み込んだ時間
