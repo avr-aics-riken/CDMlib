@@ -69,11 +69,11 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
   int ngrid,szVal[3],ncomp;
 
   //ascii
-  if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+  if( m_input_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
     fscanf(fp,"%d\n",&ngrid);
     fscanf(fp,"%d%d%d%d\n",&szVal[0],&szVal[1],&szVal[2],&ncomp);
   //Fortran Binary
-  } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
+  } else if( m_input_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
     unsigned int dmy;
     dmy = sizeof(int);
     fread(&dmy, sizeof(int), 1, fp);
@@ -173,11 +173,11 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
   //ngrid,nblock出力
   int ngrid=1;
   //ascii
-  if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+  if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
     fprintf(fp,"%5d\n",ngrid);
     fprintf(fp,"%5d%5d%5d%5d\n",szVal[0],szVal[1],szVal[2],ncomp);
   //Fortran Binary
-  } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
+  } else if( m_output_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
     unsigned int dmy;
     dmy = sizeof(int);
     fwrite(&dmy, sizeof(int), 1, fp);

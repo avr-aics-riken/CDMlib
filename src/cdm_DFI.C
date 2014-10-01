@@ -30,7 +30,8 @@ cdm_DFI::cdm_DFI()
  m_read_type = CDM::E_CDM_READTYPE_UNKNOWN;
  m_RankID = 0;
 
- m_output_type = CDM::E_CDM_OUTPUT_TYPE_DEFAULT;
+ m_input_type = CDM::E_CDM_FILE_TYPE_DEFAULT;
+ m_output_type = CDM::E_CDM_FILE_TYPE_DEFAULT;
  m_output_fname = CDM::E_CDM_FNAME_DEFAULT;
 
 }

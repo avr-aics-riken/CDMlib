@@ -48,7 +48,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
   //IJNK
   if( dataS->getArrayShape() == CDM::E_CDM_IJKN ) {
     //ascii
-    if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+    if( m_input_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
       double temp;
       for(int n=0; n<ncompS; n++) {
       for(int k=0; k<szS[2]; k++) {
@@ -68,7 +68,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
       }}
 
     //Fortran Binary
-    } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
+    } else if( m_input_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
       unsigned int dmy;
       fread(&dmy, sizeof(int), 1, fp);
       for(int n=0; n<ncompS; n++) {
@@ -119,7 +119,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
   T xyz;
 
   //ascii
-  if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+  if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
     fprintf(fp,"%5d\n",ngrid);
     fprintf(fp,"%5d%5d%5d\n",sz[0],sz[1],sz[2]);
 
@@ -155,7 +155,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
     }
 
   //Fortran Binary
-  } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
+  } else if( m_output_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
     unsigned int dmy;
     dmy = sizeof(int);
     fwrite(&dmy, sizeof(int), 1, fp);
@@ -255,7 +255,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
   //IJKN
   if( data->getArrayShape() == CDM::E_CDM_IJKN ) {
     //ascii
-    if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+    if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
       for(int n=0; n<ncomp; n++) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
@@ -264,7 +264,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
       }}}}
 
     //Fortran Binary
-    } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
+    } else if( m_output_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
       unsigned int dmy;
       dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*ncomp);
       fwrite(&dmy, sizeof(int), 1, fp);
@@ -289,7 +289,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
   //NIJK
   } else {
     //ascii
-    if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+    if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
       for(int n=0; n<ncomp; n++) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
@@ -298,7 +298,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
       }}}}
 
     //Fortran Binary
-    } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_FBINARY ) {
+    } else if( m_output_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
       unsigned int dmy;
       dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*ncomp);
       fwrite(&dmy, sizeof(int), 1, fp);

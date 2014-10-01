@@ -71,7 +71,7 @@ protected:
 
   CDM::E_CDM_DTYPE              m_output_data_type;     ///<出力実数タイプ byte,short,int,float,double
   CDM::E_CDM_FORMAT             m_out_format;           ///<出力ファイルフォーマット sph,bov,avs,plot3d,vtk
-  CDM::E_CDM_OUTPUT_TYPE        m_out_format_type;      ///<出力形式 ascii,binary,FortranBinary
+  CDM::E_CDM_FILE_TYPE          m_out_format_type;      ///<出力形式 ascii,binary,FortranBinary
   E_CONV_OUTPUT_CONV_TYPE       m_conv_type;            ///<convertタイプ Mx1 MxN MxM
   CDM::E_CDM_ARRAYSHAPE         m_outputArrayShape;     ///<出力配列形状
   CDM::E_CDM_OUTPUT_FNAME       m_outputFilenameFormat; ///<出力ファイル名命名順
@@ -205,7 +205,7 @@ public:
   /**
    * @brief 出力形式の取り出し（ascii,binary,FortranBinary)
    */
-  CDM::E_CDM_OUTPUT_TYPE
+  CDM::E_CDM_FILE_TYPE
   Get_OutputFormatType() { return m_out_format_type; };
 
   /**

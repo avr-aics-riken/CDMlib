@@ -44,9 +44,9 @@ cdm_DFI_VTK::write_HeaderRecord(FILE* fp,
   fprintf( fp, "# vtk DataFile Version 2.0\n" );
   fprintf( fp, "step=%d,time=%g\n", step, time );
 
-  if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_BINARY ) {
+  if( m_output_type == CDM::E_CDM_FILE_TYPE_BINARY ) {
     fprintf( fp, "BINARY\n" );
-  } else if( m_output_type ==  CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+  } else if( m_output_type ==  CDM::E_CDM_FILE_TYPE_ASCII ) {
     fprintf( fp, "ASCII\n" );
   }
 
@@ -117,7 +117,7 @@ cdm_DFI_VTK::write_DataRecord(FILE* fp,
   const int* sz = val->getArraySizeInt();
   size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*val->getNcomp();
 
-  if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_BINARY ) {
+  if( m_output_type == CDM::E_CDM_FILE_TYPE_BINARY ) {
 
     //出力実数タイプがuint8のとき
     if( val->getDataType() == CDM::E_CDM_UINT8 ) {
@@ -181,7 +181,7 @@ cdm_DFI_VTK::write_DataRecord(FILE* fp,
     }
 
     fprintf( fp, "\n" );
-  } else if( m_output_type == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
+  } else if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
 
     
     if( val->writeAscii(fp) != dLen ) {

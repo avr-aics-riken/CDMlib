@@ -65,7 +65,8 @@ protected :
   vector<int>m_readRankList;         ///< 読込みランクリスト
 
   bool m_bgrid_interp_flag;               ///< 節点への補間フラグ
-  CDM::E_CDM_OUTPUT_TYPE  m_output_type;  ///< 出力形式(ascii,binary,FortarnBinary)
+  CDM::E_CDM_FILE_TYPE  m_input_type;   ///< 入力形式(ascii,binary,FortarnBinary)
+  CDM::E_CDM_FILE_TYPE  m_output_type;  ///< 出力形式(ascii,binary,FortarnBinary)
   CDM::E_CDM_OUTPUT_FNAME m_output_fname; ///< 出力ファイル命名規約(step_rank,rank_step)   
 
 public:
@@ -297,11 +298,19 @@ public:
    */
   void set_RankID(const int rankID)
   { m_RankID = rankID; };
+
+  /**
+   * @brief 入力形式(ascii,binary,FortranBinary)をセット
+   * @param [in] input_type 出力形式
+   */
+  void set_input_type(CDM::E_CDM_FILE_TYPE input_type)
+  {  m_input_type = input_type; };
+
   /**
    * @brief 出力形式(ascii,binary,FortranBinary)をセット
    * @param [in] output_type 出力形式
    */
-  void set_output_type(CDM::E_CDM_OUTPUT_TYPE output_type)
+  void set_output_type(CDM::E_CDM_FILE_TYPE output_type)
   {  m_output_type = output_type; };
 
   /**

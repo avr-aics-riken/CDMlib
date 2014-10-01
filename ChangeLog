@@ -12,6 +12,13 @@ REVISION HISTORY
 
 ------------------
 2014-10-01
+Change the name of E_CDM_OUTPUT_TYPE to E_CDM_FILE_TYPE
+ファイルタイプを示す列挙型E_CDM_OUTPUT_TYPEの名前をE_CDM_FILE_TYPEに変更した。
+また、クラスcdm_DFIのメンバ変数にm_input_typeを追加し、この変数を用いて
+plot3dで読込むファイルのタイプを指定するようにした。
+
+------------------
+2014-10-01
 Modify methods in class cdm_DFI_PLOT3D and Edit method ReadInit
 クラスcdm_DFI_PLOT3D内のメンバ関数の修正を行った。主に読込み部分で、バグ修正や
 コードの整理など。また、読込みに対応するファイル形式をbov,sph->bov,plot3dに

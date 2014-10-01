@@ -126,13 +126,13 @@ namespace CDM
     E_CDM_READTYPE_UNKNOWN,      ///<error
   };
 
-/** 出力形式 */
-  enum E_CDM_OUTPUT_TYPE
+/** ファイルタイプ */
+  enum E_CDM_FILE_TYPE
   {
-    E_CDM_OUTPUT_TYPE_DEFAULT=-1, ///<デフォルト（binary)
-    E_CDM_OUTPUT_TYPE_ASCII=0,    ///<ascii形式での出力
-    E_CDM_OUTPUT_TYPE_BINARY,     ///<binary形式での出力
-    E_CDM_OUTPUT_TYPE_FBINARY     ///<Fortran Binaryでの出力
+    E_CDM_FILE_TYPE_DEFAULT=-1, ///<デフォルト（binary)
+    E_CDM_FILE_TYPE_ASCII=0,    ///<ascii
+    E_CDM_FILE_TYPE_BINARY,     ///<binary
+    E_CDM_FILE_TYPE_FBINARY     ///<Fortran Binary
   };
 
   enum E_CDM_OUTPUT_FNAME
