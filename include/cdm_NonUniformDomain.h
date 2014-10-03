@@ -25,9 +25,9 @@ protected:
   virtual void Clear()
   {
     cdm_Domain::Clear();
-    if( XCoordinate != NULL ){ delete[] XCoordinate; }
-    if( YCoordinate != NULL ){ delete[] YCoordinate; }
-    if( ZCoordinate != NULL ){ delete[] ZCoordinate; }
+    if( XCoordinates != NULL ){ delete[] XCoordinates; }
+    if( YCoordinates != NULL ){ delete[] YCoordinates; }
+    if( ZCoordinates != NULL ){ delete[] ZCoordinates; }
   }
 public:
 
@@ -46,50 +46,50 @@ public:
              const double* _GlobalRegion, 
              const int* _GlobalVoxel, 
              const int* _GlobalDivision,
-             const double* _XCoordinate,
-             const double* _YCoordinate,
-             const double* _ZCoordinate)
+             const double* _XCoordinates,
+             const double* _YCoordinates,
+             const double* _ZCoordinates)
   : cdm_Domain(_GlobalOrigin,_GlobalRegion,_GlobalVoxel,_GlobalDivision)
   {
-    XCoordinate = new double[GlobalVoxel[0]+1];
-    YCoordinate = new double[GlobalVoxel[1]+1];
-    ZCoordinate = new double[GlobalVoxel[2]+1];
+    XCoordinates = new double[GlobalVoxel[0]+1];
+    YCoordinates = new double[GlobalVoxel[1]+1];
+    ZCoordinates = new double[GlobalVoxel[2]+1];
     for(int i=0;i<GlobalVoxel[0]+1;++i){
-      XCoordinate[i] = _XCoordinate[i];
+      XCoordinates[i] = _XCoordinates[i];
     }
     for(int j=0;j<GlobalVoxel[1]+1;++j){
-      YCoordinate[j] = _YCoordinate[j];
+      YCoordinates[j] = _YCoordinates[j];
     }
     for(int k=0;k<GlobalVoxel[2]+1;++k){
-      ZCoordinate[k] = _ZCoordinate[k];
+      ZCoordinates[k] = _ZCoordinates[k];
     }
   }
 
   /** デストラクタ **/
   ~cdm_NonUniformDomain()
   {
-    if( XCoordinate != NULL ){ delete[] XCoordinate; }
-    if( YCoordinate != NULL ){ delete[] YCoordinate; }
-    if( ZCoordinate != NULL ){ delete[] ZCoordinate; }
+    if( XCoordinates != NULL ){ delete[] XCoordinates; }
+    if( YCoordinates != NULL ){ delete[] YCoordinates; }
+    if( ZCoordinates != NULL ){ delete[] ZCoordinates; }
   }
 
   double CellX(int i){
-    return 0.5*(XCoordinate[i]+XCoordinate[i+1]);
+    return 0.5*(XCoordinates[i]+XCoordinates[i+1]);
   }
   double CellY(int j){
-    return 0.5*(YCoordinate[j]+YCoordinate[j+1]);
+    return 0.5*(YCoordinates[j]+YCoordinates[j+1]);
   }
   double CellZ(int k){
-    return 0.5*(ZCoordinate[k]+ZCoordinate[k+1]);
+    return 0.5*(ZCoordinates[k]+ZCoordinates[k+1]);
   }
   double NodeX(int i){
-    return XCoordinate[i];
+    return XCoordinates[i];
   }
   double NodeY(int j){
-    return YCoordinate[j];
+    return YCoordinates[j];
   }
   double NodeZ(int k){
-    return ZCoordinate[k];
+    return ZCoordinates[k];
   }
 
   cdm_NonUniformDomain& operator=(const cdm_NonUniformDomain& other){
@@ -99,19 +99,18 @@ public:
       this->GlobalRegion[i] = other.GlobalRegion[i];
       this->GlobalVoxel[i] = other.GlobalVoxel[i];
       this->GlobalDivision[i] = other.GlobalDivision[i];
-      this->Pitch[i] = other.Pitch[i];
     }
-    XCoordinate = new double[GlobalVoxel[0]+1];
+    XCoordinates = new double[GlobalVoxel[0]+1];
     for(int i=0;i<GlobalVoxel[0]+1;++i){
-      this->XCoordinate[i] = other.XCoordinate[i];
+      this->XCoordinates[i] = other.XCoordinates[i];
     }
-    YCoordinate = new double[GlobalVoxel[1]+1];
+    YCoordinates = new double[GlobalVoxel[1]+1];
     for(int j=0;j<GlobalVoxel[1]+1;++j){
-      this->YCoordinate[j] = other.YCoordinate[j];
+      this->YCoordinates[j] = other.YCoordinates[j];
     }
-    ZCoordinate = new double[GlobalVoxel[2]+1];
+    ZCoordinates = new double[GlobalVoxel[2]+1];
     for(int k=0;k<GlobalVoxel[2]+1;++k){
-      this->ZCoordinate[k] = other.ZCoordinate[k];
+      this->ZCoordinates[k] = other.ZCoordinates[k];
     }
   }
 

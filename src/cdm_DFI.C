@@ -22,6 +22,7 @@
 #include "cdm_DFI_PLOT3D.h"
 #include "cdm_DFI_VTK.h"
 //FCONV 20131122.e
+#include "cdm_NonUniformDomain.h"
 
 // #################################################################
 // コンストラクタ
