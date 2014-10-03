@@ -148,11 +148,21 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   }
 
   /** Domainの読込み */
-  cdm_Domain* domain=NULL;
-  if( cdm_Domain::Read(tpCntl,domain) != CDM::E_CDM_SUCCESS ) 
-  {
-    printf("\tDomain Data Read error %s\n",procfile.c_str());
-    ret = CDM::E_CDM_ERROR_READ_DOMAIN;
+  cdm_Domain* domain = NULL;
+  if( F_info.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
+    domain = new cdm_Domain;
+    if( domain->Read(tpCntl) != CDM::E_CDM_SUCCESS )
+    {
+      printf("\tDomain Data Read error %s\n",procfile.c_str());
+      ret = CDM::E_CDM_ERROR_READ_DOMAIN;
+      return NULL;
+    }
+  } else if(F_info.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN) {
+//    domain = new cdm_Domain_NonUniform;
+    printf("\tNon Uniform Domain is now editing \n");
+    return NULL;
+  } else {
+    // write error message
     return NULL;
   }
 
@@ -330,6 +340,7 @@ cdm_DFI::SetcdmProcess(cdm_Process Process)
 // DFI Write インスタンス float 型
 cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const std::string DfiName,
+                            const CDM::E_CDM_DFITYPE DfiType,
                             const std::string Path,
                             const std::string prefix,
                             const CDM::E_CDM_FORMAT format,
@@ -359,6 +370,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
 
   return WriteInit(comm, 
                    DfiName, 
+                   DfiType, 
                    Path, 
                    prefix, 
                    format, 
@@ -383,6 +395,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
 // DFI Write インスタンス double 型
 cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const std::string DfiName,
+                            const CDM::E_CDM_DFITYPE DfiType,
                             const std::string Path,
                             const std::string prefix,
                             const CDM::E_CDM_FORMAT format,
@@ -420,6 +433,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   MPI_Comm_size( comm, &nrank );
 
   cdm_FileInfo out_F_info;
+  out_F_info.DFIType          = DfiType;
   out_F_info.DirectoryPath    = Path;
   out_F_info.TimeSliceDirFlag = TSliceOnOff;
   out_F_info.Prefix           = prefix;
@@ -443,7 +457,8 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   out_mpi.NumberOfRank = nrank;
   out_mpi.NumberOfGroup = 1;
 
-  cdm_Domain out_domain;
+  cdm_Domain* out_domain;
+  out_domain = new cdm_Domain;
   cdm_Process out_Process;
   cdm_Rank out_Rank;
 
@@ -459,12 +474,12 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
     out_Process.RankList[RankID].VoxelSize[i]=tail[i]-head[i]+1;
   }
 
-  out_domain.iblank = iblank;
+  out_domain->iblank = iblank;
   for(int i=0; i<3; i++) {
-    out_domain.GlobalVoxel[i]  = G_size[i];
-    out_domain.GlobalDivision[i] = division[i];
-    out_domain.GlobalOrigin[i] = G_origin[i];
-    out_domain.GlobalRegion[i] = pitch[i]*G_size[i];
+    out_domain->GlobalVoxel[i]  = G_size[i];
+    out_domain->GlobalDivision[i] = division[i];
+    out_domain->GlobalOrigin[i] = G_origin[i];
+    out_domain->GlobalRegion[i] = pitch[i]*G_size[i];
   }
 
   cdm_TimeSlice out_TSlice;
@@ -474,20 +489,20 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   if( gethostname(tmpname, 512) != 0 ) printf("*** error gethostname() \n");
 
   if( out_F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
-    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_unit, &out_domain, out_mpi,
+    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
-    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_unit, &out_domain, out_mpi,
+    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.s
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_AVS ) {
-    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_unit, &out_domain, out_mpi,
+    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
-    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_unit, &out_domain, out_mpi,
+    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_VTK ) {
-    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_unit, &out_domain, out_mpi,
+    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.e
   } else return NULL;

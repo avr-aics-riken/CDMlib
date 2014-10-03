@@ -72,7 +72,7 @@ public:
   cdm_DFI();
   
   /**　デストラクタ */
-  ~cdm_DFI();
+  virtual ~cdm_DFI();
 
   /**
    * @brief read インスタンス
@@ -206,6 +206,7 @@ public:
    * @brief write インスタンス float型
    * @param [in] comm        MPIコミュニケータ
    * @param [in] DfiName     DFIファイル名
+   * @param [in] DfiType     格子タイプ
    * @param [in] Path        フィールドデータのディレクトリ
    * @param [in] prefix      ベースファイル名
    * @param [in] format      ファイルフォーマット
@@ -228,6 +229,7 @@ public:
   static cdm_DFI*
   WriteInit(const MPI_Comm comm,
             const std::string DfiName,
+            const CDM::E_CDM_DFITYPE DfiType,
             const std::string Path,
             const std::string prefix,
             const CDM::E_CDM_FORMAT format,
@@ -250,6 +252,7 @@ public:
    * @brief write インスタンス double型
    * @param [in] comm        MPIコミュニケータ
    * @param [in] DfiName     DFIファイル名
+   * @param [in] DfiType     格子タイプ
    * @param [in] Path        フィールドデータのディレクトリ
    * @param [in] prefix      ベースファイル名
    * @param [in] format      ファイルフォーマット
@@ -272,6 +275,7 @@ public:
   static cdm_DFI* 
   WriteInit(const MPI_Comm comm,
             const std::string DfiName,
+            const CDM::E_CDM_DFITYPE DfiType,
             const std::string Path,
             const std::string prefix,
             const CDM::E_CDM_FORMAT format,

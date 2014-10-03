@@ -61,8 +61,9 @@ namespace CDM
 
   enum E_CDM_DFITYPE
   {
-    E_CDM_DFITYPE_UNKNOWN = -1, ///< 未定
-    E_CDM_DFITYPE_CARTESIAN,    ///< Cartesian
+    E_CDM_DFITYPE_UNKNOWN = -1,          ///< 未定
+    E_CDM_DFITYPE_CARTESIAN,             ///< Cartesian
+    E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN, ///< Non Uniform Cartesian
   };
 
 /** File 形式 */

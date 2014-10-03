@@ -11,6 +11,18 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-03
+Add choice Non_Uniform_Cartesian to DFIType in FileInfo and edit class cdm_Domain
+dfiファイルのFileInfo/DFITypeでNon_Uniform_Cartesianを選択できるようにした。
+(不等間隔格子についての中身はまだ実装中。)
+また、クラスcdm_Domainについて一部修正を行った。
+
+------------------
+2014-09-28
+change to pointer from the instance domain
+インスタンスdomainをポインタに変更した。
+
+------------------
 2014-09-26
 Edit method write_XYZ in class cdm_DFI_PLOT3D to add iblank information to xyz file
 Plot3dのxyzファイルにiblankの情報を追加できるようにメンバ関数write_XYZを編集した。

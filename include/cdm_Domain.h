@@ -25,7 +25,7 @@ public:
   int GlobalVoxel[3];                 ///<計算領域全体のボクセル数
   int GlobalDivision[3];              ///<計算領域の分割数
   std::string ActiveSubdomainFile;    ///<ActiveSubdomainファイル名
-  const int* iblank;
+  const int* iblank;                  ///<iblankデータポインタ(PLOT3Dのxyzファイル用)
 
 private:
   double Pitch[3];                    ///<計算空間のピッチ
@@ -94,8 +94,6 @@ public:
     }
     this->iblank = other.iblank;
   }
-
-  static CDM::E_CDM_ERRORCODE Read(cdm_TextParser tpCntl,cdm_Domain* &domain);
 
   /**
    * @brief read Domain(proc.dfi)

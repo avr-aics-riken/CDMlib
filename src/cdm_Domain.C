@@ -73,11 +73,6 @@ cdm_Domain::~cdm_Domain()
 }
 
 // #################################################################
-CDM::E_CDM_ERRORCODE
-cdm_Domain::Read(cdm_TextParser tpCntl,cdm_Domain* &domain)
-{
-  return CDM::E_CDM_ERROR; 
-}
 // Domain の読込み関数
 CDM::E_CDM_ERRORCODE
 cdm_Domain::Read(cdm_TextParser tpCntl) 
