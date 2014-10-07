@@ -17,20 +17,19 @@
   
 /** proc.dfi ファイルの Domain */
 class cdm_NonUniformDomain : public cdm_Domain {
-private:
-  double *XCoordinates;
-  double *YCoordinates;
-  double *ZCoordinates;
-protected:
-  virtual void Clear()
-  {
-    cdm_Domain::Clear();
-    if( XCoordinates != NULL ){ delete[] XCoordinates; }
-    if( YCoordinates != NULL ){ delete[] YCoordinates; }
-    if( ZCoordinates != NULL ){ delete[] ZCoordinates; }
-  }
-public:
 
+private:
+  double *XCoordinates;                        ///<X座標データポインタ(Domainの格子点)
+  double *YCoordinates;                        ///<Y座標データポインタ(Domainの格子点)
+  double *ZCoordinates;                        ///<Z座標データポインタ(Domainの格子点)
+  std::string CoordinateFile;                  ///<CoordinateFileファイル名
+  CDM::E_CDM_OUTPUT_TYPE CoordinateFileFormat; ///<座標ファイルのデータフォーマット
+  CDM::E_CDM_DTYPE CoordinateFilePrecision;    ///<座標ファイルのデータタイプ
+
+protected:
+  virtual void Clear();
+
+public:
   /** コンストラクタ **/
   cdm_NonUniformDomain();
 
@@ -40,55 +39,40 @@ public:
   * @param [in] _GlobalRegion   各軸方向の長さ
   * @param [in] _GlobalVoxel    ボクセル数
   * @param [in] _GlobalDivision 分割数
+  * @param [in] _iblank         iblankデータポインタ(PLOT3Dのxyzファイル用)
+  * @param [in] _XCoordinates   X座標データポインタ(Domainの格子点)
+  * @param [in] _YCoordinates   Y座標データポインタ(Domainの格子点)
+  * @param [in] _ZCoordinates   Z座標データポインタ(Domainの格子点)
   */ 
-  cdm_NonUniformDomain(
-             const double* _GlobalOrigin, 
-             const double* _GlobalRegion, 
-             const int* _GlobalVoxel, 
-             const int* _GlobalDivision,
-             const double* _XCoordinates,
-             const double* _YCoordinates,
-             const double* _ZCoordinates)
-  : cdm_Domain(_GlobalOrigin,_GlobalRegion,_GlobalVoxel,_GlobalDivision)
-  {
-    XCoordinates = new double[GlobalVoxel[0]+1];
-    YCoordinates = new double[GlobalVoxel[1]+1];
-    ZCoordinates = new double[GlobalVoxel[2]+1];
-    for(int i=0;i<GlobalVoxel[0]+1;++i){
-      XCoordinates[i] = _XCoordinates[i];
-    }
-    for(int j=0;j<GlobalVoxel[1]+1;++j){
-      YCoordinates[j] = _YCoordinates[j];
-    }
-    for(int k=0;k<GlobalVoxel[2]+1;++k){
-      ZCoordinates[k] = _ZCoordinates[k];
-    }
-  }
+  cdm_NonUniformDomain(const double* _GlobalOrigin, 
+                          const double* _GlobalRegion, 
+                          const int* _GlobalVoxel, 
+                          const int* _GlobalDivision,
+                          const int* _iblank,
+                          const double* _XCoordinates,
+                          const double* _YCoordinates,
+                          const double* _ZCoordinates);
 
   /** デストラクタ **/
-  ~cdm_NonUniformDomain()
-  {
-    if( XCoordinates != NULL ){ delete[] XCoordinates; }
-    if( YCoordinates != NULL ){ delete[] YCoordinates; }
-    if( ZCoordinates != NULL ){ delete[] ZCoordinates; }
-  }
+  ~cdm_NonUniformDomain();
 
-  double CellX(int i){
+  double CellX(int i) const{
+    //if( XCoordinates != NULL ){}
     return 0.5*(XCoordinates[i]+XCoordinates[i+1]);
   }
-  double CellY(int j){
+  double CellY(int j) const{
     return 0.5*(YCoordinates[j]+YCoordinates[j+1]);
   }
-  double CellZ(int k){
+  double CellZ(int k) const{
     return 0.5*(ZCoordinates[k]+ZCoordinates[k+1]);
   }
-  double NodeX(int i){
+  double NodeX(int i) const{
     return XCoordinates[i];
   }
-  double NodeY(int j){
+  double NodeY(int j) const{
     return YCoordinates[j];
   }
-  double NodeZ(int k){
+  double NodeZ(int k) const{
     return ZCoordinates[k];
   }
 
@@ -118,7 +102,7 @@ public:
   Read(cdm_TextParser tpCntl);
 
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, const unsigned tab);
+  Read_CoordinateFile(FILE* fp);
 
 };
 

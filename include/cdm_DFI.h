@@ -246,7 +246,10 @@ public:
             const int tail[3],
             const std::string hostname,
             const CDM::E_CDM_ONOFF TSliceOnOff,
-            const int* iblank = NULL);
+            const int* iblank = NULL,
+            const double* coord_X = NULL,
+            const double* coord_Y = NULL,
+            const double* coord_Z = NULL);
 
   /**
    * @brief write インスタンス double型
@@ -292,7 +295,10 @@ public:
             const int tail[3],
             const std::string hostname,
             const CDM::E_CDM_ONOFF TSliceOnOff,
-            const int* iblank = NULL);
+            const int* iblank = NULL,
+            const double* coord_X = NULL,
+            const double* coord_Y = NULL,
+            const double* coord_Z = NULL);
 
   /**
    * @brief RankIDをセットする

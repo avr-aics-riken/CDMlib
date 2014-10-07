@@ -11,6 +11,25 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-07
+Add NonUniformDomain Source and edit source codes relating to non-uniform cartesian
+ソースファイルcdm_NonUniformDomain.Cを追加し、不等間隔格子に関係する
+部分のコード編集を行った。クラスcdm_Domainとその派生クラスcdm_NonUniformDomain
+はポインタで渡すようにし、dfiファイルの変数DFITypeで切り替わるようにしている。
+また、クラスcdm_NonUniformDomainに座標ファイルを読込む関数Read_CoordinateFileを
+追加した。Plot3dに関しては、不等間隔格子のxyzファイルも出力できるようになっている。
+
+------------------
+2014-10-03
+Add NonUniformDomain Header Debug
+cdm_NonUniformDomain.hのデバッグを行った。
+
+------------------
+2014-10-03
+Add NonUniformDomain Header
+ヘッダーファイルcdm_NonUniformDomain.hを追加した。
+
+------------------
 2014-10-03
 Add choice Non_Uniform_Cartesian to DFIType in FileInfo and edit class cdm_Domain
 dfiファイルのFileInfo/DFITypeでNon_Uniform_Cartesianを選択できるようにした。

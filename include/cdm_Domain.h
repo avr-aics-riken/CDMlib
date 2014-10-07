@@ -42,31 +42,33 @@ public:
   * @param [in] _GlobalRegion   各軸方向の長さ
   * @param [in] _GlobalVoxel    ボクセル数
   * @param [in] _GlobalDivision 分割数
+  * @param [in] _iblank         iblankデータポインタ(PLOT3Dのxyzファイル用)
   */ 
   cdm_Domain(const double* _GlobalOrigin, 
              const double* _GlobalRegion, 
              const int* _GlobalVoxel, 
-             const int* _GlobalDivision);
+             const int* _GlobalDivision,
+             const int* _iblank);
 
   /** デストラクタ **/
   virtual ~cdm_Domain();
 
-  double CellX(int i){
+  virtual double CellX(int i) const{
     return GlobalOrigin[0] + Pitch[0]*(i+0.5);
   }
-  double CellY(int j){
+  virtual double CellY(int j) const{
     return GlobalOrigin[1] + Pitch[1]*(j+0.5);
   }
-  double CellZ(int k){
+  virtual double CellZ(int k) const{
     return GlobalOrigin[2] + Pitch[2]*(k+0.5);
   }
-  double NodeX(int i){
+  virtual double NodeX(int i) const{
     return GlobalOrigin[0] + Pitch[0]*i;
   }
-  double NodeY(int j){
+  virtual double NodeY(int j) const{
     return GlobalOrigin[1] + Pitch[1]*j;
   }
-  double NodeZ(int k){
+  virtual double NodeZ(int k) const{
     return GlobalOrigin[2] + Pitch[2]*k;
   }
   template<class T>
@@ -84,7 +86,7 @@ public:
     return CDM::E_CDM_SUCCESS;
   }
 
-  cdm_Domain& operator=(const cdm_Domain& other){
+  virtual cdm_Domain& operator=(const cdm_Domain& other){
     for(int i=0;i<3;++i){
       this->GlobalOrigin[i] = other.GlobalOrigin[i];
       this->GlobalRegion[i] = other.GlobalRegion[i];
@@ -101,7 +103,7 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  Read(cdm_TextParser tpCntl);
+  virtual Read(cdm_TextParser tpCntl);
 
   /**
    * @brief DFIファイル:Domainを出力する

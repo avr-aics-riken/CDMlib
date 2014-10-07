@@ -152,18 +152,13 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   cdm_Domain* domain = NULL;
   if( F_info.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
     domain = new cdm_Domain;
-    if( domain->Read(tpCntl) != CDM::E_CDM_SUCCESS )
-    {
-      printf("\tDomain Data Read error %s\n",procfile.c_str());
-      ret = CDM::E_CDM_ERROR_READ_DOMAIN;
-      return NULL;
-    }
   } else if(F_info.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN) {
-//    domain = new cdm_Domain_NonUniform;
-    printf("\tNon Uniform Domain is now editing \n");
-    return NULL;
-  } else {
-    // write error message
+    domain = new cdm_NonUniformDomain;
+  }
+  if( domain->Read(tpCntl) != CDM::E_CDM_SUCCESS )
+  {
+    printf("\tDomain Data Read error %s\n",procfile.c_str());
+    ret = CDM::E_CDM_ERROR_READ_DOMAIN;
     return NULL;
   }
 
@@ -358,7 +353,10 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const int tail[3],
                             const std::string hostname,
                             const CDM::E_CDM_ONOFF TSliceOnOff,
-                            const int* iblank)
+                            const int* iblank,
+                            const double* coord_X,
+                            const double* coord_Y,
+                            const double* coord_Z)
 {
 
   // float型をdouble型に変換してdouble版WriteInit関数を呼ぶ
@@ -388,7 +386,10 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                    tail, 
                    hostname,
                    TSliceOnOff,
-                   iblank);
+                   iblank,
+                   coord_X,
+                   coord_Y,
+                   coord_Z);
 
 }
 
@@ -413,7 +414,10 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const int tail[3],
                             const std::string hostname,
                             const CDM::E_CDM_ONOFF TSliceOnOff,
-                            const int* iblank)
+                            const int* iblank,
+                            const double* coord_X,
+                            const double* coord_Y,
+                            const double* coord_Z)
 {
 
 //FCONV 20140131.s
@@ -458,8 +462,41 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   out_mpi.NumberOfRank = nrank;
   out_mpi.NumberOfGroup = 1;
 
-  cdm_Domain* out_domain;
-  out_domain = new cdm_Domain;
+  double G_region[3];
+  for(int i=0; i<3; i++) G_region[i]=pitch[i]*G_size[i];
+  cdm_Domain* out_domain = NULL;
+  if( out_F_info.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
+    out_domain = new cdm_Domain(G_origin,
+                                G_region,
+                                G_size,
+                                division,
+                                iblank);
+  } else if(out_F_info.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN) {
+    if( out_F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
+      printf("\tCDM error : NonUniformDomain is not supported in SPH File Format.");
+      return NULL;
+    } else if ( out_F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
+      printf("\tCDM error : NonUniformDomain is not supported in BOV File Format.");
+      return NULL;
+    }
+    out_domain = new cdm_NonUniformDomain(G_origin,
+                                          G_region,
+                                          G_size,
+                                          division,
+                                          iblank,
+                                          coord_X,
+                                          coord_Y,
+                                          coord_Z);
+  } else {
+    printf("\tCDM error : DFIType is not correct.\n");
+    return NULL;
+  }
+
+  //ポインタcoord_XYZのdelete
+    if( coord_X != NULL ){ delete coord_X; }
+    if( coord_Y != NULL ){ delete coord_Y; }
+    if( coord_Z != NULL ){ delete coord_Z; }
+
   cdm_Process out_Process;
   cdm_Rank out_Rank;
 
@@ -473,14 +510,6 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
     out_Process.RankList[RankID].HeadIndex[i]=head[i];
     out_Process.RankList[RankID].TailIndex[i]=tail[i];
     out_Process.RankList[RankID].VoxelSize[i]=tail[i]-head[i]+1;
-  }
-
-  out_domain->iblank = iblank;
-  for(int i=0; i<3; i++) {
-    out_domain->GlobalVoxel[i]  = G_size[i];
-    out_domain->GlobalDivision[i] = division[i];
-    out_domain->GlobalOrigin[i] = G_origin[i];
-    out_domain->GlobalRegion[i] = pitch[i]*G_size[i];
   }
 
   cdm_TimeSlice out_TSlice;

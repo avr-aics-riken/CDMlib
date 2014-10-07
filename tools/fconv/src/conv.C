@@ -1065,7 +1065,8 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
   if( numProc == 1 ) for(int i=0; i<3; i++) Gdiv[i]=1;
 
   //out_domainの生成 
-  out_domain = new cdm_Domain(Gorigin,Gregion,Gvoxel,Gdiv);
+  int *iblank = NULL; //cdm_Domainコンストラクタのiblank追加による一時的な対処(AS田中)
+  out_domain = new cdm_Domain(Gorigin,Gregion,Gvoxel,Gdiv,iblank);
 
   //Process 情報の生成
   const cdm_Process* dfi_Process = dfi->GetcdmProcess();

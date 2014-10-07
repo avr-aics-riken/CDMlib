@@ -176,6 +176,9 @@ namespace CDM
 ,   E_CDM_ERROR_READ_DFI_MAX                = 1025 ///< DFI Max 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_DFITYPE            = 1026 ///< DFI DFIType 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_FIELDFILENAMEFORMAT= 1027 ///< DFI FieldfilenameFormat 読込みエラー
+,   E_CDM_ERROR_READ_DFI_COORDINATEFILEFORMAT   = 1028 ///< Coordinate File Format 読込みエラー
+,   E_CDM_ERROR_READ_DFI_COORDINATEFILEPRECISION= 1029 ///< Coordinate File Precision 読込みエラー
+,   E_CDM_ERROR_OPEN_COORDINATEFILE             = 1030 ///< Coordinate File オープンに失敗
 ,   E_CDM_ERROR_READ_INDEXFILE_OPENERROR    = 1050 ///< Indexファイルオープンエラー
 ,   E_CDM_ERROR_TEXTPARSER                  = 1051 ///< TextParserエラー
 ,   E_CDM_ERROR_READ_FILEINFO               = 1052 ///< FileInfo読込みエラー

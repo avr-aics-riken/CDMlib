@@ -33,7 +33,8 @@ cdm_Domain::cdm_Domain()
 cdm_Domain::cdm_Domain(const double* _GlobalOrigin, 
                        const double* _GlobalRegion, 
                        const int* _GlobalVoxel,
-                       const int* _GlobalDivision)
+                       const int* _GlobalDivision,
+                       const int* _iblank)
 {
   GlobalOrigin[0]=_GlobalOrigin[0];
   GlobalOrigin[1]=_GlobalOrigin[1];
@@ -54,6 +55,8 @@ cdm_Domain::cdm_Domain(const double* _GlobalOrigin,
   Pitch[0] = GlobalRegion[0] / GlobalVoxel[0];
   Pitch[1] = GlobalRegion[1] / GlobalVoxel[1];
   Pitch[2] = GlobalRegion[2] / GlobalVoxel[2];
+
+  iblank = _iblank;
 }
 
 void cdm_Domain::Clear()
@@ -130,6 +133,11 @@ cdm_Domain::Read(cdm_TextParser tpCntl)
   GlobalDivision[0]=iv[0];
   GlobalDivision[1]=iv[1];
   GlobalDivision[2]=iv[2];
+
+  //Pitch
+  Pitch[0] = GlobalRegion[0] / GlobalVoxel[0];
+  Pitch[1] = GlobalRegion[1] / GlobalVoxel[1];
+  Pitch[2] = GlobalRegion[2] / GlobalVoxel[2];
 
   //ActiveSubdomain
   label = "/Domain/ActiveSubdomainFile";
