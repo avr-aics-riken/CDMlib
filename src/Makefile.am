@@ -21,6 +21,7 @@ libCDM_a_SOURCES = \
     cdm_Unit.C \
     cdm_TimeSlice.C \
     cdm_Domain.C \
+    cdm_NonUniformDomain.C \
     cdm_MPI.C \
     cdm_Process.C \
     cdm_DFI_BOV.C \
@@ -46,6 +47,7 @@ CDM_include_HEADERS = \
     $(top_builddir)/include/cdm_Unit.h \
     $(top_builddir)/include/cdm_TimeSlice.h \
     $(top_builddir)/include/cdm_Domain.h \
+    $(top_builddir)/include/cdm_NonUniformDomain.h \
     $(top_builddir)/include/cdm_MPI.h \
     $(top_builddir)/include/cdm_Process.h \
     $(top_builddir)/include/cdm_DFI_BOV.h \
