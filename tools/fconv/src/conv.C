@@ -340,7 +340,7 @@ void CONV::PrintDFI(FILE* fp)
       fprintf(fp,"\tDFI_Info->TimeSliceDirFlag         = \"off\"\n");
     }
     fprintf(fp,"\tDFI_Info->Prefix                   = \"%s\"\n",DFI_Info->Prefix.c_str());
-    fprintf(fp,"\tDFI_Info->FileFormat               = \"%s\2\n",
+    fprintf(fp,"\tDFI_Info->FileFormat               = \"%s\"\n",
             dfi->GetFileFormatString().c_str());
     if( DFI_Info->FieldFilenameFormat == CDM::E_CDM_FNAME_RANK_STEP ) {
       fprintf(fp,"\tDFI_Info->FieldFilenameFormat      = \"rank_step\"\n");

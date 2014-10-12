@@ -12,6 +12,11 @@ REVISION HISTORY
 
 ------------------
 2014-10-12
+Bug fix in conv.C
+FCONVのソースファイルconv.C内にバグがあったので修正した。
+
+------------------
+2014-10-12
 Edit method Read_CoordinateFile in class cdm_NonUniformDomain
 クラスcdm_NonUniformDomainのメンバ関数Read_CoordinateFileを編集した。
 CoordinateFileの内容とproc.dfiファイルのDomainに記載されたGlobalRegion
