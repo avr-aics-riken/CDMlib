@@ -11,6 +11,20 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-12
+Edit method Read_CoordinateFile in class cdm_NonUniformDomain
+クラスcdm_NonUniformDomainのメンバ関数Read_CoordinateFileを編集した。
+CoordinateFileの内容とproc.dfiファイルのDomainに記載されたGlobalRegion
+に関する内容の一致確認など。
+また、CoordinateFileの読込みのエラーコードを追加した。
+
+------------------
+2014-10-08
+Remake Makefile.am and Makefile.in in src
+cdm_NonUniformDomain.C、cdm_NonUniformDomain.hを追加したため、autoreconfを行って
+srcフォルダ内のMakefile.am、Makefile.inを再度生成した。
+
+------------------
 2014-10-07
 Add NonUniformDomain Source and edit source codes relating to non-uniform cartesian
 ソースファイルcdm_NonUniformDomain.Cを追加し、不等間隔格子に関係する

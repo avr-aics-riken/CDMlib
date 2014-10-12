@@ -85,8 +85,6 @@ cdm_NonUniformDomain::Read(cdm_TextParser tpCntl)
   double v[3];
   int iv[3];
 
-  printf("\tRead of cdm_NonUniformDomain\n");
-
   //GlobalOrign
   label = "/Domain/GlobalOrigin";
   for (int n=0; n<3; n++) v[n]=0.0;
@@ -187,15 +185,15 @@ cdm_NonUniformDomain::Read(cdm_TextParser tpCntl)
 
   //Read CoordinateFile
   FILE* fp;
-  // if ( CoordinateFile != "")
+  CDM::E_CDM_ERRORCODE ret;
   if( !(fp=fopen(CoordinateFile.c_str(),"rb")) ) {
-    printf("Can't open file. (%s)\n",CoordinateFile.c_str());
+    printf("\tCan't open file. (%s)\n",CoordinateFile.c_str());
     return CDM::E_CDM_ERROR_OPEN_COORDINATEFILE;
   } else {
-    printf("Open file. (%s)\n",CoordinateFile.c_str());
-    Read_CoordinateFile(fp);
-    //ret = Read_CoordinateFile(fp) としてエラーコード返す？関数Read_CoordinateFile内でエラー設定してから
-    //if( ret != CDM::E_CDM_SUCCESS ){return CDM::E_CDM_ERROR_??}
+    ret = Read_CoordinateFile(fp);
+    if( ret != CDM::E_CDM_SUCCESS ) {
+      return ret;
+    }
   }
 
   return CDM::E_CDM_SUCCESS;
@@ -207,104 +205,136 @@ cdm_NonUniformDomain::Read(cdm_TextParser tpCntl)
 CDM::E_CDM_ERRORCODE
 cdm_NonUniformDomain::Read_CoordinateFile(FILE* fp)
 {
-  printf("\tRead CoordinateFile\n");
 
   int szGrid[3];
+  double eps = 1e-10;
+  double reg_Coord;
 
   //ascii
   if( CoordinateFileFormat == CDM::E_CDM_OUTPUT_TYPE_ASCII ) {
-    std::cout << "CoordinateFileFormat is Ascii " << std::endl;
 
     //x
     fscanf(fp,"%d\n",&szGrid[0]);
-    std::cout << "szGrid[0] " << szGrid[0] << std::endl;
+    //GlobalVoxelの確認
     if ( szGrid[0] != GlobalVoxel[0]+1 ) {
-      std::cout << "szGrid[0] is not equal to GlobalVoxel[0]+1 " << std::endl;
-      //return CDM::E_CDM_ERROR_??
+      printf("\tError in Read CoordinateFile: Number of grid in X direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
     double *XCoordinates = new double[szGrid[0]];
     for(int i=0; i<szGrid[0]; i++) {
-      fscanf(fp,"%lf\n",&(XCoordinates[i]));  //double
-      std::cout << "XCoordinates for i= " << i << " " << XCoordinates[i] << std::endl;
-      //実際の座標の数とszGrid[0]と一致しているかも確認必要か。
+      fscanf(fp,"%lf\n",&(XCoordinates[i]));
     }
-    //if ( XCoordinates[0] != GlobalOrigin[0] ) {
-    //if ( (XCoordinates[szGrid[0]-1]-XCoordinates[0]) != GlobalRegion[0] ) {
-    //実数比較ってこれでOKなの?数値誤差は考慮できてる？
+    //GlobalOriginとGlobalRegionの確認
+    if ( fabs(XCoordinates[0]-GlobalOrigin[0]) > eps) {
+      printf("\tError in Read CoordinateFile: Origin in X direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
+    }
+    reg_Coord = XCoordinates[szGrid[0]-1]-XCoordinates[0];
+    if ( fabs(reg_Coord-GlobalRegion[0]) > eps) {
+      printf("\tError in Read CoordinateFile: Region in X direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
+    }
 
     //y
     fscanf(fp,"%d\n",&szGrid[1]);
-    cout << "szGrid[1] " << szGrid[1] << endl;
     if ( szGrid[1] != GlobalVoxel[1]+1 ) {
-      std::cout << "szGrid[1] is not equal to GlobalVoxel[1]+1 " << std::endl;
-      //return CDM::E_CDM_ERROR_??
+      printf("\tError in Read CoordinateFile: Number of grid in Y direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
     double *YCoordinates = new double[szGrid[1]];
     for(int j=0; j<szGrid[1]; j++) {
-      fscanf(fp,"%lf\n",&(YCoordinates[j]));  //double
-      std::cout << "YCoordinates for j= " << j << " " << YCoordinates[j] << std::endl;
+      fscanf(fp,"%lf\n",&(YCoordinates[j]));
+    }
+    if ( fabs(YCoordinates[0]-GlobalOrigin[1]) > eps) {
+      printf("\tError in Read CoordinateFile: Origin in Y direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
+    }
+    reg_Coord = YCoordinates[szGrid[1]-1]-YCoordinates[0];
+    if ( fabs(reg_Coord-GlobalRegion[1]) > eps) {
+      printf("\tError in Read CoordinateFile: Region in Y direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
 
     //z
     fscanf(fp,"%d\n",&szGrid[2]);
-    cout << "szGrid[2] " << szGrid[2] << endl;
     if ( szGrid[2] != GlobalVoxel[2]+1 ) {
-      std::cout << "szGrid[2] is not equal to GlobalVoxel[2]+1 " << std::endl;
-      //return CDM::E_CDM_ERROR_??
+      printf("\tError in Read CoordinateFile: Number of grid in Z direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
     double *ZCoordinates = new double[szGrid[2]];
     for(int k=0; k<szGrid[2]; k++) {
-      fscanf(fp,"%lf\n",&(ZCoordinates[k]));  //double
-      std::cout << "ZCoordinates for k= " << k << " " << ZCoordinates[k] << std::endl;
+      fscanf(fp,"%lf\n",&(ZCoordinates[k]));
+    }
+    if ( fabs(ZCoordinates[0]-GlobalOrigin[2]) > eps) {
+      printf("\tError in Read CoordinateFile: Origin in Z direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
+    }
+    reg_Coord = ZCoordinates[szGrid[2]-1]-ZCoordinates[0];
+    if ( fabs(reg_Coord-GlobalRegion[2]) > eps) {
+      printf("\tError in Read CoordinateFile: Region in Z direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
 
   //binary
   } else {
-    std::cout << "CoordinatesFileFormat is Binary " << std::endl;
 
     //x
     fread(&szGrid[0], sizeof(int), 1, fp);
-    cout << "szGrid[0] " << szGrid[0] << endl;
+    //GlobalVoxelの確認
     if ( szGrid[0] != GlobalVoxel[0]+1 ) {
-      std::cout << "szGrid[0] is not equal to GlobalVoxel[0]+1 " << std::endl;
-      //return CDM::E_CDM_ERROR_??
+      printf("\tError in Read CoordinateFile: Number of grid in X direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
     double *XCoordinates = new double[szGrid[0]];
     fread(XCoordinates, sizeof(double), szGrid[0], fp);
-    for(int i=0; i<szGrid[0]; i++) {
-      cout << "XCoordinates for i= " << i << " " << XCoordinates[i] << endl;
+    //GlobalOriginとGlobalRegionの確認
+    if ( fabs(XCoordinates[0]-GlobalOrigin[0]) > eps) {
+      printf("\tError in Read CoordinateFile: Origin in X direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
+    }
+    reg_Coord = XCoordinates[szGrid[0]-1]-XCoordinates[0];
+    if ( fabs(reg_Coord-GlobalRegion[0]) > eps) {
+      printf("\tError in Read CoordinateFile: Region in X direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
 
     //y
     fread(&szGrid[1], sizeof(int), 1, fp);
-    cout << "szGrid[1] " << szGrid[1] << endl;
     double *YCoordinates = new double[szGrid[1]];
     if ( szGrid[1] != GlobalVoxel[1]+1 ) {
-      std::cout << "szGrid[1] is not equal to GlobalVoxel[1]+1 " << std::endl;
-      //return CDM::E_CDM_ERROR_??
+      printf("\tError in Read CoordinateFile: Number of grid in Y direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
     fread(YCoordinates, sizeof(double), szGrid[1], fp);
-    for(int j=0; j<szGrid[1]; j++) {
-      cout << "YCoordinates for j= " << j << " " << YCoordinates[j] << endl;
+    if ( fabs(YCoordinates[0]-GlobalOrigin[1]) > eps) {
+      printf("\tError in Read CoordinateFile: Origin in Y direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
+    }
+    reg_Coord = YCoordinates[szGrid[1]-1]-YCoordinates[0];
+    if ( fabs(reg_Coord-GlobalRegion[1]) > eps) {
+      printf("\tError in Read CoordinateFile: Region in Y direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
 
     //z
     fread(&szGrid[2], sizeof(int), 1, fp);
-    cout << "szGrid[2] " << szGrid[2] << endl;
     if ( szGrid[2] != GlobalVoxel[2]+1 ) {
-      std::cout << "szGrid[2] is not equal to GlobalVoxel[2]+1 " << std::endl;
-      //return CDM::E_CDM_ERROR_??
+      printf("\tError in Read CoordinateFile: Number of grid in Z direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
     double *ZCoordinates = new double[szGrid[2]];
     fread(ZCoordinates, sizeof(double), szGrid[2], fp);
-    for(int k=0; k<szGrid[2]; k++) {
-      cout << "ZCoordinates for k= " << k << " " << ZCoordinates[k] << endl;
+    if ( fabs(ZCoordinates[0]-GlobalOrigin[2]) > eps) {
+      printf("\tError in Read CoordinateFile: Origin in Z direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
+    }
+    reg_Coord = ZCoordinates[szGrid[2]-1]-ZCoordinates[0];
+    if ( fabs(reg_Coord-GlobalRegion[2]) > eps) {
+      printf("\tError in Read CoordinateFile: Region in Z direction\n");
+      return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
 
   }
-
-  //さらに、GlobalOrigin等の内容が、Coordinateファイルの内容と一致するかの確認も必要。
-  //GlobalVoxel(ボクセル数)はfread,scanfの時に確認している
 
   return CDM::E_CDM_SUCCESS;
 }
