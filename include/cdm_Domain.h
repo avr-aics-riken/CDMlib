@@ -53,6 +53,7 @@ public:
   /** デストラクタ **/
   virtual ~cdm_Domain();
 
+  /** セル中心の座標を出力 */
   virtual double CellX(int i) const{
     return GlobalOrigin[0] + Pitch[0]*(i+0.5);
   }
@@ -62,6 +63,7 @@ public:
   virtual double CellZ(int k) const{
     return GlobalOrigin[2] + Pitch[2]*(k+0.5);
   }
+  /** 格子の座標を出力 */
   virtual double NodeX(int i) const{
     return GlobalOrigin[0] + Pitch[0]*i;
   }
@@ -70,20 +72,6 @@ public:
   }
   virtual double NodeZ(int k) const{
     return GlobalOrigin[2] + Pitch[2]*k;
-  }
-  template<class T>
-  CDM::E_CDM_ERRORCODE CellXYZ(int i,int j,int k,T xyz[3]){
-    xyz[0] = CellX(i);
-    xyz[1] = CellY(j);
-    xyz[2] = CellZ(k);
-    return CDM::E_CDM_SUCCESS;
-  }
-  template<class T>
-  CDM::E_CDM_ERRORCODE NodeXYZ(int i,int j,int k,T xyz[3]){
-    xyz[0] = NodeX(i);
-    xyz[1] = NodeY(j);
-    xyz[2] = NodeZ(k);
-    return CDM::E_CDM_SUCCESS;
   }
 
   virtual cdm_Domain& operator=(const cdm_Domain& other){

@@ -226,6 +226,7 @@ public:
    * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
    * @return インスタンスされたクラスのポインタ
    */
+  template<typename T>
   static cdm_DFI*
   WriteInit(const MPI_Comm comm,
             const std::string DfiName,
@@ -239,17 +240,17 @@ public:
             const int nComp,
             const std::string proc_fname,
             const int G_size[3],
-            const float pitch[3],
-            const float G_origin[3],
+            const T pitch[3],
+            const T G_origin[3],
             const int division[3],
             const int head[3],
             const int tail[3],
             const std::string hostname,
             const CDM::E_CDM_ONOFF TSliceOnOff,
             const int* iblank = NULL,
-            const double* coord_X = NULL,
-            const double* coord_Y = NULL,
-            const double* coord_Z = NULL);
+            const T* coord_X = NULL,
+            const T* coord_Y = NULL,
+            const T* coord_Z = NULL);
 
   /**
    * @brief write インスタンス double型
@@ -275,6 +276,7 @@ public:
    * @param [in] TSliceOnOff TimeSliceフラグ
    * @return インスタンスされたクラスのポインタ
    */
+/*
   static cdm_DFI* 
   WriteInit(const MPI_Comm comm,
             const std::string DfiName,
@@ -299,7 +301,7 @@ public:
             const double* coord_X = NULL,
             const double* coord_Y = NULL,
             const double* coord_Z = NULL);
-
+*/
   /**
    * @brief RankIDをセットする
    * @param[in] rankID RankID

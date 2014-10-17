@@ -153,7 +153,7 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   if( F_info.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
     domain = new cdm_Domain;
   } else if(F_info.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN) {
-    domain = new cdm_NonUniformDomain;
+    domain = new cdm_NonUniformDomain<double>;
   }
   if( domain->Read(tpCntl) != CDM::E_CDM_SUCCESS )
   {
@@ -334,6 +334,7 @@ cdm_DFI::SetcdmProcess(cdm_Process Process)
 
 // #################################################################
 // DFI Write インスタンス float 型
+/*
 cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const std::string DfiName,
                             const CDM::E_CDM_DFITYPE DfiType,
@@ -392,9 +393,10 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                    coord_Z);
 
 }
-
+*/
 // #################################################################
 // DFI Write インスタンス double 型
+/*
 cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const std::string DfiName,
                             const CDM::E_CDM_DFITYPE DfiType,
@@ -493,9 +495,9 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   }
 
   //ポインタcoord_XYZのdelete
-    if( coord_X != NULL ){ delete coord_X; }
-    if( coord_Y != NULL ){ delete coord_Y; }
-    if( coord_Z != NULL ){ delete coord_Z; }
+//    if( coord_X != NULL ){ delete coord_X; }
+//    if( coord_Y != NULL ){ delete coord_Y; }
+//    if( coord_Z != NULL ){ delete coord_Z; }
 
   cdm_Process out_Process;
   cdm_Rank out_Rank;
@@ -546,7 +548,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   return dfi;
 
 }
-
+*/
 // #################################################################
 // 配列形状を文字列で返す
 std::string cdm_DFI::GetArrayShapeString()

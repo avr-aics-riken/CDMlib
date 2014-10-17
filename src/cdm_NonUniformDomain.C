@@ -19,6 +19,7 @@
 
 // #################################################################
 // コンストラクタ
+/*
 cdm_NonUniformDomain::cdm_NonUniformDomain()
 : cdm_Domain(), XCoordinates(NULL), YCoordinates(NULL), ZCoordinates(NULL)
 {
@@ -26,9 +27,10 @@ cdm_NonUniformDomain::cdm_NonUniformDomain()
   CoordinateFileFormat = CDM::E_CDM_OUTPUT_TYPE_DEFAULT;
   CoordinateFilePrecision = CDM::E_CDM_DTYPE_UNKNOWN;
 }
-
+*/
 // #################################################################
 // コンストラクタ
+/*
 cdm_NonUniformDomain::cdm_NonUniformDomain(const double* _GlobalOrigin, 
                                            const double* _GlobalRegion, 
                                            const int* _GlobalVoxel,
@@ -55,7 +57,8 @@ cdm_NonUniformDomain::cdm_NonUniformDomain(const double* _GlobalOrigin,
   CoordinateFileFormat = CDM::E_CDM_OUTPUT_TYPE_DEFAULT;
   CoordinateFilePrecision = CDM::E_CDM_DTYPE_UNKNOWN;
 }
-
+*/
+/*
 void cdm_NonUniformDomain::Clear()
 {
   cdm_Domain::Clear();
@@ -63,19 +66,21 @@ void cdm_NonUniformDomain::Clear()
   if( YCoordinates != NULL ){ delete[] YCoordinates; }
   if( ZCoordinates != NULL ){ delete[] ZCoordinates; }
 }
-
+*/
 // #################################################################
 // デストラクタ
+/*
 cdm_NonUniformDomain::~cdm_NonUniformDomain()
 {
   if( XCoordinates != NULL ){ delete[] XCoordinates; }
   if( YCoordinates != NULL ){ delete[] YCoordinates; }
   if( ZCoordinates != NULL ){ delete[] ZCoordinates; }
 }
-
+*/
 
 // #################################################################
 // Domain の読込み関数
+/*
 CDM::E_CDM_ERRORCODE
 cdm_NonUniformDomain::Read(cdm_TextParser tpCntl) 
 {
@@ -199,9 +204,10 @@ cdm_NonUniformDomain::Read(cdm_TextParser tpCntl)
   return CDM::E_CDM_SUCCESS;
 
 }
-
+*/
 // #################################################################
 // Domain の読込み関数
+/*
 CDM::E_CDM_ERRORCODE
 cdm_NonUniformDomain::Read_CoordinateFile(FILE* fp)
 {
@@ -338,3 +344,4 @@ cdm_NonUniformDomain::Read_CoordinateFile(FILE* fp)
 
   return CDM::E_CDM_SUCCESS;
 }
+*/
