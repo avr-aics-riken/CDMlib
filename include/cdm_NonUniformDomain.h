@@ -22,9 +22,9 @@ template<class T>
 class cdm_NonUniformDomain : public cdm_Domain {
 
 private:
-  T *XCoordinates;                        ///<X座標データポインタ(Domainの格子点)
-  T *YCoordinates;                        ///<Y座標データポインタ(Domainの格子点)
-  T *ZCoordinates;                        ///<Z座標データポインタ(Domainの格子点)
+  T *XCoordinates;                             ///<X座標データポインタ(Domainの格子点)
+  T *YCoordinates;                             ///<Y座標データポインタ(Domainの格子点)
+  T *ZCoordinates;                             ///<Z座標データポインタ(Domainの格子点)
   std::string CoordinateFile;                  ///<CoordinateFileファイル名
   CDM::E_CDM_OUTPUT_TYPE CoordinateFileFormat; ///<座標ファイルのデータフォーマット
   CDM::E_CDM_DTYPE CoordinateFilePrecision;    ///<座標ファイルのデータタイプ

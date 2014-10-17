@@ -12,6 +12,14 @@ REVISION HISTORY
 
 ------------------
 2014-10-17
+Delete cdm_NoUniformDomain.C and remove old WriteInit in class cdm_DFI
+クラスcdm_NoUniformDomainをテンプレートクラスにし、実装部をヘッダー部に
+移したため、cdm_NoUniformDomain.Cは必要なくなり削除した。
+また、過去にdouble型とfloat型で実装していたメソッドWriteInitは
+使わなくなったので削除した。
+
+------------------
+2014-10-17
 Edit constructor in class cdm_Domain
 メソッドWriteInitから受け取る計算領域に関する変数はRegionではなく
 Pitchであるため、クラスcdm_Domainのコンストラクタの引数_GlobalRegionを

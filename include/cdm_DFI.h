@@ -203,7 +203,7 @@ public:
                                 CDM::E_CDM_ONOFF TimeSliceDirFlag);
 
   /**
-   * @brief write インスタンス float型
+   * @brief write インスタンス (template function)
    * @param [in] comm        MPIコミュニケータ
    * @param [in] DfiName     DFIファイル名
    * @param [in] DfiType     格子タイプ
@@ -252,56 +252,6 @@ public:
             const T* coord_Y = NULL,
             const T* coord_Z = NULL);
 
-  /**
-   * @brief write インスタンス double型
-   * @param [in] comm        MPIコミュニケータ
-   * @param [in] DfiName     DFIファイル名
-   * @param [in] DfiType     格子タイプ
-   * @param [in] Path        フィールドデータのディレクトリ
-   * @param [in] prefix      ベースファイル名
-   * @param [in] format      ファイルフォーマット
-   * @param [in] GCell       出力仮想セル数　　　
-   * @param [in] DataType    データタイプ　　　　
-   * @param [in] ArrayShape  配列形状　　　　　　
-   * @param [in] nComp       成分数　　　　　　　
-   * @param [in] proc_fname  proc.dfiファイル名
-   * @param [in] G_size      グローバルボクセルサイズ　
-   * @param [in] pitch       ピッチ　　　　　　　　　　
-   * @param [in] G_origin    原点座標値　　　　　　　　
-   * @param [in] division    領域分割数　　　　　　　　
-   * @param [in] head        計算領域の開始位置　　　　
-   * @param [in] tail        計算領域の終了位置　　　　
-   * @param [in] hostname    ホスト名　　　　　　　　　
-   * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
-   * @param [in] TSliceOnOff TimeSliceフラグ
-   * @return インスタンスされたクラスのポインタ
-   */
-/*
-  static cdm_DFI* 
-  WriteInit(const MPI_Comm comm,
-            const std::string DfiName,
-            const CDM::E_CDM_DFITYPE DfiType,
-            const std::string Path,
-            const std::string prefix,
-            const CDM::E_CDM_FORMAT format,
-            const int GCell,
-            const CDM::E_CDM_DTYPE DataType,
-            const CDM::E_CDM_ARRAYSHAPE ArrayShape,
-            const int nComp,
-            const std::string proc_fname,
-            const int G_size[3],
-            const double pitch[3],
-            const double G_origin[3],
-            const int division[3],
-            const int head[3],
-            const int tail[3],
-            const std::string hostname,
-            const CDM::E_CDM_ONOFF TSliceOnOff,
-            const int* iblank = NULL,
-            const double* coord_X = NULL,
-            const double* coord_Y = NULL,
-            const double* coord_Z = NULL);
-*/
   /**
    * @brief RankIDをセットする
    * @param[in] rankID RankID
