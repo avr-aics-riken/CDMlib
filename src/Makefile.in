@@ -74,7 +74,6 @@ am_libCDM_a_OBJECTS = libCDM_a-cdm_ActiveSubDomain.$(OBJEXT) \
 	libCDM_a-cdm_DFI.$(OBJEXT) libCDM_a-cdm_FileInfo.$(OBJEXT) \
 	libCDM_a-cdm_FilePath.$(OBJEXT) libCDM_a-cdm_Unit.$(OBJEXT) \
 	libCDM_a-cdm_TimeSlice.$(OBJEXT) libCDM_a-cdm_Domain.$(OBJEXT) \
-	libCDM_a-cdm_NonUniformDomain.$(OBJEXT) \
 	libCDM_a-cdm_MPI.$(OBJEXT) libCDM_a-cdm_Process.$(OBJEXT) \
 	libCDM_a-cdm_DFI_BOV.$(OBJEXT) libCDM_a-cdm_DFI_SPH.$(OBJEXT) \
 	libCDM_a-cdm_DFI_AVS.$(OBJEXT) \
@@ -215,7 +214,6 @@ libCDM_a_SOURCES = \
     cdm_Unit.C \
     cdm_TimeSlice.C \
     cdm_Domain.C \
-    cdm_NonUniformDomain.C \
     cdm_MPI.C \
     cdm_Process.C \
     cdm_DFI_BOV.C \
@@ -347,7 +345,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_FileInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_FilePath.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_MPI.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_NonUniformDomain.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_Process.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_TextParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_TimeSlice.Po@am__quote@
@@ -464,20 +461,6 @@ libCDM_a-cdm_Domain.obj: cdm_Domain.C
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='cdm_Domain.C' object='libCDM_a-cdm_Domain.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -c -o libCDM_a-cdm_Domain.obj `if test -f 'cdm_Domain.C'; then $(CYGPATH_W) 'cdm_Domain.C'; else $(CYGPATH_W) '$(srcdir)/cdm_Domain.C'; fi`
-
-libCDM_a-cdm_NonUniformDomain.o: cdm_NonUniformDomain.C
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -MT libCDM_a-cdm_NonUniformDomain.o -MD -MP -MF "$(DEPDIR)/libCDM_a-cdm_NonUniformDomain.Tpo" -c -o libCDM_a-cdm_NonUniformDomain.o `test -f 'cdm_NonUniformDomain.C' || echo '$(srcdir)/'`cdm_NonUniformDomain.C; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libCDM_a-cdm_NonUniformDomain.Tpo" "$(DEPDIR)/libCDM_a-cdm_NonUniformDomain.Po"; else rm -f "$(DEPDIR)/libCDM_a-cdm_NonUniformDomain.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='cdm_NonUniformDomain.C' object='libCDM_a-cdm_NonUniformDomain.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -c -o libCDM_a-cdm_NonUniformDomain.o `test -f 'cdm_NonUniformDomain.C' || echo '$(srcdir)/'`cdm_NonUniformDomain.C
-
-libCDM_a-cdm_NonUniformDomain.obj: cdm_NonUniformDomain.C
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -MT libCDM_a-cdm_NonUniformDomain.obj -MD -MP -MF "$(DEPDIR)/libCDM_a-cdm_NonUniformDomain.Tpo" -c -o libCDM_a-cdm_NonUniformDomain.obj `if test -f 'cdm_NonUniformDomain.C'; then $(CYGPATH_W) 'cdm_NonUniformDomain.C'; else $(CYGPATH_W) '$(srcdir)/cdm_NonUniformDomain.C'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libCDM_a-cdm_NonUniformDomain.Tpo" "$(DEPDIR)/libCDM_a-cdm_NonUniformDomain.Po"; else rm -f "$(DEPDIR)/libCDM_a-cdm_NonUniformDomain.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='cdm_NonUniformDomain.C' object='libCDM_a-cdm_NonUniformDomain.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -c -o libCDM_a-cdm_NonUniformDomain.obj `if test -f 'cdm_NonUniformDomain.C'; then $(CYGPATH_W) 'cdm_NonUniformDomain.C'; else $(CYGPATH_W) '$(srcdir)/cdm_NonUniformDomain.C'; fi`
 
 libCDM_a-cdm_MPI.o: cdm_MPI.C
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -MT libCDM_a-cdm_MPI.o -MD -MP -MF "$(DEPDIR)/libCDM_a-cdm_MPI.Tpo" -c -o libCDM_a-cdm_MPI.o `test -f 'cdm_MPI.C' || echo '$(srcdir)/'`cdm_MPI.C; \
