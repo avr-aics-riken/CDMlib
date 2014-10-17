@@ -11,6 +11,11 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-17
+Restore SPH format
+メンバ関数ReadInitのインスタンス生成部を編集して、sph形式も読込めるように戻した。
+
+------------------
 2014-10-01
 Change the name of E_CDM_OUTPUT_TYPE to E_CDM_FILE_TYPE
 ファイルタイプを示す列挙型E_CDM_OUTPUT_TYPEの名前をE_CDM_FILE_TYPEに変更した。
