@@ -37,15 +37,20 @@ public:
   cdm_Domain();
 
   /** 
-  * @brief コンストラクタ 
+  * @brief コンストラクタ (_GlobalOrigin,_GlobalPitchは、double型とfloat型の両方あり)
   * @param [in] _GlobalOrigin   起点座標
-  * @param [in] _GlobalRegion   各軸方向の長さ
+  * @param [in] _GlobalPitch    ボクセルの長さ
   * @param [in] _GlobalVoxel    ボクセル数
   * @param [in] _GlobalDivision 分割数
   * @param [in] _iblank         iblankデータポインタ(PLOT3Dのxyzファイル用)
   */ 
-  cdm_Domain(const double* _GlobalOrigin, 
-             const double* _GlobalRegion, 
+  cdm_Domain(const double* _GlobalOrigin,
+             const double* _GlobalPitch, 
+             const int* _GlobalVoxel, 
+             const int* _GlobalDivision,
+             const int* _iblank);
+  cdm_Domain(const float* _GlobalOrigin, 
+             const float* _GlobalPitch, 
              const int* _GlobalVoxel, 
              const int* _GlobalDivision,
              const int* _iblank);

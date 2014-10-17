@@ -50,7 +50,7 @@ public:
   /** 
   * @brief コンストラクタ 
   * @param [in] _GlobalOrigin   起点座標
-  * @param [in] _GlobalRegion   各軸方向の長さ
+  * @param [in] _GlobalPitch    ボクセルの長さ
   * @param [in] _GlobalVoxel    ボクセル数
   * @param [in] _GlobalDivision 分割数
   * @param [in] _iblank         iblankデータポインタ(PLOT3Dのxyzファイル用)
@@ -59,14 +59,14 @@ public:
   * @param [in] _ZCoordinates   Z座標データポインタ(Domainの格子点)
   */ 
   cdm_NonUniformDomain(const T* _GlobalOrigin, 
-                       const T* _GlobalRegion, 
+                       const T* _GlobalPitch, 
                        const int* _GlobalVoxel, 
                        const int* _GlobalDivision,
                        const int* _iblank,
                        const T* _XCoordinates,
                        const T* _YCoordinates,
                        const T* _ZCoordinates)
-  : cdm_Domain(_GlobalOrigin,_GlobalRegion,_GlobalVoxel,_GlobalDivision,_iblank)
+  : cdm_Domain(_GlobalOrigin,_GlobalPitch,_GlobalVoxel,_GlobalDivision,_iblank)
   {
     XCoordinates = new T[GlobalVoxel[0]+1];
     YCoordinates = new T[GlobalVoxel[1]+1];

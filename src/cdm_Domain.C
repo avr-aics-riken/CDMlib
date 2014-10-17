@@ -30,8 +30,8 @@ cdm_Domain::cdm_Domain()
 
 // #################################################################
 // コンストラクタ
-cdm_Domain::cdm_Domain(const double* _GlobalOrigin, 
-                       const double* _GlobalRegion, 
+cdm_Domain::cdm_Domain(const double* _GlobalOrigin,
+                       const double* _GlobalPitch,
                        const int* _GlobalVoxel,
                        const int* _GlobalDivision,
                        const int* _iblank)
@@ -40,9 +40,9 @@ cdm_Domain::cdm_Domain(const double* _GlobalOrigin,
   GlobalOrigin[1]=_GlobalOrigin[1];
   GlobalOrigin[2]=_GlobalOrigin[2];
 
-  GlobalRegion[0]=_GlobalRegion[0];
-  GlobalRegion[1]=_GlobalRegion[1];
-  GlobalRegion[2]=_GlobalRegion[2];
+  Pitch[0]=_GlobalPitch[0];
+  Pitch[1]=_GlobalPitch[1];
+  Pitch[2]=_GlobalPitch[2];
 
   GlobalVoxel[0]=_GlobalVoxel[0];
   GlobalVoxel[1]=_GlobalVoxel[1];
@@ -52,9 +52,34 @@ cdm_Domain::cdm_Domain(const double* _GlobalOrigin,
   GlobalDivision[1]=_GlobalDivision[1];
   GlobalDivision[2]=_GlobalDivision[2];
 
-  Pitch[0] = GlobalRegion[0] / GlobalVoxel[0];
-  Pitch[1] = GlobalRegion[1] / GlobalVoxel[1];
-  Pitch[2] = GlobalRegion[2] / GlobalVoxel[2];
+  GlobalRegion[0]=_GlobalPitch[0]*_GlobalVoxel[0];
+  GlobalRegion[1]=_GlobalPitch[1]*_GlobalVoxel[1];
+  GlobalRegion[2]=_GlobalPitch[2]*_GlobalVoxel[2];
+
+  iblank = _iblank;
+}
+
+cdm_Domain::cdm_Domain(const float* _GlobalOrigin,
+                       const float* _GlobalPitch,
+                       const int* _GlobalVoxel,
+                       const int* _GlobalDivision,
+                       const int* _iblank)
+{
+  GlobalOrigin[0]=(double)_GlobalOrigin[0];
+  GlobalOrigin[1]=(double)_GlobalOrigin[1];
+  GlobalOrigin[2]=(double)_GlobalOrigin[2];
+
+  Pitch[0]=(double)_GlobalPitch[0];
+  Pitch[1]=(double)_GlobalPitch[1];
+  Pitch[2]=(double)_GlobalPitch[2];
+
+  GlobalVoxel[0]=_GlobalVoxel[0];
+  GlobalVoxel[1]=_GlobalVoxel[1];
+  GlobalVoxel[2]=_GlobalVoxel[2];
+
+  GlobalRegion[0]=(double)_GlobalPitch[0]*_GlobalVoxel[0];
+  GlobalRegion[1]=(double)_GlobalPitch[1]*_GlobalVoxel[1];
+  GlobalRegion[2]=(double)_GlobalPitch[2]*_GlobalVoxel[2];
 
   iblank = _iblank;
 }

@@ -397,12 +397,10 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   out_mpi.NumberOfRank = nrank;
   out_mpi.NumberOfGroup = 1;
 
-  double G_region[3];
-  for(int i=0; i<3; i++) G_region[i]=pitch[i]*G_size[i];
   cdm_Domain* out_domain = NULL;
   if( out_F_info.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
     out_domain = new cdm_Domain(G_origin,
-                                G_region,
+                                pitch,
                                 G_size,
                                 division,
                                 iblank);
@@ -415,13 +413,13 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
       return NULL;
     }
     out_domain = new cdm_NonUniformDomain<T>(G_origin,
-                                          G_region,
-                                          G_size,
-                                          division,
-                                          iblank,
-                                          coord_X,
-                                          coord_Y,
-                                          coord_Z);
+                                             pitch,
+                                             G_size,
+                                             division,
+                                             iblank,
+                                             coord_X,
+                                             coord_Y,
+                                             coord_Z);
   } else {
     printf("\tCDM error : DFIType is not correct.\n");
     return NULL;

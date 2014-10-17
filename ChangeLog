@@ -11,6 +11,25 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-17
+Edit constructor in class cdm_Domain
+メソッドWriteInitから受け取る計算領域に関する変数はRegionではなく
+Pitchであるため、クラスcdm_Domainのコンストラクタの引数_GlobalRegionを
+_GlobalPitchに変更し、GlobalRegionはコンストラクタ内で生成するようにした。
+また、cdm_Domainのコンストラクタの引数_GlobalRegion、_GlobalPitchが
+double型の場合とfloat型の場合を用意し、これらの変数のdouble型への
+キャストをコンストラクタ内で行うようにした。
+
+------------------
+2014-10-17
+apply template to cdm_NonUniformDomain
+不等間隔格子の場合に座標値を保持する配列のポインタXCoordinates,YCoordinates,
+ZCoordinates(これらはクラスcdm_NonUniformDomainのメンバ変数)に
+テンプレートを適用し、それに合わせてコード編集を行った。
+ここで、これらの配列ポインタを引数にもつメソッドWriteInitにもテンプレートを
+適用している。
+
+------------------
 2014-10-12
 Bug fix in conv.C
 FCONVのソースファイルconv.C内にバグがあったので修正した。
