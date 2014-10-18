@@ -11,6 +11,19 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-18
+Edit cdm_NonUniformDomain.h and cdm_DFI.h
+cdm_NonUniformDomain.hにおいて、authorのところをaicsに変更した。
+また、メソッドRead_CoordinateFile内を一部修正した。
+cdm_DFI.hでは、座標データポインタについてのコメント文を追加した。
+
+------------------
+2014-10-17
+Remake Makefile.am and Makefile.in in src
+cdm_NoUniformDomain.Cを削除したので、autoreconfを行って
+srcフォルダ内のMakefile.am、Makefile.inを再度生成した。
+
+------------------
 2014-10-17
 Delete cdm_NoUniformDomain.C and remove old WriteInit in class cdm_DFI
 クラスcdm_NoUniformDomainをテンプレートクラスにし、実装部をヘッダー部に

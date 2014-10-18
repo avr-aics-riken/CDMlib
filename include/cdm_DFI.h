@@ -224,6 +224,9 @@ public:
    * @param [in] hostname    ホスト名
    * @param [in] TSliceOnOff TimeSliceフラグ
    * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
+   * @param [in] coord_X     X座標データポインタ
+   * @param [in] coord_Y     Y座標データポインタ
+   * @param [in] coord_Z     Z座標データポインタ
    * @return インスタンスされたクラスのポインタ
    */
   template<typename T>

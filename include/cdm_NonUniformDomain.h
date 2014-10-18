@@ -12,7 +12,7 @@
 /** 
  * @file   cdm_NonUniformDomain.h
  * @brief  cdm_NonUniformDomain Class Header
- * @author advancesoft
+ * @author aics
  */
 
 #include "cdm_Domain.h"
@@ -290,7 +290,8 @@ cdm_NonUniformDomain<T>::Read_CoordinateFile(FILE* fp)
       printf("\tError in Read CoordinateFile: Number of grid in X direction\n");
       return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
-    T *XCoordinates = new T[szGrid[0]];
+    if( XCoordinates ){ delete[] XCoordinates; }
+    XCoordinates = new T[szGrid[0]];
     for(int i=0; i<szGrid[0]; i++) {
       fscanf(fp,"%lf\n",&(XCoordinates[i]));
     }
@@ -311,7 +312,8 @@ cdm_NonUniformDomain<T>::Read_CoordinateFile(FILE* fp)
       printf("\tError in Read CoordinateFile: Number of grid in Y direction\n");
       return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
-    T *YCoordinates = new T[szGrid[1]];
+    if( YCoordinates ){ delete[] YCoordinates; }
+    YCoordinates = new T[szGrid[1]];
     for(int j=0; j<szGrid[1]; j++) {
       fscanf(fp,"%lf\n",&(YCoordinates[j]));
     }
@@ -331,7 +333,8 @@ cdm_NonUniformDomain<T>::Read_CoordinateFile(FILE* fp)
       printf("\tError in Read CoordinateFile: Number of grid in Z direction\n");
       return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
-    T *ZCoordinates = new T[szGrid[2]];
+    if( ZCoordinates ){ delete[] ZCoordinates; }
+    ZCoordinates = new T[szGrid[2]];
     for(int k=0; k<szGrid[2]; k++) {
       fscanf(fp,"%lf\n",&(ZCoordinates[k]));
     }
@@ -355,7 +358,8 @@ cdm_NonUniformDomain<T>::Read_CoordinateFile(FILE* fp)
       printf("\tError in Read CoordinateFile: Number of grid in X direction\n");
       return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
-    T *XCoordinates = new T[szGrid[0]];
+    if( XCoordinates ){ delete[] XCoordinates; }
+    XCoordinates = new T[szGrid[0]];
     fread(XCoordinates, sizeof(T), szGrid[0], fp);
     //GlobalOriginとGlobalRegionの確認
     if ( fabs(XCoordinates[0]-GlobalOrigin[0]) > eps) {
@@ -370,11 +374,12 @@ cdm_NonUniformDomain<T>::Read_CoordinateFile(FILE* fp)
 
     //y
     fread(&szGrid[1], sizeof(int), 1, fp);
-    T *YCoordinates = new T[szGrid[1]];
     if ( szGrid[1] != GlobalVoxel[1]+1 ) {
       printf("\tError in Read CoordinateFile: Number of grid in Y direction\n");
       return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
+    if( YCoordinates ){ delete[] YCoordinates; }
+    YCoordinates = new T[szGrid[1]];
     fread(YCoordinates, sizeof(T), szGrid[1], fp);
     if ( fabs(YCoordinates[0]-GlobalOrigin[1]) > eps) {
       printf("\tError in Read CoordinateFile: Origin in Y direction\n");
@@ -392,7 +397,8 @@ cdm_NonUniformDomain<T>::Read_CoordinateFile(FILE* fp)
       printf("\tError in Read CoordinateFile: Number of grid in Z direction\n");
       return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
     }
-    T *ZCoordinates = new T[szGrid[2]];
+    if( ZCoordinates ){ delete[] ZCoordinates; }
+    ZCoordinates = new T[szGrid[2]];
     fread(ZCoordinates, sizeof(T), szGrid[2], fp);
     if ( fabs(ZCoordinates[0]-GlobalOrigin[2]) > eps) {
       printf("\tError in Read CoordinateFile: Origin in Z direction\n");
@@ -409,6 +415,4 @@ cdm_NonUniformDomain<T>::Read_CoordinateFile(FILE* fp)
   return CDM::E_CDM_SUCCESS;
 }
 
-
-
-#endif // _CDM_DOMAIN_H_
+#endif // _CDM_NONUNIFORMDOMAIN_H_
