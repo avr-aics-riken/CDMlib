@@ -11,6 +11,10 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-18
+beta version release
+
+------------------
 2014-10-17
 Restore SPH format
 メンバ関数ReadInitのインスタンス生成部を編集して、sph形式も読込めるように戻した。

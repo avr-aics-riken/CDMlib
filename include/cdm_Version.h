@@ -15,10 +15,10 @@
 #define _CDM_VERSION_H_
 
 /** CDMライブラリのバージョン */
-#define CDM_VERSION_NO  "0.1.0"
+#define CDM_VERSION_NO  "0.2.0"
 
 /** CDMライブラリのリビジョン */
-#define CDM_REVISION    "20140823_1700"
+#define CDM_REVISION    "20141018_1900"
 
 #endif /* _CDM_VERSION_H_ */
 
