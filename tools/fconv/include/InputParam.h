@@ -37,7 +37,7 @@
 #include "conv_Define.h"
 #include "TextParser.h"
 #include "cpm_ParaManager.h"
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 
 using namespace std;
 
@@ -48,7 +48,7 @@ public:
   //dfi情報構造体
   struct dfi_info{
     std::string in_dfi_name;    ///<読込みdfiファイル名
-    cio_DFI* in_dfi;            ///<読込みdfiポインタ
+    cdm_DFI* in_dfi;            ///<読込みdfiポインタ
     std::string out_dfi_name;   ///<出力dfiファイル名
     std::string out_proc_name;  ///<出力procファイル名
   };
@@ -69,12 +69,12 @@ protected:
   int m_outputGuideCell;     ///<出力するガイドセル数
   std::string m_outdir_name; ///<出力先ディレクトリー名
 
-  CIO::E_CIO_DTYPE              m_output_data_type;     ///<出力実数タイプ byte,short,int,float,double
-  CIO::E_CIO_FORMAT             m_out_format;           ///<出力ファイルフォーマット sph,bov,avs,plot3d,vtk
-  CIO::E_CIO_OUTPUT_TYPE        m_out_format_type;      ///<出力形式 ascii,binary,FortranBinary
+  CDM::E_CDM_DTYPE              m_output_data_type;     ///<出力実数タイプ byte,short,int,float,double
+  CDM::E_CDM_FORMAT             m_out_format;           ///<出力ファイルフォーマット sph,bov,avs,plot3d,vtk
+  CDM::E_CDM_FILE_TYPE          m_out_format_type;      ///<出力形式 ascii,binary,FortranBinary
   E_CONV_OUTPUT_CONV_TYPE       m_conv_type;            ///<convertタイプ Mx1 MxN MxM
-  CIO::E_CIO_ARRAYSHAPE         m_outputArrayShape;     ///<出力配列形状
-  CIO::E_CIO_OUTPUT_FNAME       m_outputFilenameFormat; ///<出力ファイル名命名順
+  CDM::E_CDM_ARRAYSHAPE         m_outputArrayShape;     ///<出力配列形状
+  CDM::E_CDM_OUTPUT_FNAME       m_outputFilenameFormat; ///<出力ファイル名命名順
   E_CONV_OUTPUT_MULTI_FILE_CAST m_multiFileCasting;     ///<並列処理時のファイル割振り方法
   
 public:
@@ -162,18 +162,18 @@ public:
   /**
    * @brief 出力ファイルフォーマットの取り出し
    */
-  CIO::E_CIO_FORMAT Get_OutputFormat() { return m_out_format; };
+  CDM::E_CDM_FORMAT Get_OutputFormat() { return m_out_format; };
 
   /**
    * 出力ファイルフォーマットの取り出し(文字列）
    */
   std::string Get_OutputFormat_string()
   {
-    if( Get_OutputFormat() == CIO::E_CIO_FMT_SPH ) return "sph";
-    if( Get_OutputFormat() == CIO::E_CIO_FMT_BOV ) return "bov";
-    if( Get_OutputFormat() == CIO::E_CIO_FMT_AVS ) return "avs";
-    if( Get_OutputFormat() == CIO::E_CIO_FMT_VTK ) return "vtk";
-    if( Get_OutputFormat() == CIO::E_CIO_FMT_PLOT3D ) return "plot3d";
+    if( Get_OutputFormat() == CDM::E_CDM_FMT_SPH ) return "sph";
+    if( Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) return "bov";
+    if( Get_OutputFormat() == CDM::E_CDM_FMT_AVS ) return "avs";
+    if( Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) return "vtk";
+    if( Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D ) return "plot3d";
     return "";
   }; 
 
@@ -181,7 +181,7 @@ public:
   /**
    * @brief 出力タイプの取り出し
    */
-  CIO::E_CIO_DTYPE
+  CDM::E_CDM_DTYPE
   Get_OutputDataType() { return m_output_data_type; };
 
   /**
@@ -189,23 +189,23 @@ public:
    */
   std::string Get_OutputDataType_string()
   {
-    if( Get_OutputDataType() == CIO::E_CIO_INT8    ) return "Int8";
-    if( Get_OutputDataType() == CIO::E_CIO_UINT8   ) return "UInt8";
-    if( Get_OutputDataType() == CIO::E_CIO_INT16   ) return "Int16";
-    if( Get_OutputDataType() == CIO::E_CIO_UINT16  ) return "UInt16";
-    if( Get_OutputDataType() == CIO::E_CIO_INT32   ) return "Int32";
-    if( Get_OutputDataType() == CIO::E_CIO_UINT32  ) return "UInt32";
-    if( Get_OutputDataType() == CIO::E_CIO_INT64   ) return "Int64";
-    if( Get_OutputDataType() == CIO::E_CIO_UINT64  ) return "UInt64";
-    if( Get_OutputDataType() == CIO::E_CIO_FLOAT32 ) return "Float32";
-    if( Get_OutputDataType() == CIO::E_CIO_FLOAT64 ) return "Float64";
+    if( Get_OutputDataType() == CDM::E_CDM_INT8    ) return "Int8";
+    if( Get_OutputDataType() == CDM::E_CDM_UINT8   ) return "UInt8";
+    if( Get_OutputDataType() == CDM::E_CDM_INT16   ) return "Int16";
+    if( Get_OutputDataType() == CDM::E_CDM_UINT16  ) return "UInt16";
+    if( Get_OutputDataType() == CDM::E_CDM_INT32   ) return "Int32";
+    if( Get_OutputDataType() == CDM::E_CDM_UINT32  ) return "UInt32";
+    if( Get_OutputDataType() == CDM::E_CDM_INT64   ) return "Int64";
+    if( Get_OutputDataType() == CDM::E_CDM_UINT64  ) return "UInt64";
+    if( Get_OutputDataType() == CDM::E_CDM_FLOAT32 ) return "Float32";
+    if( Get_OutputDataType() == CDM::E_CDM_FLOAT64 ) return "Float64";
     return "";
   };
 
   /**
    * @brief 出力形式の取り出し（ascii,binary,FortranBinary)
    */
-  CIO::E_CIO_OUTPUT_TYPE
+  CDM::E_CDM_FILE_TYPE
   Get_OutputFormatType() { return m_out_format_type; };
 
   /**
@@ -221,19 +221,19 @@ public:
   /**
    * @brief 出力配列形状の取り出し
    */
-  CIO::E_CIO_ARRAYSHAPE
+  CDM::E_CDM_ARRAYSHAPE
   Get_OutputArrayShape() { return m_outputArrayShape; };
 
   /**
    * @brief 出力配列形状のセット
    */
-  void Set_OutputArrayShape( CIO::E_CIO_ARRAYSHAPE outputArrayShape ) 
+  void Set_OutputArrayShape( CDM::E_CDM_ARRAYSHAPE outputArrayShape ) 
        { m_outputArrayShape = outputArrayShape; }; 
 
   /**
    * @brief 出力ファイル名命名順の取り出し
    */
-  CIO::E_CIO_OUTPUT_FNAME
+  CDM::E_CDM_OUTPUT_FNAME
   Get_OutputFilenameFormat() { return m_outputFilenameFormat; }; 
 
   /**

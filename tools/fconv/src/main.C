@@ -163,7 +163,7 @@ int main( int argc, char **argv )
   cout << endl;
   cout << "ReadDfiFiles" << endl;
   t1 = cpm_Base::GetWTime();
-  if( conv->ReadDfiFiles() != CIO::E_CIO_SUCCESS ) return 0;
+  if( conv->ReadDfiFiles() != CDM::E_CDM_SUCCESS ) return 0;
  
   t2 = cpm_Base::GetWTime();
   // ##################################################################

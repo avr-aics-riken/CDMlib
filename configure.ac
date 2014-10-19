@@ -13,13 +13,13 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.57])
-AC_INIT([CDMlib],[0.1.0],[keno@riken.jp],[CDMlib])
+AC_INIT([CDMlib],[0.2.0],[keno@riken.jp],[CDMlib])
 AM_INIT_AUTOMAKE()
-AC_CONFIG_SRCDIR([src/cio_DFI.C])
+AC_CONFIG_SRCDIR([src/cdm_DFI.C])
 AM_CONFIG_HEADER([config.h])
 
 # revision No.
-CDM_REVISION="20140823_1700"
+CDM_REVISION="20141018_1900"
 AC_SUBST(CDM_REVISION)
 
 #
@@ -49,10 +49,10 @@ FCFLAGS=$F90FLAGS
 enable_mpi="none"
 
 
-CIO_CXX="$CXX"
-AC_SUBST(CIO_CXX)
+CDM_CXX="$CXX"
+AC_SUBST(CDM_CXX)
 
-case "$CIO_CXX" in
+case "$CDM_CXX" in
   mpicxx)   enable_mpi="wrappermpi" ;;
   mpicc)    enable_mpi="wrappermpi" ;;
   mpiCC)    enable_mpi="wrappermpi" ;;
@@ -77,7 +77,7 @@ AC_SUBST(MPI_LIBS)
 #
 AC_ARG_WITH(MPI, [AC_HELP_STRING([--with-MPI=(yes|no)],[use MPI library])], , with_MPI=yes)
 if test "$with_MPI" = "no" ; then
-  CXXFLAGS=-D_CIO_WITHOUT_MPI_
+  CXXFLAGS=-D_CDM_WITHOUT_MPI_
 else
 
   # openmpi
@@ -158,16 +158,16 @@ fi
 
 
 #
-# CIO special flags
+# CDM special flags
 #
-CIO_CFLAGS="-I$CDM_INST_DIR/include"
-AC_SUBST(CIO_CFLAGS)
+CDM_CFLAGS="-I$CDM_INST_DIR/include"
+AC_SUBST(CDM_CFLAGS)
 
-CIO_LDFLAGS="-L$CDM_INST_DIR/lib"
-AC_SUBST(CIO_LDFLAGS)
+CDM_LDFLAGS="-L$CDM_INST_DIR/lib"
+AC_SUBST(CDM_LDFLAGS)
 
-CIO_LIBS="-lCIO"
-AC_SUBST(CIO_LIBS)
+CDM_LIBS="-lCDM"
+AC_SUBST(CDM_LIBS)
 
 
 
@@ -234,7 +234,7 @@ AC_CONFIG_FILES([Makefile \
                  src/Makefile \
                  doc/Makefile \
                  cdm-config \
-                 include/cio_Version.h \
+                 include/cdm_Version.h \
                  ])
 
 if test "x$with_frm" = "xyes" ; then

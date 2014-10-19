@@ -1,5 +1,5 @@
-#ifndef _CIO_MPI_STUBS_H_
-#define _CIO_MPI_STUBS_H_
+#ifndef _CDM_MPI_STUBS_H_
+#define _CDM_MPI_STUBS_H_
 
 /*
  * CDMlib - Cartesian Data Management library
@@ -54,4 +54,4 @@ inline int MPI_Gather(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
 
 
 
-#endif /* _CIO_MPI_STUBS_H_ */
+#endif /* _CDM_MPI_STUBS_H_ */

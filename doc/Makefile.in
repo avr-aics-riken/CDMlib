@@ -173,12 +173,12 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
+CDM_CFLAGS = @CDM_CFLAGS@
+CDM_CXX = @CDM_CXX@
+CDM_LDFLAGS = @CDM_LDFLAGS@
+CDM_LIBS = @CDM_LIBS@
 CDM_REVISION = @CDM_REVISION@
 CFLAGS = @CFLAGS@
-CIO_CFLAGS = @CIO_CFLAGS@
-CIO_CXX = @CIO_CXX@
-CIO_LDFLAGS = @CIO_LDFLAGS@
-CIO_LIBS = @CIO_LIBS@
 CPM_CFLAGS = @CPM_CFLAGS@
 CPM_DIR = @CPM_DIR@
 CPM_LDFLAGS = @CPM_LDFLAGS@
@@ -277,8 +277,8 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 doc_includedir = $(prefix)/doc
 doc_include_HEADERS = \
-    $(top_builddir)/doc/ciolib_ug_jp.pdf \
-    $(top_builddir)/doc/ciolib_ug_en.pdf \
+    $(top_builddir)/doc/cdmlib_ug_jp.pdf \
+    $(top_builddir)/doc/cdmlib_ug_en.pdf \
     $(top_builddir)/doc/reference.pdf \
     $(top_builddir)/doc/fconv_reference.pdf
 

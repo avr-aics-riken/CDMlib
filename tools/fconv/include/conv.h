@@ -35,7 +35,7 @@
 #endif
 
 #include "cpm_ParaManager.h"
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 #include "limits.h" // for UBUNTU
 
 #include "conv_Define.h"
@@ -50,7 +50,7 @@ public:
 
   //処理リスト
   struct step_rank_info{
-   cio_DFI* dfi;
+   cdm_DFI* dfi;
    int stepStart;
    int stepEnd;
    int rankStart;
@@ -59,7 +59,7 @@ public:
 
   //minmax
   struct dfi_MinMax{
-   cio_DFI* dfi;
+   cdm_DFI* dfi;
    double* Min;
    double* Max;
    dfi_MinMax(int nstep, int ncomp){
@@ -101,7 +101,7 @@ public:
   int m_lflag;
   int m_lflagv;
 
-  vector<cio_DFI *>m_in_dfi;  //入力DFIのポインタ
+  vector<cdm_DFI *>m_in_dfi;  //入力DFIのポインタ
 
 public:
   /** コンストラクタ */
@@ -164,7 +164,7 @@ public:
   /**
    * @brief dfiファイルの読み込みとDfiInfoクラスデータの作成
    */
-  CIO::E_CIO_ERRORCODE ReadDfiFiles();
+  CDM::E_CDM_ERRORCODE ReadDfiFiles();
  
   /**
    * @brief dfi毎の成分数、出力ガイドセルのチェックと更新
@@ -239,7 +239,7 @@ public:
    * @param[in] step step番号
    * @return time
    */
-  double GetSliceTime(cio_DFI* dfi, int step); 
+  double GetSliceTime(cdm_DFI* dfi, int step); 
 
   /**
    * @brief 配列のコンバート
@@ -250,8 +250,8 @@ public:
    * @param[in]  n           成分位置
    */
   bool convertXY(
-                 cio_Array* buf,
-                 cio_Array* &src,
+                 cdm_Array* buf,
+                 cdm_Array* &src,
                  int headS[3],
                  int tailS[3],
                  int n);
@@ -265,8 +265,8 @@ public:
    * @param [in]  n          成分位置
    */ 
   template<class T>
-  bool copyArray(cio_TypeArray<T> *B,
-                 cio_Array *&src,
+  bool copyArray(cdm_TypeArray<T> *B,
+                 cdm_Array *&src,
                  int sta[3],
                  int end[3],
                  int n);
@@ -281,8 +281,8 @@ public:
    *
    */
   template<class T1, class T2>
-  bool copyArray(cio_TypeArray<T1> *buf,
-                 cio_TypeArray<T2> *&src,
+  bool copyArray(cdm_TypeArray<T1> *buf,
+                 cdm_TypeArray<T2> *&src,
                  int sta[3],
                  int end[3],
                  int n);
@@ -293,7 +293,7 @@ public:
    * @param[out] min 求められた最小値
    * @param[out] max 求められた最大値
    */
-  bool DtypeMinMax(cio_Array* src,
+  bool DtypeMinMax(cdm_Array* src,
                   double *min,
                   double *max);
 
@@ -304,7 +304,7 @@ public:
    * @param[out] max 求められた最大値
    */
   template<class T>
-  bool calcMinMax(cio_TypeArray<T> *src,
+  bool calcMinMax(cdm_TypeArray<T> *src,
                   double *min,
                   double *max);
 
@@ -338,17 +338,17 @@ public:
    * @brief proc.dfiの出力
    */
   bool WriteProcDfiFile(std::string proc_name,
-                        cio_Domain* out_domain,
-                        cio_MPI* out_mpi,
-                        cio_Process* out_process); 
+                        cdm_Domain* out_domain,
+                        cdm_MPI* out_mpi,
+                        cdm_Process* out_process); 
 
   /**
    * @brief Proc情報の生成 
    */
-  bool makeProcInfo(cio_DFI* dfi,
-                    cio_Domain* &out_domain,
-                    cio_MPI* &out_mpi,
-                    cio_Process* &out_process,
+  bool makeProcInfo(cdm_DFI* dfi,
+                    cdm_Domain* &out_domain,
+                    cdm_MPI* &out_mpi,
+                    cdm_Process* &out_process,
                     int numProc);
 
 };

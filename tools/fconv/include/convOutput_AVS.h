@@ -53,7 +53,7 @@ public:
    * @param [in] dLen   出力データサイズ
    */
   bool WriteFieldData(FILE* fp,
-                      cio_Array* src,
+                      cdm_Array* src,
                       size_t dLen); 
 
   /**
@@ -63,7 +63,7 @@ public:
    */
   void output_avs(
                   int myRank, 
-                  vector<cio_DFI *>in_dfi);
+                  vector<cdm_DFI *>in_dfi);
 
 protected:
   /**
@@ -74,7 +74,7 @@ protected:
 /*
   void output_avs_Mx1(
                       int myRank, 
-                      vector<cio_DFI *>in_dfi); 
+                      vector<cdm_DFI *>in_dfi); 
 */
   /**
    * @brief avsファイルのヘッダー処理（MxM)
@@ -83,7 +83,7 @@ protected:
    */
   void output_avs_MxM(
                       int myRank, 
-                      vector<cio_DFI *>in_dfi); 
+                      vector<cdm_DFI *>in_dfi); 
 
   /**
    * @brief avsファイルのヘッダー処理（MxN)
@@ -94,7 +94,7 @@ protected:
    */
   void output_avs_MxN(
                       int myRank, 
-                      vector<cio_DFI *>in_dfi,
+                      vector<cdm_DFI *>in_dfi,
                       cpm_ParaManager* paraMngr,
                       int *head); 
 
@@ -112,14 +112,14 @@ protected:
 
   /**
    * @brief avsファイルヘッダー出力
-   * @param[in] dfi     cio_DFIクラスポインタ
+   * @param[in] dfi     cdm_DFIクラスポインタ
    * @param[in] RankID  ランクID
    * @param[in] mio     分割出力指示
    * @param[in] ndim    3
    * @param[in] nspace  3
    * @param[in] dims    サイズ
    */
-  void output_avs_header(cio_DFI* dfi,
+  void output_avs_header(cdm_DFI* dfi,
                          int RankID,
                          bool mio,
                          int ndim,

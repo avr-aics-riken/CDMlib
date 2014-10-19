@@ -60,7 +60,7 @@ fconv_inline_include_HEADERS = \
 fconv_LDADD = \
   -L$(top_builddir)/src \
   @CPM_LDFLAGS@ \
-  @CIO_LIBS@ \
+  @CDM_LIBS@ \
   @TP_LDFLAGS@ \
   @MPI_LDFLAGS@ \
   @MPI_LIBS@ 

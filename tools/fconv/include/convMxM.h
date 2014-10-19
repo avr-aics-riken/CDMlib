@@ -49,7 +49,7 @@ public:
    * @brief 
    */
   bool mxmsolv(std::string dfiname, 
-               cio_DFI* dfi,
+               cdm_DFI* dfi,
                int l_step,
                double l_time,
                int rankID,

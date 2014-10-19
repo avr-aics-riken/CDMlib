@@ -36,7 +36,7 @@ void convMxN::VoxelInit()
 {
   std::string outdfiname;
   int iret=0;
-  const cio_Domain *DFI_Domain = m_in_dfi[0]->GetcioDomain();
+  const cdm_Domain *DFI_Domain = m_in_dfi[0]->GetcdmDomain();
 
   //ピッチのセット
   double dfi_pit[3];
@@ -173,7 +173,7 @@ void convMxN::VoxelInit()
 
   //出力DFIの初期化
   for(int i=0; i<m_in_dfi.size(); i++) {
-    const cio_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcioFileInfo();
+    const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
 
     std::string outdfifname="";
     std::string outprocfname="";
@@ -183,8 +183,8 @@ void convMxN::VoxelInit()
     }
 
     //出力タイプのセット
-    CIO::E_CIO_DTYPE d_type;
-    if( m_param->Get_OutputDataType() == CIO::E_CIO_DTYPE_UNKNOWN )
+    CDM::E_CDM_DTYPE d_type;
+    if( m_param->Get_OutputDataType() == CDM::E_CDM_DTYPE_UNKNOWN )
     {
       d_type = m_in_dfi[i]->GetDataType();
     } else {
@@ -195,7 +195,7 @@ void convMxN::VoxelInit()
     int outGc=0;
     if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
     if( outGc > 1 ) {
-      const cio_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcioFileInfo();
+      const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
       if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
     }
     //間引きありのとき、出力ガイドセルを0に設定
@@ -203,7 +203,7 @@ void convMxN::VoxelInit()
     //格子点出力のとき、出力ガイドセルを0に設定
     if( m_bgrid_interp_flag ) outGc=0; 
 
-    cio_DFI* dfi=cio_DFI::WriteInit(MPI_COMM_WORLD,
+    cdm_DFI* dfi=cdm_DFI::WriteInit(MPI_COMM_WORLD,
                           outdfifname,
                           m_param->Get_OutputDir(),
                           DFI_FInfo->Prefix,
@@ -221,7 +221,7 @@ void convMxN::VoxelInit()
                           head,
                           tail,
                           m_HostName,
-                          CIO::E_CIO_OFF);
+                          CDM::E_CDM_OFF);
     if( dfi == NULL ) {
       printf("\tFails to instance dfi\n");
       Exit(0);
@@ -282,9 +282,9 @@ bool convMxN::exec()
   FILE *fp;
   int dummy;
 
-  CIO::E_CIO_DTYPE d_type;
+  CDM::E_CDM_DTYPE d_type;
 
-  CIO::E_CIO_ERRORCODE ret; 
+  CDM::E_CDM_ERRORCODE ret; 
   double rtime;
   unsigned idummy;
   double ddummy;
@@ -358,7 +358,7 @@ bool convMxN::exec()
   for(int i=0; i<3; i++) org[i]=dtmp[i]+0.5*pit[i];
   for(int i=0; i<3; i++) org[i]+=double(head[i])*pit[i];
 
-  const cio_FileInfo* DFI_FInfo = m_in_dfi[0]->GetcioFileInfo();
+  const cdm_FileInfo* DFI_FInfo = m_in_dfi[0]->GetcdmFileInfo();
 
   //dfiのループ
   for (int i=0; i<m_in_dfi.size(); i++) {
@@ -369,7 +369,7 @@ bool convMxN::exec()
     int outGc=0;
     if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
     if( outGc > 0 ) {
-      const cio_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcioFileInfo();
+      const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
       if( outGc > DFI_FInfo->GuideCell ) outGc = DFI_FInfo->GuideCell;
     }
 
@@ -377,7 +377,7 @@ bool convMxN::exec()
     if( m_bgrid_interp_flag ) outGc=0; 
 
     //読込みバッファのインスタンス
-    cio_Array* buf = cio_Array::instanceArray
+    cdm_Array* buf = cdm_Array::instanceArray
     ( m_in_dfi[i]->GetDataType(),
       m_in_dfi[i]->GetArrayShape(),
       sz,
@@ -387,7 +387,7 @@ bool convMxN::exec()
       nComp);
 
     //出力タイプのセット
-    if( m_param->Get_OutputDataType() == CIO::E_CIO_DTYPE_UNKNOWN )
+    if( m_param->Get_OutputDataType() == CDM::E_CDM_DTYPE_UNKNOWN )
     {
       d_type = m_in_dfi[i]->GetDataType();
     } else {
@@ -395,7 +395,7 @@ bool convMxN::exec()
     }
 
     //出力バッファのインスタンス
-    cio_Array* src = cio_Array::instanceArray
+    cdm_Array* src = cdm_Array::instanceArray
     ( d_type,
       //m_in_dfi[i]->GetArrayShape(),
       m_param->Get_OutputArrayShape(),
@@ -406,11 +406,11 @@ bool convMxN::exec()
       nComp);
    
     //DFI_FInfoクラスの取得
-    const cio_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcioFileInfo();
+    const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
     prefix=DFI_FInfo->Prefix; 
 
     //TimeSliceクラスの取得
-    const cio_TimeSlice* TSlice = m_in_dfi[i]->GetcioTimeSlice();
+    const cdm_TimeSlice* TSlice = m_in_dfi[i]->GetcdmTimeSlice();
 
 
     //ステップ数のループ
@@ -429,7 +429,7 @@ bool convMxN::exec()
                                 true,
                                 idummy,
                                 ddummy);
-      if( ret != CIO::E_CIO_SUCCESS ) {
+      if( ret != CDM::E_CDM_SUCCESS ) {
         printf("ReadData Error\n");
         return false;
       }
@@ -469,7 +469,7 @@ bool convMxN::exec()
         for(int n=0; n<nComp; n++) convertXY(buf,src,headS,tailS,n);
       }
 
-      CIO::E_CIO_OUTPUT_FNAME output_fname = m_param->Get_OutputFilenameFormat();
+      CDM::E_CDM_OUTPUT_FNAME output_fname = m_param->Get_OutputFilenameFormat();
       m_out_dfi[i]->set_output_fname(output_fname);
 
       //minmaxの初期化
@@ -507,7 +507,7 @@ bool convMxN::exec()
         tmp_minmax[n*2+1] = max[n];
       }
   
-      m_out_dfi[i]->SetcioTimeSlice(*TSlice);
+      m_out_dfi[i]->SetcdmTimeSlice(*TSlice);
  
       ret = m_out_dfi[i]->WriteData(
                                     (unsigned)TSlice->SliceList[j].step,

@@ -9,8 +9,8 @@
 
 doc_includedir = $(prefix)/doc
 doc_include_HEADERS = \
-    $(top_builddir)/doc/ciolib_ug_jp.pdf \
-    $(top_builddir)/doc/ciolib_ug_en.pdf \
+    $(top_builddir)/doc/cdmlib_ug_jp.pdf \
+    $(top_builddir)/doc/cdmlib_ug_en.pdf \
     $(top_builddir)/doc/reference.pdf \
     $(top_builddir)/doc/fconv_reference.pdf
 

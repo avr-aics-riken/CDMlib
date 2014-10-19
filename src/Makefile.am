@@ -9,60 +9,60 @@
 #########################################################################
 ###
 
-lib_LIBRARIES = libCIO.a
+lib_LIBRARIES = libCDM.a
 
-libCIO_a_CXXFLAGS = @MPI_CFLAGS@ @TP_CFLAGS@ -I$(top_builddir)/include
+libCDM_a_CXXFLAGS = @MPI_CFLAGS@ @TP_CFLAGS@ -I$(top_builddir)/include
 
-libCIO_a_SOURCES = \
-    cio_ActiveSubDomain.C \
-    cio_DFI.C \
-    cio_FileInfo.C \
-    cio_FilePath.C \
-    cio_Unit.C \
-    cio_TimeSlice.C \
-    cio_Domain.C \
-    cio_MPI.C \
-    cio_Process.C \
-    cio_DFI_BOV.C \
-    cio_DFI_SPH.C \
-    cio_DFI_AVS.C \
-    cio_DFI_PLOT3D.C \
-    cio_DFI_VTK.C \
-    cio_DFI_Read.C \
-    cio_DFI_Write.C \
-    cio_TextParser.C \
-    cio_interp.f90 \
-    cio_interp_ijkn.h \
-    cio_interp_nijk.h
+libCDM_a_SOURCES = \
+    cdm_ActiveSubDomain.C \
+    cdm_DFI.C \
+    cdm_FileInfo.C \
+    cdm_FilePath.C \
+    cdm_Unit.C \
+    cdm_TimeSlice.C \
+    cdm_Domain.C \
+    cdm_MPI.C \
+    cdm_Process.C \
+    cdm_DFI_BOV.C \
+    cdm_DFI_SPH.C \
+    cdm_DFI_AVS.C \
+    cdm_DFI_PLOT3D.C \
+    cdm_DFI_VTK.C \
+    cdm_DFI_Read.C \
+    cdm_DFI_Write.C \
+    cdm_TextParser.C \
+    cdm_interp.f90 \
+    cdm_interp_ijkn.h \
+    cdm_interp_nijk.h
 
-CIO_includedir = $(includedir)
-CIO_include_HEADERS = \
-    $(top_builddir)/include/cio_Array.h \
-    $(top_builddir)/include/cio_TypeArray.h \
-    $(top_builddir)/include/cio_ActiveSubDomain.h \
-    $(top_builddir)/include/cio_DFI.h \
-    $(top_builddir)/include/cio_FileInfo.h \
-    $(top_builddir)/include/cio_FilePath.h \
-    $(top_builddir)/include/cio_Unit.h \
-    $(top_builddir)/include/cio_TimeSlice.h \
-    $(top_builddir)/include/cio_Domain.h \
-    $(top_builddir)/include/cio_MPI.h \
-    $(top_builddir)/include/cio_Process.h \
-    $(top_builddir)/include/cio_DFI_BOV.h \
-    $(top_builddir)/include/cio_DFI_SPH.h \
-    $(top_builddir)/include/cio_DFI_AVS.h \
-    $(top_builddir)/include/cio_DFI_PLOT3D.h \
-    $(top_builddir)/include/cio_DFI_VTK.h \
-    $(top_builddir)/include/cio_Define.h \
-    $(top_builddir)/include/cio_Version.h \
-    $(top_builddir)/include/cio_TextParser.h \
-    $(top_builddir)/include/cio_PathUtil.h \
-    $(top_builddir)/include/cio_endianUtil.h
+CDM_includedir = $(includedir)
+CDM_include_HEADERS = \
+    $(top_builddir)/include/cdm_Array.h \
+    $(top_builddir)/include/cdm_TypeArray.h \
+    $(top_builddir)/include/cdm_ActiveSubDomain.h \
+    $(top_builddir)/include/cdm_DFI.h \
+    $(top_builddir)/include/cdm_FileInfo.h \
+    $(top_builddir)/include/cdm_FilePath.h \
+    $(top_builddir)/include/cdm_Unit.h \
+    $(top_builddir)/include/cdm_TimeSlice.h \
+    $(top_builddir)/include/cdm_Domain.h \
+    $(top_builddir)/include/cdm_MPI.h \
+    $(top_builddir)/include/cdm_Process.h \
+    $(top_builddir)/include/cdm_DFI_BOV.h \
+    $(top_builddir)/include/cdm_DFI_SPH.h \
+    $(top_builddir)/include/cdm_DFI_AVS.h \
+    $(top_builddir)/include/cdm_DFI_PLOT3D.h \
+    $(top_builddir)/include/cdm_DFI_VTK.h \
+    $(top_builddir)/include/cdm_Define.h \
+    $(top_builddir)/include/cdm_Version.h \
+    $(top_builddir)/include/cdm_TextParser.h \
+    $(top_builddir)/include/cdm_PathUtil.h \
+    $(top_builddir)/include/cdm_endianUtil.h
 
-CIO_inline_includedir = $(includedir)/inline
-CIO_inline_include_HEADERS = \
-    $(top_builddir)/include/inline/cio_Array_inline.h \
-    $(top_builddir)/include/inline/cio_DFI_inline.h \
-    $(top_builddir)/include/inline/cio_Plot3d_inline.h
+CDM_inline_includedir = $(includedir)/inline
+CDM_inline_include_HEADERS = \
+    $(top_builddir)/include/inline/cdm_Array_inline.h \
+    $(top_builddir)/include/inline/cdm_DFI_inline.h \
+    $(top_builddir)/include/inline/cdm_Plot3d_inline.h
 
 

@@ -94,7 +94,7 @@ DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in $(srcdir)/cdm-config.in \
-	$(top_srcdir)/include/cio_Version.h.in $(dist_data_DATA) \
+	$(top_srcdir)/include/cdm_Version.h.in $(dist_data_DATA) \
 	$(dist_include_HEADERS) COPYING compile depcomp install-sh \
 	missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -105,7 +105,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = cdm-config include/cio_Version.h
+CONFIG_CLEAN_FILES = cdm-config include/cdm_Version.h
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -247,12 +247,12 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
+CDM_CFLAGS = @CDM_CFLAGS@
+CDM_CXX = @CDM_CXX@
+CDM_LDFLAGS = @CDM_LDFLAGS@
+CDM_LIBS = @CDM_LIBS@
 CDM_REVISION = @CDM_REVISION@
 CFLAGS = @CFLAGS@
-CIO_CFLAGS = @CIO_CFLAGS@
-CIO_CXX = @CIO_CXX@
-CIO_LDFLAGS = @CIO_LDFLAGS@
-CIO_LIBS = @CIO_LIBS@
 CPM_CFLAGS = @CPM_CFLAGS@
 CPM_DIR = @CPM_DIR@
 CPM_LDFLAGS = @CPM_LDFLAGS@
@@ -410,7 +410,7 @@ distclean-hdr:
 	-rm -f config.h stamp-h1
 cdm-config: $(top_builddir)/config.status $(srcdir)/cdm-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-include/cio_Version.h: $(top_builddir)/config.status $(top_srcdir)/include/cio_Version.h.in
+include/cdm_Version.h: $(top_builddir)/config.status $(top_srcdir)/include/cdm_Version.h.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)

@@ -1,6 +1,6 @@
 #########################################################################
 #
-# CIOlib Staging 
+# CDMlib Staging 
 # 
 # Copyright (c) 2013-2014 Advanced Institute for Computational Science, RIKEN.
 # All rights reserved.
@@ -29,7 +29,7 @@ frm_include_HEADERS = \
 
 frm_LDADD = \
   -L$(top_builddir)/src \
-  @CIO_LIBS@ \
+  @CDM_LIBS@ \
   @TP_LDFLAGS@
 
 EXTRA_DIST = Makefile_hand

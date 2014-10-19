@@ -44,15 +44,15 @@ FILE* convOutput_AVS::OutputFile_Open(const std::string prefix,
 
   //ファイル名の生成
   std::string outfile;
-  CIO::E_CIO_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
+  CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
   outfile = m_InputCntl->Get_OutputDir()+"/"+
-            cio_DFI::Generate_FileName(prefix,
+            cdm_DFI::Generate_FileName(prefix,
                                        id,
                                        step,
                                        "dat",
                                        fnameformat,
                                        mio,
-                                       CIO::E_CIO_OFF);
+                                       CDM::E_CDM_OFF);
 
   //ファイルオープン
   if( (fp = fopen(outfile.c_str(), "wb")) == NULL ) {
@@ -65,12 +65,12 @@ FILE* convOutput_AVS::OutputFile_Open(const std::string prefix,
 
 // #################################################################
 bool 
-convOutput_AVS::WriteFieldData(FILE* fp, cio_Array* src, size_t dLen)
+convOutput_AVS::WriteFieldData(FILE* fp, cdm_Array* src, size_t dLen)
 {
 
   const int* sz = src->getArraySizeInt();
   
-  cio_Array *out = cio_Array::instanceArray
+  cdm_Array *out = cdm_Array::instanceArray
                    (src->getDataType(),
                     src->getArrayShape(),
                     (int *)sz,
@@ -92,7 +92,7 @@ convOutput_AVS::WriteFieldData(FILE* fp, cio_Array* src, size_t dLen)
 void 
 convOutput_AVS::output_avs(
                            int myRank,
-                           vector<cio_DFI *>in_dfi,
+                           vector<cdm_DFI *>in_dfi,
                            cpm_ParaManager* paraMngr,
                            int *head)
 {
@@ -110,7 +110,7 @@ convOutput_AVS::output_avs(
 // #################################################################
 // output avs file 
 void convOutput_AVS::output_avs(int myRank, 
-                                vector<cio_DFI *>in_dfi)
+                                vector<cdm_DFI *>in_dfi)
 {
 
   if( myRank != 0 ) return; //myRank==0のときのみヘッダーレコードを出力
@@ -125,8 +125,8 @@ void convOutput_AVS::output_avs(int myRank,
 
   for(int i=0; i<in_dfi.size(); i++) {
 
-    //cio_Domainクラスポインタの取得
-    const cio_Domain* DFI_Domain  = in_dfi[i]->GetcioDomain();
+    //cdm_Domainクラスポインタの取得
+    const cdm_Domain* DFI_Domain  = in_dfi[i]->GetcdmDomain();
 
     //間引きを考慮しての計算空間サイズをセット
     dims[0]=DFI_Domain->GlobalVoxel[0]/thin_count;
@@ -162,7 +162,7 @@ void convOutput_AVS::output_avs(int myRank,
 // #################################################################
 // output avs filei MxM
 void convOutput_AVS::output_avs_MxM(int myRank, 
-                                    vector<cio_DFI *>in_dfi)
+                                    vector<cdm_DFI *>in_dfi)
 {
   if( myRank != 0 ) return; //myRank==0のときのみヘッダーレコードを出力
 
@@ -177,15 +177,15 @@ void convOutput_AVS::output_avs_MxM(int myRank,
   double pit[3];
 
   for(int i=0; i<in_dfi.size(); i++) {
-    //cio_Domainクラスポインタの取得
-    const cio_Domain* DFI_Domain  = in_dfi[i]->GetcioDomain();
+    //cdm_Domainクラスポインタの取得
+    const cdm_Domain* DFI_Domain  = in_dfi[i]->GetcdmDomain();
     //ピッチのセット
     pit[0]=(DFI_Domain->GlobalRegion[0]/(double)DFI_Domain->GlobalVoxel[0])*(double)thin_count;
     pit[1]=(DFI_Domain->GlobalRegion[1]/(double)DFI_Domain->GlobalVoxel[1])*(double)thin_count;
     pit[2]=(DFI_Domain->GlobalRegion[2]/(double)DFI_Domain->GlobalVoxel[2])*(double)thin_count;
 
-    //cio_Processクラスポインタの取得
-    const cio_Process* DFI_Process = in_dfi[i]->GetcioProcess();
+    //cdm_Processクラスポインタの取得
+    const cdm_Process* DFI_Process = in_dfi[i]->GetcdmProcess();
 
     for(int j=0; j<DFI_Process->RankList.size(); j++) {
       //間引きを考慮しての計算空間サイズをセット
@@ -224,7 +224,7 @@ void convOutput_AVS::output_avs_MxM(int myRank,
 // #################################################################
 // output avs filei MxN
 void convOutput_AVS::output_avs_MxN(int myRank, 
-                                    vector<cio_DFI *>in_dfi,
+                                    vector<cdm_DFI *>in_dfi,
                                     cpm_ParaManager* paraMngr,
                                     int *mHead)
 {
@@ -285,15 +285,15 @@ void convOutput_AVS::output_avs_coord(int RankID,
   std::string cod_fname;
 
   //座標値データファイルオープン
-  CIO::E_CIO_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
+  CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
   cod_fname = m_InputCntl->Get_OutputDir() +"/"+ 
-              cio_DFI::Generate_FileName("cord",
+              cdm_DFI::Generate_FileName("cord",
                                          RankID,
                                          -1,
                                          "cod",
                                          fnameformat,
                                          mio,
-                                         CIO::E_CIO_OFF);
+                                         CDM::E_CDM_OFF);
 
   if( (fp = fopen(cod_fname.c_str(),"w")) == NULL ) {
     printf("\tCan't open file.(%s)\n",cod_fname.c_str());
@@ -317,7 +317,7 @@ void convOutput_AVS::output_avs_coord(int RankID,
 }
 // #################################################################
 // output avc Header (fld)
-void convOutput_AVS::output_avs_header(cio_DFI* dfi, 
+void convOutput_AVS::output_avs_header(cdm_DFI* dfi, 
                                        int RankID, 
                                        bool mio, 
                                        int ndim,
@@ -330,23 +330,23 @@ void convOutput_AVS::output_avs_header(cio_DFI* dfi,
   std::string fld_fname, out_fname;
   std::string cod_fname;
 
-  //cio_FileInfoクラスポインタの取得
-  const cio_FileInfo* DFI_FInfo = dfi->GetcioFileInfo();
-  //cio_TimeSliceクラスポインタの取得
-  const cio_TimeSlice* TSlice   = dfi->GetcioTimeSlice();
+  //cdm_FileInfoクラスポインタの取得
+  const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
+  //cdm_TimeSliceクラスポインタの取得
+  const cdm_TimeSlice* TSlice   = dfi->GetcdmTimeSlice();
 
   //データタイプのセット
   int out_dtype = m_InputCntl->Get_OutputDataType();
-  if( out_dtype == CIO::E_CIO_DTYPE_UNKNOWN ) out_dtype = dfi->GetDataType(); 
-  if(      out_dtype == CIO::E_CIO_INT8    ) {
+  if( out_dtype == CDM::E_CDM_DTYPE_UNKNOWN ) out_dtype = dfi->GetDataType(); 
+  if(      out_dtype == CDM::E_CDM_INT8    ) {
     dType="byte";
-  } else if( out_dtype == CIO::E_CIO_INT16   ) {
+  } else if( out_dtype == CDM::E_CDM_INT16   ) {
     dType="short";
-  } else if( out_dtype == CIO::E_CIO_INT32   ) {
+  } else if( out_dtype == CDM::E_CDM_INT32   ) {
     dType="integer";
-  } else if( out_dtype == CIO::E_CIO_FLOAT32 ) {
+  } else if( out_dtype == CDM::E_CDM_FLOAT32 ) {
     dType="float";
-  } else if( out_dtype == CIO::E_CIO_FLOAT64 ) {
+  } else if( out_dtype == CDM::E_CDM_FLOAT64 ) {
     dType="double";
   } else {
     dType = m_InputCntl->Get_OutputDataType_string();
@@ -355,15 +355,15 @@ void convOutput_AVS::output_avs_header(cio_DFI* dfi,
   }
 
   //出力ヘッダーファイルオープン
-  CIO::E_CIO_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
+  CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
   fld_fname = m_InputCntl->Get_OutputDir() +"/"+ 
-              cio_DFI::Generate_FileName(DFI_FInfo->Prefix,
+              cdm_DFI::Generate_FileName(DFI_FInfo->Prefix,
                                          RankID,
                                          -1,
                                          "fld",
                                          fnameformat,
                                          mio,
-                                         CIO::E_CIO_OFF);
+                                         CDM::E_CDM_OFF);
                                           
   if( (fp = fopen(fld_fname.c_str(),"w")) == NULL ) {
     printf("\tCan't open file.(%s)\n",fld_fname.c_str());
@@ -416,25 +416,25 @@ void convOutput_AVS::output_avs_header(cio_DFI* dfi,
       }
       */
       skip=0;
-      out_fname = cio_DFI::Generate_FileName(DFI_FInfo->Prefix,
+      out_fname = cdm_DFI::Generate_FileName(DFI_FInfo->Prefix,
                                              RankID,
                                              TSlice->SliceList[j].step,
                                              "sph",
                                              fnameformat,
                                              mio,
-                                             CIO::E_CIO_OFF);
+                                             CDM::E_CDM_OFF);
 
       fprintf(fp,"variable %d file=%s filetype=binary skip=%d stride=%d\n",
               n,out_fname.c_str(),skip,DFI_FInfo->Component);
     }
     //coord data
-    cod_fname = cio_DFI::Generate_FileName("cord",
+    cod_fname = cdm_DFI::Generate_FileName("cord",
                                            RankID,
                                            -1,
                                            "cod",
                                            fnameformat,
                                            mio,
-                                           CIO::E_CIO_OFF);
+                                           CDM::E_CDM_OFF);
 
     fprintf(fp,"coord 1 file=%s filetype=ascii skip=1\n",cod_fname.c_str());
     fprintf(fp,"coord 2 file=%s filetype=ascii skip=4\n",cod_fname.c_str());

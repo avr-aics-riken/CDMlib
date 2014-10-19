@@ -11,6 +11,95 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-18
+beta version release
+
+------------------
+2014-10-17
+Restore SPH format
+メンバ関数ReadInitのインスタンス生成部を編集して、sph形式も読込めるように戻した。
+
+------------------
+2014-10-01
+Change the name of E_CDM_OUTPUT_TYPE to E_CDM_FILE_TYPE
+ファイルタイプを示す列挙型E_CDM_OUTPUT_TYPEの名前をE_CDM_FILE_TYPEに変更した。
+また、クラスcdm_DFIのメンバ変数にm_input_typeを追加し、この変数を用いて
+plot3dで読込むファイルのタイプを指定するようにした。
+
+------------------
+2014-10-01
+Modify methods in class cdm_DFI_PLOT3D and Edit method ReadInit
+クラスcdm_DFI_PLOT3D内のメンバ関数の修正を行った。主に読込み部分で、バグ修正や
+コードの整理など。また、読込みに対応するファイル形式をbov,sph->bov,plot3dに
+変更するように、メンバ関数ReadInitのインスタンス生成部を編集した。
+
+------------------
+2014-09-26
+Edit method write_XYZ in class cdm_DFI_PLOT3D to add iblank information to xyz file
+Plot3dのxyzファイルにiblankの情報を追加できるようにメンバ関数write_XYZを編集した。
+iblankの情報は、メンバ関数WriteInitの引数に追加したポインタiblankを介してライブラリに
+取り込むようにしており、そのポインタはクラスcdm_Domainが保持するようにしている。
+
+------------------
+2014-09-24
+Edit methods in class cdm_DFI_PLOT3D to write data including those at guide cells
+Plot3d形式において、ガイドセル上の座標および物理量を出力するようにメンバ関数を編集した。
+(読込みに関しては、この時点での実装で対応できている。)
+
+------------------
+2014-09-22
+Modify method ReadFieldData to read node data as cell-centered data
+格子点上のデータをセル中心のデータと見立てて読み込むように関数ReadFieldDataを修正した。
+
+------------------
+2014-09-22
+Correct the position of the origin in xyz file
+Plot3d形式で出力されるxyzファイルの原点の位置を訂正した。
+
+------------------
+2014-09-20
+Correct the term written in the copyright statement in cdm_Version.h and cdm_Version.h.in
+ファイルcdm_Version.hとcdm_Version.h.inに記載されているCopyrightの期間を訂正した。
+
+------------------
+2014-09-20
+Change encode of file ChangeLog from Shift-JIS to UTF-8
+ファイルChangeLogのエンコードをShift-JISからUTF-8に変更した。
+
+------------------
+2014-09-15
+Edit method ReadFieldData to read data at nodes
+読み込んだデータが格子点上のデータかどうかを判断するフラグm_extend_arraysize_flagを追加した。
+そして、格子点上のデータを読み込む際、読み込み用データ配列をボクセル数より1大きい値で
+作成するように関数ReadFieldDataを編集し、格子点上のデータを読み込めるようにした。
+また、ヘッダーファイルcdm_DFI_PLOT3D.hの整理をした。
+
+------------------
+2014-09-08
+Edit method read_Func in class cdm_DFI_PLOT3D to read Plot3d function files
+クラスcdm_DFI_PLOT3D内のメンバ関数read_Funcを用いてPlot3dファイル読み込めるように編集した。
+
+------------------
+2014-09-04
+Editing class cdm_DFI_PLOT3D
+クラスcdm_DFI_PLOT3Dを編集中。メンバ関数read_Funcを用いてPlot3dファイルが読み込める状態(バッファ未使用)。
+
+------------------
+2014-09-03
+add method read_func to class cdm_DFI_PLOT3D (test commit)
+メンバ関数read_Funcをクラスcdm_DFI_PLOT3Dに追加。（テストコミット）
+
+------------------
+2014-09-02
+change cio to cdm in filenames
+ソースコード内およびソースコードのファイル名に含まれる文字“cio(CIO)”を“cdm(CDM)”に変更。
+
+------------------
+2014-09-01
+change cio to cdm
+ソースコード(.C, .h, .f90)内の文字“cio(CIO)”を“cdm(CDM)”に変更。
+
+------------------
 2014-08-23
 Equivalent to CIOlib 1.5.8
 

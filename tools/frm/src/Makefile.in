@@ -16,7 +16,7 @@
 
 #########################################################################
 #
-# CIOlib Staging 
+# CDMlib Staging 
 # 
 # Copyright (c) 2013-2014 Advanced Institute for Computational Science, RIKEN.
 # All rights reserved.
@@ -203,12 +203,12 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
+CDM_CFLAGS = @CDM_CFLAGS@
+CDM_CXX = @CDM_CXX@
+CDM_LDFLAGS = @CDM_LDFLAGS@
+CDM_LIBS = @CDM_LIBS@
 CDM_REVISION = @CDM_REVISION@
 CFLAGS = @CFLAGS@
-CIO_CFLAGS = @CIO_CFLAGS@
-CIO_CXX = @CIO_CXX@
-CIO_LDFLAGS = @CIO_LDFLAGS@
-CIO_LIBS = @CIO_LIBS@
 CPM_CFLAGS = @CPM_CFLAGS@
 CPM_DIR = @CPM_DIR@
 CPM_LDFLAGS = @CPM_LDFLAGS@
@@ -325,7 +325,7 @@ frm_include_HEADERS = \
 
 frm_LDADD = \
   -L$(top_builddir)/src \
-  @CIO_LIBS@ \
+  @CDM_LIBS@ \
   @TP_LDFLAGS@
 
 EXTRA_DIST = Makefile_hand

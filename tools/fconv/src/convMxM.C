@@ -59,7 +59,7 @@ bool convMxM::exec()
   vector<dfi_MinMax*> minmaxList;
 
   for(int i=0; i<m_in_dfi.size(); i++){
-    const cio_TimeSlice* TSlice = m_in_dfi[i]->GetcioTimeSlice();
+    const cdm_TimeSlice* TSlice = m_in_dfi[i]->GetcdmTimeSlice();
     int nComp = m_in_dfi[i]->GetNumComponent();
 
     dfi_MinMax *MinMax;
@@ -74,7 +74,7 @@ bool convMxM::exec()
   for (int i=0; i<m_StepRankList.size(); i++) {
 
     //dfiのstepリストの取得
-    const cio_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcioTimeSlice();
+    const cdm_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcdmTimeSlice();
 
     //成分数の取得
     int nComp = m_StepRankList[i].dfi->GetNumComponent();
@@ -123,7 +123,7 @@ bool convMxM::exec()
   //ランク間で通信してMINMAXを求めてランク０に送信
   for(int i=0; i<minmaxList.size(); i++) {
    int nComp = minmaxList[i]->dfi->GetNumComponent();
-   const cio_TimeSlice* TSlice = minmaxList[i]->dfi->GetcioTimeSlice();
+   const cdm_TimeSlice* TSlice = minmaxList[i]->dfi->GetcdmTimeSlice();
    int nStep = TSlice->SliceList.size();
 
    int n = nComp*nStep;
@@ -148,10 +148,10 @@ bool convMxM::exec()
     WriteIndexDfiFile(minmaxList);
 
     for(int i=0; i<m_in_dfi.size(); i++) {
-      cio_Domain* out_domain = NULL;
-      cio_MPI* out_mpi = NULL;
-      cio_Process* out_process = NULL; 
-      const cio_MPI* dfi_mpi = m_in_dfi[i]->GetcioMPI();
+      cdm_Domain* out_domain = NULL;
+      cdm_MPI* out_mpi = NULL;
+      cdm_Process* out_process = NULL; 
+      const cdm_MPI* dfi_mpi = m_in_dfi[i]->GetcdmMPI();
       int numProc = dfi_mpi->NumberOfRank; 
 
       //Proc情報の生成 
@@ -172,7 +172,7 @@ bool convMxM::exec()
 // #################################################################
 //
 bool convMxM::mxmsolv(std::string dfiname,
-                      cio_DFI* dfi,
+                      cdm_DFI* dfi,
                       int l_step,
                       double l_time,
                       int RankID,
@@ -180,11 +180,11 @@ bool convMxM::mxmsolv(std::string dfiname,
                       double* max)
 {
 
-  const cio_Process* DFI_Process = dfi->GetcioProcess();
-  cio_Domain* DFI_Domain = (cio_Domain *)dfi->GetcioDomain();
-  const cio_MPI* DFI_MPI = dfi->GetcioMPI();
-  const cio_FileInfo* DFI_FInfo = dfi->GetcioFileInfo();
-  const cio_TimeSlice* TSlice = dfi->GetcioTimeSlice();
+  const cdm_Process* DFI_Process = dfi->GetcdmProcess();
+  cdm_Domain* DFI_Domain = (cdm_Domain *)dfi->GetcdmDomain();
+  const cdm_MPI* DFI_MPI = dfi->GetcdmMPI();
+  const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
+  const cdm_TimeSlice* TSlice = dfi->GetcdmTimeSlice();
 
   bool mio = false;
   if( DFI_MPI->NumberOfRank > 1) mio=true;
@@ -196,7 +196,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   int outGc=0;
   if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
   if( outGc > 0 ) {
-    const cio_FileInfo* DFI_FInfo = dfi->GetcioFileInfo();
+    const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
     if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
   }
   //間引きありのとき、出力ガイドセルを0に設定
@@ -249,8 +249,8 @@ bool convMxM::mxmsolv(std::string dfiname,
   l_dorg[2]= DFI_Domain->GlobalOrigin[2]+head[2]*out_dpit[2];
 
   //出力タイプのセット
-  CIO::E_CIO_DTYPE d_type;
-  if( m_param->Get_OutputDataType() == CIO::E_CIO_DTYPE_UNKNOWN )
+  CDM::E_CDM_DTYPE d_type;
+  if( m_param->Get_OutputDataType() == CDM::E_CDM_DTYPE_UNKNOWN )
   {
     d_type = dfi->GetDataType();
   } else {
@@ -262,7 +262,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   szS[0]=l_imax_th;
   szS[1]=l_jmax_th;
   szS[2]=l_kmax_th;
-  cio_Array* src = cio_Array::instanceArray
+  cdm_Array* src = cdm_Array::instanceArray
                  ( d_type
                  , m_param->Get_OutputArrayShape()
                  , szS
@@ -270,27 +270,27 @@ bool convMxM::mxmsolv(std::string dfiname,
                  , dfi->GetNumComponent() );
 
   //読込みファイル名の生成
-  std::string inPath = CIO::cioPath_DirName(dfiname);
-  std::string infile =  CIO::cioPath_ConnectPath(inPath,dfi->Generate_FieldFileName(
+  std::string inPath = CDM::cdmPath_DirName(dfiname);
+  std::string infile =  CDM::cdmPath_ConnectPath(inPath,dfi->Generate_FieldFileName(
                         RankID,l_step,mio));
 
   //ファイルの読込み
   unsigned int avr_step;
   double l_dtime, avr_time;
-  CIO::E_CIO_ERRORCODE ret;
+  CDM::E_CDM_ERRORCODE ret;
   int read_sta[3],read_end[3];
   for(int i=0; i<3; i++) {
     read_sta[i]=DFI_Process->RankList[RankID].HeadIndex[i]-outGc;
     read_end[i]=DFI_Process->RankList[RankID].TailIndex[i]+outGc;
   }
 
-  cio_Array* buf = dfi->ReadFieldData(infile, l_step, l_dtime,
+  cdm_Array* buf = dfi->ReadFieldData(infile, l_step, l_dtime,
                                       read_sta,
                                       read_end,
                                       DFI_Process->RankList[RankID].HeadIndex,
                                       DFI_Process->RankList[RankID].TailIndex,
                                       true, avr_step, avr_time, ret);
-  if( ret != CIO::E_CIO_SUCCESS ) return false;
+  if( ret != CDM::E_CDM_SUCCESS ) return false;
 
   //間引き及び型変換がない場合
   if( thin_count == 1 && buf->getDataType() == src->getDataType() && 
@@ -318,7 +318,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   tail[0]=head[0]+l_imax_th-1;
   tail[1]=head[1]+l_jmax_th-1;
   tail[2]=head[2]+l_kmax_th-1;
-  cio_DFI* out_dfi = cio_DFI::WriteInit(
+  cdm_DFI* out_dfi = cdm_DFI::WriteInit(
                      MPI_COMM_WORLD,
                      "",
                      m_param->Get_OutputDir(),
@@ -336,18 +336,18 @@ bool convMxM::mxmsolv(std::string dfiname,
                      head,
                      tail,
                      m_HostName,
-                     CIO::E_CIO_OFF);
+                     CDM::E_CDM_OFF);
   if( out_dfi == NULL ) {
     printf("\tFails to instance dfi\n");
     return false;
   }
 
   out_dfi->set_RankID(RankID);
-  out_dfi->SetcioMPI(*DFI_MPI);
+  out_dfi->SetcdmMPI(*DFI_MPI);
 
-  //cio_Processの作成＆更新
-  cio_Process out_Process;
-  cio_Rank out_Rank;
+  //cdm_Processの作成＆更新
+  cdm_Process out_Process;
+  cdm_Rank out_Rank;
   for(int i=0; i<DFI_Process->RankList.size(); i++) {
     out_Rank.RankID = DFI_Process->RankList[i].RankID;
     out_Rank.HostName = "";
@@ -359,13 +359,13 @@ bool convMxM::mxmsolv(std::string dfiname,
     out_Process.RankList.push_back(out_Rank);
   }
 
-  //out_dfi->SetcioProcess(*DFI_Process);
-  out_dfi->SetcioProcess(out_Process);
-  out_dfi->SetcioTimeSlice(*TSlice);
+  //out_dfi->SetcdmProcess(*DFI_Process);
+  out_dfi->SetcdmProcess(out_Process);
+  out_dfi->SetcdmTimeSlice(*TSlice);
 
   //出力
   out_dfi->set_output_type(m_param->Get_OutputFormatType());
-  CIO::E_CIO_OUTPUT_FNAME output_fname = m_param->Get_OutputFilenameFormat();
+  CDM::E_CDM_OUTPUT_FNAME output_fname = m_param->Get_OutputFilenameFormat();
   out_dfi->set_output_fname(output_fname);
   double tmp_minmax[8];
   unsigned idummy=0;
@@ -381,7 +381,7 @@ bool convMxM::mxmsolv(std::string dfiname,
                            idummy,
                            ddummy);
 
-  if( ret != CIO::E_CIO_SUCCESS ) return false;
+  if( ret != CDM::E_CDM_SUCCESS ) return false;
  
   //minmaxを求める
   if( !DtypeMinMax(src,min,max) ) return false;

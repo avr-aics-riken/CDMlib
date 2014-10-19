@@ -31,13 +31,13 @@
  */
 template<class T>
 CONV_INLINE
-void convMx1::zeroClearArray(cio_TypeArray<T>* data, int ivar_out)
+void convMx1::zeroClearArray(cdm_TypeArray<T>* data, int ivar_out)
 {
 
   const int *sz = data->getArraySizeInt();
-  CIO::E_CIO_ARRAYSHAPE shape = data->getArrayShape();
+  CDM::E_CDM_ARRAYSHAPE shape = data->getArrayShape();
 
-  if( shape == CIO::E_CIO_NIJK ) {
+  if( shape == CDM::E_CDM_NIJK ) {
     for(int k=0; k<sz[2]; k++) {
     for(int j=0; j<sz[1]; j++) {
     for(int i=0; i<sz[0]; i++) {
@@ -62,8 +62,8 @@ void convMx1::zeroClearArray(cio_TypeArray<T>* data, int ivar_out)
 template<class T>
 CONV_INLINE
 bool convMx1::setGridData_XY( 
-                             cio_TypeArray<T>* O,
-                             cio_TypeArray<T>* S,
+                             cdm_TypeArray<T>* O,
+                             cdm_TypeArray<T>* S,
                              int ivar_out,
                              int ivar_src)
 {
@@ -80,7 +80,7 @@ bool convMx1::setGridData_XY(
   int kx = size[2];
 
   //仮想セル領域へのコピー
-  if( S->getArrayShape() == CIO::E_CIO_NIJK ) {
+  if( S->getArrayShape() == CDM::E_CDM_NIJK ) {
     for(int j=0; j<jx; j++) {
       S->val(ivar_src,-1,j,0) = S->val(ivar_src,0,j,0);
       S->val(ivar_src,ix,j,0) = S->val(ivar_src,ix-1,j,0);
@@ -107,7 +107,7 @@ bool convMx1::setGridData_XY(
   int kd = Osz[2];
 
   //図心データを格子点に加える
-  if( O->getArrayShape() == CIO::E_CIO_NIJK ) {
+  if( O->getArrayShape() == CDM::E_CDM_NIJK ) {
     for (int km=0; km<kx; km++) {
     for (int jm=0-gc; jm<jx+gc; jm++) {
     for (int im=0-gc; im<ix+gc; im++) {
@@ -134,7 +134,7 @@ bool convMx1::setGridData_XY(
 template<class T>
 CONV_INLINE
 void
-convMx1::VolumeDataDivide8(cio_TypeArray<T> *O, int n)
+convMx1::VolumeDataDivide8(cdm_TypeArray<T> *O, int n)
 {
   const int* szO = O->getArraySizeInt();
   int id = szO[0];
@@ -143,7 +143,7 @@ convMx1::VolumeDataDivide8(cio_TypeArray<T> *O, int n)
 
 
   //NIJK
-  if( O->getArrayShape() == CIO::E_CIO_NIJK ) {
+  if( O->getArrayShape() == CDM::E_CDM_NIJK ) {
     //I
     for(int k=0; k<kd; k++) {
     for(int j=0; j<jd; j++) {
@@ -172,11 +172,11 @@ convMx1::VolumeDataDivide8(cio_TypeArray<T> *O, int n)
 template<class T>
 CONV_INLINE
 void
-convMx1::copyArray_nijk_ijk(cio_TypeArray<T> *S, cio_TypeArray<T> *O, int ivar)
+convMx1::copyArray_nijk_ijk(cdm_TypeArray<T> *S, cdm_TypeArray<T> *O, int ivar)
 {
   const int* sz = S->getArraySizeInt();
   int gc = O->getGcInt();
-  if( S->getArrayShape() == CIO::E_CIO_NIJK ) {
+  if( S->getArrayShape() == CDM::E_CDM_NIJK ) {
     for(int k=0-gc; k<sz[2]+gc; k++) {
     for(int j=0-gc; j<sz[1]+gc; j++) {
     for(int i=0-gc; i<sz[0]+gc; i++) {

@@ -59,7 +59,7 @@ public:
    * @param[in] div    分割数
    * @param[in] sz     サイズ
    * @param[in] dfi    dfi
-   * @param[in] DFI_Process cio_Process
+   * @param[in] DFI_Process cdm_Process
    * @param[in] mapHeadX 
    * @param[in] mapHeadY
    * @param[in] mapHeadZ
@@ -71,12 +71,12 @@ public:
                     std::string inPath,
                     int l_step,
                     double l_dtime,
-                    CIO::E_CIO_DTYPE d_type,
+                    CDM::E_CDM_DTYPE d_type,
                     bool mio,
                     int div[3],
                     int sz[3],
-                    cio_DFI* dfi,
-                    cio_Process* DFI_Process,
+                    cdm_DFI* dfi,
+                    cdm_Process* DFI_Process,
                     headT mapHeadX, 
                     headT mapHeadY, 
                     headT mapHeadZ,
@@ -94,7 +94,7 @@ public:
    * @param[in] div    分割数
    * @param[in] sz     サイズ
    * @param[in] dfi    dfi
-   * @param[in] DFI_Process cio_Process
+   * @param[in] DFI_Process cdm_Process
    * @param[in] mapHeadX
    * @param[in] mapHeadY
    * @param[in] mapHeadZ
@@ -106,12 +106,12 @@ public:
                     std::string inPath,
                     int l_step,
                     double l_dtime,
-                    CIO::E_CIO_DTYPE d_type,
+                    CDM::E_CDM_DTYPE d_type,
                     bool mio,
                     int div[3],
                     int sz[3],
-                    cio_DFI* dfi,
-                    cio_Process* DFI_Process,
+                    cdm_DFI* dfi,
+                    cdm_Process* DFI_Process,
                     headT mapHeadX,
                     headT mapHeadY,
                     headT mapHeadZ,
@@ -126,7 +126,7 @@ public:
    * @param[in]  ivar_src 図心データの コンポーネント位置
    * @param[in]  ivar_out 格子データの コンポーネント位置
    */
-  bool InterPolate(cio_Array* src_old, cio_Array* src, cio_Array* outArray,
+  bool InterPolate(cdm_Array* src_old, cdm_Array* src, cdm_Array* outArray,
                    int ivar_src, int ivar_out); 
 
   /**
@@ -135,7 +135,7 @@ public:
    * @param[in]  ivar_out コンポーネント位置
    */
   template<class T>
-  void zeroClearArray(cio_TypeArray<T>* data, int ivar_out);
+  void zeroClearArray(cdm_TypeArray<T>* data, int ivar_out);
 
   /**
    * @brief 図心データを格子点に補間
@@ -145,8 +145,8 @@ public:
    * @param[in]  ivar_src 図心データの コンポーネント位置
    */
   template<class T>
-  bool setGridData_XY(cio_TypeArray<T>* O,
-                      cio_TypeArray<T>* S,
+  bool setGridData_XY(cdm_TypeArray<T>* O,
+                      cdm_TypeArray<T>* S,
                       int ivar_out,
                       int ivar_src); 
 
@@ -156,7 +156,7 @@ public:
    * @param[in]  ivar_out コンポーネント位置
    */
   template<class T>
-  void VolumeDataDivide8(cio_TypeArray<T> *O, int ivar_out); 
+  void VolumeDataDivide8(cdm_TypeArray<T> *O, int ivar_out); 
 
   /**
    * @brief NIJK配列をスカラーのIJK配列にコピーコントロール
@@ -164,7 +164,7 @@ public:
    * @param[in] ivar コピーするコンポーネント位置
    * @return IJKにコピーされて配列ポインタ
    */
-  cio_Array* nijk_to_ijk(cio_Array* src, int ivar); 
+  cdm_Array* nijk_to_ijk(cdm_Array* src, int ivar); 
 
   /**
    * @brief NIJK配列をスカラーのIJK配列にコピー 
@@ -173,7 +173,7 @@ public:
    * @param[in] ivar コピーするコンポーネント位置
    */
   template<class T>
-  void copyArray_nijk_ijk(cio_TypeArray<T> *S, cio_TypeArray<T> *O, int ivar);
+  void copyArray_nijk_ijk(cdm_TypeArray<T> *S, cdm_TypeArray<T> *O, int ivar);
 
 };
 

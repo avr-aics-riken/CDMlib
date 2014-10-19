@@ -27,7 +27,7 @@
 #include <errno.h>
 
 #include "cpm_ParaManager.h"
-#include "cio_DFI.h"
+#include "cdm_DFI.h"
 #include "conv_Define.h"
 #include "InputParam.h"
 
@@ -60,7 +60,7 @@ public:
    * @return convOutputクラスポインタ
    */  
   static convOutput*
-  OutputInit(const CIO::E_CIO_FORMAT out_format);
+  OutputInit(const CDM::E_CDM_FORMAT out_format);
 
   /**
    * @brief 出力ファイルをオープンする
@@ -123,7 +123,7 @@ public:
   virtual bool
   WriteHeaderRecord(int step,
                     int dim,
-                    CIO::E_CIO_DTYPE d_type,
+                    CDM::E_CDM_DTYPE d_type,
                     int imax,
                     int jmax,
                     int kmax,
@@ -142,7 +142,7 @@ public:
    */
   virtual bool
   WriteFieldData(FILE* fp, 
-                 cio_Array* src, 
+                 cdm_Array* src, 
                  size_t dLen);
 
   /**
@@ -163,7 +163,7 @@ public:
   virtual void
   output_avs( 
              int myRank,
-             vector<cio_DFI *>in_dfi){};
+             vector<cdm_DFI *>in_dfi){};
 
 protected :
 

@@ -78,7 +78,7 @@ int main( int argc, char **argv )
   }
 
   //MxNの処理
-  CIO::E_CIO_ERRORCODE ret;
+  CDM::E_CDM_ERRORCODE ret;
   vector<int> readRankList; ///< 読込みランクリスト
 
   //読込みDFIファイルのループ
@@ -94,20 +94,20 @@ int main( int argc, char **argv )
 
     if( STG.m_NumberOfRank == 0 ) STG.m_GRankInfo.clear();
 
-    STG.dfi_Finfo = STG.DFI[i]->GetcioFileInfo();
-    STG.dfi_Fpath = STG.DFI[i]->GetcioFilePath();
-    STG.dfi_Unit  = STG.DFI[i]->GetcioUnit();
-    STG.dfi_Domain= STG.DFI[i]->GetcioDomain();
-    STG.dfi_MPI   = STG.DFI[i]->GetcioMPI();
-    STG.dfi_TSlice= STG.DFI[i]->GetcioTimeSlice();
-    STG.dfi_Process=(cio_Process *)STG.DFI[i]->GetcioProcess();
+    STG.dfi_Finfo = STG.DFI[i]->GetcdmFileInfo();
+    STG.dfi_Fpath = STG.DFI[i]->GetcdmFilePath();
+    STG.dfi_Unit  = STG.DFI[i]->GetcdmUnit();
+    STG.dfi_Domain= STG.DFI[i]->GetcdmDomain();
+    STG.dfi_MPI   = STG.DFI[i]->GetcdmMPI();
+    STG.dfi_TSlice= STG.DFI[i]->GetcdmTimeSlice();
+    STG.dfi_Process=(cdm_Process *)STG.DFI[i]->GetcdmProcess();
 
     //DFIのdirectory path get
-    STG.m_inPath = CIO::cioPath_DirName(STG.m_dfi_fname[i]);
+    STG.m_inPath = CDM::cdmPath_DirName(STG.m_dfi_fname[i]);
 
     bool isSameDiv = true;        ///< 分割数フラグ　true:1x1 false:MxN
     bool isSame = true;           ///< 粗密フラグ true:密 false:粗
-    CIO::E_CIO_READTYPE readflag; ///< 読込み判定フラグ
+    CDM::E_CDM_READTYPE readflag; ///< 読込み判定フラグ
 
     // 分割数フラグの設定
     for(int j=0; j<3; j++ ) {
@@ -135,22 +135,22 @@ int main( int argc, char **argv )
     {
       if( isSame == true ) 
       {
-        readflag = CIO::E_CIO_SAMEDIV_SAMERES;
+        readflag = CDM::E_CDM_SAMEDIV_SAMERES;
       } 
       else 
       {
-        readflag = CIO::E_CIO_SAMEDIV_REFINEMENT;
+        readflag = CDM::E_CDM_SAMEDIV_REFINEMENT;
       }
     } 
     else 
     {
       if( isSame == true )
       {
-        readflag = CIO::E_CIO_DIFFDIV_SAMERES;
+        readflag = CDM::E_CDM_DIFFDIV_SAMERES;
       }
       else
       {
-        readflag = CIO::E_CIO_DIFFDIV_REFINEMENT;
+        readflag = CDM::E_CDM_DIFFDIV_REFINEMENT;
       }
     }
 
@@ -194,7 +194,7 @@ int main( int argc, char **argv )
        //読込みランクリストの生成
        readRankList.clear();
 
-       cio_Domain domain;
+       cdm_Domain domain;
        for(int k=0; k<3; k++ ) {
          domain.GlobalOrigin[k] = STG.dfi_Domain->GlobalOrigin[k];
          domain.GlobalRegion[k] = STG.dfi_Domain->GlobalRegion[k];
@@ -217,7 +217,7 @@ int main( int argc, char **argv )
            (const int *)head,
            (const int *)tail,readflag,readRankList);
 
-       if( ret != CIO::E_CIO_SUCCESS ) return 0;
+       if( ret != CDM::E_CDM_SUCCESS ) return 0;
 
        //ファイルのコピー
        STG.FileCopy(readRankList,STG.m_GRankInfo[j].RankID);

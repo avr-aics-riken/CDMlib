@@ -68,9 +68,9 @@ CONV* CONV::ConvInit(InputParam* param)
   conv->m_param = param;
 
   //格子点補間フラグのセット
-  if( param->Get_OutputFormat() == CIO::E_CIO_FMT_PLOT3D ||
-      param->Get_OutputFormat() == CIO::E_CIO_FMT_AVS || 
-      param->Get_OutputFormat() == CIO::E_CIO_FMT_VTK ) {
+  if( param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D ||
+      param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
+      param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
     conv->m_bgrid_interp_flag = true;
   } else {
     conv->m_bgrid_interp_flag = false;
@@ -81,21 +81,21 @@ CONV* CONV::ConvInit(InputParam* param)
 
 // #################################################################
 //
-CIO::E_CIO_ERRORCODE CONV::ReadDfiFiles()
+CDM::E_CDM_ERRORCODE CONV::ReadDfiFiles()
 {
   
   // dfiファイルの読込み
   int tempg[3];
   int tempd[3];
-  CIO::E_CIO_ERRORCODE ret = CIO::E_CIO_SUCCESS;
+  CDM::E_CDM_ERRORCODE ret = CDM::E_CDM_SUCCESS;
   for(int i=0; i<m_param->m_dfiList.size(); i++) {
-    cio_DFI* dfi_in = cio_DFI::ReadInit(MPI_COMM_WORLD,
+    cdm_DFI* dfi_in = cdm_DFI::ReadInit(MPI_COMM_WORLD,
                                         m_param->m_dfiList[i].in_dfi_name,
                                         tempg,
                                         tempd,
                                         ret);
     if( dfi_in == NULL ) return ret;
-    if( ret != CIO::E_CIO_SUCCESS && ret != CIO::E_CIO_ERROR_INVALID_DIVNUM ) return ret;
+    if( ret != CDM::E_CDM_SUCCESS && ret != CDM::E_CDM_ERROR_INVALID_DIVNUM ) return ret;
     m_in_dfi.push_back(dfi_in);
     m_param->m_dfiList[i].in_dfi = dfi_in;
   }
@@ -113,9 +113,9 @@ CIO::E_CIO_ERRORCODE CONV::ReadDfiFiles()
   }
   
   // dfi毎の成分数、出力ガイドセルのチェックと更新、等
-  if( !CheckDFIdata() ) return CIO::E_CIO_ERROR;
+  if( !CheckDFIdata() ) return CDM::E_CDM_ERROR;
 
-  return CIO::E_CIO_SUCCESS;
+  return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
@@ -131,7 +131,7 @@ bool CONV::CheckDFIdata()
 
   for( int i=0; i<m_in_dfi.size(); i++) {
     //コンバート成分数のチェック
-    if( m_param->Get_OutputFormat() == CIO::E_CIO_FMT_SPH ) {
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH ) {
       if( m_in_dfi[i]->GetNumComponent() > 3 ) {
         printf("\tCan't Converter OutputFormat.\n");
         ierr=false;
@@ -157,7 +157,7 @@ bool CONV::CheckDFIdata()
       }
     }
     if( m_param->Get_CropIndexEnd_on() ) {
-      const cio_Domain* DFI_Domian = m_in_dfi[i]->GetcioDomain();
+      const cdm_Domain* DFI_Domian = m_in_dfi[i]->GetcdmDomain();
       end = m_param->Get_CropIndexEnd();
       for(int j=0; j<3; j++) {
         if( end[j]>DFI_Domian->GlobalVoxel[j] ) {
@@ -168,9 +168,9 @@ bool CONV::CheckDFIdata()
     }
 
     //Prefixの重複チェック
-    const cio_FileInfo* Finfo1 = m_in_dfi[i]->GetcioFileInfo();
+    const cdm_FileInfo* Finfo1 = m_in_dfi[i]->GetcdmFileInfo();
     for(int j=i+1; j<m_in_dfi.size(); j++) {
-      const cio_FileInfo* Finfo2 = m_in_dfi[j]->GetcioFileInfo();
+      const cdm_FileInfo* Finfo2 = m_in_dfi[j]->GetcdmFileInfo();
       if( Finfo1->Prefix == Finfo2->Prefix ) {
         printf("\tCan't duplicate Prefix \"%s\" dfi : %s dfi : %s\n",
                 Finfo1->Prefix.c_str(),m_in_dfi[i]->get_dfi_fname().c_str(),
@@ -181,9 +181,9 @@ bool CONV::CheckDFIdata()
 
     //voxel size のチェック
     if( m_param->Get_ConvType() == E_CONV_OUTPUT_MxN ) {
-      const cio_Domain* domain1 = m_in_dfi[i]->GetcioDomain();
+      const cdm_Domain* domain1 = m_in_dfi[i]->GetcdmDomain();
       for(int j=i+1; j<m_in_dfi.size(); j++) {
-        const cio_Domain* domain2 = m_in_dfi[j]->GetcioDomain();
+        const cdm_Domain* domain2 = m_in_dfi[j]->GetcdmDomain();
         if( domain1->GlobalVoxel[0] != domain2->GlobalVoxel[0] ||
             domain1->GlobalVoxel[1] != domain2->GlobalVoxel[1] ||
             domain1->GlobalVoxel[2] != domain2->GlobalVoxel[2]   ) {
@@ -232,7 +232,7 @@ void CONV::CheckDir(string dirstr)
     if( !(dir = opendir(dirstr.c_str())) ) {
       if( errno == ENOENT ) {
         mode_t mode = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
-        if ( cio_DFI::MakeDirectorySub(dirstr) != 0 )
+        if ( cdm_DFI::MakeDirectorySub(dirstr) != 0 )
         {
           printf("\tCan't generate directory(%s).\n", dirstr.c_str());
           Exit(0);
@@ -326,15 +326,15 @@ void CONV::PrintDFI(FILE* fp)
   fprintf(fp,"\n");
   for(int i=0; i<m_param->m_dfiList.size(); i++) {
     fprintf(fp,"\tDFI File Name : %s\n",m_param->m_dfiList[i].in_dfi_name.c_str());
-    cio_DFI *dfi = m_param->m_dfiList[i].in_dfi;
-    const cio_FileInfo *DFI_Info = dfi->GetcioFileInfo();
-    if( DFI_Info->DFIType == CIO::E_CIO_DFITYPE_CARTESIAN ) {
+    cdm_DFI *dfi = m_param->m_dfiList[i].in_dfi;
+    const cdm_FileInfo *DFI_Info = dfi->GetcdmFileInfo();
+    if( DFI_Info->DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
       fprintf(fp,"\tDFI_Info->DFIType                  = \"Cartesian\"\n");
     } else {
       fprintf(fp,"\tDFI_Info->DFIType                  = \"\"\n");
     }
     fprintf(fp,"\tDFI_Info->DirectoryPath            = \"%s\"\n",DFI_Info->DirectoryPath.c_str());
-    if( DFI_Info->TimeSliceDirFlag == CIO::E_CIO_ON ) {
+    if( DFI_Info->TimeSliceDirFlag == CDM::E_CDM_ON ) {
       fprintf(fp,"\tDFI_Info->TimeSliceDirFlag         = \"on\"\n");
     } else {
       fprintf(fp,"\tDFI_Info->TimeSliceDirFlag         = \"off\"\n");
@@ -342,7 +342,7 @@ void CONV::PrintDFI(FILE* fp)
     fprintf(fp,"\tDFI_Info->Prefix                   = \"%s\"\n",DFI_Info->Prefix.c_str());
     fprintf(fp,"\tDFI_Info->FileFormat               = \"%s\2\n",
             dfi->GetFileFormatString().c_str());
-    if( DFI_Info->FieldFilenameFormat == CIO::E_CIO_FNAME_RANK_STEP ) {
+    if( DFI_Info->FieldFilenameFormat == CDM::E_CDM_FNAME_RANK_STEP ) {
       fprintf(fp,"\tDFI_Info->FieldFilenameFormat      = \"rank_step\"\n");
     }else {
       fprintf(fp,"\tDFI_Info->FieldFilenameFormat      = \"step_rank\"\n");
@@ -350,9 +350,9 @@ void CONV::PrintDFI(FILE* fp)
     fprintf(fp,"\tDFI_Info->GuideCell                = %d\n",DFI_Info->GuideCell);
     fprintf(fp,"\tDFI_Info->DataType                 = \"%s\"\n",
             dfi->GetDataTypeString().c_str());
-    if( DFI_Info->Endian == CIO::E_CIO_LITTLE ) {
+    if( DFI_Info->Endian == CDM::E_CDM_LITTLE ) {
       fprintf(fp,"\tDFI_Info->Endian                   = \"little\"\n");
-    }else if( DFI_Info->Endian == CIO::E_CIO_BIG ) {
+    }else if( DFI_Info->Endian == CDM::E_CDM_BIG ) {
       fprintf(fp,"\tDFI_Info->Endian                   = \"big\"\n");
     }else {
       fprintf(fp,"\tDFI_Info->Endian                   = \"\"\n");
@@ -365,11 +365,11 @@ void CONV::PrintDFI(FILE* fp)
               DFI_Info->ComponentVariable[j].c_str());
     }
 
-    const cio_MPI *DFI_MPI = dfi->GetcioMPI();
+    const cdm_MPI *DFI_MPI = dfi->GetcdmMPI();
     fprintf(fp,"\tDFI_MPI->NumberOfRank              = %d\n",DFI_MPI->NumberOfRank); 
     fprintf(fp,"\tDFI_MPI->NumberOfGroup             = %d\n",DFI_MPI->NumberOfGroup); 
    
-    const cio_Domain *DFI_Domain = dfi->GetcioDomain();
+    const cdm_Domain *DFI_Domain = dfi->GetcdmDomain();
     fprintf(fp,"\tDFI_Domain->GlobalVoxel[0]         = %d\n",DFI_Domain->GlobalVoxel[0]); 
     fprintf(fp,"\tDFI_Domain->GlobalVoxel[1]         = %d\n",DFI_Domain->GlobalVoxel[1]); 
     fprintf(fp,"\tDFI_Domain->GlobalVoxel[2]         = %d\n",DFI_Domain->GlobalVoxel[2]); 
@@ -377,7 +377,7 @@ void CONV::PrintDFI(FILE* fp)
     fprintf(fp,"\tDFI_Domain->GlobalDivision[1]      = %d\n",DFI_Domain->GlobalDivision[1]);
     fprintf(fp,"\tDFI_Domain->GlobalDivision[2]      = %d\n",DFI_Domain->GlobalDivision[2]);
 
-    const cio_Process *DFI_Process = dfi->GetcioProcess();
+    const cdm_Process *DFI_Process = dfi->GetcdmProcess();
     fprintf(fp,"\tDFI_Process->RankList.size()       = %d\n",DFI_Process->RankList.size());
     for(int j=0; j<DFI_Process->RankList.size(); j++) {
       fprintf(fp,"\t  DFI_Process->RankList[%d].RankID       = %d\n",j,
@@ -404,7 +404,7 @@ void CONV::PrintDFI(FILE* fp)
               DFI_Process->RankList[j].TailIndex[2]);
     }
     
-    const cio_TimeSlice* DFI_TSlice = dfi->GetcioTimeSlice();
+    const cdm_TimeSlice* DFI_TSlice = dfi->GetcdmTimeSlice();
     fprintf(fp,"\tDFI_TSlice->SliceList.size()       = %d\n",DFI_TSlice->SliceList.size());
     for(int j=0; j<DFI_TSlice->SliceList.size(); j++ ) {
       fprintf(fp,"\t  DFI_TSlice->SliceList[%d].step         = %d\n",j,
@@ -607,10 +607,10 @@ void CONV::MemoryRequirement(const double TotalMemory, const double sphMemory, c
 
 // #################################################################
 // step番号からtimeを取得
-double CONV::GetSliceTime(cio_DFI* dfi, int step)
+double CONV::GetSliceTime(cdm_DFI* dfi, int step)
 {
 
-  const cio_TimeSlice* Tslice = dfi->GetcioTimeSlice();
+  const cdm_TimeSlice* Tslice = dfi->GetcdmTimeSlice();
   for(int i=0; i<Tslice->SliceList.size(); i++) {
     if( Tslice->SliceList[i].step == step ) return Tslice->SliceList[i].time;
   }
@@ -622,8 +622,8 @@ double CONV::GetSliceTime(cio_DFI* dfi, int step)
 // #################################################################
 // X-Y面のコンバイン
 bool CONV::convertXY(
-                     cio_Array* buf,
-                     cio_Array* &src,
+                     cdm_Array* buf,
+                     cdm_Array* &src,
                      int headS[3],
                      int tailS[3],
                      int n)
@@ -644,56 +644,56 @@ bool CONV::convertXY(
     end[i] = (tailB[i]+gcB<=tailS[i]+gcS) ? tailB[i]+gcB : tailS[i]+gcS;
   }
 
-  CIO::E_CIO_DTYPE buf_dtype =  buf->getDataType();
+  CDM::E_CDM_DTYPE buf_dtype =  buf->getDataType();
 
   //uint8
-  if( buf_dtype == CIO::E_CIO_UINT8 ) {
-    cio_TypeArray<unsigned char> *B = dynamic_cast<cio_TypeArray<unsigned char>*>(buf);
+  if( buf_dtype == CDM::E_CDM_UINT8 ) {
+    cdm_TypeArray<unsigned char> *B = dynamic_cast<cdm_TypeArray<unsigned char>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
   //int8
-  else if( buf_dtype == CIO::E_CIO_INT8 ) {
-    cio_TypeArray<char> *B = dynamic_cast<cio_TypeArray<char>*>(buf);
+  else if( buf_dtype == CDM::E_CDM_INT8 ) {
+    cdm_TypeArray<char> *B = dynamic_cast<cdm_TypeArray<char>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
   //uint16
-  else if( buf_dtype == CIO::E_CIO_UINT16 ) {
-    cio_TypeArray<unsigned short> *B = dynamic_cast<cio_TypeArray<unsigned short>*>(buf); 
+  else if( buf_dtype == CDM::E_CDM_UINT16 ) {
+    cdm_TypeArray<unsigned short> *B = dynamic_cast<cdm_TypeArray<unsigned short>*>(buf); 
     return copyArray(B, src, sta, end, n);
   }
   //int16
-  else if( buf_dtype == CIO::E_CIO_INT16 ) {
-    cio_TypeArray<short> *B = dynamic_cast<cio_TypeArray<short>*>(buf);
+  else if( buf_dtype == CDM::E_CDM_INT16 ) {
+    cdm_TypeArray<short> *B = dynamic_cast<cdm_TypeArray<short>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
   //uint32
-  else if( buf_dtype == CIO::E_CIO_UINT32 ) {
-    cio_TypeArray<unsigned int> *B = dynamic_cast<cio_TypeArray<unsigned int>*>(buf);
+  else if( buf_dtype == CDM::E_CDM_UINT32 ) {
+    cdm_TypeArray<unsigned int> *B = dynamic_cast<cdm_TypeArray<unsigned int>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
   //int32
-  else if( buf_dtype == CIO::E_CIO_INT32 ) {
-    cio_TypeArray<int> *B = dynamic_cast<cio_TypeArray<int>*>(buf);
+  else if( buf_dtype == CDM::E_CDM_INT32 ) {
+    cdm_TypeArray<int> *B = dynamic_cast<cdm_TypeArray<int>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
   //uint64
-  else if( buf_dtype == CIO::E_CIO_UINT64 ) {
-    cio_TypeArray<unsigned long long> *B = dynamic_cast<cio_TypeArray<unsigned long long>*>(buf);
+  else if( buf_dtype == CDM::E_CDM_UINT64 ) {
+    cdm_TypeArray<unsigned long long> *B = dynamic_cast<cdm_TypeArray<unsigned long long>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
   //int64
-  else if( buf_dtype == CIO::E_CIO_INT64 ) {
-    cio_TypeArray<long long> *B = dynamic_cast<cio_TypeArray<long long>*>(buf);
+  else if( buf_dtype == CDM::E_CDM_INT64 ) {
+    cdm_TypeArray<long long> *B = dynamic_cast<cdm_TypeArray<long long>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
   //float32
-  else if( buf_dtype == CIO::E_CIO_FLOAT32 ) {
-    cio_TypeArray<float> *B = dynamic_cast<cio_TypeArray<float>*>(buf);
+  else if( buf_dtype == CDM::E_CDM_FLOAT32 ) {
+    cdm_TypeArray<float> *B = dynamic_cast<cdm_TypeArray<float>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
   //float64
-  else if( buf_dtype == CIO::E_CIO_FLOAT64 ) {
-    cio_TypeArray<double> *B = dynamic_cast<cio_TypeArray<double>*>(buf);
+  else if( buf_dtype == CDM::E_CDM_FLOAT64 ) {
+    cdm_TypeArray<double> *B = dynamic_cast<cdm_TypeArray<double>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
   
@@ -705,11 +705,11 @@ bool CONV::convertXY(
 std::string CONV::GetFilenameExt(int file_format_type)
 {
 
-  if     ( file_format_type == CIO::E_CIO_FMT_SPH ) return D_CIO_EXT_SPH;
-  else if( file_format_type == CIO::E_CIO_FMT_BOV ) return D_CIO_EXT_BOV;
-  else if( file_format_type == CIO::E_CIO_FMT_AVS ) return D_CIO_EXT_SPH;
-  else if( file_format_type == CIO::E_CIO_FMT_PLOT3D ) return D_CIO_EXT_FUNC;
-  else if( file_format_type == CIO::E_CIO_FMT_VTK ) return D_CIO_EXT_VTK;
+  if     ( file_format_type == CDM::E_CDM_FMT_SPH ) return D_CDM_EXT_SPH;
+  else if( file_format_type == CDM::E_CDM_FMT_BOV ) return D_CDM_EXT_BOV;
+  else if( file_format_type == CDM::E_CDM_FMT_AVS ) return D_CDM_EXT_SPH;
+  else if( file_format_type == CDM::E_CDM_FMT_PLOT3D ) return D_CDM_EXT_FUNC;
+  else if( file_format_type == CDM::E_CDM_FMT_VTK ) return D_CDM_EXT_VTK;
 
   return "";
 }
@@ -722,7 +722,7 @@ void CONV::makeStepList(vector<step_rank_info> &StepRankList)
   //総ステップ数を求める
   int Total_step = 0;
   for(int i=0; i<m_in_dfi.size(); i++){
-    const cio_TimeSlice* TSlice = m_in_dfi[i]->GetcioTimeSlice();
+    const cdm_TimeSlice* TSlice = m_in_dfi[i]->GetcdmTimeSlice();
     Total_step+=TSlice->SliceList.size();
   }
 
@@ -747,7 +747,7 @@ void CONV::makeStepList(vector<step_rank_info> &StepRankList)
   for(int i=0; i<m_in_dfi.size(); i++){
     step_rank_info info;
     info.stepStart = -1;
-    const cio_TimeSlice* TSlice = m_in_dfi[i]->GetcioTimeSlice();
+    const cdm_TimeSlice* TSlice = m_in_dfi[i]->GetcdmTimeSlice();
     for( int j=0; j<TSlice->SliceList.size(); j++) {
 
       if( sta > cnt ) { cnt++; continue; }
@@ -765,7 +765,7 @@ void CONV::makeStepList(vector<step_rank_info> &StepRankList)
 
   //rantStart,rankEndのセット
   for(int i=0; i<StepRankList.size(); i++) {
-    const cio_Process* DFI_Process = StepRankList[i].dfi->GetcioProcess();
+    const cdm_Process* DFI_Process = StepRankList[i].dfi->GetcdmProcess();
     StepRankList[i].rankStart=0;
     StepRankList[i].rankEnd=DFI_Process->RankList.size()-1;
   }
@@ -779,7 +779,7 @@ void CONV::makeRankList(vector<step_rank_info> &StepRankList)
   //総rank数を求める
   int Total_rank = 0;
   for(int i=0; i<m_in_dfi.size(); i++){
-    const cio_Process* DFI_Process = m_in_dfi[i]->GetcioProcess();
+    const cdm_Process* DFI_Process = m_in_dfi[i]->GetcdmProcess();
     Total_rank+=DFI_Process->RankList.size();
   }
 
@@ -804,7 +804,7 @@ void CONV::makeRankList(vector<step_rank_info> &StepRankList)
   for(int i=0; i<m_in_dfi.size(); i++) {
     step_rank_info info;
     info.rankStart = -1;
-    const cio_Process* DFI_Process = m_in_dfi[i]->GetcioProcess();
+    const cdm_Process* DFI_Process = m_in_dfi[i]->GetcdmProcess();
     for(int j=0; j<DFI_Process->RankList.size(); j++) {
       if( sta > cnt ) { cnt++; continue; }
       if( info.rankStart == -1 ) {
@@ -821,7 +821,7 @@ void CONV::makeRankList(vector<step_rank_info> &StepRankList)
 
   //stepStart,stepEndのセット
   for(int i=0; i<StepRankList.size(); i++) {
-    const cio_TimeSlice* TSlice = StepRankList[i].dfi->GetcioTimeSlice();
+    const cdm_TimeSlice* TSlice = StepRankList[i].dfi->GetcdmTimeSlice();
     StepRankList[i].stepStart=0;
     StepRankList[i].stepEnd=TSlice->SliceList.size()-1;
   }
@@ -830,40 +830,40 @@ void CONV::makeRankList(vector<step_rank_info> &StepRankList)
 
 //#################################################################
 // データタイプ毎にminmaxを求める
-bool CONV::DtypeMinMax(cio_Array* src,
+bool CONV::DtypeMinMax(cdm_Array* src,
                        double *min,
                        double *max)
 {
-  CIO::E_CIO_DTYPE d_type = src->getDataType();
-  if( d_type == CIO::E_CIO_UINT8 ) {
-    cio_TypeArray<unsigned char> *data = dynamic_cast<cio_TypeArray<unsigned char>*>(src);
+  CDM::E_CDM_DTYPE d_type = src->getDataType();
+  if( d_type == CDM::E_CDM_UINT8 ) {
+    cdm_TypeArray<unsigned char> *data = dynamic_cast<cdm_TypeArray<unsigned char>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
-  } else if( d_type == CIO::E_CIO_INT8 ) {
-    cio_TypeArray<char> *data = dynamic_cast<cio_TypeArray<char>*>(src);
+  } else if( d_type == CDM::E_CDM_INT8 ) {
+    cdm_TypeArray<char> *data = dynamic_cast<cdm_TypeArray<char>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
-  } else if( d_type == CIO::E_CIO_UINT16 ) {
-    cio_TypeArray<unsigned short> *data = dynamic_cast<cio_TypeArray<unsigned short>*>(src);
+  } else if( d_type == CDM::E_CDM_UINT16 ) {
+    cdm_TypeArray<unsigned short> *data = dynamic_cast<cdm_TypeArray<unsigned short>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
-  } else if( d_type == CIO::E_CIO_INT16 ) {
-    cio_TypeArray<short> *data = dynamic_cast<cio_TypeArray<short>*>(src);
+  } else if( d_type == CDM::E_CDM_INT16 ) {
+    cdm_TypeArray<short> *data = dynamic_cast<cdm_TypeArray<short>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
-  } else if( d_type == CIO::E_CIO_UINT32 ) {
-    cio_TypeArray<unsigned int> *data = dynamic_cast<cio_TypeArray<unsigned int>*>(src);
+  } else if( d_type == CDM::E_CDM_UINT32 ) {
+    cdm_TypeArray<unsigned int> *data = dynamic_cast<cdm_TypeArray<unsigned int>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
-  } else if( d_type == CIO::E_CIO_INT32 ) {
-    cio_TypeArray<int> *data = dynamic_cast<cio_TypeArray<int>*>(src);
+  } else if( d_type == CDM::E_CDM_INT32 ) {
+    cdm_TypeArray<int> *data = dynamic_cast<cdm_TypeArray<int>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
-  } else if( d_type == CIO::E_CIO_UINT64 ) {
-    cio_TypeArray<unsigned long long> *data = dynamic_cast<cio_TypeArray<unsigned long long>*>(src);
+  } else if( d_type == CDM::E_CDM_UINT64 ) {
+    cdm_TypeArray<unsigned long long> *data = dynamic_cast<cdm_TypeArray<unsigned long long>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
-  } else if( d_type == CIO::E_CIO_INT64 ) {
-    cio_TypeArray<long long> *data = dynamic_cast<cio_TypeArray<long long>*>(src);
+  } else if( d_type == CDM::E_CDM_INT64 ) {
+    cdm_TypeArray<long long> *data = dynamic_cast<cdm_TypeArray<long long>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
-  } else if( d_type == CIO::E_CIO_FLOAT32 ) {
-    cio_TypeArray<float> *data = dynamic_cast<cio_TypeArray<float>*>(src);
+  } else if( d_type == CDM::E_CDM_FLOAT32 ) {
+    cdm_TypeArray<float> *data = dynamic_cast<cdm_TypeArray<float>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
-  } else if( d_type == CIO::E_CIO_FLOAT64 ) {
-    cio_TypeArray<double> *data = dynamic_cast<cio_TypeArray<double>*>(src);
+  } else if( d_type == CDM::E_CDM_FLOAT64 ) {
+    cdm_TypeArray<double> *data = dynamic_cast<cdm_TypeArray<double>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
   }
  
@@ -888,7 +888,7 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
   */
   for(int i=0; i<minmaxList.size(); i++) {
 
-    cio_DFI* dfi = minmaxList[i]->dfi;
+    cdm_DFI* dfi = minmaxList[i]->dfi;
 
     std::string out_dfi_name  = m_param->m_dfiList[i].out_dfi_name;
     std::string out_proc_name = m_param->m_dfiList[i].out_proc_name;
@@ -903,11 +903,11 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
     //成分数の取得
     int nComp = dfi->GetNumComponent();
 
-    cio_FileInfo *dfi_Finfo = (cio_FileInfo *)dfi->GetcioFileInfo();
+    cdm_FileInfo *dfi_Finfo = (cdm_FileInfo *)dfi->GetcdmFileInfo();
 
-    CIO::E_CIO_ARRAYSHAPE shape = dfi_Finfo->ArrayShape;
-    //if( dfi_Finfo->FileFormat == (CIO::E_CIO_FMT_BOV) ) {
-    if( m_param->Get_OutputFormat() == (CIO::E_CIO_FMT_BOV) ) {
+    CDM::E_CDM_ARRAYSHAPE shape = dfi_Finfo->ArrayShape;
+    //if( dfi_Finfo->FileFormat == (CDM::E_CDM_FMT_BOV) ) {
+    if( m_param->Get_OutputFormat() == (CDM::E_CDM_FMT_BOV) ) {
       shape = m_param->Get_OutputArrayShape();
     }
 
@@ -916,24 +916,24 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
       if( outGc > dfi_Finfo->GuideCell ) outGc=dfi_Finfo->GuideCell;
     }
 
-    CIO::E_CIO_DTYPE out_d_type = m_param->Get_OutputDataType();
-    if( out_d_type == CIO::E_CIO_DTYPE_UNKNOWN ) out_d_type=dfi->GetDataType();
+    CDM::E_CDM_DTYPE out_d_type = m_param->Get_OutputDataType();
+    if( out_d_type == CDM::E_CDM_DTYPE_UNKNOWN ) out_d_type=dfi->GetDataType();
 
-    CIO::E_CIO_OUTPUT_FNAME FieldFilenameFormat;
+    CDM::E_CDM_OUTPUT_FNAME FieldFilenameFormat;
     FieldFilenameFormat=m_param->Get_OutputFilenameFormat();
 
     //FileInfoの出力
-    cio_FileInfo *Finfo = new cio_FileInfo(CIO::E_CIO_DFITYPE_CARTESIAN,
+    cdm_FileInfo *Finfo = new cdm_FileInfo(CDM::E_CDM_DFITYPE_CARTESIAN,
                               FieldFilenameFormat,
                               m_param->Get_OutputDir(),
                               dfi_Finfo->TimeSliceDirFlag,
                               dfi_Finfo->Prefix,
                               m_param->Get_OutputFormat(),
                               outGc,
-                              //(CIO::E_CIO_DTYPE)m_InputCntl->Get_OutputDataType(),
+                              //(CDM::E_CDM_DTYPE)m_InputCntl->Get_OutputDataType(),
                               out_d_type,
                               dfi_Finfo->Endian,
-                              //(CIO::E_CIO_ARRAYSHAPE)m_InputCntl->Get_OutputArrayShape(),
+                              //(CDM::E_CDM_ARRAYSHAPE)m_InputCntl->Get_OutputArrayShape(),
                               shape,
                               nComp);
 
@@ -942,16 +942,16 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
        if( variable != "" ) Finfo->setComponentVariable(n,variable);
     }
 
-    if( Finfo->Write(fp, 0) != CIO::E_CIO_SUCCESS ) {
+    if( Finfo->Write(fp, 0) != CDM::E_CDM_SUCCESS ) {
       fclose(fp);
       return false;
     }
     delete Finfo;
 
     //FilePathの出力
-    cio_FilePath *dfi_Fpath = (cio_FilePath *)dfi->GetcioFilePath();
-    cio_FilePath *Fpath = new cio_FilePath(out_proc_name);
-    if( Fpath->Write(fp, 1) != CIO::E_CIO_SUCCESS )
+    cdm_FilePath *dfi_Fpath = (cdm_FilePath *)dfi->GetcdmFilePath();
+    cdm_FilePath *Fpath = new cdm_FilePath(out_proc_name);
+    if( Fpath->Write(fp, 1) != CDM::E_CDM_SUCCESS )
     {
       fclose(fp);
       return false;
@@ -959,16 +959,16 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
     delete Fpath;
 
     //Unitの出力
-    cio_Unit *dfi_Unit = (cio_Unit *)dfi->GetcioUnit();
-    if( dfi_Unit->Write(fp, 0) != CIO::E_CIO_SUCCESS )
+    cdm_Unit *dfi_Unit = (cdm_Unit *)dfi->GetcdmUnit();
+    if( dfi_Unit->Write(fp, 0) != CDM::E_CDM_SUCCESS )
     {
       fclose(fp);
       return false;
     }
 
     //TimeSliceの出力
-    const cio_TimeSlice *dfi_TSlice = dfi->GetcioTimeSlice();
-    cio_TimeSlice *TSlice = new cio_TimeSlice();
+    const cdm_TimeSlice *dfi_TSlice = dfi->GetcdmTimeSlice();
+    cdm_TimeSlice *TSlice = new cdm_TimeSlice();
     int nsize = nComp;
     if( nComp > 1 ) nsize++;
     double* minmax = new double[nsize*2];
@@ -987,7 +987,7 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
 
     }
 
-    if( TSlice->Write(fp, 1) != CIO::E_CIO_SUCCESS )
+    if( TSlice->Write(fp, 1) != CDM::E_CDM_SUCCESS )
     {
       fclose(fp);
       return false;
@@ -1001,10 +1001,10 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
 }
 
 //#################################################################
-bool CONV::makeProcInfo(cio_DFI* dfi, 
-                        cio_Domain* &out_domain,
-                        cio_MPI* &out_mpi, 
-                        cio_Process* &out_process,
+bool CONV::makeProcInfo(cdm_DFI* dfi, 
+                        cdm_Domain* &out_domain,
+                        cdm_MPI* &out_mpi, 
+                        cdm_Process* &out_process,
                         int numProc)
 {
   
@@ -1012,10 +1012,10 @@ bool CONV::makeProcInfo(cio_DFI* dfi,
   int thin_count = m_param->Get_ThinOut();
 
   //MPI情報の生成
-  out_mpi = new cio_MPI(numProc,0);
+  out_mpi = new cdm_MPI(numProc,0);
 
   //Domain 情報の生成
-  cio_Domain* dfi_domain = (cio_Domain *)dfi->GetcioDomain();
+  cdm_Domain* dfi_domain = (cdm_Domain *)dfi->GetcdmDomain();
   double Gorigin[3];
   double Gregion[3];
   int Gvoxel[3];
@@ -1065,12 +1065,12 @@ bool CONV::makeProcInfo(cio_DFI* dfi,
   if( numProc == 1 ) for(int i=0; i<3; i++) Gdiv[i]=1;
 
   //out_domainの生成 
-  out_domain = new cio_Domain(Gorigin,Gregion,Gvoxel,Gdiv);
+  out_domain = new cdm_Domain(Gorigin,Gregion,Gvoxel,Gdiv);
 
   //Process 情報の生成
-  const cio_Process* dfi_Process = dfi->GetcioProcess();
-  out_process = new cio_Process();
-  cio_Rank rank;
+  const cdm_Process* dfi_Process = dfi->GetcdmProcess();
+  out_process = new cdm_Process();
+  cdm_Rank rank;
   if( numProc == dfi_Process->RankList.size() ) {
     for(int i=0; i<numProc; i++) {
       rank.RankID = dfi_Process->RankList[i].RankID;
@@ -1112,9 +1112,9 @@ bool CONV::makeProcInfo(cio_DFI* dfi,
 //#################################################################
 // index.dfiファイル出力
 bool CONV::WriteProcDfiFile(std::string proc_name,
-                            cio_Domain* out_domain,
-                            cio_MPI* out_mpi,
-                            cio_Process* out_process)
+                            cdm_Domain* out_domain,
+                            cdm_MPI* out_mpi,
+                            cdm_Process* out_process)
 {
 
   FILE* fp = NULL;
@@ -1129,21 +1129,21 @@ bool CONV::WriteProcDfiFile(std::string proc_name,
   }
 
   //Domain {} の出力
-  if( out_domain->Write(fp, 0) != CIO::E_CIO_SUCCESS )
+  if( out_domain->Write(fp, 0) != CDM::E_CDM_SUCCESS )
   {
     fclose(fp);
     return false;
   }
 
   //MPI {} の出力
-  if( out_mpi->Write(fp, 0) != CIO::E_CIO_SUCCESS )
+  if( out_mpi->Write(fp, 0) != CDM::E_CDM_SUCCESS )
   {
     fclose(fp);
     return false;
   }
 
   //Process {} の出力
-  if( out_process->Write(fp, 0) != CIO::E_CIO_SUCCESS )
+  if( out_process->Write(fp, 0) != CDM::E_CDM_SUCCESS )
   {
     fclose(fp);
     return false;

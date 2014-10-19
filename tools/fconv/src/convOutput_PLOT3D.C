@@ -56,13 +56,13 @@ void convOutput_PLOT3D::WriteGridData(std::string prefix,
   size_t outsize = (size_t)id*(size_t)jd*(size_t)kd;
 
   int outDtype = m_InputCntl->Get_OutputDataType();
-  if( outDtype == CIO::E_CIO_DTYPE_UNKNOWN ) outDtype = dType;
+  if( outDtype == CDM::E_CDM_DTYPE_UNKNOWN ) outDtype = dType;
 
-  if( outDtype == CIO::E_CIO_FLOAT64 ) {
+  if( outDtype == CDM::E_CDM_FLOAT64 ) {
     double* x = new double[maxsize];
     OutputPlot3D_xyz(prefix, step, myRank, guide, org, pit, sz, &x[0], 
                      &x[outsize] , &x[outsize*2] );
-  }else if( outDtype == CIO::E_CIO_FLOAT32 ) {
+  }else if( outDtype == CDM::E_CDM_FLOAT32 ) {
     float* x = new float[maxsize];
     OutputPlot3D_xyz(prefix, step, myRank, guide, org, pit, sz, &x[0], 
                      &x[outsize] , &x[outsize*2] );
@@ -74,17 +74,17 @@ void convOutput_PLOT3D::WriteGridData(std::string prefix,
 void convOutput_PLOT3D::WriteNgrid(FILE* fp, int ngrid)
 {
   switch (m_InputCntl->Get_OutputFormatType()) {
-    case CIO::E_CIO_OUTPUT_TYPE_FBINARY:
+    case CDM::E_CDM_FILE_TYPE_FBINARY:
       unsigned int dmy;
       dmy = sizeof(int);
       WriteDataMarker(dmy,fp,true);
       fwrite(&ngrid, sizeof(int), 1, fp);
       WriteDataMarker(dmy,fp,true);
       break;
-    case CIO::E_CIO_OUTPUT_TYPE_ASCII:
+    case CDM::E_CDM_FILE_TYPE_ASCII:
       fprintf(fp,"%5d\n",ngrid);
       break;
-    case CIO::E_CIO_OUTPUT_TYPE_BINARY:
+    case CDM::E_CDM_FILE_TYPE_BINARY:
       fwrite(&ngrid, sizeof(int), 1, fp);
       break;      
     default:
@@ -98,7 +98,7 @@ void convOutput_PLOT3D::WriteBlockData(FILE* fp, int id, int jd, int kd)
 {
 
   switch (m_InputCntl->Get_OutputFormatType()) {
-    case CIO::E_CIO_OUTPUT_TYPE_FBINARY:
+    case CDM::E_CDM_FILE_TYPE_FBINARY:
       unsigned int dmy;
       dmy = sizeof(int)*3;
       WriteDataMarker(dmy,fp,true);
@@ -107,10 +107,10 @@ void convOutput_PLOT3D::WriteBlockData(FILE* fp, int id, int jd, int kd)
       fwrite(&kd, sizeof(int), 1, fp);
       WriteDataMarker(dmy,fp,true);
       break;
-    case CIO::E_CIO_OUTPUT_TYPE_ASCII:
+    case CDM::E_CDM_FILE_TYPE_ASCII:
       fprintf(fp,"%5d%5d%5d\n",id,jd,kd);
       break;
-    case CIO::E_CIO_OUTPUT_TYPE_BINARY:
+    case CDM::E_CDM_FILE_TYPE_BINARY:
       fwrite(&id, sizeof(int), 1, fp);
       fwrite(&jd, sizeof(int), 1, fp);
       fwrite(&kd, sizeof(int), 1, fp);
@@ -133,19 +133,19 @@ FILE* convOutput_PLOT3D::OutputFile_Open(
 
   //ファイル名の生成
   std::string outfile;
-  CIO::E_CIO_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
+  CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
   outfile = m_InputCntl->Get_OutputDir() +"/"+
-            cio_DFI::Generate_FileName(prefix,
+            cdm_DFI::Generate_FileName(prefix,
                                        id,
                                        step,
                                        "func",
                                        fnameformat,
                                        mio,
-                                       CIO::E_CIO_OFF);
+                                       CDM::E_CDM_OFF);
 
   //出力ファイルオープン
   // ascii
-  if( m_InputCntl->Get_OutputFormatType() == CIO::E_CIO_OUTPUT_TYPE_ASCII ) {
+  if( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
     if( (fp = fopen(outfile.c_str(), "wa")) == NULL ) {
       printf("\tCan't open file.(%s)\n",outfile.c_str());
       Exit(0);
@@ -167,7 +167,7 @@ FILE* convOutput_PLOT3D::OutputFile_Open(
 bool convOutput_PLOT3D::WriteHeaderRecord(
                                        int step,
                                        int dim,
-                                       CIO::E_CIO_DTYPE out_type,
+                                       CDM::E_CDM_DTYPE out_type,
                                        int imax,
                                        int jmax,
                                        int kmax,
@@ -198,13 +198,13 @@ bool convOutput_PLOT3D::WriteHeaderRecord(
 // #################################################################
 // func 出力
 bool convOutput_PLOT3D::WriteFieldData(FILE* fp, 
-                                       cio_Array* src, 
+                                       cdm_Array* src, 
                                        size_t dLen)
 {
 
   const int* sz = src->getArraySizeInt();
 
-  cio_Array *out = cio_Array::instanceArray
+  cdm_Array *out = cdm_Array::instanceArray
                    (src->getDataType(),
                     src->getArrayShape(),
                     (int *)sz,
@@ -226,7 +226,7 @@ void convOutput_PLOT3D::WriteFuncBlockData(FILE* fp, int id, int jd, int kd, int
 {
 
   switch (m_InputCntl->Get_OutputFormatType()) {
-    case CIO::E_CIO_OUTPUT_TYPE_FBINARY:
+    case CDM::E_CDM_FILE_TYPE_FBINARY:
       unsigned int dmy;
       dmy = sizeof(int)*4;
       WriteDataMarker(dmy,fp,true);
@@ -236,10 +236,10 @@ void convOutput_PLOT3D::WriteFuncBlockData(FILE* fp, int id, int jd, int kd, int
       fwrite(&nvar, sizeof(int), 1, fp);
       WriteDataMarker(dmy,fp,true);
       break;
-    case CIO::E_CIO_OUTPUT_TYPE_ASCII:
+    case CDM::E_CDM_FILE_TYPE_ASCII:
       fprintf(fp,"%5d%5d%5d%5d\n",id,jd,kd,nvar);
       break;
-    case CIO::E_CIO_OUTPUT_TYPE_BINARY:
+    case CDM::E_CDM_FILE_TYPE_BINARY:
       fwrite(&id, sizeof(int), 1, fp);
       fwrite(&jd, sizeof(int), 1, fp);
       fwrite(&kd, sizeof(int), 1, fp);
@@ -252,16 +252,16 @@ void convOutput_PLOT3D::WriteFuncBlockData(FILE* fp, int id, int jd, int kd, int
 }
 
 // #################################################################
-void convOutput_PLOT3D::WriteFuncData(FILE* fp, cio_Array* p3src)
+void convOutput_PLOT3D::WriteFuncData(FILE* fp, cdm_Array* p3src)
 {
 
   const int* sz = p3src->getArraySizeInt();
   size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*p3src->getNcomp();
 
   switch (m_InputCntl->Get_OutputFormatType()) {
-    case CIO::E_CIO_OUTPUT_TYPE_FBINARY:
+    case CDM::E_CDM_FILE_TYPE_FBINARY:
       unsigned int dmy;
-      if( p3src->getDataType() == CIO::E_CIO_FLOAT32 ) {
+      if( p3src->getDataType() == CDM::E_CDM_FLOAT32 ) {
         dmy = sizeof(float)*dLen;
       } else {
         dmy = sizeof(double)*dLen;
@@ -270,16 +270,16 @@ void convOutput_PLOT3D::WriteFuncData(FILE* fp, cio_Array* p3src)
       p3src->writeBinary(fp);      
       WriteDataMarker(dmy,fp,true);
       break;
-    case CIO::E_CIO_OUTPUT_TYPE_ASCII:
-      if( p3src->getDataType() == CIO::E_CIO_FLOAT32) {
+    case CDM::E_CDM_FILE_TYPE_ASCII:
+      if( p3src->getDataType() == CDM::E_CDM_FLOAT32) {
         float *data = (float*)p3src->getData();
         for(int i=0; i<dLen; i++) fprintf(fp,"%15.6E\n",data[i]);
-      } else if( p3src->getDataType() == CIO::E_CIO_FLOAT64) {
+      } else if( p3src->getDataType() == CDM::E_CDM_FLOAT64) {
         double *data = (double*)p3src->getData();
         for(int i=0; i<dLen; i++) fprintf(fp,"%15.6E\n",data[i]);
       }
       break;
-    case CIO::E_CIO_OUTPUT_TYPE_BINARY:
+    case CDM::E_CDM_FILE_TYPE_BINARY:
       p3src->writeBinary(fp);
       break;
     default:
@@ -293,7 +293,7 @@ void convOutput_PLOT3D::WriteFuncData(FILE* fp, cio_Array* p3src)
 bool convOutput_PLOT3D::WriteDataMarker(int dmy, FILE* fp, bool out)
 {
   if( !out ) return true;
-  if( m_InputCntl->Get_OutputFormatType() != CIO::E_CIO_OUTPUT_TYPE_FBINARY ) return true;
+  if( m_InputCntl->Get_OutputFormatType() != CDM::E_CDM_FILE_TYPE_FBINARY ) return true;
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
   return true;
 }

@@ -45,15 +45,15 @@ FILE* convOutput_BOV::OutputFile_Open(
 
   //ファイル名の生成
   std::string outfile;
-  CIO::E_CIO_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
+  CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
   outfile = m_InputCntl->Get_OutputDir()+"/"+
-            cio_DFI::Generate_FileName(prefix,
+            cdm_DFI::Generate_FileName(prefix,
                                        id,
                                        step,
                                        "dat",
                                        fnameformat,
                                        mio,
-                                       CIO::E_CIO_OFF);
+                                       CDM::E_CDM_OFF);
 
   //ファイルオープン
   if( (fp = fopen(outfile.c_str(), "wb")) == NULL ) {
@@ -69,7 +69,7 @@ FILE* convOutput_BOV::OutputFile_Open(
 //
 bool convOutput_BOV::WriteHeaderRecord(int step,
                                         int dim,
-                                        CIO::E_CIO_DTYPE d_type,
+                                        CDM::E_CDM_DTYPE d_type,
                                         int imax,
                                         int jmax,
                                         int kmax,
@@ -84,15 +84,15 @@ bool convOutput_BOV::WriteHeaderRecord(int step,
 
   //HeadFile名の生成とオープン
   std::string head_file;
-  CIO::E_CIO_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
+  CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
   head_file = m_InputCntl->Get_OutputDir()+"/"+
-            cio_DFI::Generate_FileName(prefix,
+            cdm_DFI::Generate_FileName(prefix,
                                        0,
                                        step,
                                        "bov",
                                        fnameformat,
                                        false,
-                                       CIO::E_CIO_OFF);
+                                       CDM::E_CDM_OFF);
 
   if( (fp = fopen(head_file.c_str(), "wb")) == NULL ) {
     printf("\tCan't open file.(%s)\n",head_file.c_str());
@@ -101,28 +101,28 @@ bool convOutput_BOV::WriteHeaderRecord(int step,
 
   //データファイル名の生成
   std::string data_file;
-  data_file = cio_DFI::Generate_FileName(prefix,
+  data_file = cdm_DFI::Generate_FileName(prefix,
                                        0,
                                        step,
                                        "dat",
                                        fnameformat,
                                        false,
-                                       CIO::E_CIO_OFF);
+                                       CDM::E_CDM_OFF);
 
   fprintf( fp, "Time: %e\n",time);
   fprintf( fp, "DATA_FILE: %s\n",data_file.c_str());
   fprintf( fp, "DATA_SIZE: %d %d %d\n",imax,jmax,kmax);
   std::string dataType;
-  if     ( d_type == CIO::E_CIO_INT8    ) dataType = D_CIO_BYTE;
-  else if( d_type == CIO::E_CIO_UINT8   ) dataType = D_CIO_UINT8;
-  else if( d_type == CIO::E_CIO_INT16   ) dataType = D_CIO_INT16;
-  else if( d_type == CIO::E_CIO_UINT16  ) dataType = D_CIO_UINT16;
-  else if( d_type == CIO::E_CIO_INT32   ) dataType = D_CIO_INT;
-  else if( d_type == CIO::E_CIO_UINT32  ) dataType = D_CIO_UINT32;
-  else if( d_type == CIO::E_CIO_INT64   ) dataType = D_CIO_INT64;
-  else if( d_type == CIO::E_CIO_UINT64  ) dataType = D_CIO_UINT64;
-  else if( d_type == CIO::E_CIO_FLOAT32 ) dataType = D_CIO_FLOAT;
-  else if( d_type == CIO::E_CIO_FLOAT64 ) dataType = D_CIO_DOUBLE;
+  if     ( d_type == CDM::E_CDM_INT8    ) dataType = D_CDM_BYTE;
+  else if( d_type == CDM::E_CDM_UINT8   ) dataType = D_CDM_UINT8;
+  else if( d_type == CDM::E_CDM_INT16   ) dataType = D_CDM_INT16;
+  else if( d_type == CDM::E_CDM_UINT16  ) dataType = D_CDM_UINT16;
+  else if( d_type == CDM::E_CDM_INT32   ) dataType = D_CDM_INT;
+  else if( d_type == CDM::E_CDM_UINT32  ) dataType = D_CDM_UINT32;
+  else if( d_type == CDM::E_CDM_INT64   ) dataType = D_CDM_INT64;
+  else if( d_type == CDM::E_CDM_UINT64  ) dataType = D_CDM_UINT64;
+  else if( d_type == CDM::E_CDM_FLOAT32 ) dataType = D_CDM_FLOAT;
+  else if( d_type == CDM::E_CDM_FLOAT64 ) dataType = D_CDM_DOUBLE;
   fprintf( fp, "DATA_FORMAT: %s\n",dataType.c_str());
   fprintf( fp, "DATA_COMPONENTS: %d\n",dim);
   fprintf( fp, "VARIABLE: %s\n",prefix.c_str());
@@ -139,9 +139,9 @@ bool convOutput_BOV::WriteHeaderRecord(int step,
   fprintf( fp, "BRICK_SIZE: %e %e %e\n",pit[0]*imax,pit[1]*jmax,pit[2]*kmax);
 
   std::string arrayShape;
-  if( m_InputCntl->Get_OutputArrayShape() == CIO::E_CIO_IJKN ) arrayShape="IJKN";
+  if( m_InputCntl->Get_OutputArrayShape() == CDM::E_CDM_IJKN ) arrayShape="IJKN";
   else arrayShape="NIJK";
-  fprintf( fp, "#CIO_ARRAY_SHAPE: %s\n",arrayShape.c_str());
+  fprintf( fp, "#CDM_ARRAY_SHAPE: %s\n",arrayShape.c_str());
 
   fclose(fp);
   return true;
