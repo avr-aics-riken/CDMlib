@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-20
+Modify method WriteInit in class cdm_DFI and Read in class cdm_FileInfo
+ to return error when arrayshape in plot3d is nijk
+Plot3d形式において配列形式がnijkと指定された場合、エラーを返すように
+クラスcdm_DFIのWriteInitとクラスcdm_FileInfoのReadを修正した。
+
+------------------
 2014-10-17
 Restore SPH format
 メンバ関数ReadInitのインスタンス生成部を編集して、sph形式も読込めるように戻した。

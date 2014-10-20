@@ -309,6 +309,13 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
   }
 //FCONV 20140131.e
 
+  if( FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
+    if( ArrayShape == CDM::E_CDM_NIJK ) {
+      printf("\tCDM error plot3d file undefined nijk arrayshape.\n");
+      return CDM::E_CDM_ERROR_READ_DFI_ARRAYSHAPE;
+    }
+  }
+
   return CDM::E_CDM_SUCCESS;
 }
 

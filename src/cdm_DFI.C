@@ -413,6 +413,13 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   }
 //FCONV 20140131.e
 
+  if( format == CDM::E_CDM_FMT_PLOT3D ) {
+    if( ArrayShape == CDM::E_CDM_NIJK ) {
+      printf("\tCDM error plot3d file undefined nijk arrayshape.\n");
+      return NULL;
+    }
+  }
+
   cdm_DFI *dfi = NULL;
 
   int RankID;
