@@ -12,6 +12,11 @@ REVISION HISTORY
 
 ------------------
 2014-10-20
+Set filetype in Plot3d format Fbinary
+Plot3d形式のファイル入出力のタイプをFbinaryに設定した。
+
+------------------
+2014-10-20
 Modify method WriteInit in class cdm_DFI and Read in class cdm_FileInfo
  to return error when arrayshape in plot3d is nijk
 Plot3d形式において配列形式がnijkと指定された場合、エラーを返すように

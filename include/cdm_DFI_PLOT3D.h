@@ -55,6 +55,8 @@ public:
     DFI_Process    = process;
     m_OutputGrid   = true;
     m_bgrid_interp_flag = false;
+    m_input_type   = CDM::E_CDM_FILE_TYPE_FBINARY;
+    m_output_type  = CDM::E_CDM_FILE_TYPE_FBINARY;
   };
   
   /**　デストラクタ */
