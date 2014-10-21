@@ -62,7 +62,7 @@ cdm_DFI::WriteIndexDfiFile(const std::string dfi_name)
   }
 
   //TimeSlice {} の出力
-  if ( DFI_TimeSlice.Write(fp, 1) != CDM::E_CDM_SUCCESS ) 
+  if ( DFI_TimeSlice.Write(fp, 1, DFI_Finfo.FileFormat) != CDM::E_CDM_SUCCESS ) 
   {
     fclose(fp);
     return CDM::E_CDM_ERROR_WRITE_TIMESLICE;
@@ -292,8 +292,8 @@ cdm_DFI::WriteData(const unsigned step,
     std::string fname = CDM::cdmPath_ConnectPath( m_directoryPath, dfiname );
 
     //Slice へのセット
-    DFI_TimeSlice.AddSlice(step, time, minmax, DFI_Finfo.Component, avr_mode,
-                           step_avr, time_avr);
+    DFI_TimeSlice.AddSlice(step, time, minmax, DFI_Finfo.Component, DFI_Finfo.FileFormat,
+                           avr_mode, step_avr, time_avr);
 
     //index dfi のファイル出力
     if( m_RankID == 0 ) {

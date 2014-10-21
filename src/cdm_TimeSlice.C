@@ -45,7 +45,8 @@ cdm_Slice::~cdm_Slice()
 // TimeSliceの読込み
 CDM::E_CDM_ERRORCODE
 cdm_Slice::Read(cdm_TextParser tpCntl,
-                        std::string label_leaf) 
+                std::string label_leaf,
+                CDM::E_CDM_FORMAT format) 
 {
 #if 0
   std::string str;
@@ -205,21 +206,23 @@ cdm_Slice::Read(cdm_TextParser tpCntl,
     AveragedTime= dt;
   }
 
-  /*
   //VectorMinMax/Min
-  label = "VectorMinMax/Min";
-  if ( (tpCntl.GetValue(label, &dt, false )) )
-  {
-    VectorMin=dt;
+  if ( format == CDM::E_CDM_FMT_SPH) {
+    label = "VectorMinMax/Min";
+    if ( (tpCntl.GetValue(label, &dt, false )) )
+    {
+      VectorMin=dt;
+    }
   }
 
   //VectorMinMax/Max
-  label = "VectorMinMax/Max";
-  if ( (tpCntl.GetValue(label, &dt, false )) )
-  {
-    VectorMax=dt;
+  if ( format == CDM::E_CDM_FMT_SPH) {
+    label = "VectorMinMax/Max";
+    if ( (tpCntl.GetValue(label, &dt, false )) )
+    {
+      VectorMax=dt;
+    }
   }
-  */
 
   // 子のラベルを取得
   vector<std::string> labels;
@@ -266,7 +269,8 @@ cdm_Slice::Read(cdm_TextParser tpCntl,
 // TimeSliceを出力する 
 CDM::E_CDM_ERRORCODE
 cdm_Slice::Write(FILE* fp,
-                 const unsigned tab)
+                 const unsigned tab,
+                 CDM::E_CDM_FORMAT format) 
 {
 
   _CDM_WRITE_TAB(fp, tab);
@@ -282,18 +286,18 @@ cdm_Slice::Write(FILE* fp,
     fprintf(fp, "AveragedTime = %e\n",AveragedTime);
   }
 
-  /*
-  if( Min.size()>1 ) {
-    _CDM_WRITE_TAB(fp, tab);
-    fprintf(fp, "VectorMinMax {\n");
-    _CDM_WRITE_TAB(fp, tab+1);
-    fprintf(fp, "Min = %e\n",VectorMin);
-    _CDM_WRITE_TAB(fp, tab+1);
-    fprintf(fp, "Max = %e\n",VectorMax);
-    _CDM_WRITE_TAB(fp, tab);
-    fprintf(fp, "}\n");
+  if ( format == CDM::E_CDM_FMT_SPH) {
+    if( Min.size()>1 ) {
+      _CDM_WRITE_TAB(fp, tab);
+      fprintf(fp, "VectorMinMax {\n");
+      _CDM_WRITE_TAB(fp, tab+1);
+      fprintf(fp, "Min = %e\n",VectorMin);
+      _CDM_WRITE_TAB(fp, tab+1);
+      fprintf(fp, "Max = %e\n",VectorMax);
+      _CDM_WRITE_TAB(fp, tab);
+      fprintf(fp, "}\n");
+    }
   }
-  */
 
   for(int j=0; j<Min.size(); j++){
     _CDM_WRITE_TAB(fp, tab);
@@ -327,7 +331,8 @@ cdm_TimeSlice::~cdm_TimeSlice()
 // #################################################################
 // TimeSliceの読込み
 CDM::E_CDM_ERRORCODE
-cdm_TimeSlice::Read(cdm_TextParser tpCntl)
+cdm_TimeSlice::Read(cdm_TextParser tpCntl,
+                    CDM::E_CDM_FORMAT format)
 {
 #if 0
   std::string str;
@@ -402,7 +407,7 @@ cdm_TimeSlice::Read(cdm_TextParser tpCntl)
     //Slice要素の読込み
     cdm_Slice slice;
     std::string leaf = label_base + "/" + label;
-    if( (iret = slice.Read(tpCntl,leaf)) == CDM::E_CDM_SUCCESS )
+    if( (iret = slice.Read(tpCntl,leaf,format)) == CDM::E_CDM_SUCCESS )
     {
       SliceList.push_back(slice);
     }
@@ -424,7 +429,8 @@ cdm_TimeSlice::Read(cdm_TextParser tpCntl)
 // TimeSliceを出力する 
 CDM::E_CDM_ERRORCODE
 cdm_TimeSlice::Write(FILE* fp,
-                     const unsigned tab)
+                     const unsigned tab,
+                     CDM::E_CDM_FORMAT format)
 {
 
   fprintf(fp, "TimeSlice {\n");
@@ -436,7 +442,7 @@ cdm_TimeSlice::Write(FILE* fp,
     fprintf(fp, "Slice[@] {\n");
 
     //Slice要素の出力
-    if( SliceList[i].Write(fp,tab+1) != CDM::E_CDM_SUCCESS) return CDM::E_CDM_ERROR;
+    if( SliceList[i].Write(fp,tab+1,format) != CDM::E_CDM_SUCCESS) return CDM::E_CDM_ERROR;
 
     _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "}\n");
@@ -493,6 +499,7 @@ void cdm_TimeSlice::AddSlice(int step,
                              double time,
                              double *minmax,
                              int Ncomp,
+                             CDM::E_CDM_FORMAT format,
                              bool avr_mode,
                              int step_avr,
                              double time_avr)
@@ -509,21 +516,10 @@ void cdm_TimeSlice::AddSlice(int step,
       slice.Min.push_back(minmax[i*2]);
       slice.Max.push_back(minmax[i*2+1]);
     }
-    /*
-    //成分が１個の場合
-    if( Ncomp == 1 ) {
-      slice.Min.push_back(minmax[0]);
-      slice.Max.push_back(minmax[1]);
-    } else {
-    //成分が複数個の場合
-      for(int i=0; i<Ncomp; i++) {
-        slice.Min.push_back(minmax[i*2]);
-        slice.Max.push_back(minmax[i*2+1]);
-      }
-      slice.VectorMin=minmax[6];
-      slice.VectorMax=minmax[7];
+    if( format == CDM::E_CDM_FMT_SPH && Ncomp == 3 ) {
+      slice.VectorMin=minmax[Ncomp*2];
+      slice.VectorMax=minmax[Ncomp*2+1];
     }
-    */
   }
 
   //averageのセット

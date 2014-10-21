@@ -112,7 +112,7 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
 
   /** TimeSliceの読込み */
   cdm_TimeSlice TimeSlice;
-  if( TimeSlice.Read(tpCntl) != CDM::E_CDM_SUCCESS )
+  if( TimeSlice.Read(tpCntl, F_info.FileFormat) != CDM::E_CDM_SUCCESS )
   {
     printf("\tTimeSlice Data Read error %s\n",DfiName.c_str());
     ret = CDM::E_CDM_ERROR_READ_TIMESLICE;

@@ -1665,11 +1665,12 @@ Staging::WriteIndexDfiFile(const std::string dfi_name)
                       dfi_TSlice->SliceList[i].time,
                       minmax,
                       dfi_Finfo->Component,
+                      dfi_Finfo->FileFormat,
                       dfi_TSlice->SliceList[i].avr_mode,
                       dfi_TSlice->SliceList[i].AveragedStep,
                       dfi_TSlice->SliceList[i].AveragedTime);
   }
-  if ( t_Slice->Write(fp, 1) != CDM::E_CDM_SUCCESS )
+  if ( t_Slice->Write(fp, 1, dfi_Finfo->FileFormat) != CDM::E_CDM_SUCCESS )
   {
     fclose(fp);
     return CDM::E_CDM_ERROR_WRITE_TIMESLICE;
@@ -1746,11 +1747,12 @@ Staging::WriteIndexDfiFile(const std::string dfi_name, const step_rank_info info
                       dfi_TSlice->SliceList[i].time,
                       minmax,
                       dfi_Finfo->Component,
+                      dfi_Finfo->FileFormat,
                       dfi_TSlice->SliceList[i].avr_mode,
                       dfi_TSlice->SliceList[i].AveragedStep,
                       dfi_TSlice->SliceList[i].AveragedTime);
   }
-  if ( t_Slice->Write(fp, 1) != CDM::E_CDM_SUCCESS )
+  if ( t_Slice->Write(fp, 1, dfi_Finfo->FileFormat) != CDM::E_CDM_SUCCESS )
   {
     fclose(fp);
     return CDM::E_CDM_ERROR_WRITE_TIMESLICE;

@@ -40,21 +40,25 @@ public :
   * @brief TimeSlice要素を読込む(inde.dfi)
   * @param [in]  tpCntl     cdm_TextParserクラス
   * @param [in]  label_leaf ベースとなる名前（"/TimeSlice/Slice")   
+  * @param [in]  format ファイルフォーマット
   * @return error code
   */  
   CDM::E_CDM_ERRORCODE
   Read(cdm_TextParser tpCntl, 
-       std::string label_leaf);
+       std::string label_leaf,
+       CDM::E_CDM_FORMAT format);
 
   /**
    * @brief DFIファイル:TimeSlice要素を出力する
    * @param [in] fp       ファイルポインタ
    * @param [in] tab      インデント
+   * @param [in]  format ファイルフォーマット
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
   Write(FILE* fp, 
-        const unsigned tab);
+        const unsigned tab,
+        CDM::E_CDM_FORMAT format);
 
 };
 
@@ -74,20 +78,24 @@ public:
   /**
   * @brief TimeSlice要素を読込む(inde.dfi)
   * @param [in]      tpCntl cdm_TextParserクラス
+  * @param [in]      format ファイルフォーマット
   * @return error code
   */  
   CDM::E_CDM_ERRORCODE
-  Read(cdm_TextParser tpCntl); 
+  Read(cdm_TextParser tpCntl,
+       CDM::E_CDM_FORMAT format); 
 
   /**
    * @brief DFIファイル:TimeSlice要素を出力する
    * @param [in] fp       ファイルポインタ
    * @param [in] tab      インデント
+   * @param [in] format   ファイルフォーマット
    * @return true:出力成功 false:出力失敗
    */
   CDM::E_CDM_ERRORCODE
   Write(FILE* fp, 
-        const unsigned tab);
+        const unsigned tab,
+        CDM::E_CDM_FORMAT format);
 
   /**
    * @brief DFIに出力されているminmaxの合成値を取得 
@@ -120,6 +128,7 @@ public:
    * @param [in]  time      時刻
    * @param [in]  minmax    minmax
    * @param [in]  Ncomp     コンポーネント数
+   * @param [in]  format    ファイルフォーマット
    * @param [in]  avr_mode  Averageがあるかないかのフラグ
    * @param [in]  step_avr  Average step
    * @param [in]  time_avr  Average time
@@ -128,6 +137,7 @@ public:
                 double time,
                 double *minmax,
                 int Ncomp,
+                CDM::E_CDM_FORMAT format,
                 bool avr_mode,
                 int step_avr,
                 double time_avr);

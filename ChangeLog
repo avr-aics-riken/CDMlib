@@ -12,6 +12,11 @@ REVISION HISTORY
 
 ------------------
 2014-10-21
+Restore VectorMinMax only for SPH format
+SPH形式のみ、VectorMinMaxを入出力できるように戻した。
+
+------------------
+2014-10-21
 Delete VectorMinMax and add check of number of variable names
 VectorMinMaxをdfiファイルから削除した。
 また、フィールドデータの変数の個数と登録された変数名の個数が

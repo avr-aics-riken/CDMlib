@@ -981,13 +981,14 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
                        dfi_TSlice->SliceList[j].time,
                        minmax,
                        nComp,
+                       Finfo->FileFormat,
                        true,
                        0,
                        0.0);
 
     }
 
-    if( TSlice->Write(fp, 1) != CDM::E_CDM_SUCCESS )
+    if( TSlice->Write(fp, 1, Finfo->FileFormat) != CDM::E_CDM_SUCCESS )
     {
       fclose(fp);
       return false;
