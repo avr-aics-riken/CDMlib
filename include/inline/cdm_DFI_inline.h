@@ -137,6 +137,11 @@ cdm_DFI::WriteData(const unsigned step,
                    const unsigned step_avr, 
                    TimeAvrT time_avr)
 {
+  //フィールドデータの変数の個数と登録された変数名の個数の一致確認
+  if ( DFI_Finfo.Component != DFI_Finfo.ComponentVariable.size()) {
+    printf("\tError : Number of valiable names\n");
+    return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES;
+  }
 
   cdm_Array *data = cdm_Array::instanceArray
                     ( val

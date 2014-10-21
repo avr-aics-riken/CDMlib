@@ -205,6 +205,7 @@ cdm_Slice::Read(cdm_TextParser tpCntl,
     AveragedTime= dt;
   }
 
+  /*
   //VectorMinMax/Min
   label = "VectorMinMax/Min";
   if ( (tpCntl.GetValue(label, &dt, false )) )
@@ -218,6 +219,7 @@ cdm_Slice::Read(cdm_TextParser tpCntl,
   {
     VectorMax=dt;
   }
+  */
 
   // 子のラベルを取得
   vector<std::string> labels;
@@ -280,6 +282,7 @@ cdm_Slice::Write(FILE* fp,
     fprintf(fp, "AveragedTime = %e\n",AveragedTime);
   }
 
+  /*
   if( Min.size()>1 ) {
     _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "VectorMinMax {\n");
@@ -290,6 +293,7 @@ cdm_Slice::Write(FILE* fp,
     _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "}\n");
   }
+  */
 
   for(int j=0; j<Min.size(); j++){
     _CDM_WRITE_TAB(fp, tab);
@@ -501,6 +505,11 @@ void cdm_TimeSlice::AddSlice(int step,
 
   //minmaxのセット
   if( minmax ) {
+    for(int i=0; i<Ncomp; i++) {
+      slice.Min.push_back(minmax[i*2]);
+      slice.Max.push_back(minmax[i*2+1]);
+    }
+    /*
     //成分が１個の場合
     if( Ncomp == 1 ) {
       slice.Min.push_back(minmax[0]);
@@ -514,6 +523,7 @@ void cdm_TimeSlice::AddSlice(int step,
       slice.VectorMin=minmax[6];
       slice.VectorMax=minmax[7];
     }
+    */
   }
 
   //averageのセット

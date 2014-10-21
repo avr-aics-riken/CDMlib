@@ -196,6 +196,7 @@ namespace CDM
 ,   E_CDM_ERROR_READ_SPH_REC7               = 2007 ///< SPHファイルレコード7読込みエラー
 ,   E_CDM_ERROR_UNMATCH_VOXELSIZE           = 2050 ///< SPHのボクセルサイズとDFIのボクセルサイズが合致しない
 ,   E_CDM_ERROR_NOMATCH_ENDIAN              = 2051 ///< 出力Fornatが合致しない（Endian形式がBig,Little以外）
+,   E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES    = 2052 ///< フィールドデータの変数の個数と登録された変数名の個数が一致しない
 ,   E_CDM_ERROR_READ_BOV_FILE               = 2100 ///< BOVファイル読込みエラー
 ,   E_CDM_ERROR_READ_FIELD_HEADER_RECORD    = 2102 ///< フィールドヘッダーレコード読込み失敗
 ,   E_CDM_ERROR_READ_FIELD_DATA_RECORD      = 2103 ///< フィールドデータレコード読込み失敗

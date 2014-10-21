@@ -276,6 +276,12 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
 
   ncnt++;
 
+  //フィールドデータの変数の個数と登録された変数名の個数の一致確認
+  if ( Component != ncomp) {
+    printf("\tCDM Parsing error : Number of valiable names\n");
+    return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES;
+  }
+
   label_leaf = "/FileInfo";
 
   if( ncomp>0 ) {

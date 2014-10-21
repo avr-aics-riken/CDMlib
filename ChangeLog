@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-21
+Delete VectorMinMax and add check of number of variable names
+VectorMinMaxをdfiファイルから削除した。
+また、フィールドデータの変数の個数と登録された変数名の個数が
+一致するか確認するようにした。
+
+------------------
 2014-10-20
 Set filetype in Plot3d format Fbinary
 Plot3d形式のファイル入出力のタイプをFbinaryに設定した。
