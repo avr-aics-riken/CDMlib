@@ -105,8 +105,8 @@ public:
    * @return true:出力成功 false:出力失敗
    */
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, 
-        const unsigned tab);
+  virtual Write(FILE* fp, 
+                const unsigned tab) const;
 
 };
 

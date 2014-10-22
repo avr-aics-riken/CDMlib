@@ -227,6 +227,9 @@ public:
    * @param [in] coord_X     X座標データポインタ
    * @param [in] coord_Y     Y座標データポインタ
    * @param [in] coord_Z     Z座標データポインタ
+   * @param [in] coord_file          座標データ名
+   * @param [in] coord_fileformat    座標データのファイルタイプ
+   * @param [in] coord_fileprecision 座標データの精度
    * @return インスタンスされたクラスのポインタ
    */
   template<typename T>
@@ -253,7 +256,10 @@ public:
             const int* iblank = NULL,
             const T* coord_X = NULL,
             const T* coord_Y = NULL,
-            const T* coord_Z = NULL);
+            const T* coord_Z = NULL,
+            const std::string coord_file = "",
+            const CDM::E_CDM_OUTPUT_TYPE coord_fileformat = CDM::E_CDM_OUTPUT_TYPE_DEFAULT,
+            const CDM::E_CDM_DTYPE coord_fileprecision = CDM::E_CDM_DTYPE_UNKNOWN);
 
   /**
    * @brief RankIDをセットする

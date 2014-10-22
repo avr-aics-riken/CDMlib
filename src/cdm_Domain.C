@@ -103,7 +103,7 @@ cdm_Domain::~cdm_Domain()
 // #################################################################
 // Domain の読込み関数
 CDM::E_CDM_ERRORCODE
-cdm_Domain::Read(cdm_TextParser tpCntl) 
+cdm_Domain::Read(cdm_TextParser tpCntl)
 {
 
   std::string str;
@@ -180,7 +180,7 @@ cdm_Domain::Read(cdm_TextParser tpCntl)
 // DFIファイル:Domain要素を出力する
 CDM::E_CDM_ERRORCODE
 cdm_Domain::Write(FILE* fp, 
-                  const unsigned tab)
+                  const unsigned tab) const
 {
 
   fprintf(fp, "Domain {\n");

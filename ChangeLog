@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-22
+Add coordinate file information in proc.dfi in the case of non-uniform domain
+不等間隔格子の場合、ファイルproc.dfiのDomainの所に座標ファイルの
+情報を追記するようにした。
+
+------------------
 2014-10-18
 Edit cdm_NonUniformDomain.h and cdm_DFI.h
 cdm_NonUniformDomain.hにおいて、authorのところをaicsに変更した。

@@ -352,7 +352,10 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const int* iblank,
                             const T* coord_X,
                             const T* coord_Y,
-                            const T* coord_Z)
+                            const T* coord_Z,
+                            const std::string coord_file,
+                            const CDM::E_CDM_OUTPUT_TYPE coord_fileformat,
+                            const CDM::E_CDM_DTYPE coord_fileprecision)
 {
 
 //FCONV 20140131.s
@@ -419,7 +422,10 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                                              iblank,
                                              coord_X,
                                              coord_Y,
-                                             coord_Z);
+                                             coord_Z,
+                                             coord_file,
+                                             coord_fileformat,
+                                             coord_fileprecision);
   } else {
     printf("\tCDM error : DFIType is not correct.\n");
     return NULL;
