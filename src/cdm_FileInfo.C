@@ -186,12 +186,15 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
   }
   if( !strcasecmp(str.c_str(),"sph" ) ) {
     FileFormat=CDM::E_CDM_FMT_SPH;
+    ArrayShape=CDM::E_CDM_NIJK;
   }
   else if( !strcasecmp(str.c_str(),"bov" ) ) {
     FileFormat=CDM::E_CDM_FMT_BOV;
+    ArrayShape=CDM::E_CDM_IJKN;
   }
   else if( !strcasecmp(str.c_str(),"fun" ) ) {
     FileFormat=CDM::E_CDM_FMT_PLOT3D;
+    ArrayShape=CDM::E_CDM_IJKN;
   }
   else FileFormat=CDM::E_CDM_FMT_UNKNOWN;
 
@@ -234,24 +237,6 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
     printf("\tCDM Parsing error : fail to get '%s'\n",str.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_ENDIAN;
   } 
-
-  ncnt++;
-
-  //ArrayShape  
-  label = "/FileInfo/ArrayShape";
-  if ( !(tpCntl.GetValue(label, &str )) )
-  {
-    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
-    return CDM::E_CDM_ERROR_READ_DFI_ARRAYSHAPE;
-  }
-  if( !strcasecmp(str.c_str(),"ijkn" ) ) {
-    ArrayShape=CDM::E_CDM_IJKN;
-  } else if( !strcasecmp(str.c_str(),"nijk" ) ) {
-    ArrayShape=CDM::E_CDM_NIJK;
-  }else {
-    printf("\tCDM Parsing error : fail to get '%s'\n",str.c_str());
-    return CDM::E_CDM_ERROR_READ_DFI_ARRAYSHAPE;
-  }
 
   ncnt++;
 
@@ -303,22 +288,6 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
           ComponentVariable.push_back(str);
         }
       }
-    }
-  }
-
-//FCONV 20140131.s
-  if( FileFormat == CDM::E_CDM_FMT_SPH ) {
-    if( Component > 1 && ArrayShape == CDM::E_CDM_IJKN ) {
-      printf("\tCDM error sph file undefined ijkn component>1.\n");
-      return CDM::E_CDM_ERROR_READ_DFI_ARRAYSHAPE;
-    }
-  }
-//FCONV 20140131.e
-
-  if( FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
-    if( ArrayShape == CDM::E_CDM_NIJK ) {
-      printf("\tCDM error plot3d file undefined nijk arrayshape.\n");
-      return CDM::E_CDM_ERROR_READ_DFI_ARRAYSHAPE;
     }
   }
 
@@ -383,13 +352,6 @@ cdm_FileInfo::Write(FILE* fp,
     fprintf(fp, "Endian             = \"little\"\n");
   } else {
     fprintf(fp, "Endian             = \"big\"\n");
-  }
-
-  _CDM_WRITE_TAB(fp, tab+1);
-  if( ArrayShape == CDM::E_CDM_IJKN ) {
-    fprintf(fp, "ArrayShape         = \"ijkn\"\n");
-  } else {
-    fprintf(fp, "ArrayShape         = \"nijk\"\n");
   }
 
   _CDM_WRITE_TAB(fp, tab+1);

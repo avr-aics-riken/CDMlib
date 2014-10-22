@@ -337,7 +337,6 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const CDM::E_CDM_FORMAT format,
                             const int GCell,
                             const CDM::E_CDM_DTYPE DataType,
-                            const CDM::E_CDM_ARRAYSHAPE ArrayShape, 
                             const int nComp,
                             const std::string proc_fname,
                             const int G_size[3],
@@ -366,7 +365,6 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                    format, 
                    GCell, 
                    DataType,
-                   ArrayShape, 
                    nComp, 
                    proc_fname,
                    G_size, 
@@ -390,7 +388,6 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const CDM::E_CDM_FORMAT format,
                             const int GCell,
                             const CDM::E_CDM_DTYPE DataType,
-                            const CDM::E_CDM_ARRAYSHAPE ArrayShape,
                             const int nComp,
                             const std::string proc_fname,
                             const int G_size[3],
@@ -403,22 +400,6 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const CDM::E_CDM_ONOFF TSliceOnOff,
                             const int* iblank)
 {
-
-//FCONV 20140131.s
-  if( format == CDM::E_CDM_FMT_SPH ) {
-    if( nComp > 1 && ArrayShape == CDM::E_CDM_IJKN ) {
-      printf("\tCDM error sph file undefined ijkn component>1.\n");
-      return NULL;
-    }
-  }
-//FCONV 20140131.e
-
-  if( format == CDM::E_CDM_FMT_PLOT3D ) {
-    if( ArrayShape == CDM::E_CDM_NIJK ) {
-      printf("\tCDM error plot3d file undefined nijk arrayshape.\n");
-      return NULL;
-    }
-  }
 
   cdm_DFI *dfi = NULL;
 
@@ -435,7 +416,12 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   out_F_info.FileFormat       = format;
   out_F_info.GuideCell        = GCell;
   out_F_info.DataType         = DataType;
-  out_F_info.ArrayShape       = ArrayShape;
+  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D ) {
+    out_F_info.ArrayShape = CDM::E_CDM_IJKN;
+  }
+  else if( format == CDM::E_CDM_FMT_SPH || format == CDM::E_CDM_FMT_AVS || format == CDM::E_CDM_FMT_VTK) {
+    out_F_info.ArrayShape = CDM::E_CDM_NIJK;
+  }
   out_F_info.Component        = nComp;
 
   int idumy = 1;

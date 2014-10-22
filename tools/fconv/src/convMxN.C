@@ -211,7 +211,6 @@ void convMxN::VoxelInit()
                           //0,
                           outGc,
                           d_type,
-                          m_param->Get_OutputArrayShape(),
                           DFI_FInfo->Component,
                           outprocfname,
                           voxel_thin,

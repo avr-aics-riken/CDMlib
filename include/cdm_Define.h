@@ -158,7 +158,7 @@ namespace CDM
 ,   E_CDM_ERROR_READ_DFI_GUIDECELL          = 1008 ///< DFI GuideCell 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_DATATYPE           = 1009 ///< DFI DataType 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_ENDIAN             = 1010 ///< DFI Endian 読込みエラー
-,   E_CDM_ERROR_READ_DFI_ARRAYSHAPE         = 1011 ///< DFI ArrayShape 読込みエラー
+//,   E_CDM_ERROR_READ_DFI_ARRAYSHAPE         = 1011 ///< DFI ArrayShape 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_COMPONENT          = 1012 ///< DFI Component 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_FILEPATH_PROCESS   = 1013 ///< DFI FilePath/Process 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_NO_RANK            = 1014 ///< DFI Rank要素なし

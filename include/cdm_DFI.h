@@ -213,7 +213,6 @@ public:
    * @param [in] format      ファイルフォーマット
    * @param [in] GCell       出力仮想セル数　　　
    * @param [in] DataType    データタイプ　　　　
-   * @param [in] ArrayShape  配列形状　　　　　　
    * @param [in] nComp       成分数　　　　　　　
    * @param [in] proc_fname  proc.dfiファイル名
    * @param [in] G_size      グローバルボクセルサイズ　
@@ -235,7 +234,6 @@ public:
             const CDM::E_CDM_FORMAT format,
             const int GCell,
             const CDM::E_CDM_DTYPE DataType,
-            const CDM::E_CDM_ARRAYSHAPE ArrayShape,
             const int nComp,
             const std::string proc_fname,
             const int G_size[3],
@@ -257,7 +255,6 @@ public:
    * @param [in] format      ファイルフォーマット
    * @param [in] GCell       出力仮想セル数　　　
    * @param [in] DataType    データタイプ　　　　
-   * @param [in] ArrayShape  配列形状　　　　　　
    * @param [in] nComp       成分数　　　　　　　
    * @param [in] proc_fname  proc.dfiファイル名
    * @param [in] G_size      グローバルボクセルサイズ　
@@ -279,7 +276,6 @@ public:
             const CDM::E_CDM_FORMAT format,
             const int GCell,
             const CDM::E_CDM_DTYPE DataType,
-            const CDM::E_CDM_ARRAYSHAPE ArrayShape,
             const int nComp,
             const std::string proc_fname,
             const int G_size[3],

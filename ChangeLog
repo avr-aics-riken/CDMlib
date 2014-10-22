@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-22
+Delete ArrayShape from dfi file and set ArrayShape by file format
+dfiファイルのFileInfoの項目からArrayShapeを削除し、
+ArrayShapeはファイル形式によって定めるようにした。
+
+------------------
 2014-10-21
 Restore VectorMinMax only for SPH format
 SPH形式のみ、VectorMinMaxを入出力できるように戻した。
