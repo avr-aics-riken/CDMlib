@@ -139,7 +139,7 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
   ret = CDM::E_CDM_SUCCESS;
 
 
-  if( !fname.c_str() || !DFI_Finfo.Component ) {
+  if( !fname.c_str() || !DFI_Finfo.NumVariables ) {
     ret = CDM::E_CDM_ERROR_READ_FIELDDATA_FILE;
     return NULL;
   }
@@ -189,14 +189,14 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
 //FCONV 20121216.s
   //読み込みバッファ
   cdm_Array* buf=NULL;
-  //配列形状がIJKNのときは成分数を１にしてインスタンスする
+  //配列形状がIJKNのときは変数の個数を１にしてインスタンスする
   if( DFI_Finfo.ArrayShape == CDM::E_CDM_NIJK ) {
     buf = cdm_Array::instanceArray
                    ( DFI_Finfo.DataType
                    , DFI_Finfo.ArrayShape
                    , szB
                    , 0 
-                   , DFI_Finfo.Component );
+                   , DFI_Finfo.NumVariables );
   } else if( DFI_Finfo.ArrayShape == CDM::E_CDM_IJKN ) {
     buf = cdm_Array::instanceArray
                    ( DFI_Finfo.DataType
@@ -219,7 +219,7 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
                    , DFI_Finfo.ArrayShape
                    , szS
                    , 0
-                   , DFI_Finfo.Component );
+                   , DFI_Finfo.NumVariables );
   src->setHeadIndex( headS );
 
 

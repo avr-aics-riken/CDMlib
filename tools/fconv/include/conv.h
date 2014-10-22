@@ -62,10 +62,10 @@ public:
    cdm_DFI* dfi;
    double* Min;
    double* Max;
-   dfi_MinMax(int nstep, int ncomp){
-     Min = new double[ncomp*nstep];
-     Max = new double[ncomp*nstep];
-     for(int i=0; i<ncomp*nstep; i++ ) {
+   dfi_MinMax(int nstep, int nvari){
+     Min = new double[nvari*nstep];
+     Max = new double[nvari*nstep];
+     for(int i=0; i<nvari*nstep; i++ ) {
        Min[i]=DBL_MAX;
        Max[i]=-DBL_MAX;
      }
@@ -167,7 +167,7 @@ public:
   CDM::E_CDM_ERRORCODE ReadDfiFiles();
  
   /**
-   * @brief dfi毎の成分数、出力ガイドセルのチェックと更新
+   * @brief dfi毎の変数の個数、出力ガイドセルのチェックと更新
    * @return エラーコード
    */
   bool CheckDFIdata();
@@ -247,7 +247,7 @@ public:
    * @param[out] src         読み込んだデータを格納した配列のポインタ
    * @param[in]  headS       出力領域のheadインデックス
    * @param[in]  tailS       出力領域のtailインデックス
-   * @param[in]  n           成分位置
+   * @param[in]  n           変数位置
    */
   bool convertXY(
                  cdm_Array* buf,
@@ -262,7 +262,7 @@ public:
    * @param [out] src        コピー先の配列
    * @param [in]  sta        コピーのスタート位置
    * @param [in]  end        コピーのエンド位置
-   * @param [in]  n          成分位置
+   * @param [in]  n          変数位置
    */ 
   template<class T>
   bool copyArray(cdm_TypeArray<T> *B,
@@ -277,7 +277,7 @@ public:
    * @param [out] src        コピー先の配列
    * @param [in]  sta        コピーのスタート位置
    * @param [in]  end        コピーのエンド位置
-   * @param [in]  n          成分位置
+   * @param [in]  n          変数位置
    *
    */
   template<class T1, class T2>

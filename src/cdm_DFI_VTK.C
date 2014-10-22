@@ -86,19 +86,19 @@ cdm_DFI_VTK::write_HeaderRecord(FILE* fp,
   else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32) d_type="float";
   else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64) d_type="double";
 
-  if( DFI_Finfo.Component == 1 )
+  if( DFI_Finfo.NumVariables == 1 )
   {
     fprintf( fp, "SCALARS %s %s\n", DFI_Finfo.Prefix.c_str(),d_type.c_str() );
     fprintf( fp, "LOOKUP_TABLE default\n" );
   }
-  else if( DFI_Finfo.Component == 3 )
+  else if( DFI_Finfo.NumVariables == 3 )
   {
     fprintf( fp, "VECTORS %s %s\n", DFI_Finfo.Prefix.c_str(),d_type.c_str() );
   }
   else
   {
     fprintf( fp, "FIELD %s 1\n", DFI_Finfo.Prefix.c_str() );
-    fprintf( fp, "%s %d %d %s\n", DFI_Finfo.Prefix.c_str(), DFI_Finfo.Component, 
+    fprintf( fp, "%s %d %d %s\n", DFI_Finfo.Prefix.c_str(), DFI_Finfo.NumVariables, 
              nw, d_type.c_str() );
   }
 
@@ -115,7 +115,7 @@ cdm_DFI_VTK::write_DataRecord(FILE* fp,
 {
 
   const int* sz = val->getArraySizeInt();
-  size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*val->getNcomp();
+  size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*val->getNvari();
 
   if( m_output_type == CDM::E_CDM_FILE_TYPE_BINARY ) {
 

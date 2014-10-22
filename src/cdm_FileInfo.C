@@ -29,7 +29,7 @@ cdm_FileInfo::cdm_FileInfo()
   DataType         =CDM::E_CDM_DTYPE_UNKNOWN;
   Endian           =CDM::E_CDM_ENDIANTYPE_UNKNOWN;
   ArrayShape       =CDM::E_CDM_ARRAYSHAPE_UNKNOWN;
-  Component        =0;
+  NumVariables     =0;
 }
 
 // #################################################################
@@ -44,7 +44,7 @@ cdm_FileInfo::cdm_FileInfo(const CDM::E_CDM_DFITYPE _DFIType,
                            const CDM::E_CDM_DTYPE _DataType, 
                            const CDM::E_CDM_ENDIANTYPE _Endian,
                            const CDM::E_CDM_ARRAYSHAPE _ArrayShape, 
-                           const int _Component)
+                           const int _NumVariables)
 {
 //FCONV 20140116.s
   DFIType          =_DFIType;
@@ -58,7 +58,7 @@ cdm_FileInfo::cdm_FileInfo(const CDM::E_CDM_DFITYPE _DFIType,
   DataType         =_DataType;
   Endian           =_Endian;
   ArrayShape       =_ArrayShape;
-  Component        =_Component;
+  NumVariables     =_NumVariables;
 }
 
 // デストラクタ
@@ -68,27 +68,27 @@ cdm_FileInfo::~cdm_FileInfo()
 }
 
 // #################################################################
-// 成分名をセットする
-void cdm_FileInfo::setComponentVariable(int pcomp,
-                                        std::string compName)
+// 変数名をセットする
+void cdm_FileInfo::setVariableName(int pvari,
+                                   std::string variName)
 {
 
-  if( ComponentVariable.size()>pcomp+1 ) {
-    ComponentVariable[pcomp]=compName;
+  if( VariableName.size()>pvari+1 ) {
+    VariableName[pvari]=variName;
   } else {
-    for(int i=ComponentVariable.size(); i<pcomp+1; i++) {
-      ComponentVariable.push_back(compName);
+    for(int i=VariableName.size(); i<pvari+1; i++) {
+      VariableName.push_back(variName);
     }
   }
 }
 
 // #################################################################
-// 成分名を取得する
-std::string cdm_FileInfo::getComponentVariable(int pcomp)
+// 変数名を取得する
+std::string cdm_FileInfo::getVariableName(int pvari)
 {
   std::string CompName="";
-  if(ComponentVariable.size()<pcomp+1) return CompName;
-  return ComponentVariable[pcomp];
+  if(VariableName.size()<pvari+1) return CompName;
+  return VariableName[pvari];
 }
 
 // #################################################################
@@ -240,37 +240,37 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
 
   ncnt++;
 
-  //Componet  
-  label = "/FileInfo/Component";
+  //NumVariables
+  label = "/FileInfo/NumVariables";
   if ( !(tpCntl.GetValue(label, &ct )) )
   {
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
-    return CDM::E_CDM_ERROR_READ_DFI_COMPONENT;
+    return CDM::E_CDM_ERROR_READ_DFI_NUMVARIABLES;
   }
-  Component=ct;
+  NumVariables=ct;
 
   ncnt++;
 
-  //Component Variable
-  int ncomp=0;
+  //Variable
+  int nvari=0;
   label_leaf_leaf = "/FileInfo/Variable";
   if ( tpCntl.chkNode(label_leaf_leaf) )  //があれば
   {
-    ncomp = tpCntl.countLabels(label_leaf_leaf);
+    nvari = tpCntl.countLabels(label_leaf_leaf);
   }
 
   ncnt++;
 
   //フィールドデータの変数の個数と登録された変数名の個数の一致確認
-  if ( Component != ncomp) {
+  if ( NumVariables != nvari) {
     printf("\tCDM Parsing error : Number of valiable names\n");
     return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES;
   }
 
   label_leaf = "/FileInfo";
 
-  if( ncomp>0 ) {
-    for(int i=0; i<ncomp; i++) {
+  if( nvari>0 ) {
+    for(int i=0; i<nvari; i++) {
       if(!tpCntl.GetNodeStr(label_leaf,ncnt+i,&str))
       {
         printf("\tCDM Parsing error : No Elem name\n");
@@ -285,7 +285,7 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
           return CDM::E_CDM_ERROR_READ_DFI_MIN;
         }
         else {
-          ComponentVariable.push_back(str);
+          VariableName.push_back(str);
         }
       }
     }
@@ -355,21 +355,21 @@ cdm_FileInfo::Write(FILE* fp,
   }
 
   _CDM_WRITE_TAB(fp, tab+1);
-  fprintf(fp, "Component          = %d\n",Component);
+  fprintf(fp, "NumVariables       = %d\n",NumVariables);
 
 /*
-  if( ComponentVariable.size()>0 ) {
+  if( VariableName.size()>0 ) {
     _CDM_WRITE_TAB(fp, tab+1);
-    fprintf(fp, "Variable[@]{ name  = \"%s\" }\n",ComponentVariable[0].c_str());
+    fprintf(fp, "Variable[@]{ name  = \"%s\" }\n",VariableName[0].c_str());
     _CDM_WRITE_TAB(fp, tab+1);
-    fprintf(fp, "Variable[@]{ name  = \"%s\" }\n",ComponentVariable[1].c_str());
+    fprintf(fp, "Variable[@]{ name  = \"%s\" }\n",VariableName[1].c_str());
     _CDM_WRITE_TAB(fp, tab+1);
-    fprintf(fp, "Variable[@]{ name  = \"%s\" }\n",ComponentVariable[2].c_str());
+    fprintf(fp, "Variable[@]{ name  = \"%s\" }\n",VariableName[2].c_str());
   }
 */
-  for(int i=0; i<ComponentVariable.size(); i++) {
+  for(int i=0; i<VariableName.size(); i++) {
     _CDM_WRITE_TAB(fp, tab+1);
-    fprintf(fp, "Variable[@]{ name  = \"%s\" }\n",ComponentVariable[i].c_str());
+    fprintf(fp, "Variable[@]{ name  = \"%s\" }\n",VariableName[i].c_str());
   }
 
   fprintf(fp, "\n");

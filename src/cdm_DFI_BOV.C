@@ -88,7 +88,7 @@ cdm_DFI_BOV::read_Datarecord(FILE* fp,
   }
   //IJKNの読込み 
   else if( shape == CDM::E_CDM_IJKN ) {
-    for(int n=0; n<src->getNcomp(); n++) {
+    for(int n=0; n<src->getNvari(); n++) {
     for(int k=0; k<nz; k++) {
       //headインデックスをずらす
       head[2]=hzB+k;
@@ -99,7 +99,7 @@ cdm_DFI_BOV::read_Datarecord(FILE* fp,
       if( buf->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
 
       //コピー
-      buf->copyArrayNcomp(src,n);
+      buf->copyArrayNvari(src,n);
     }}
   }
 
@@ -157,7 +157,7 @@ cdm_DFI_BOV::write_DataRecord(FILE* fp,
   for(int i=0; i<3; i++ ) size[i] = (int)DFI_Process.RankList[n].VoxelSize[i]+(int)(2*gc);
 
   size_t dLen = (size_t)(size[0] * size[1] * size[2]);
-  if( DFI_Finfo.Component > 1 ) dLen *= 3;
+  if( DFI_Finfo.NumVariables > 1 ) dLen *= 3;
 
   unsigned int dmy = dLen * Real_size;
 
@@ -243,7 +243,7 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
   fprintf(fp,"DATA_FORMAT: %s\n",dType.c_str());
 
   //DATA_COMPONENT
-  fprintf(fp,"DATA_COMPONENT: %d\n",DFI_Finfo.Component);
+  fprintf(fp,"DATA_COMPONENT: %d\n",DFI_Finfo.NumVariables);
 
   //VARIABLE:
   fprintf(fp,"VARIABLE: %s\n",DFI_Finfo.Prefix.c_str());

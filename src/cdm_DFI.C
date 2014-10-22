@@ -337,7 +337,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const CDM::E_CDM_FORMAT format,
                             const int GCell,
                             const CDM::E_CDM_DTYPE DataType,
-                            const int nComp,
+                            const int nVari,
                             const std::string proc_fname,
                             const int G_size[3],
                             const float pitch[3],
@@ -365,7 +365,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                    format, 
                    GCell, 
                    DataType,
-                   nComp, 
+                   nVari, 
                    proc_fname,
                    G_size, 
                    d_pch,
@@ -388,7 +388,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const CDM::E_CDM_FORMAT format,
                             const int GCell,
                             const CDM::E_CDM_DTYPE DataType,
-                            const int nComp,
+                            const int nVari,
                             const std::string proc_fname,
                             const int G_size[3],
                             const double pitch[3],
@@ -422,7 +422,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   else if( format == CDM::E_CDM_FMT_SPH || format == CDM::E_CDM_FMT_AVS || format == CDM::E_CDM_FMT_VTK) {
     out_F_info.ArrayShape = CDM::E_CDM_NIJK;
   }
-  out_F_info.Component        = nComp;
+  out_F_info.NumVariables     = nVari;
 
   int idumy = 1;
   char* cdumy = (char*)(&idumy);
@@ -550,10 +550,10 @@ CDM::E_CDM_FORMAT cdm_DFI::GetFileFormat()
 
 
 // #################################################################
-// 成分数の取り出し
-int cdm_DFI::GetNumComponent()
+// 変数の個数の取り出し
+int cdm_DFI::GetNumVariables()
 {
-  return DFI_Finfo.Component;
+  return DFI_Finfo.NumVariables;
 }
 
 // #################################################################
@@ -1063,20 +1063,20 @@ void cdm_DFI::SetTimeSliceFlag(const CDM::E_CDM_ONOFF ONOFF)
 }
 
 // #################################################################
-// FileInfoの成分名を登録する
-void cdm_DFI::setComponentVariable(int pcomp, std::string compName)
+// FileInfoの変数名を登録する
+void cdm_DFI::setVariableName(int pvari, std::string variName)
 {
 
-  DFI_Finfo.setComponentVariable(pcomp, compName);
+  DFI_Finfo.setVariableName(pvari, variName);
 
 }
 
 // #################################################################
-// FileInfoの成分名を取得する
-std::string cdm_DFI::getComponentVariable(int pcomp)
+// FileInfoの変数名を取得する
+std::string cdm_DFI::getVariableName(int pvari)
 {
 
-  return DFI_Finfo.getComponentVariable(pcomp);
+  return DFI_Finfo.getVariableName(pvari);
 
 }
 
@@ -1094,12 +1094,12 @@ CDM::E_CDM_ERRORCODE cdm_DFI::getVectorMinMax(const unsigned step,
 // #################################################################
 // DFIに出力されているminmaxの合成値を取得
 CDM::E_CDM_ERRORCODE cdm_DFI::getMinMax(const unsigned step,
-                                        const int compNo,
+                                        const int variNo,
                                         double &min_value,
                                         double &max_value)
 {
 
-  return DFI_TimeSlice.getMinMax(step,compNo,min_value,max_value);
+  return DFI_TimeSlice.getMinMax(step,variNo,min_value,max_value);
 
 }
 

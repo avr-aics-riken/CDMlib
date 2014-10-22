@@ -12,6 +12,15 @@ REVISION HISTORY
 
 ------------------
 2014-10-22
+Replace Component with NumVariables and edit codes following this replacement
+dfiファイルのFileInfoの項目ComponentをNumVariablesに変更した。
+また、この変更に伴い、コード内のComponentに関する単語について
+Component->NumVariables、nComp->nVari等の置換を行った。
+(ただし、BOVのヘッダー部のDATA_COMPONENTはそのままにした。)
+また、コード内のコメントで「成分」を含んだ言葉を「変数」で置き換えた。
+
+------------------
+2014-10-22
 Delete ArrayShape from dfi file and set ArrayShape by file format
 dfiファイルのFileInfoの項目からArrayShapeを削除し、
 ArrayShapeはファイル形式によって定めるようにした。

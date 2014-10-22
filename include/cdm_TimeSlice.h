@@ -111,13 +111,13 @@ public:
   /**
    *brief DFIに出力されているminmaxとminmaxの合成値を取得
    * @param [in]  step 取得するステップ
-   * @param [in]  compNo 取得する成分番号(0～n)
+   * @param [in]  variNo 取得する変数番号(0～n)
    * @param [out] min_value 取得したmin
    * @param [out] max_value 取得したmax
    * @return error code 取得出来たときは E_CDM_SUCCESS 
    */
   CDM::E_CDM_ERRORCODE getMinMax(const unsigned step,
-                                 const int compNo,
+                                 const int variNo,
                                  double &min_value,
                                  double &max_value);
  
@@ -127,7 +127,7 @@ public:
    * @param [in]  step      ステップ番号
    * @param [in]  time      時刻
    * @param [in]  minmax    minmax
-   * @param [in]  Ncomp     コンポーネント数
+   * @param [in]  Nvari     コンポーネント数
    * @param [in]  format    ファイルフォーマット
    * @param [in]  avr_mode  Averageがあるかないかのフラグ
    * @param [in]  step_avr  Average step
@@ -136,7 +136,7 @@ public:
   void AddSlice(int step,
                 double time,
                 double *minmax,
-                int Ncomp,
+                int Nvari,
                 CDM::E_CDM_FORMAT format,
                 bool avr_mode,
                 int step_avr,

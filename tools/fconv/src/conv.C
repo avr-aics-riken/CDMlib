@@ -112,14 +112,14 @@ CDM::E_CDM_ERRORCODE CONV::ReadDfiFiles()
     }
   }
   
-  // dfi毎の成分数、出力ガイドセルのチェックと更新、等
+  // dfi毎の変数の個数、出力ガイドセルのチェックと更新、等
   if( !CheckDFIdata() ) return CDM::E_CDM_ERROR;
 
   return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
-// dfi毎の成分数、出力ガイドセルのチェックと更新、等
+// dfi毎の変数の個数、出力ガイドセルのチェックと更新、等
 bool CONV::CheckDFIdata()
 {
 
@@ -130,9 +130,9 @@ bool CONV::CheckDFIdata()
   int *end;
 
   for( int i=0; i<m_in_dfi.size(); i++) {
-    //コンバート成分数のチェック
+    //コンバート変数の個数のチェック
     if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH ) {
-      if( m_in_dfi[i]->GetNumComponent() > 3 ) {
+      if( m_in_dfi[i]->GetNumVariables() > 3 ) {
         printf("\tCan't Converter OutputFormat.\n");
         ierr=false;
       }
@@ -359,10 +359,10 @@ void CONV::PrintDFI(FILE* fp)
     }
     fprintf(fp,"\tDFI_Info->ArrayShape               = \"%s\"\n",
             dfi->GetArrayShapeString().c_str());
-    fprintf(fp,"\tDFI_Info->Component                = %d\n",DFI_Info->Component);
-    for(int j=0; j<DFI_Info->ComponentVariable.size(); j++ ) {
-      fprintf(fp,"\t  DFI_Info->ComponentVariable[%d]        = %s\n",j,
-              DFI_Info->ComponentVariable[j].c_str());
+    fprintf(fp,"\tDFI_Info->NumVariables             = %d\n",DFI_Info->NumVariables);
+    for(int j=0; j<DFI_Info->VariableName.size(); j++ ) {
+      fprintf(fp,"\t  DFI_Info->VariableName[%d]        = %s\n",j,
+              DFI_Info->VariableName[j].c_str());
     }
 
     const cdm_MPI *DFI_MPI = dfi->GetcdmMPI();
@@ -417,7 +417,7 @@ void CONV::PrintDFI(FILE* fp)
         fprintf(fp,"\t  DFI_TSlice->SliceList[%d}.AveragedTime = %f\n",j,
               DFI_TSlice->SliceList[j].AveragedTime);
       }
-      if( DFI_Info->Component > 1 ) {
+      if( DFI_Info->NumVariables > 1 ) {
         fprintf(fp,"\t  DFI_TSlice->SliceList[%d}.VectorMin    = %f\n",j,
               DFI_TSlice->SliceList[j].VectorMin);
         fprintf(fp,"\t  DFI_TSlice->SliceList[%d}.VectorMax    = %f\n",j,
@@ -900,8 +900,8 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
       return false;
     }
 
-    //成分数の取得
-    int nComp = dfi->GetNumComponent();
+    //変数の個数の取得
+    int nVari = dfi->GetNumVariables();
 
     cdm_FileInfo *dfi_Finfo = (cdm_FileInfo *)dfi->GetcdmFileInfo();
 
@@ -935,11 +935,11 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
                               dfi_Finfo->Endian,
                               //(CDM::E_CDM_ARRAYSHAPE)m_InputCntl->Get_OutputArrayShape(),
                               shape,
-                              nComp);
+                              nVari);
 
-    for(int n=0; n<nComp; n++) {
-       std::string variable = dfi->getComponentVariable(n);
-       if( variable != "" ) Finfo->setComponentVariable(n,variable);
+    for(int n=0; n<nVari; n++) {
+       std::string variable = dfi->getVariableName(n);
+       if( variable != "" ) Finfo->setVariableName(n,variable);
     }
 
     if( Finfo->Write(fp, 0) != CDM::E_CDM_SUCCESS ) {
@@ -969,8 +969,8 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
     //TimeSliceの出力
     const cdm_TimeSlice *dfi_TSlice = dfi->GetcdmTimeSlice();
     cdm_TimeSlice *TSlice = new cdm_TimeSlice();
-    int nsize = nComp;
-    if( nComp > 1 ) nsize++;
+    int nsize = nVari;
+    if( nVari > 1 ) nsize++;
     double* minmax = new double[nsize*2];
     for(int j=0; j<dfi_TSlice->SliceList.size(); j++) {
       for(int n=0; n<nsize; n++) {
@@ -980,7 +980,7 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
       TSlice->AddSlice(dfi_TSlice->SliceList[j].step,
                        dfi_TSlice->SliceList[j].time,
                        minmax,
-                       nComp,
+                       nVari,
                        Finfo->FileFormat,
                        true,
                        0,

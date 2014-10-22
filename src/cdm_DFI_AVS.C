@@ -56,7 +56,7 @@ cdm_DFI_AVS::write_DataRecord(FILE* fp,
 
   const int *size = val->getArraySizeInt();
   size_t dLen = (size_t)(size[0] * size[1] * size[2]);
-  if( DFI_Finfo.Component > 1 ) dLen *= 3;
+  if( DFI_Finfo.NumVariables > 1 ) dLen *= 3;
 
   if( val->writeBinary(fp) != dLen ) return CDM::E_CDM_ERROR_WRITE_FIELD_DATA_RECORD;
 
@@ -207,8 +207,8 @@ bool cdm_DFI_AVS::write_avs_header()
   //物理空間の次元数を出力
   fprintf(fp,"nspace=%d\n",nspace);
 
-  //成分数の出力
-  fprintf(fp,"veclen=%d\n",DFI_Finfo.Component);
+  //変数の個数の出力
+  fprintf(fp,"veclen=%d\n",DFI_Finfo.NumVariables);
 
   //データのタイプ出力
   fprintf(fp,"data=%s\n",dType.c_str());
@@ -217,8 +217,8 @@ bool cdm_DFI_AVS::write_avs_header()
   fprintf(fp,"field=uniform\n");
 
   //labelの出力
-  for(int i=0; i<DFI_Finfo.Component; i++) {
-    std::string label=getComponentVariable(i);
+  for(int i=0; i<DFI_Finfo.NumVariables; i++) {
+    std::string label=getVariableName(i);
     if( label == "" ) continue;
     fprintf(fp,"label=%s\n",label.c_str());
   }
@@ -231,7 +231,7 @@ bool cdm_DFI_AVS::write_avs_header()
     fprintf(fp,"time value=%.6f\n",DFI_TimeSlice.SliceList[i].time);
 
     //field data file name 出力
-    for(int j=1; j<=DFI_Finfo.Component; j++) {
+    for(int j=1; j<=DFI_Finfo.NumVariables; j++) {
       int skip;
       if( dType == "float" ) {
         skip=96+(j-1)*4;
@@ -247,7 +247,7 @@ bool cdm_DFI_AVS::write_avs_header()
                                   DFI_Finfo.TimeSliceDirFlag);
       //std::string xxx = CDM::cdmPath_FileName(out_fname,"sph");
       fprintf(fp,"variable %d file=%s filetype=binary skip=%d stride=%d\n",
-              j,out_fname.c_str(),skip,DFI_Finfo.Component);
+              j,out_fname.c_str(),skip,DFI_Finfo.NumVariables);
     }
 
     //coord data file name 出力

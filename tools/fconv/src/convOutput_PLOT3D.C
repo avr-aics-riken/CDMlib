@@ -209,7 +209,7 @@ bool convOutput_PLOT3D::WriteFieldData(FILE* fp,
                     src->getArrayShape(),
                     (int *)sz,
                     0,
-                    src->getNcomp());
+                    src->getNvari());
 
   int ret = src->copyArray(out);
 
@@ -256,7 +256,7 @@ void convOutput_PLOT3D::WriteFuncData(FILE* fp, cdm_Array* p3src)
 {
 
   const int* sz = p3src->getArraySizeInt();
-  size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*p3src->getNcomp();
+  size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*p3src->getNvari();
 
   switch (m_InputCntl->Get_OutputFormatType()) {
     case CDM::E_CDM_FILE_TYPE_FBINARY:

@@ -33,40 +33,40 @@ cdm_Array::instanceArray( CDM::E_CDM_DTYPE dtype
                         , size_t jx
                         , size_t kx
                         , size_t gc
-                        , size_t ncomp )
+                        , size_t nvari )
 {
   cdm_Array *ptr = NULL;
   switch( dtype )
   {
   case CDM::E_CDM_INT8:
-    ptr = new cdm_TypeArray<char>(dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<char>(dtype,shape,ix,jx,kx,gc,nvari);
     break;
   case CDM::E_CDM_INT16:
-    ptr = new cdm_TypeArray<short>(dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<short>(dtype,shape,ix,jx,kx,gc,nvari);
     break;
   case CDM::E_CDM_INT32:
-    ptr = new cdm_TypeArray<int>(dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<int>(dtype,shape,ix,jx,kx,gc,nvari);
     break;
   case CDM::E_CDM_INT64:
-    ptr = new cdm_TypeArray<long long>(dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<long long>(dtype,shape,ix,jx,kx,gc,nvari);
     break;
   case CDM::E_CDM_UINT8:
-    ptr = new cdm_TypeArray<unsigned char>(dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<unsigned char>(dtype,shape,ix,jx,kx,gc,nvari);
     break;
   case CDM::E_CDM_UINT16:
-    ptr = new cdm_TypeArray<unsigned short>(dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<unsigned short>(dtype,shape,ix,jx,kx,gc,nvari);
     break;
   case CDM::E_CDM_UINT32:
-    ptr = new cdm_TypeArray<unsigned int>(dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<unsigned int>(dtype,shape,ix,jx,kx,gc,nvari);
     break;
   case CDM::E_CDM_UINT64:
-    ptr = new cdm_TypeArray<unsigned long long>(dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<unsigned long long>(dtype,shape,ix,jx,kx,gc,nvari);
     break;
   case CDM::E_CDM_FLOAT32:
-    ptr = new cdm_TypeArray<float>(dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<float>(dtype,shape,ix,jx,kx,gc,nvari);
     break;
   case CDM::E_CDM_FLOAT64:
-    ptr = new cdm_TypeArray<double>(dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<double>(dtype,shape,ix,jx,kx,gc,nvari);
     break;
   }
 
@@ -77,7 +77,7 @@ cdm_Array::instanceArray( CDM::E_CDM_DTYPE dtype
     printf("shape = %d\n",(int)shape);
     printf("ixjxkx = %d %d %d\n",(int)ix,(int)jx,(int)kx);
     printf("gc = %d\n",(int)gc);
-    printf("ncomp = %d\n",(int)ncomp);
+    printf("nvari = %d\n",(int)nvari);
     size_t *m_Sz=ptr->m_Sz;
     size_t *m_gcl=ptr->m_gcl;
     printf("Sz  = %d %d %d %d\n",(int)m_Sz[0],(int)m_Sz[1],(int)m_Sz[2],(int)m_Sz[3]);
@@ -94,9 +94,9 @@ cdm_Array::instanceArray( CDM::E_CDM_DTYPE dtype
                         , CDM::E_CDM_ARRAYSHAPE shape
                         , size_t sz[3]
                         , size_t gc
-                        , size_t ncomp )
+                        , size_t nvari )
 {
-  return instanceArray(dtype,shape,sz[0],sz[1],sz[2],gc,ncomp);
+  return instanceArray(dtype,shape,sz[0],sz[1],sz[2],gc,nvari);
 }
 
 // インスタンス
@@ -107,9 +107,9 @@ cdm_Array::instanceArray( CDM::E_CDM_DTYPE dtype
                         , int jx
                         , int kx
                         , int gc
-                        , int ncomp )
+                        , int nvari )
 {
-  return instanceArray(dtype,shape,size_t(ix),size_t(jx),size_t(kx),size_t(gc),size_t(ncomp));
+  return instanceArray(dtype,shape,size_t(ix),size_t(jx),size_t(kx),size_t(gc),size_t(nvari));
 }
 
 // インスタンス
@@ -118,9 +118,9 @@ cdm_Array::instanceArray( CDM::E_CDM_DTYPE dtype
                         , CDM::E_CDM_ARRAYSHAPE shape
                         , int sz[3]
                         , int gc
-                        , int ncomp )
+                        , int nvari )
 {
-  return instanceArray(dtype,shape,size_t(sz[0]),size_t(sz[1]),size_t(sz[2]),size_t(gc),size_t(ncomp));
+  return instanceArray(dtype,shape,size_t(sz[0]),size_t(sz[1]),size_t(sz[2]),size_t(gc),size_t(nvari));
 }
 
 // インスタンス
@@ -132,7 +132,7 @@ cdm_Array::instanceArray( T *data
                         , size_t jx
                         , size_t kx
                         , size_t gc
-                        , size_t ncomp )
+                        , size_t nvari )
 {
   cdm_Array *ptr = NULL;
   CDM::E_CDM_DTYPE dtype = CDM::E_CDM_DTYPE_UNKNOWN; 
@@ -180,7 +180,7 @@ cdm_Array::instanceArray( T *data
 
   if( dtype != CDM::E_CDM_DTYPE_UNKNOWN )
   {
-    ptr = new cdm_TypeArray<T>(data,dtype,shape,ix,jx,kx,gc,ncomp);
+    ptr = new cdm_TypeArray<T>(data,dtype,shape,ix,jx,kx,gc,nvari);
   }
 
 #ifdef _CDM_DEBUG
@@ -190,7 +190,7 @@ cdm_Array::instanceArray( T *data
     printf("shape = %d\n",(int)shape);
     printf("ixjxkx = %d %d %d\n",(int)ix,(int)jx,(int)kx);
     printf("gc = %d\n",(int)gc);
-    printf("ncomp = %d\n",(int)ncomp);
+    printf("nvari = %d\n",(int)nvari);
     size_t *m_Sz=ptr->m_Sz;
     size_t *m_gcl=ptr->m_gcl;
     printf("Sz  = %d %d %d %d\n",(int)m_Sz[0],(int)m_Sz[1],(int)m_Sz[2],(int)m_Sz[3]);
@@ -208,9 +208,9 @@ cdm_Array::instanceArray( T *data
                         , CDM::E_CDM_ARRAYSHAPE shape
                         , size_t sz[3]
                         , size_t gc
-                        , size_t ncomp )
+                        , size_t nvari )
 {
-  return instanceArray(data,shape,sz[0],sz[1],sz[2],gc,ncomp);
+  return instanceArray(data,shape,sz[0],sz[1],sz[2],gc,nvari);
 }
 
 // インスタンス
@@ -222,9 +222,9 @@ cdm_Array::instanceArray( T *data
                         , int jx
                         , int kx
                         , int gc
-                        , int ncomp )
+                        , int nvari )
 {
-  return instanceArray(data,shape,size_t(ix),size_t(jx),size_t(kx),size_t(gc),size_t(ncomp));
+  return instanceArray(data,shape,size_t(ix),size_t(jx),size_t(kx),size_t(gc),size_t(nvari));
 }
 
 // インスタンス
@@ -234,9 +234,9 @@ cdm_Array::instanceArray( T *data
                         , CDM::E_CDM_ARRAYSHAPE shape
                         , int sz[3]
                         , int gc
-                        , int ncomp )
+                        , int nvari )
 {
-  return instanceArray(data,shape,size_t(sz[0]),size_t(sz[1]),size_t(sz[2]),size_t(gc),size_t(ncomp));
+  return instanceArray(data,shape,size_t(sz[0]),size_t(sz[1]),size_t(sz[2]),size_t(gc),size_t(nvari));
 }
 
 /// データポインタを取得
@@ -423,12 +423,12 @@ cdm_TypeArray<T>::copyArray( int _sta[3], int _end[3], cdm_Array *dstptr )
   }
   CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
 
-  // 成分数
-  if( src->getNcomp() != src->getNcomp() )
+  // 変数の個数
+  if( src->getNvari() != src->getNvari() )
   {
     return 4;
   }
-  int ncomp = src->getNcomp();
+  int nvari = src->getNvari();
 
   // コピーの範囲
   int       gcS    = src->getGcInt();
@@ -452,7 +452,7 @@ cdm_TypeArray<T>::copyArray( int _sta[3], int _end[3], cdm_Array *dstptr )
   // コピー
   if( m_shape == CDM::E_CDM_IJKN )
   {
-    for( int n=0;n<ncomp;n++ ){
+    for( int n=0;n<nvari;n++ ){
     for( int k=sta[2];k<=end[2];k++ ){
     for( int j=sta[1];j<=end[1];j++ ){
     for( int i=sta[0];i<=end[0];i++ ){
@@ -464,7 +464,7 @@ cdm_TypeArray<T>::copyArray( int _sta[3], int _end[3], cdm_Array *dstptr )
     for( int k=sta[2];k<=end[2];k++ ){
     for( int j=sta[1];j<=end[1];j++ ){
     for( int i=sta[0];i<=end[0];i++ ){
-    for( int n=0;n<ncomp;n++ ){
+    for( int n=0;n<nvari;n++ ){
       dst->hval(n,i,j,k) = src->hval(n,i,j,k);
     }}}}
   }
@@ -473,10 +473,10 @@ cdm_TypeArray<T>::copyArray( int _sta[3], int _end[3], cdm_Array *dstptr )
 }
 
 //FCONV 20131216.s
-//成分指定の配列コピー
+//変数指定の配列コピー
 template<class T>
 CDM_MEMFUN(int)
-cdm_TypeArray<T>::copyArrayNcomp( cdm_Array *dst, int comp, bool ignoreGc )
+cdm_TypeArray<T>::copyArrayNvari( cdm_Array *dst, int vari, bool ignoreGc )
 {
   cdm_TypeArray<T> *src = this;
 
@@ -498,13 +498,13 @@ cdm_TypeArray<T>::copyArrayNcomp( cdm_Array *dst, int comp, bool ignoreGc )
     end[i] = (tailS[i]+gcS<=tailD[i]+gcD) ? tailS[i]+gcS : tailD[i]+gcD;
   }
 
-  return copyArrayNcomp(sta,end,dst,comp);
+  return copyArrayNvari(sta,end,dst,vari);
 }
 
-//成分指定の範囲指定での配列コピー
+//変数指定の範囲指定での配列コピー
 template<class T>
 CDM_MEMFUN(int)
-cdm_TypeArray<T>::copyArrayNcomp( int _sta[3], int _end[3], cdm_Array *dstptr, int comp )
+cdm_TypeArray<T>::copyArrayNvari( int _sta[3], int _end[3], cdm_Array *dstptr, int vari )
 {
   cdm_TypeArray<T> *src = this;
 
@@ -528,8 +528,8 @@ cdm_TypeArray<T>::copyArrayNcomp( int _sta[3], int _end[3], cdm_Array *dstptr, i
   }
   CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
 
-  //成分数
-  if( src->getNcomp() != src->getNcomp() )
+  //変数の個数
+  if( src->getNvari() != src->getNvari() )
   {
     return 4;
   }
@@ -559,7 +559,7 @@ cdm_TypeArray<T>::copyArrayNcomp( int _sta[3], int _end[3], cdm_Array *dstptr, i
     for( int k=sta[2];k<=end[2];k++ ){
     for( int j=sta[1];j<=end[1];j++ ){
     for( int i=sta[0];i<=end[0];i++ ){
-      dst->hval(i,j,k,comp) = src->hval(i,j,k,0);
+      dst->hval(i,j,k,vari) = src->hval(i,j,k,0);
     }}}
   }
   else
@@ -567,7 +567,7 @@ cdm_TypeArray<T>::copyArrayNcomp( int _sta[3], int _end[3], cdm_Array *dstptr, i
     for( int k=sta[2];k<=end[2];k++ ){
     for( int j=sta[1];j<=end[1];j++ ){
     for( int i=sta[0];i<=end[0];i++ ){
-      dst->hval(comp,i,j,k) = src->hval(0,i,j,k);
+      dst->hval(vari,i,j,k) = src->hval(0,i,j,k);
     }}}
   }
 
@@ -593,10 +593,10 @@ cdm_Array::interp_coarse( cdm_Array *src, int &err, bool head0start )
   // 配列形状
   CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
 
-  // 成分数
-  // 成分数は1か3のみ対応
-  int ncomp = src->getNcomp();
-  if( ncomp != 1 && ncomp != 3 )
+  // 変数の個数
+  // 変数の個数は1か3のみ対応
+  int nvari = src->getNvari();
+  if( nvari != 1 && nvari != 3 )
   {
     err = -1;
     return NULL;
@@ -612,7 +612,7 @@ cdm_Array::interp_coarse( cdm_Array *src, int &err, bool head0start )
   // 密配列のインスタンス
   int gcD = gcS*2;
   int szD[3] = {szS[0]*2, szS[1]*2, szS[2]*2};
-  cdm_Array *dst = cdm_Array::instanceArray( dtype, shape, szD, gcD, ncomp );
+  cdm_Array *dst = cdm_Array::instanceArray( dtype, shape, szD, gcD, nvari );
   void *ptrD = dst->getData();
 
   // headインデクスのセット
@@ -632,22 +632,22 @@ cdm_Array::interp_coarse( cdm_Array *src, int &err, bool head0start )
   {
     if( dtype == CDM::E_CDM_FLOAT32 )
     {
-      cdm_interp_ijkn_r4_(szS,&gcS,szD,&gcD,&ncomp,(float*)ptrS,(float*)ptrD);
+      cdm_interp_ijkn_r4_(szS,&gcS,szD,&gcD,&nvari,(float*)ptrS,(float*)ptrD);
     }
     else
     {
-      cdm_interp_ijkn_r8_(szS,&gcS,szD,&gcD,&ncomp,(double*)ptrS,(double*)ptrD);
+      cdm_interp_ijkn_r8_(szS,&gcS,szD,&gcD,&nvari,(double*)ptrS,(double*)ptrD);
     }
   }
   else
   {
     if( dtype == CDM::E_CDM_FLOAT32 )
     {
-      cdm_interp_nijk_r4_(szS,&gcS,szD,&gcD,&ncomp,(float*)ptrS,(float*)ptrD);
+      cdm_interp_nijk_r4_(szS,&gcS,szD,&gcD,&nvari,(float*)ptrS,(float*)ptrD);
     }
     else
     {
-      cdm_interp_nijk_r8_(szS,&gcS,szD,&gcD,&ncomp,(double*)ptrS,(double*)ptrD);
+      cdm_interp_nijk_r8_(szS,&gcS,szD,&gcD,&nvari,(double*)ptrS,(double*)ptrD);
     }
   }
 

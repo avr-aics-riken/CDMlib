@@ -66,12 +66,12 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
                                 cdm_Array* &src)
 {
   //ngrid,nblock読込み
-  int ngrid,szVal[3],ncomp;
+  int ngrid,szVal[3],nvari;
 
   //ascii
   if( m_input_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
     fscanf(fp,"%d\n",&ngrid);
-    fscanf(fp,"%d%d%d%d\n",&szVal[0],&szVal[1],&szVal[2],&ncomp);
+    fscanf(fp,"%d%d%d%d\n",&szVal[0],&szVal[1],&szVal[2],&nvari);
   //Fortran Binary
   } else if( m_input_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
     unsigned int dmy;
@@ -84,7 +84,7 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
     fread(&szVal[0], sizeof(int), 1, fp);
     fread(&szVal[1], sizeof(int), 1, fp);
     fread(&szVal[2], sizeof(int), 1, fp);
-    fread(&ncomp, sizeof(int), 1, fp);
+    fread(&nvari, sizeof(int), 1, fp);
     fread(&dmy, sizeof(int), 1, fp);
   //Bunary
   } else {
@@ -92,7 +92,7 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
     fread(&szVal[0], sizeof(int), 1, fp);
     fread(&szVal[1], sizeof(int), 1, fp);
     fread(&szVal[2], sizeof(int), 1, fp);
-    fread(&ncomp, sizeof(int), 1, fp);
+    fread(&nvari, sizeof(int), 1, fp);
   }
 
   //フィールドデータ読込み
@@ -163,19 +163,19 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
   //フィールドデータの配列サイズ取得(ガイドセル含む)
   const int *szVal = val->_getArraySizeInt();
 
-  //配列成分の取得
-  int ncomp = val->getNcomp();
+  //配列における変数の個数の取得
+  int nvari = val->getNvari();
 
-  //printf("ID : %d prefix : %s size : %d %d %d ncomp : %d\n",n,
+  //printf("ID : %d prefix : %s size : %d %d %d nvari : %d\n",n,
   //        DFI_Finfo.Prefix.c_str(),szVal[0],szVal[1],szVal[2],
-  //        ncomp);
+  //        nvari);
 
   //ngrid,nblock出力
   int ngrid=1;
   //ascii
   if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
     fprintf(fp,"%5d\n",ngrid);
-    fprintf(fp,"%5d%5d%5d%5d\n",szVal[0],szVal[1],szVal[2],ncomp);
+    fprintf(fp,"%5d%5d%5d%5d\n",szVal[0],szVal[1],szVal[2],nvari);
   //Fortran Binary
   } else if( m_output_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
     unsigned int dmy;
@@ -189,7 +189,7 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
     fwrite(&szVal[0], sizeof(int), 1, fp);
     fwrite(&szVal[1], sizeof(int), 1, fp);
     fwrite(&szVal[2], sizeof(int), 1, fp);
-    fwrite(&ncomp, sizeof(int), 1, fp);
+    fwrite(&nvari, sizeof(int), 1, fp);
     fwrite(&dmy, sizeof(int), 1, fp);
   //Bunary
   } else {
@@ -197,16 +197,16 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
     fwrite(&szVal[0], sizeof(int), 1, fp);
     fwrite(&szVal[1], sizeof(int), 1, fp);
     fwrite(&szVal[2], sizeof(int), 1, fp);
-    fwrite(&ncomp, sizeof(int), 1, fp);
+    fwrite(&nvari, sizeof(int), 1, fp);
   }
   //フィールドデータ出力
 
   if( val->getDataType() == CDM::E_CDM_FLOAT32 ) {
     cdm_TypeArray<float> *data = dynamic_cast<cdm_TypeArray<float>*>(val);
-    write_Func(fp, data, szVal, ncomp);
+    write_Func(fp, data, szVal, nvari);
   } else if( val->getDataType() == CDM::E_CDM_FLOAT64 ) {
     cdm_TypeArray<double> *data = dynamic_cast<cdm_TypeArray<double>*>(val);
-    write_Func(fp, data, szVal, ncomp);
+    write_Func(fp, data, szVal, nvari);
   }   
 
   return CDM::E_CDM_SUCCESS;

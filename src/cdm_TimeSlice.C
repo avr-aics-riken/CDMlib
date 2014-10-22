@@ -117,11 +117,11 @@ cdm_Slice::Read(cdm_TextParser tpCntl,
   }
 
   //MinMax
-  int ncomp=0;
+  int nvari=0;
   label_leaf_leaf = label_leaf + "/MinMax";
   if ( tpCntl.chkNode(label_leaf_leaf) )  //があれば
   {
-    ncomp = tpCntl.countLabels(label_leaf_leaf);
+    nvari = tpCntl.countLabels(label_leaf_leaf);
   }
 
   ncnt++;
@@ -129,7 +129,7 @@ cdm_Slice::Read(cdm_TextParser tpCntl,
   Min.clear();
   Max.clear();
 
-  for ( int j=0; j<ncomp; j++ ) {
+  for ( int j=0; j<nvari; j++ ) {
 
     if(!tpCntl.GetNodeStr(label_leaf,j+ncnt,&str))
     {
@@ -477,15 +477,15 @@ cdm_TimeSlice::getVectorMinMax(const unsigned step,
 // DFIに出力されているminmaxとminmaxの合成値を取得
 CDM::E_CDM_ERRORCODE 
 cdm_TimeSlice::getMinMax(const unsigned step,
-                         const int compNo,
+                         const int variNo,
                          double &min_value,
                          double &max_value)
 {
 
   for(int i=0;SliceList.size(); i++) {
     if( (int)step == SliceList[i].step ) {
-      min_value=SliceList[i].Min[compNo];
-      max_value=SliceList[i].Max[compNo];
+      min_value=SliceList[i].Min[variNo];
+      max_value=SliceList[i].Max[variNo];
       return CDM::E_CDM_SUCCESS;
     }
   }
@@ -498,7 +498,7 @@ cdm_TimeSlice::getMinMax(const unsigned step,
 void cdm_TimeSlice::AddSlice(int step,
                              double time,
                              double *minmax,
-                             int Ncomp,
+                             int Nvari,
                              CDM::E_CDM_FORMAT format,
                              bool avr_mode,
                              int step_avr,
@@ -512,13 +512,13 @@ void cdm_TimeSlice::AddSlice(int step,
 
   //minmaxのセット
   if( minmax ) {
-    for(int i=0; i<Ncomp; i++) {
+    for(int i=0; i<Nvari; i++) {
       slice.Min.push_back(minmax[i*2]);
       slice.Max.push_back(minmax[i*2+1]);
     }
-    if( format == CDM::E_CDM_FMT_SPH && Ncomp == 3 ) {
-      slice.VectorMin=minmax[Ncomp*2];
-      slice.VectorMax=minmax[Ncomp*2+1];
+    if( format == CDM::E_CDM_FMT_SPH && Nvari == 3 ) {
+      slice.VectorMin=minmax[Nvari*2];
+      slice.VectorMax=minmax[Nvari*2+1];
     }
   }
 

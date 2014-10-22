@@ -156,7 +156,7 @@ bool convOutput_VTK::WriteFieldData(FILE* fp, cdm_Array* src, size_t dLen)
                     src->getArrayShape(),
                     (int *)sz,
                     0,
-                    src->getNcomp());
+                    src->getNvari());
 
   int ret = src->copyArray(out);
 

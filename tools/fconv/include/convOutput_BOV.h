@@ -49,7 +49,7 @@ public:
   /**
    * @brief bovファイルのheaderの書き込み
    * @param[in] step     ステップ数
-   * @param[in] dim      成分数
+   * @param[in] dim      変数の個数
    * @param[in] d_type   データ型タイプ
    * @param[in] imax     x方向ボクセルサイズ
    * @param[in] jmax     y方向ボクセルサイズ

@@ -159,7 +159,7 @@ namespace CDM
 ,   E_CDM_ERROR_READ_DFI_DATATYPE           = 1009 ///< DFI DataType 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_ENDIAN             = 1010 ///< DFI Endian 読込みエラー
 //,   E_CDM_ERROR_READ_DFI_ARRAYSHAPE         = 1011 ///< DFI ArrayShape 読込みエラー
-,   E_CDM_ERROR_READ_DFI_COMPONENT          = 1012 ///< DFI Component 読込みエラー
+,   E_CDM_ERROR_READ_DFI_NUMVARIABLES       = 1012 ///< DFI NumVariables 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_FILEPATH_PROCESS   = 1013 ///< DFI FilePath/Process 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_NO_RANK            = 1014 ///< DFI Rank要素なし
 ,   E_CDM_ERROR_READ_DFI_ID                 = 1015 ///< DFI ID 読込みエラー
@@ -270,12 +270,12 @@ namespace CDM
 )
 
 /** 2次元（スカラー）インデクス(n,i,j) -> 1次元インデクス変換マクロ
- *  @param[in] _N  成分インデクス
+ *  @param[in] _N  変数インデクス
  *  @param[in] _I  i方向インデクス
  *  @param[in] _J  j方向インデクス
  *  @param[in] _NI i方向インデクスサイズ
  *  @param[in] _NJ j方向インデクスサイズ
- *  @param[in] _NN 成分数
+ *  @param[in] _NN 変数の個数
  *  @param[in] _VC 仮想セル数
  *  @return 1次元インデクス
  */
@@ -289,7 +289,7 @@ namespace CDM
  *  @param[in] _I  i方向インデクス
  *  @param[in] _J  j方向インデクス
  *  @param[in] _K  k方向インデクス
- *  @param[in] _N  成分インデクス
+ *  @param[in] _N  変数インデクス
  *  @param[in] _NI i方向インデクスサイズ
  *  @param[in] _NJ j方向インデクスサイズ
  *  @param[in] _NK k方向インデクスサイズ
@@ -303,11 +303,11 @@ namespace CDM
 )
 
 /** 3次元（ベクトル）インデクス(n,i,j,k) -> 1次元インデクス変換マクロ
- *  @param[in] _N  成分インデクス
+ *  @param[in] _N  変数インデクス
  *  @param[in] _I  i方向インデクス
  *  @param[in] _J  j方向インデクス
  *  @param[in] _K  k方向インデクス
- *  @param[in] _NN 成分数
+ *  @param[in] _NN 変数の個数
  *  @param[in] _NI i方向インデクスサイズ
  *  @param[in] _NJ j方向インデクスサイズ
  *  @param[in] _NK k方向インデクスサイズ

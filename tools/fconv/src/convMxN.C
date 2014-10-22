@@ -211,7 +211,7 @@ void convMxN::VoxelInit()
                           //0,
                           outGc,
                           d_type,
-                          DFI_FInfo->Component,
+                          DFI_FInfo->NumVariables,
                           outprocfname,
                           voxel_thin,
                           pit,
@@ -244,10 +244,10 @@ void convMxN::VoxelInit()
     m_in_dfi[i]->GetUnit("Pressure",unit,ref,diff,bdiff);
     dfi->AddUnit("Pressure",unit,ref,diff,bdiff);
 
-    //成分名の取り出しとセット
-    for(int n=0; n<DFI_FInfo->Component; n++) {
-       std::string variable = m_in_dfi[i]->getComponentVariable(n);
-       if( variable != "" ) dfi->setComponentVariable(n,variable);
+    //変数名の取り出しとセット
+    for(int n=0; n<DFI_FInfo->NumVariables; n++) {
+       std::string variable = m_in_dfi[i]->getVariableName(n);
+       if( variable != "" ) dfi->setVariableName(n,variable);
     } 
 
     m_out_dfi.push_back(dfi);
@@ -363,7 +363,7 @@ bool convMxN::exec()
   for (int i=0; i<m_in_dfi.size(); i++) {
 
 
-    int nComp = m_in_dfi[i]->GetNumComponent();
+    int nVari = m_in_dfi[i]->GetNumVariables();
 
     int outGc=0;
     if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
@@ -382,8 +382,8 @@ bool convMxN::exec()
       sz,
       //0,
       outGc,
-      //m_in_dfi[i]->GetNumComponent());
-      nComp);
+      //m_in_dfi[i]->GetNumVariables());
+      nVari);
 
     //出力タイプのセット
     if( m_param->Get_OutputDataType() == CDM::E_CDM_DTYPE_UNKNOWN )
@@ -401,8 +401,8 @@ bool convMxN::exec()
       szS,
       //0,
       outGc,
-      //m_in_dfi[i]->GetNumComponent());
-      nComp);
+      //m_in_dfi[i]->GetNumVariables());
+      nVari);
    
     //DFI_FInfoクラスの取得
     const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
@@ -465,15 +465,15 @@ bool convMxN::exec()
 
         src->setHeadIndex( headS0 );
 
-        for(int n=0; n<nComp; n++) convertXY(buf,src,headS,tailS,n);
+        for(int n=0; n<nVari; n++) convertXY(buf,src,headS,tailS,n);
       }
 
       CDM::E_CDM_OUTPUT_FNAME output_fname = m_param->Get_OutputFilenameFormat();
       m_out_dfi[i]->set_output_fname(output_fname);
 
       //minmaxの初期化
-      int nsize = nComp;
-      if( nComp > 1 ) nsize++;
+      int nsize = nVari;
+      if( nVari > 1 ) nsize++;
       double *min = new double[nsize];
       double *max = new double[nsize];
       for(int n=0; n<nsize; n++) {

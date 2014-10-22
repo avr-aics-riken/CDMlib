@@ -201,10 +201,10 @@ protected:
    * @param[in] fp    出力ファイルポインタ
    * @param[in] data  出力データポインタ
    * @param[in] sz    出力データのサイズ
-   * @param[in] ncomp 出力成分数
+   * @param[in] nvari 出力変数の個数
    */ 
   template<class T>
-  void write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3], int ncomp);
+  void write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3], int nvari);
 
 };
 

@@ -1651,8 +1651,8 @@ Staging::WriteIndexDfiFile(const std::string dfi_name)
 
   //TimeSlice {} の出力
   cdm_TimeSlice *t_Slice = new cdm_TimeSlice();
-  int nsize = dfi_Finfo->Component;
-  if( dfi_Finfo->Component > 1 ) nsize++;
+  int nsize = dfi_Finfo->NumVariables;
+  if( dfi_Finfo->NumVariables > 1 ) nsize++;
   double* minmax = new double[nsize*2];
   for(int i=0; i<dfi_TSlice->SliceList.size(); i++) {
     int step = dfi_TSlice->SliceList[i].step;
@@ -1664,7 +1664,7 @@ Staging::WriteIndexDfiFile(const std::string dfi_name)
     t_Slice->AddSlice(step,
                       dfi_TSlice->SliceList[i].time,
                       minmax,
-                      dfi_Finfo->Component,
+                      dfi_Finfo->NumVariables,
                       dfi_Finfo->FileFormat,
                       dfi_TSlice->SliceList[i].avr_mode,
                       dfi_TSlice->SliceList[i].AveragedStep,
@@ -1735,7 +1735,7 @@ Staging::WriteIndexDfiFile(const std::string dfi_name, const step_rank_info info
 
   //TimeSlice {} の出力
   cdm_TimeSlice *t_Slice = new cdm_TimeSlice();
-  int nsize = dfi_Finfo->Component;
+  int nsize = dfi_Finfo->NumVariables;
   double* minmax = new double[nsize*2];
   for(int i=info.stepStart; i<=info.stepEnd; i++) {
     int step = dfi_TSlice->SliceList[i].step;
@@ -1746,7 +1746,7 @@ Staging::WriteIndexDfiFile(const std::string dfi_name, const step_rank_info info
     t_Slice->AddSlice(step,
                       dfi_TSlice->SliceList[i].time,
                       minmax,
-                      dfi_Finfo->Component,
+                      dfi_Finfo->NumVariables,
                       dfi_Finfo->FileFormat,
                       dfi_TSlice->SliceList[i].avr_mode,
                       dfi_TSlice->SliceList[i].AveragedStep,
