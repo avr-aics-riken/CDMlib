@@ -12,6 +12,12 @@ REVISION HISTORY
 
 ------------------
 2014-10-22
+Add check of number of variables for SPH format
+SPH形式のファイルを入出力する際、変数の個数が１か３以外の場合に
+エラーとなるように設定した。
+
+------------------
+2014-10-22
 Replace Component with NumVariables and edit codes following this replacement
 dfiファイルのFileInfoの項目ComponentをNumVariablesに変更した。
 また、この変更に伴い、コード内のComponentに関する単語について

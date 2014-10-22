@@ -401,6 +401,15 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const int* iblank)
 {
 
+//Check for SPH format 20141022.s
+  if( format == CDM::E_CDM_FMT_SPH ) {
+    if( nVari != 1 && nVari != 3 ) {
+      printf("\tCDM error sph file undefined except for number of valiables 1 or 3.\n");
+      return NULL;
+    }
+  }
+//Check for SPH format 20141022.e
+
   cdm_DFI *dfi = NULL;
 
   int RankID;

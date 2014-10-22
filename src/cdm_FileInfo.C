@@ -291,6 +291,15 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
     }
   }
 
+//Check for SPH format 20141022.s
+  if( FileFormat == CDM::E_CDM_FMT_SPH ) {
+    if( NumVariables != 1 && NumVariables != 3 ) {
+      printf("\tCDM error sph file undefined except for number of valiables 1 or 3.\n");
+      return CDM::E_CDM_ERROR_READ_FILEINFO;
+    }
+  }
+//Check for SPH format 20141022.e
+
   return CDM::E_CDM_SUCCESS;
 }
 
