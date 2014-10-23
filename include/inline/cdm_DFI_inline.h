@@ -425,16 +425,12 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                                              coord_Z,
                                              coord_file,
                                              coord_fileformat,
-                                             coord_fileprecision);
+                                             coord_fileprecision,
+                                             GCell);
   } else {
     printf("\tCDM error : DFIType is not correct.\n");
     return NULL;
   }
-
-  //ポインタcoord_XYZのdelete
-//    if( coord_X != NULL ){ delete coord_X; }
-//    if( coord_Y != NULL ){ delete coord_Y; }
-//    if( coord_Z != NULL ){ delete coord_Z; }
 
   cdm_Process out_Process;
   cdm_Rank out_Rank;

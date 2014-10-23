@@ -260,10 +260,8 @@ cdm_DFI_PLOT3D::write_GridData()
   //xyzを出力
   int sz[3];
   for(int i=0; i<3; i++) sz[i] = DFI_Process.RankList[m_RankID].VoxelSize[i];
-  if( DFI_Finfo.GuideCell>1 ) for(int i=0; i<3; i++) sz[i] = sz[i]+2*DFI_Finfo.GuideCell;
 
   if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) {
-    //ガイドセルについてはまだ未対応(AS田中)
     write_XYZ<float>(fp,sz);
   }else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) {
     write_XYZ<double>(fp,sz);
