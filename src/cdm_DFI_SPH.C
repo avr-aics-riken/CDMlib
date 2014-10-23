@@ -62,8 +62,8 @@ cdm_DFI_SPH::read_HeaderRecord(FILE* fp,
   DataDims data_dims;
   if( fread(&data_dims, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; }
   if( !matchEndian ) BSWAP32(data_dims); 
-  if( data_dims == _SCALAR && DFI_Finfo.Component != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; } 
-  if( data_dims == _VECTOR && DFI_Finfo.Component <= 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; } 
+  if( data_dims == _SCALAR && DFI_Finfo.NumVariables != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; } 
+  if( data_dims == _VECTOR && DFI_Finfo.NumVariables <= 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; } 
 
   int real_type;
 
@@ -300,8 +300,8 @@ cdm_DFI_SPH::write_HeaderRecord(FILE* fp,
 
   //REC1
   int svType = 0;
-  if( DFI_Finfo.Component == 1 ) svType = 1;
-  if( DFI_Finfo.Component > 1  ) svType = 2;
+  if( DFI_Finfo.NumVariables == 1 ) svType = 1;
+  if( DFI_Finfo.NumVariables > 1  ) svType = 2;
   if( svType == 0 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC1;
 
   int dType = 0;
@@ -414,7 +414,7 @@ cdm_DFI_SPH::write_DataRecord(FILE* fp,
   for(int i=0; i<3; i++ ) size[i] = (int)DFI_Process.RankList[n].VoxelSize[i]+(int)(2*gc);
 
   size_t dLen = (size_t)(size[0] * size[1] * size[2]);
-  if( DFI_Finfo.Component > 1 ) dLen *= 3;  
+  if( DFI_Finfo.NumVariables > 1 ) dLen *= 3;  
 
   unsigned int dmy = dLen * Real_size;
 

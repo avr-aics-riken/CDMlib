@@ -31,8 +31,8 @@ public:
                , size_t jx
                , size_t kx
                , size_t gc
-               , size_t ncomp=1 )
-    : cdm_Array(dtype,shape,ix,jx,kx,gc,ncomp)
+               , size_t nvari=1 )
+    : cdm_Array(dtype,shape,ix,jx,kx,gc,nvari)
   {
 
     m_outptr=false;
@@ -42,7 +42,7 @@ public:
     {
       nw *= (m_sz[i]+2*m_gc);
     }
-    nw *= m_ncomp;
+    nw *= m_nvari;
     m_data = new T[nw];
     memset(m_data,0,sizeof(T)*nw);
   }
@@ -55,8 +55,8 @@ public:
                , size_t jx
                , size_t kx
                , size_t gc
-               , size_t ncomp=1 )
-    : cdm_Array(dtype,shape,ix,jx,kx,gc,ncomp)
+               , size_t nvari=1 )
+    : cdm_Array(dtype,shape,ix,jx,kx,gc,nvari)
   {
 
     m_outptr=true;
@@ -118,11 +118,11 @@ public:
   virtual int copyArray( int sta[3], int end[3], cdm_Array *dst );
 
 //FCONV 20131216.s
-  /// 指定成分の配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArrayNcomp( cdm_Array *dst, int comp, bool ignoreGc=false );
+  /// 指定変数の配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
+  virtual int copyArrayNvari( cdm_Array *dst, int vari, bool ignoreGc=false );
 
-  /// 指定成分の範囲指定での配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArrayNcomp( int sta[3], int end[3], cdm_Array *dst, int comp );
+  /// 指定変数の範囲指定での配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
+  virtual int copyArrayNvari( int sta[3], int end[3], cdm_Array *dst, int vari );
 //FCONV 20131216.e
 
   /// 配列サイズ分のバイナリデータを読み込み(戻り値は読み込んだ要素数)

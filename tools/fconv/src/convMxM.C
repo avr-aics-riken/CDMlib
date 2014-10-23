@@ -60,11 +60,11 @@ bool convMxM::exec()
 
   for(int i=0; i<m_in_dfi.size(); i++){
     const cdm_TimeSlice* TSlice = m_in_dfi[i]->GetcdmTimeSlice();
-    int nComp = m_in_dfi[i]->GetNumComponent();
+    int nVari = m_in_dfi[i]->GetNumVariables();
 
     dfi_MinMax *MinMax;
-    if( nComp == 1 ) MinMax = new dfi_MinMax(TSlice->SliceList.size(),nComp);
-    else             MinMax = new dfi_MinMax(TSlice->SliceList.size(),nComp+1);
+    if( nVari == 1 ) MinMax = new dfi_MinMax(TSlice->SliceList.size(),nVari);
+    else             MinMax = new dfi_MinMax(TSlice->SliceList.size(),nVari+1);
 
     MinMax->dfi = m_in_dfi[i];
     minmaxList.push_back(MinMax);
@@ -76,15 +76,15 @@ bool convMxM::exec()
     //dfiのstepリストの取得
     const cdm_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcdmTimeSlice();
 
-    //成分数の取得
-    int nComp = m_StepRankList[i].dfi->GetNumComponent();
+    //変数の個数の取得
+    int nVari = m_StepRankList[i].dfi->GetNumVariables();
 
     //stepのループ
     for(int j=m_StepRankList[i].stepStart; j<=m_StepRankList[i].stepEnd; j++) {
 
       //minmaxの初期化
-      int nsize = nComp;
-      if( nComp > 1 ) nsize++;
+      int nsize = nVari;
+      if( nVari > 1 ) nsize++;
       double *min = new double[nsize]; 
       double *max = new double[nsize]; 
       for(int n=0; n<nsize; n++) {
@@ -122,12 +122,12 @@ bool convMxM::exec()
 
   //ランク間で通信してMINMAXを求めてランク０に送信
   for(int i=0; i<minmaxList.size(); i++) {
-   int nComp = minmaxList[i]->dfi->GetNumComponent();
+   int nVari = minmaxList[i]->dfi->GetNumVariables();
    const cdm_TimeSlice* TSlice = minmaxList[i]->dfi->GetcdmTimeSlice();
    int nStep = TSlice->SliceList.size();
 
-   int n = nComp*nStep;
-   if( nComp > 1 ) n = (nComp+1)*nStep;
+   int n = nVari*nStep;
+   if( nVari > 1 ) n = (nVari+1)*nStep;
 
    //minの通信
    double *send1 =  minmaxList[i]->Min;
@@ -267,7 +267,7 @@ bool convMxM::mxmsolv(std::string dfiname,
                  , m_param->Get_OutputArrayShape()
                  , szS
                  , outGc
-                 , dfi->GetNumComponent() );
+                 , dfi->GetNumVariables() );
 
   //読込みファイル名の生成
   std::string inPath = CDM::cdmPath_DirName(dfiname);
@@ -306,7 +306,7 @@ bool convMxM::mxmsolv(std::string dfiname,
     buf->setHeadIndex( headS );
     src->setHeadIndex( head );
 
-    for(int n=0; n<dfi->GetNumComponent(); n++) convertXY(buf,src,headS,tailS,n);
+    for(int n=0; n<dfi->GetNumVariables(); n++) convertXY(buf,src,headS,tailS,n);
     //delete buf;
   }
 
@@ -326,8 +326,7 @@ bool convMxM::mxmsolv(std::string dfiname,
                      m_param->Get_OutputFormat(),
                      outGc,
                      d_type,
-                     m_param->Get_OutputArrayShape(),
-                     DFI_FInfo->Component,
+                     DFI_FInfo->NumVariables,
                      "",
                      voxel,
                      out_dpit,

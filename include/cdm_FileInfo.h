@@ -35,8 +35,8 @@ public:
   CDM::E_CDM_DTYPE      DataType;         ///<配列のデータタイプ "float",,,,
   CDM::E_CDM_ENDIANTYPE Endian;           ///<エンディアンタイプ "big","little"
   CDM::E_CDM_ARRAYSHAPE ArrayShape;       ///<配列形状
-  int                   Component;        ///<成分数
-  vector<std::string>   ComponentVariable;///<成分名
+  int                   NumVariables;     ///<変数の個数
+  vector<std::string>   VariableName;     ///<変数名
 
   /** コンストラクタ **/
   cdm_FileInfo();
@@ -53,7 +53,7 @@ public:
    * @param [in] _DataType         配列のデータタイプ
    * @param [in] _Endian           エンディアンタイプ
    * @param [in] _ArrayShape       配列形状
-   * @param [in] _Component        成分数
+   * @param [in] _NumVariables     変数の個数
    */
   cdm_FileInfo(const CDM::E_CDM_DFITYPE _DFIType,
                const CDM::E_CDM_OUTPUT_FNAME _FieldFilenameFormat,
@@ -65,7 +65,7 @@ public:
                const CDM::E_CDM_DTYPE _DataType, 
                const CDM::E_CDM_ENDIANTYPE _Endian, 
                const CDM::E_CDM_ARRAYSHAPE _ArrayShape, 
-               const int _Component);
+               const int _NumVariables);
 
   /** デストラクタ **/
   ~cdm_FileInfo();
@@ -91,18 +91,18 @@ public:
         const unsigned tab); 
 
   /**
-   * @brief 成分名をセットする
-   * @param [in] pcomp    成分位置 0:u, 1:v, 2:w
-   * @param [in] compName 成分名 "u","v","w",,,
+   * @brief 変数名をセットする
+   * @param [in] pvari    変数位置 0:u, 1:v, 2:w
+   * @param [in] variName 変数名 "u","v","w",,,
    */
-  void setComponentVariable(int pcomp, std::string compName); 
+  void setVariableName(int pvari, std::string variName); 
 
   /**
-   * @brief 成分名を取得する
-   * @param [in] pcomp    成分位置 0:u, 1:v, 2:w
-   * @return 成分名　成分名が無い場合は空白が返される
+   * @brief 変数名を取得する
+   * @param [in] pvari    変数位置 0:u, 1:v, 2:w
+   * @return 変数名　変数名が無い場合は空白が返される
    */
-  std::string getComponentVariable(int pcomp); 
+  std::string getVariableName(int pvari); 
 
 };
 

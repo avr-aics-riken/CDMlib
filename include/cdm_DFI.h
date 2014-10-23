@@ -213,8 +213,7 @@ public:
    * @param [in] format      ファイルフォーマット
    * @param [in] GCell       出力仮想セル数　　　
    * @param [in] DataType    データタイプ　　　　
-   * @param [in] ArrayShape  配列形状　　　　　　
-   * @param [in] nComp       成分数　　　　　　　
+   * @param [in] nVari       変数の個数　　　　　　　
    * @param [in] proc_fname  proc.dfiファイル名
    * @param [in] G_size      グローバルボクセルサイズ　
    * @param [in] pitch       ピッチ　　　　　　　　　　
@@ -235,8 +234,7 @@ public:
             const CDM::E_CDM_FORMAT format,
             const int GCell,
             const CDM::E_CDM_DTYPE DataType,
-            const CDM::E_CDM_ARRAYSHAPE ArrayShape,
-            const int nComp,
+            const int nVari,
             const std::string proc_fname,
             const int G_size[3],
             const float pitch[3],
@@ -257,8 +255,7 @@ public:
    * @param [in] format      ファイルフォーマット
    * @param [in] GCell       出力仮想セル数　　　
    * @param [in] DataType    データタイプ　　　　
-   * @param [in] ArrayShape  配列形状　　　　　　
-   * @param [in] nComp       成分数　　　　　　　
+   * @param [in] nVari       変数の個数　　　　　　　
    * @param [in] proc_fname  proc.dfiファイル名
    * @param [in] G_size      グローバルボクセルサイズ　
    * @param [in] pitch       ピッチ　　　　　　　　　　
@@ -279,8 +276,7 @@ public:
             const CDM::E_CDM_FORMAT format,
             const int GCell,
             const CDM::E_CDM_DTYPE DataType,
-            const CDM::E_CDM_ARRAYSHAPE ArrayShape,
-            const int nComp,
+            const int nVari,
             const std::string proc_fname,
             const int G_size[3],
             const double pitch[3],
@@ -421,19 +417,17 @@ public:
 
   /**
    * @brief write field data record (template function)
-   * @details スカラーのとき、minmax[0]=min 
-   *                          minmax[1]=max
-   *          ベクトルのとき、minmax[0]   =成分1のminX
-   *                          minmax[1]   =成分1のmaxX
+   * @details                minmax[0]   =変数1のminX
+   *                          minmax[1]   =変数1のmaxX
    *                               ...
-   *                          minmax[2n-2]=成分nのminX
-   *                          minmax[2n-1]=成分nのmaxX
-   *                          minmax[2n  ]=合成値のmin
+   *                          minmax[2n-2]=変数nのminX
+   *                          minmax[2n-1]=変数nのmaxX
+   *       SPHでnVari=3のとき、minmax[2n  ]=合成値のmin
    *                          minmax[2n+1]=合成値のmax
    * @param [in] step     出力ステップ番号
    * @param [in] time     出力時刻　　　　
    * @param [in] sz       valの実ボクセルサイズ
-   * @param [in] nComp    valの成分数（1or3)
+   * @param [in] nVari    valの変数の個数
    * @param [in] gc       valの仮想セル数　　　
    * @param [in] val      出力データポインタ
    * @param [in] minmax   フィールデータのMinMax
@@ -446,7 +440,7 @@ public:
   WriteData(const unsigned step, 
             TimeT time,
             const int sz[3], 
-            const int nComp,
+            const int nVari,
             const int gc, 
             T* val, 
             T* minmax=NULL, 
@@ -542,11 +536,11 @@ public:
   GetFileFormat();
 
   /**
-   * @brief get Number of Component （成分数の取り出し関数）
-   * @return 成分数
+   * @brief get Number of Variables （変数の個数の取り出し関数）
+   * @return 変数の個数
    */
   int 
-  GetNumComponent();
+  GetNumVariables();
 
   /*
    * @brief get Number of GuideCell (仮想セル数の取り出し関数)
@@ -632,18 +626,18 @@ public:
   SetTimeSliceFlag(const CDM::E_CDM_ONOFF ONOFF); 
 
   /**
-   * @brief FileInfoの成分名を登録する
-   * @param [in] pcomp    成分位置 0:u, 1:v, 2:w
-   * @param [in] compName 成分名 "u","v","w",,,
+   * @brief FileInfoの変数名を登録する
+   * @param [in] pvari    変数位置 0:u, 1:v, 2:w
+   * @param [in] variName 変数名 "u","v","w",,,
    */
-  void setComponentVariable(int pcomp, std::string compName); 
+  void setVariableName(int pvari, std::string variName); 
 
   /**
-   * @brief FileInfoの成分名を取得する
-   * @param [in] pcomp 成分位置 0:u, 1:v, 2:w
-   * @return 成分名
+   * @brief FileInfoの変数名を取得する
+   * @param [in] pvari 変数位置 0:u, 1:v, 2:w
+   * @return 変数名
    */
-  std::string getComponentVariable(int pcomp);
+  std::string getVariableName(int pvari);
 
   /**
    * @brief DFIに出力されているminmaxの合成値を取得
@@ -659,13 +653,13 @@ public:
   /**
    *brief DFIに出力されているminmaxを取得
    * @param [in]  step 取得するステップ
-   * @param [in]  compNo 成分No(0～n)
+   * @param [in]  variNo 変数No(0～n)
    * @param [out] min_value 取得したmin
    * @param [out] max_value 取得したmax
    * @return error code 取得出来たときは E_CDM_SUCCESS
    */
   CDM::E_CDM_ERRORCODE getMinMax(const unsigned step,
-                                 const int compNo,
+                                 const int variNo,
                                  double &min_value,
                                  double &max_value);
 

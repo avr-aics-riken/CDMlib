@@ -148,7 +148,7 @@ convMx1::VolumeDataDivide8(cdm_TypeArray<T> *O, int n)
     for(int k=0; k<kd; k++) {
     for(int j=0; j<jd; j++) {
     for(int i=0; i<id; i++) {
-    //for(int n=0; n<nComp; n++) {
+    //for(int n=0; n<nVari; n++) {
       O->val(n,i,j,k) = O->val(n,i,j,k)*0.125;
     //}}}}
     }}}
@@ -156,7 +156,7 @@ convMx1::VolumeDataDivide8(cdm_TypeArray<T> *O, int n)
   //IJKN
   } else {
     //I
-    //for (int n=0; n<nComp; n++){
+    //for (int n=0; n<nVari; n++){
     for (int k=0; k<kd; k++){
     for (int j=0; j<jd; j++){
     for (int i=0; i<id; i++){

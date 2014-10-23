@@ -17,7 +17,7 @@
 !! @param gcS srcの仮想セル数
 !! @param szD dstの実ボクセル数(=szS*2)
 !! @param gcD dstの仮想セル数(=gcS*2)
-!! @param nc  成分数
+!! @param nc  変数の個数
 !! @param src 粗データの配列
 !! @param dst 密データの配列
 !! @todo
@@ -52,7 +52,7 @@ end subroutine cdm_interp_ijkn_r4
 !! @param gcS srcの仮想セル数
 !! @param szD dstの実ボクセル数(=szS*2)
 !! @param gcD dstの仮想セル数(=gcS*2)
-!! @param nc  成分数
+!! @param nc  変数の個数
 !! @param src 粗データの配列
 !! @param dst 密データの配列
 !! @todo
@@ -87,7 +87,7 @@ end subroutine cdm_interp_ijkn_r8
 !! @param gcS srcの仮想セル数
 !! @param szD dstの実ボクセル数(=szS*2)
 !! @param gcD dstの仮想セル数(=gcS*2)
-!! @param nc  成分数
+!! @param nc  変数の個数
 !! @param src 粗データの配列
 !! @param dst 密データの配列
 !! @todo
@@ -122,7 +122,7 @@ end subroutine cdm_interp_nijk_r4
 !! @param gcS srcの仮想セル数
 !! @param szD dstの実ボクセル数(=szS*2)
 !! @param gcD dstの仮想セル数(=gcS*2)
-!! @param nc  成分数
+!! @param nc  変数の個数
 !! @param src 粗データの配列
 !! @param dst 密データの配列
 !! @todo

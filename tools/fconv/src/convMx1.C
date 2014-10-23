@@ -86,11 +86,11 @@ bool convMx1::exec()
 
   for(int i=0; i<m_in_dfi.size(); i++){
     const cdm_TimeSlice* TSlice = m_in_dfi[i]->GetcdmTimeSlice();
-    int nComp = m_in_dfi[i]->GetNumComponent();
+    int nVari = m_in_dfi[i]->GetNumVariables();
 
     dfi_MinMax *MinMax;
-    if( nComp == 1 ) MinMax = new dfi_MinMax(TSlice->SliceList.size(),nComp);
-    else             MinMax = new dfi_MinMax(TSlice->SliceList.size(),nComp+1);
+    if( nVari == 1 ) MinMax = new dfi_MinMax(TSlice->SliceList.size(),nVari);
+    else             MinMax = new dfi_MinMax(TSlice->SliceList.size(),nVari+1);
 
     MinMax->dfi = m_in_dfi[i];
     minmaxList.push_back(MinMax);
@@ -174,7 +174,7 @@ bool convMx1::exec()
     STD_OUTV_ printf("  COMBINE SPH START : %s\n", prefix.c_str());
     
     //Scalar or Vector
-    dim=m_StepRankList[i].dfi->GetNumComponent();
+    dim=m_StepRankList[i].dfi->GetNumVariables();
 
     const cdm_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcdmTimeSlice();
 
@@ -315,7 +315,7 @@ bool convMx1::exec()
       CDM::E_CDM_ARRAYSHAPE output_AShape = m_param->Get_OutputArrayShape();
 
       if( output_AShape == CDM::E_CDM_NIJK ||
-          DFI_FInfo->Component == 1 ){
+          DFI_FInfo->NumVariables == 1 ){
 
         //output nijk
         if( !convMx1_out_nijk(fp,
@@ -386,12 +386,12 @@ bool convMx1::exec()
 
   //ランク間で通信してMINMAXを求めてランク０に送信
   for(int i=0; i<minmaxList.size(); i++) {
-   int nComp = minmaxList[i]->dfi->GetNumComponent();
+   int nVari = minmaxList[i]->dfi->GetNumVariables();
    const cdm_TimeSlice* TSlice = minmaxList[i]->dfi->GetcdmTimeSlice();
    int nStep = TSlice->SliceList.size();
 
-   int n = nComp*nStep;
-   if( nComp > 1 ) n = (nComp+1)*nStep;
+   int n = nVari*nStep;
+   if( nVari > 1 ) n = (nVari+1)*nStep;
 
     //minの通信
    double *send1 =  minmaxList[i]->Min;
@@ -499,13 +499,13 @@ convMx1::convMx1_out_nijk(FILE* fp,
   tailS[0]=IndexEnd[0]-1;
   tailS[1]=IndexEnd[1]-1;
 
-  //成分数の取り出し
-  int nComp = dfi->GetNumComponent();
+  //変数の個数の取り出し
+  int nVari = dfi->GetNumVariables();
 
   //配列形状の設定
   CDM::E_CDM_ARRAYSHAPE out_shape;
-  if( nComp == 1 ) out_shape = CDM::E_CDM_IJKN;
-  else if( nComp > 1 ) out_shape = CDM::E_CDM_NIJK;
+  if( nVari == 1 ) out_shape = CDM::E_CDM_IJKN;
+  else if( nVari > 1 ) out_shape = CDM::E_CDM_NIJK;
 
   //セル中心出力のときガイドセル数を考慮してサイズ更新
   if( !m_bgrid_interp_flag ) {
@@ -520,7 +520,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
                    , out_shape
                    , sz
                    , interp_Gc
-                   , nComp );
+                   , nVari );
 
   //補間用バッファ,格子点出力バッファのインスタンス
   cdm_Array* src_old = NULL;
@@ -532,7 +532,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
               , out_shape
               , sz
               , interp_Gc
-              , nComp );
+              , nVari );
 
     int szOut[3];
     for(int i=0; i<2; i++) szOut[i]=sz[i]+1;
@@ -543,7 +543,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
               , out_shape
               , szOut
               , interp_Gc
-              , nComp );
+              , nVari );
   }
 
   int kdiv,jdiv,idiv;
@@ -657,7 +657,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
           tailS[2]=headS0[2];
 
           //出力配列へのコンバイン
-          for(int n=0; n<nComp; n++) convertXY(buf,src,headS0,tailS,n);
+          for(int n=0; n<nVari; n++) convertXY(buf,src,headS0,tailS,n);
           delete buf;
 
         } /// Loop itx
@@ -665,11 +665,11 @@ convMx1::convMx1_out_nijk(FILE* fp,
       //補間処理
       if( m_bgrid_interp_flag ) {
         if( kp == kp_sta ) {
-          for(int n=0; n<nComp; n++) {
+          for(int n=0; n<nVari; n++) {
             if( !InterPolate(src,src,outArray,n,n) ) return false;
           }
         } else {
-          for(int n=0; n<nComp; n++) {
+          for(int n=0; n<nVari; n++) {
             if( !InterPolate(src_old,src,outArray,n,n) ) return false;
           }
         }
@@ -678,7 +678,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
       //一層分出力
       if( outArray ) {
         const int* szOutArray = outArray->getArraySizeInt();
-        size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNcomp();
+        size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNvari();
         if( ConvOut->WriteFieldData(fp,
                                     outArray,
                                     dLen ) != true ) return false;
@@ -698,12 +698,12 @@ convMx1::convMx1_out_nijk(FILE* fp,
   } /// Loop itz
 
   if( m_bgrid_interp_flag ) {
-    for(int n=0; n<nComp; n++) {
+    for(int n=0; n<nVari; n++) {
       if( !InterPolate(src_old,src_old,outArray,n,n) ) return false;
     }
     if( outArray ) {
       const int* szOutArray = outArray->getArraySizeInt();
-      size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNcomp();
+      size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNvari();
       if( ConvOut->WriteFieldData(fp,
                                   outArray,
                                   dLen ) != true ) return false;
@@ -791,8 +791,8 @@ convMx1::convMx1_out_ijkn(FILE* fp,
   tailS[0]=IndexEnd[0]-1;
   tailS[1]=IndexEnd[1]-1;
 
-  //成分数の取り出し
-  int nComp = dfi->GetNumComponent();
+  //変数の個数の取り出し
+  int nVari = dfi->GetNumVariables();
 
   //セル中心出力のときガイドセル数を考慮してサイズ更新
   if( !m_bgrid_interp_flag ) {
@@ -806,7 +806,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
                    , dfi->GetArrayShape()
                    , sz
                    , interp_Gc
-                   , nComp );
+                   , nVari );
 
   //補間用バッファ（読込み配列形状でのDFIでインスタンス）
   cdm_Array* src_old = NULL;
@@ -817,7 +817,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
               , dfi->GetArrayShape()
               , sz
               , interp_Gc
-              , nComp );
+              , nVari );
 
     int szOut[3];
     for(int i=0; i<2; i++) szOut[i]=sz[i]+1;
@@ -835,8 +835,8 @@ convMx1::convMx1_out_ijkn(FILE* fp,
   int l_rank;
   std::string infile;
 
-  //成分数のループ
-  for(int n=0; n<nComp; n++) {
+  //変数の個数のループ
+  for(int n=0; n<nVari; n++) {
 
     //z方向の分割数回のループ
     for( headT::iterator itz=mapHeadZ.begin(); itz!= mapHeadZ.end(); itz++ ) {
@@ -966,7 +966,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
         //一層分出力
         if( outArray ) {
           const int* szOutArray = outArray->getArraySizeInt();
-          size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNcomp();
+          size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNvari();
           if( ConvOut->WriteFieldData(fp,
                                       outArray,
                                       dLen ) != true ) return false;
@@ -981,12 +981,12 @@ convMx1::convMx1_out_ijkn(FILE* fp,
     } ///Loop itz
 
     if( m_bgrid_interp_flag ) {
-      for(int n=0; n<nComp; n++) {
+      for(int n=0; n<nVari; n++) {
         if( !InterPolate(src_old,src_old,outArray,n,0) ) return false;
       }
       if( outArray ) {
         const int* szOutArray = outArray->getArraySizeInt();
-        size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNcomp();
+        size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNvari();
         if( ConvOut->WriteFieldData(fp,
                                     outArray,
                                     dLen ) != true ) return false;
@@ -1015,7 +1015,7 @@ convMx1::InterPolate(cdm_Array* src_old, cdm_Array* src, cdm_Array* outArray,
   //if( !src_old || !src ) return NULL;
 
   //データタイプの取得
-  //int nComp = src->getNcomp();
+  //int nVari = src->getNvari();
   CDM::E_CDM_DTYPE dtype = src->getDataType();
 
   //char

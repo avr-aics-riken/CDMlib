@@ -13,10 +13,10 @@
 
 extern "C"
 {
-  void cdm_interp_ijkn_r4_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, float *src, float *dst );
-  void cdm_interp_ijkn_r8_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, double *src, double *dst );
-  void cdm_interp_nijk_r4_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, float *src, float *dst );
-  void cdm_interp_nijk_r8_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *ncomp, double *src, double *dst );
+  void cdm_interp_ijkn_r4_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *nvari, float *src, float *dst );
+  void cdm_interp_ijkn_r8_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *nvari, double *src, double *dst );
+  void cdm_interp_nijk_r4_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *nvari, float *src, float *dst );
+  void cdm_interp_nijk_r8_(const int *szS, const int* gcS, const int *szD, const int *gcD, const int *nvari, double *src, double *dst );
 }
 
 class cdm_Array
@@ -68,7 +68,7 @@ public:
                , size_t jx
                , size_t kx
                , size_t gc
-               , size_t ncomp=1 );
+               , size_t nvari=1 );
 
   /// インスタンス
   static cdm_Array*
@@ -76,7 +76,7 @@ public:
                , CDM::E_CDM_ARRAYSHAPE shape
                , size_t sz[3]
                , size_t gc
-               , size_t ncomp=1 );
+               , size_t nvari=1 );
 
   /// インスタンス
   static cdm_Array*
@@ -86,7 +86,7 @@ public:
                , int jx
                , int kx
                , int gc
-               , int ncomp=1 );
+               , int nvari=1 );
 
   /// インスタンス
   static cdm_Array*
@@ -94,7 +94,7 @@ public:
                , CDM::E_CDM_ARRAYSHAPE shape
                , int sz[3]
                , int gc
-               , int ncomp=1 );
+               , int nvari=1 );
 
   /// インスタンス
   template<class T>
@@ -105,7 +105,7 @@ public:
                , size_t jx
                , size_t kx
                , size_t gc
-               , size_t ncomp=1 );
+               , size_t nvari=1 );
 
   /// インスタンス
   template<class T>
@@ -114,7 +114,7 @@ public:
                , CDM::E_CDM_ARRAYSHAPE shape
                , size_t sz[3]
                , size_t gc
-               , size_t ncomp=1 );
+               , size_t nvari=1 );
 
   /// インスタンス
   template<class T>
@@ -125,7 +125,7 @@ public:
                , int jx
                , int kx
                , int gc
-               , int ncomp=1 );
+               , int nvari=1 );
 
   /// インスタンス
   template<class T>
@@ -134,7 +134,7 @@ public:
                , CDM::E_CDM_ARRAYSHAPE shape
                , int sz[3]
                , int gc
-               , int ncomp=1 );
+               , int nvari=1 );
 
   /// データポインタを取得
   void* getData( bool extract=false );
@@ -217,16 +217,16 @@ public:
     return m_gcI;
   }
 
-  /// 成分数を取得
-  size_t getNcomp() const
+  /// 変数の個数を取得
+  size_t getNvari() const
   {
-    return m_ncomp;
+    return m_nvari;
   }
 
-  /// 成分数を取得(int版)
-  int getNcompInt() const
+  /// 変数の個数を取得(int版)
+  int getNvariInt() const
   {
-    return m_ncompI;
+    return m_nvariI;
   }
 
   /// 格子数を取得
@@ -346,11 +346,11 @@ public:
   virtual int copyArray( int sta[3], int end[3], cdm_Array *dst ) = 0;
 
 //FCONV 20131216.s
-  /// 指定成分の配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArrayNcomp( cdm_Array *dst, int comp, bool ignoreGc=false ) = 0;
+  /// 指定変数の配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
+  virtual int copyArrayNvari( cdm_Array *dst, int vari, bool ignoreGc=false ) = 0;
 
-  /// 指定成分の範囲指定での配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
-  virtual int copyArrayNcomp( int sta[3], int end[3], cdm_Array *dst, int comp ) = 0;
+  /// 指定変数の範囲指定での配列コピー(自信をdstにコピー。head/tailを考慮した重複範囲をコピー)
+  virtual int copyArrayNvari( int sta[3], int end[3], cdm_Array *dst, int vari ) = 0;
 //FCONV 20131216.e
 
   /// 粗密データの補間処理を行う
@@ -377,7 +377,7 @@ protected:
     m_Sz[0] = m_Sz[1] = m_Sz[2] = m_Sz[3] = 0;
     m_gc = 0;
     m_gcl[0] = m_gcl[1] = m_gcl[2] = m_gcl[3] = 0;
-    m_ncomp = 1;
+    m_nvari = 1;
     m_headIndex[0] = m_headIndex[1] = m_headIndex[2] = m_headIndex[3] = 0;
     m_tailIndex[0] = m_tailIndex[1] = m_tailIndex[2] = m_tailIndex[3] = 0;
   }
@@ -389,7 +389,7 @@ protected:
             , size_t jx
             , size_t kx
             , size_t gc
-            , size_t ncomp=1 )
+            , size_t nvari=1 )
   {
     m_sz[0] = m_szI[0] = ix;
     m_sz[1] = m_szI[1] = jx;
@@ -401,14 +401,14 @@ protected:
       m_Sz[0] = m_SzI[0] = ix+2*gc;
       m_Sz[1] = m_SzI[1] = jx+2*gc;
       m_Sz[2] = m_SzI[2] = kx+2*gc;
-      m_Sz[3] = m_SzI[3] = ncomp;
+      m_Sz[3] = m_SzI[3] = nvari;
       m_gcl[0] = gc;
       m_gcl[1] = gc;
       m_gcl[2] = gc;
       m_gcl[3] = 0;
       break;
     case CDM::E_CDM_NIJK:
-      m_Sz[0] = m_SzI[0] = ncomp;
+      m_Sz[0] = m_SzI[0] = nvari;
       m_Sz[1] = m_SzI[1] = ix+2*gc;
       m_Sz[2] = m_SzI[2] = jx+2*gc;
       m_Sz[3] = m_SzI[3] = kx+2*gc;
@@ -419,7 +419,7 @@ protected:
     }
 
     m_gc = m_gcI = gc;
-    m_ncomp = m_ncompI = ncomp;
+    m_nvari = m_nvariI = nvari;
     m_dtype = dtype;
     m_shape = shape;
 
@@ -452,8 +452,8 @@ protected:
   /// ガイドセル数(インデクス毎)
   size_t m_gcl[4];
 
-  /// 成分数
-  size_t m_ncomp;
+  /// 変数の個数
+  size_t m_nvari;
 
 
   /// ガイドセル数(int)
@@ -465,8 +465,8 @@ protected:
   /// ガイドセルを含んだ格子数(int)
   int m_SzI[4];
 
-  /// 成分数(int)
-  int m_ncompI;
+  /// 変数の個数(int)
+  int m_nvariI;
 
 
   /// headインデックス

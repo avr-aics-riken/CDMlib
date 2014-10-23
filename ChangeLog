@@ -11,6 +11,51 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-22
+Add check of number of variables for SPH format
+SPH形式のファイルを入出力する際、変数の個数が１か３以外の場合に
+エラーとなるように設定した。
+
+------------------
+2014-10-22
+Replace Component with NumVariables and edit codes following this replacement
+dfiファイルのFileInfoの項目ComponentをNumVariablesに変更した。
+また、この変更に伴い、コード内のComponentに関する単語について
+Component->NumVariables、nComp->nVari等の置換を行った。
+(ただし、BOVのヘッダー部のDATA_COMPONENTはそのままにした。)
+また、コード内のコメントで「成分」を含んだ言葉を「変数」で置き換えた。
+
+------------------
+2014-10-22
+Delete ArrayShape from dfi file and set ArrayShape by file format
+dfiファイルのFileInfoの項目からArrayShapeを削除し、
+ArrayShapeはファイル形式によって定めるようにした。
+
+------------------
+2014-10-21
+Restore VectorMinMax only for SPH format
+SPH形式のみ、VectorMinMaxを入出力できるように戻した。
+
+------------------
+2014-10-21
+Delete VectorMinMax and add check of number of variable names
+VectorMinMaxをdfiファイルから削除した。
+また、フィールドデータの変数の個数と登録された変数名の個数が
+一致するか確認するようにした。
+
+------------------
+2014-10-20
+Set filetype in Plot3d format Fbinary
+Plot3d形式のファイル入出力のタイプをFbinaryに設定した。
+
+------------------
+2014-10-20
+Modify method WriteInit in class cdm_DFI and Read in class cdm_FileInfo
+ to return error when arrayshape in plot3d is nijk
+Plot3d形式において配列形式がnijkと指定された場合、エラーを返すように
+クラスcdm_DFIのWriteInitとクラスcdm_FileInfoのReadを修正した。
+
+------------------
 2014-10-18
 beta version release
 

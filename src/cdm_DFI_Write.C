@@ -62,7 +62,7 @@ cdm_DFI::WriteIndexDfiFile(const std::string dfi_name)
   }
 
   //TimeSlice {} の出力
-  if ( DFI_TimeSlice.Write(fp, 1) != CDM::E_CDM_SUCCESS ) 
+  if ( DFI_TimeSlice.Write(fp, 1, DFI_Finfo.FileFormat) != CDM::E_CDM_SUCCESS ) 
   {
     fclose(fp);
     return CDM::E_CDM_ERROR_WRITE_TIMESLICE;
@@ -268,7 +268,7 @@ cdm_DFI::WriteData(const unsigned step,
                , DFI_Finfo.ArrayShape
                , DFI_Process.RankList[m_RankID].VoxelSize
                , DFI_Finfo.GuideCell
-               , DFI_Finfo.Component); 
+               , DFI_Finfo.NumVariables); 
     //配列のコピー val -> outArray
     int ret = val->copyArray(outArray);
   }
@@ -292,8 +292,8 @@ cdm_DFI::WriteData(const unsigned step,
     std::string fname = CDM::cdmPath_ConnectPath( m_directoryPath, dfiname );
 
     //Slice へのセット
-    DFI_TimeSlice.AddSlice(step, time, minmax, DFI_Finfo.Component, avr_mode,
-                           step_avr, time_avr);
+    DFI_TimeSlice.AddSlice(step, time, minmax, DFI_Finfo.NumVariables, DFI_Finfo.FileFormat,
+                           avr_mode, step_avr, time_avr);
 
     //index dfi のファイル出力
     if( m_RankID == 0 ) {
@@ -340,8 +340,8 @@ cdm_DFI::WriteFieldData(std::string fname,
   if( m_bgrid_interp_flag ) {
     //配列サイズの取得
     const int *szVal = val->getArraySizeInt();
-    //配列成分の取得
-    int nComp = val->getNcomp();
+    //配列における変数の個数の取得
+    int nVari = val->getNvari();
     //格子点データ配列サイズのセット
     int szOut[3];
     for(int i=0; i<3; i++) szOut[i]=szVal[i]+1;
@@ -351,7 +351,7 @@ cdm_DFI::WriteFieldData(std::string fname,
                             val->getArrayShape(),
                             szOut,
                             0,
-                            nComp);
+                            nVari);
     //unsigned char
     if( val->getDataType() == CDM::E_CDM_UINT8 ) {
       cdm_TypeArray<unsigned char> *V = dynamic_cast<cdm_TypeArray<unsigned char>*>(val);

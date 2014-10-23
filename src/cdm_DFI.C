@@ -112,7 +112,7 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
 
   /** TimeSliceの読込み */
   cdm_TimeSlice TimeSlice;
-  if( TimeSlice.Read(tpCntl) != CDM::E_CDM_SUCCESS )
+  if( TimeSlice.Read(tpCntl, F_info.FileFormat) != CDM::E_CDM_SUCCESS )
   {
     printf("\tTimeSlice Data Read error %s\n",DfiName.c_str());
     ret = CDM::E_CDM_ERROR_READ_TIMESLICE;
@@ -337,8 +337,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const CDM::E_CDM_FORMAT format,
                             const int GCell,
                             const CDM::E_CDM_DTYPE DataType,
-                            const CDM::E_CDM_ARRAYSHAPE ArrayShape, 
-                            const int nComp,
+                            const int nVari,
                             const std::string proc_fname,
                             const int G_size[3],
                             const float pitch[3],
@@ -366,8 +365,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                    format, 
                    GCell, 
                    DataType,
-                   ArrayShape, 
-                   nComp, 
+                   nVari, 
                    proc_fname,
                    G_size, 
                    d_pch,
@@ -390,8 +388,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const CDM::E_CDM_FORMAT format,
                             const int GCell,
                             const CDM::E_CDM_DTYPE DataType,
-                            const CDM::E_CDM_ARRAYSHAPE ArrayShape,
-                            const int nComp,
+                            const int nVari,
                             const std::string proc_fname,
                             const int G_size[3],
                             const double pitch[3],
@@ -404,14 +401,14 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const int* iblank)
 {
 
-//FCONV 20140131.s
+//Check for SPH format 20141022.s
   if( format == CDM::E_CDM_FMT_SPH ) {
-    if( nComp > 1 && ArrayShape == CDM::E_CDM_IJKN ) {
-      printf("\tCDM error sph file undefined ijkn component>1.\n");
+    if( nVari != 1 && nVari != 3 ) {
+      printf("\tCDM error sph file undefined except for number of valiables 1 or 3.\n");
       return NULL;
     }
   }
-//FCONV 20140131.e
+//Check for SPH format 20141022.e
 
   cdm_DFI *dfi = NULL;
 
@@ -428,8 +425,13 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   out_F_info.FileFormat       = format;
   out_F_info.GuideCell        = GCell;
   out_F_info.DataType         = DataType;
-  out_F_info.ArrayShape       = ArrayShape;
-  out_F_info.Component        = nComp;
+  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D ) {
+    out_F_info.ArrayShape = CDM::E_CDM_IJKN;
+  }
+  else if( format == CDM::E_CDM_FMT_SPH || format == CDM::E_CDM_FMT_AVS || format == CDM::E_CDM_FMT_VTK) {
+    out_F_info.ArrayShape = CDM::E_CDM_NIJK;
+  }
+  out_F_info.NumVariables     = nVari;
 
   int idumy = 1;
   char* cdumy = (char*)(&idumy);
@@ -557,10 +559,10 @@ CDM::E_CDM_FORMAT cdm_DFI::GetFileFormat()
 
 
 // #################################################################
-// 成分数の取り出し
-int cdm_DFI::GetNumComponent()
+// 変数の個数の取り出し
+int cdm_DFI::GetNumVariables()
 {
-  return DFI_Finfo.Component;
+  return DFI_Finfo.NumVariables;
 }
 
 // #################################################################
@@ -1070,20 +1072,20 @@ void cdm_DFI::SetTimeSliceFlag(const CDM::E_CDM_ONOFF ONOFF)
 }
 
 // #################################################################
-// FileInfoの成分名を登録する
-void cdm_DFI::setComponentVariable(int pcomp, std::string compName)
+// FileInfoの変数名を登録する
+void cdm_DFI::setVariableName(int pvari, std::string variName)
 {
 
-  DFI_Finfo.setComponentVariable(pcomp, compName);
+  DFI_Finfo.setVariableName(pvari, variName);
 
 }
 
 // #################################################################
-// FileInfoの成分名を取得する
-std::string cdm_DFI::getComponentVariable(int pcomp)
+// FileInfoの変数名を取得する
+std::string cdm_DFI::getVariableName(int pvari)
 {
 
-  return DFI_Finfo.getComponentVariable(pcomp);
+  return DFI_Finfo.getVariableName(pvari);
 
 }
 
@@ -1101,12 +1103,12 @@ CDM::E_CDM_ERRORCODE cdm_DFI::getVectorMinMax(const unsigned step,
 // #################################################################
 // DFIに出力されているminmaxの合成値を取得
 CDM::E_CDM_ERRORCODE cdm_DFI::getMinMax(const unsigned step,
-                                        const int compNo,
+                                        const int variNo,
                                         double &min_value,
                                         double &max_value)
 {
 
-  return DFI_TimeSlice.getMinMax(step,compNo,min_value,max_value);
+  return DFI_TimeSlice.getMinMax(step,variNo,min_value,max_value);
 
 }
 

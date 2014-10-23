@@ -158,8 +158,8 @@ namespace CDM
 ,   E_CDM_ERROR_READ_DFI_GUIDECELL          = 1008 ///< DFI GuideCell 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_DATATYPE           = 1009 ///< DFI DataType 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_ENDIAN             = 1010 ///< DFI Endian 読込みエラー
-,   E_CDM_ERROR_READ_DFI_ARRAYSHAPE         = 1011 ///< DFI ArrayShape 読込みエラー
-,   E_CDM_ERROR_READ_DFI_COMPONENT          = 1012 ///< DFI Component 読込みエラー
+//,   E_CDM_ERROR_READ_DFI_ARRAYSHAPE         = 1011 ///< DFI ArrayShape 読込みエラー
+,   E_CDM_ERROR_READ_DFI_NUMVARIABLES       = 1012 ///< DFI NumVariables 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_FILEPATH_PROCESS   = 1013 ///< DFI FilePath/Process 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_NO_RANK            = 1014 ///< DFI Rank要素なし
 ,   E_CDM_ERROR_READ_DFI_ID                 = 1015 ///< DFI ID 読込みエラー
@@ -196,6 +196,7 @@ namespace CDM
 ,   E_CDM_ERROR_READ_SPH_REC7               = 2007 ///< SPHファイルレコード7読込みエラー
 ,   E_CDM_ERROR_UNMATCH_VOXELSIZE           = 2050 ///< SPHのボクセルサイズとDFIのボクセルサイズが合致しない
 ,   E_CDM_ERROR_NOMATCH_ENDIAN              = 2051 ///< 出力Fornatが合致しない（Endian形式がBig,Little以外）
+,   E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES    = 2052 ///< フィールドデータの変数の個数と登録された変数名の個数が一致しない
 ,   E_CDM_ERROR_READ_BOV_FILE               = 2100 ///< BOVファイル読込みエラー
 ,   E_CDM_ERROR_READ_FIELD_HEADER_RECORD    = 2102 ///< フィールドヘッダーレコード読込み失敗
 ,   E_CDM_ERROR_READ_FIELD_DATA_RECORD      = 2103 ///< フィールドデータレコード読込み失敗
@@ -269,12 +270,12 @@ namespace CDM
 )
 
 /** 2次元（スカラー）インデクス(n,i,j) -> 1次元インデクス変換マクロ
- *  @param[in] _N  成分インデクス
+ *  @param[in] _N  変数インデクス
  *  @param[in] _I  i方向インデクス
  *  @param[in] _J  j方向インデクス
  *  @param[in] _NI i方向インデクスサイズ
  *  @param[in] _NJ j方向インデクスサイズ
- *  @param[in] _NN 成分数
+ *  @param[in] _NN 変数の個数
  *  @param[in] _VC 仮想セル数
  *  @return 1次元インデクス
  */
@@ -288,7 +289,7 @@ namespace CDM
  *  @param[in] _I  i方向インデクス
  *  @param[in] _J  j方向インデクス
  *  @param[in] _K  k方向インデクス
- *  @param[in] _N  成分インデクス
+ *  @param[in] _N  変数インデクス
  *  @param[in] _NI i方向インデクスサイズ
  *  @param[in] _NJ j方向インデクスサイズ
  *  @param[in] _NK k方向インデクスサイズ
@@ -302,11 +303,11 @@ namespace CDM
 )
 
 /** 3次元（ベクトル）インデクス(n,i,j,k) -> 1次元インデクス変換マクロ
- *  @param[in] _N  成分インデクス
+ *  @param[in] _N  変数インデクス
  *  @param[in] _I  i方向インデクス
  *  @param[in] _J  j方向インデクス
  *  @param[in] _K  k方向インデクス
- *  @param[in] _NN 成分数
+ *  @param[in] _NN 変数の個数
  *  @param[in] _NI i方向インデクスサイズ
  *  @param[in] _NJ j方向インデクスサイズ
  *  @param[in] _NK k方向インデクスサイズ

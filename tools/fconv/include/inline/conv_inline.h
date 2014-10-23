@@ -196,31 +196,31 @@ bool CONV::calcMinMax(cdm_TypeArray<T> *src,
 
   if( src == NULL ) return false;
 
-  double CompVal;
+  double VariVal;
 
   //sizeの取得
   const int *sz = src->getArraySizeInt();
   //配列形状の取得
   CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
-  //成分数の取得
-  int nComp = src->getNcomp();
+  //変数の個数の取得
+  int nVari = src->getNvari();
 
 
-  if( nComp > 1 ) {
+  if( nVari > 1 ) {
     //nijkの処理
     if( shape == CDM::E_CDM_NIJK ) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
-        CompVal=(double)0.0;
-        for(int n=0; n<nComp; n++) {
+        VariVal=(double)0.0;
+        for(int n=0; n<nVari; n++) {
           if( min[n] > (double)src->val(n,i,j,k) ) min[n] = (double)src->val(n,i,j,k);
           if( max[n] < (double)src->val(n,i,j,k) ) max[n] = (double)src->val(n,i,j,k);
-          CompVal = CompVal + (double)src->val(n,i,j,k)*(double)src->val(n,i,j,k); 
+          VariVal = VariVal + (double)src->val(n,i,j,k)*(double)src->val(n,i,j,k); 
         }
-        CompVal = sqrt(CompVal);
-        if( min[nComp] > CompVal ) min[nComp]=CompVal;
-        if( max[nComp] < CompVal ) max[nComp]=CompVal;
+        VariVal = sqrt(VariVal);
+        if( min[nVari] > VariVal ) min[nVari]=VariVal;
+        if( max[nVari] < VariVal ) max[nVari]=VariVal;
       }}}
     
     } 
@@ -230,15 +230,15 @@ bool CONV::calcMinMax(cdm_TypeArray<T> *src,
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
-        CompVal=(double)0.0;
-        for(int n=0; n<nComp; n++) {
+        VariVal=(double)0.0;
+        for(int n=0; n<nVari; n++) {
           if( min[n] > (double)src->val(i,j,k,n) ) min[n] = (double)src->val(i,j,k,n);
           if( max[n] < (double)src->val(i,j,k,n) ) max[n] = (double)src->val(i,j,k,n);
-          CompVal = CompVal + (double)src->val(i,j,k,n)*(double)src->val(i,j,k,n); 
+          VariVal = VariVal + (double)src->val(i,j,k,n)*(double)src->val(i,j,k,n); 
         }
-        CompVal = sqrt(CompVal);
-        if( min[nComp] > CompVal ) min[nComp]=CompVal;
-        if( max[nComp] < CompVal ) max[nComp]=CompVal;
+        VariVal = sqrt(VariVal);
+        if( min[nVari] > VariVal ) min[nVari]=VariVal;
+        if( max[nVari] < VariVal ) max[nVari]=VariVal;
       }}}
     } else return false;
 

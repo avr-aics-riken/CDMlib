@@ -39,8 +39,8 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
 
   const int *szS = dataS->getArraySizeInt();
   const int *szB = dataB->getArraySizeInt();
-  int ncompS = dataS->getNcomp();
-  int ncompB = dataB->getNcomp();
+  int nvariS = dataS->getNvari();
+  int nvariB = dataB->getNvari();
 
   //１層ずつ読み込み
   int hzB = head[2];
@@ -50,7 +50,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
     //ascii
     if( m_input_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
       double temp;
-      for(int n=0; n<ncompS; n++) {
+      for(int n=0; n<nvariS; n++) {
       for(int k=0; k<szS[2]; k++) {
         //headインデクスをずらす
         head[2]=hzB+k;
@@ -64,14 +64,14 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
           dataB->val(i,j,0,0) = (T)temp;
         }}
         //コピー
-        dataB->copyArrayNcomp(dataS,n);
+        dataB->copyArrayNvari(dataS,n);
       }}
 
     //Fortran Binary
     } else if( m_input_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
       unsigned int dmy;
       fread(&dmy, sizeof(int), 1, fp);
-      for(int n=0; n<ncompS; n++) {
+      for(int n=0; n<nvariS; n++) {
       for(int k=0; k<szS[2]; k++) {
         //headインデクスをずらす
         head[2]=hzB+k;
@@ -80,13 +80,13 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
         size_t ndata = dataB->getArrayLength();
         if( dataB->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
         //コピー
-        dataB->copyArrayNcomp(dataS,n);
+        dataB->copyArrayNvari(dataS,n);
       }}
       fread(&dmy, sizeof(int), 1, fp);
 
     //binary
     } else {
-      for(int n=0; n<ncompS; n++) {
+      for(int n=0; n<nvariS; n++) {
       for(int k=0; k<szS[2]; k++) {
         //headインデクスをずらす
         head[2]=hzB+k;
@@ -95,7 +95,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
         size_t ndata = dataB->getArrayLength();
         if( dataB->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
         //コピー
-        dataB->copyArrayNcomp(dataS,n);
+        dataB->copyArrayNvari(dataS,n);
       }}
     }
 
@@ -249,14 +249,14 @@ template<class T>
 CDM_INLINE
 void
 cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
-                           int ncomp)
+                           int nvari)
 {
 
   //IJKN
   if( data->getArrayShape() == CDM::E_CDM_IJKN ) {
     //ascii
     if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
-      for(int n=0; n<ncomp; n++) {
+      for(int n=0; n<nvari; n++) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
@@ -266,9 +266,9 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
     //Fortran Binary
     } else if( m_output_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
       unsigned int dmy;
-      dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*ncomp);
+      dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*nvari);
       fwrite(&dmy, sizeof(int), 1, fp);
-      for(int n=0; n<ncomp; n++) {
+      for(int n=0; n<nvari; n++) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
@@ -278,7 +278,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
 
     //binary
     } else {
-      for(int n=0; n<ncomp; n++) {
+      for(int n=0; n<nvari; n++) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
@@ -290,7 +290,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
   } else {
     //ascii
     if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
-      for(int n=0; n<ncomp; n++) {
+      for(int n=0; n<nvari; n++) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
@@ -300,9 +300,9 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
     //Fortran Binary
     } else if( m_output_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
       unsigned int dmy;
-      dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*ncomp);
+      dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*nvari);
       fwrite(&dmy, sizeof(int), 1, fp);
-      for(int n=0; n<ncomp; n++) {
+      for(int n=0; n<nvari; n++) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
@@ -312,7 +312,7 @@ cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
 
     //binary
     } else {
-      for(int n=0; n<ncomp; n++) {
+      for(int n=0; n<nvari; n++) {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {

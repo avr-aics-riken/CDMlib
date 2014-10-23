@@ -53,7 +53,7 @@ cdm_DFI::ReadData(CDM::E_CDM_ERRORCODE &ret,
                      , DFI_Finfo.ArrayShape
                      , sz
                      , gc
-                     , DFI_Finfo.Component);
+                     , DFI_Finfo.NumVariables);
 
    double d_time = (double)time;
    double d_time_avr = (double)time_avr;
@@ -101,7 +101,7 @@ CDM::E_CDM_ERRORCODE cdm_DFI::ReadData(T *val,
                      , DFI_Finfo.ArrayShape
                      , sz
                      , gc
-                     , DFI_Finfo.Component);
+                     , DFI_Finfo.NumVariables);
 
    double d_time = (double)time;
    double d_time_avr = (double)time_avr;
@@ -129,7 +129,7 @@ CDM::E_CDM_ERRORCODE
 cdm_DFI::WriteData(const unsigned step, 
                    TimeT time, 
                    const int sz[3],
-                   const int nComp,
+                   const int nVari,
                    const int gc, 
                    T* val, 
                    T* minmax,
@@ -137,6 +137,11 @@ cdm_DFI::WriteData(const unsigned step,
                    const unsigned step_avr, 
                    TimeAvrT time_avr)
 {
+  //フィールドデータの変数の個数と登録された変数名の個数の一致確認
+  if ( DFI_Finfo.NumVariables != DFI_Finfo.VariableName.size()) {
+    printf("\tError : Number of valiable names\n");
+    return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES;
+  }
 
   cdm_Array *data = cdm_Array::instanceArray
                     ( val
@@ -145,15 +150,15 @@ cdm_DFI::WriteData(const unsigned step,
                     , DFI_Process.RankList[m_RankID].VoxelSize[1]
                     , DFI_Process.RankList[m_RankID].VoxelSize[2]
                     , gc
-                    , DFI_Finfo.Component);
+                    , DFI_Finfo.NumVariables);
 
   double d_time = (double)time;
   double d_time_avr = (double)time_avr;
   double *d_minmax=NULL;
   if( minmax ) {
-    if( DFI_Finfo.Component>1 ) {
-      d_minmax = new double[DFI_Finfo.Component*2+2];
-      for(int i=0; i<DFI_Finfo.Component*2+2; i++) {
+    if( DFI_Finfo.NumVariables>1 ) {
+      d_minmax = new double[DFI_Finfo.NumVariables*2+2];
+      for(int i=0; i<DFI_Finfo.NumVariables*2+2; i++) {
         d_minmax[i] = minmax[i];
       }
     } else { 
@@ -187,9 +192,9 @@ cdm_DFI::setGridData(cdm_TypeArray<T1>* P,
 
   if( P->getArrayShape() != S->getArrayShape() ) return false;
 
-  //成分数をセット
-  if( P->getNcompInt() != S->getNcompInt() ) return false;
-  int nComp = P->getNcompInt();
+  //変数の個数をセット
+  if( P->getNvariInt() != S->getNvariInt() ) return false;
+  int nVari = P->getNvariInt();
 
   //S(セル中心）の配列サイズを取得セット
   //T2* data = S->getData();
@@ -206,7 +211,7 @@ cdm_DFI::setGridData(cdm_TypeArray<T1>* P,
   int kd = Psz[2];
 
   //Pの配列をゼロクリア
-  size_t dsize = (size_t)(id*jd*kd*nComp);
+  size_t dsize = (size_t)(id*jd*kd*nVari);
   for (size_t l=0; l<dsize; l++) d[l]=0.0;
 
   //S(セル中心）のデータをP(格子点)に加える
@@ -215,7 +220,7 @@ cdm_DFI::setGridData(cdm_TypeArray<T1>* P,
     for (int km=0; km<kx; km++) {
     for (int jm=0; jm<jx; jm++) {
     for (int im=0; im<ix; im++) {
-    for (int n=0; n<nComp; n++) {
+    for (int n=0; n<nVari; n++) {
       P->val(n, im  ,jm  ,km  ) = P->val(n, im  ,jm  ,km  )+S->val(n, im,jm,km); ///<0,0,0>
       P->val(n, im+1,jm  ,km  ) = P->val(n, im+1,jm  ,km  )+S->val(n, im,jm,km); ///<1,0,0>
       P->val(n, im+1,jm  ,km+1) = P->val(n, im+1,jm  ,km+1)+S->val(n, im,jm,km); ///<1,0,1>
@@ -227,7 +232,7 @@ cdm_DFI::setGridData(cdm_TypeArray<T1>* P,
     }}}}
   } else {
   //IJKNの処理
-    for (int n=0; n<nComp; n++) {
+    for (int n=0; n<nVari; n++) {
     for (int km=0; km<kx; km++) {
     for (int jm=0; jm<jx; jm++) {
     for (int im=0; im<ix; im++) {
@@ -262,7 +267,7 @@ cdm_DFI::VolumeDataDivide(cdm_TypeArray<T> *P)
   int jd = szP[1];
   int kd = szP[2];
 
-  int ncomp = P->getNcompInt();
+  int nvari = P->getNvariInt();
 
   //NIJK
   if( P->getArrayShape() == CDM::E_CDM_NIJK ) {
@@ -271,7 +276,7 @@ cdm_DFI::VolumeDataDivide(cdm_TypeArray<T> *P)
     for (k=0; k<kd;    k++){
     for (j=0; j<jd;    j++){
     for (i=1; i<id-1;  i++){
-    for (n=0; n<ncomp; n++){
+    for (n=0; n<nvari; n++){
       P->val(n,i,j,k) = P->val(n,i,j,k)*0.5;
     }}}}
 
@@ -279,7 +284,7 @@ cdm_DFI::VolumeDataDivide(cdm_TypeArray<T> *P)
     for (k=0; k<kd;    k++){
     for (j=1; j<jd-1;  j++){
     for (i=0; i<id;    i++){
-    for (n=0; n<ncomp; n++){
+    for (n=0; n<nvari; n++){
       P->val(n,i,j,k) = P->val(n,i,j,k)*0.5;
     }}}}
 
@@ -287,7 +292,7 @@ cdm_DFI::VolumeDataDivide(cdm_TypeArray<T> *P)
     for (k=1; k<kd-1;  k++){
     for (j=0; j<jd;    j++){
     for (i=0; i<id;    i++){
-    for (n=0; n<ncomp; n++){
+    for (n=0; n<nvari; n++){
       P->val(n,i,j,k) = P->val(n,i,j,k)*0.5;
     }}}}
 
@@ -295,7 +300,7 @@ cdm_DFI::VolumeDataDivide(cdm_TypeArray<T> *P)
   } else {
 
     //I
-    for (n=0; n<ncomp; n++){
+    for (n=0; n<nvari; n++){
     for (k=0; k<kd;    k++){
     for (j=0; j<jd;    j++){
     for (i=1; i<id-1;  i++){
@@ -303,7 +308,7 @@ cdm_DFI::VolumeDataDivide(cdm_TypeArray<T> *P)
     }}}}
 
     //J
-    for (n=0; n<ncomp; n++){
+    for (n=0; n<nvari; n++){
     for (k=0; k<kd;    k++){
     for (j=1; j<jd-1;  j++){
     for (i=0; i<id;    i++){
@@ -311,7 +316,7 @@ cdm_DFI::VolumeDataDivide(cdm_TypeArray<T> *P)
     }}}}
 
     //K
-    for (n=0; n<ncomp; n++){
+    for (n=0; n<nvari; n++){
     for (k=1; k<kd-1;  k++){
     for (j=0; j<jd;    j++){
     for (i=0; i<id;    i++){
