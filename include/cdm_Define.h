@@ -25,7 +25,7 @@
 
 #define D_CDM_EXT_SPH "sph"
 #define D_CDM_EXT_BOV "dat"
-#define D_CDM_EXT_FUNC "func"
+#define D_CDM_EXT_FUNC "fun"
 #define D_CDM_EXT_VTK  "vtk"
 
 #define D_CDM_ON  "on"

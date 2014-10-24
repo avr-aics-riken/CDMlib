@@ -11,6 +11,11 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-24
+- plot3d check
+- #define D_CDM_EXT_FUNC "func" >> "fun" // 拡張子は"fun", FileFormat識別子は"plot3d"
+
+------------------
 2014-10-22
 Add check of number of variables for SPH format
 SPH形式のファイルを入出力する際、変数の個数が１か３以外の場合に

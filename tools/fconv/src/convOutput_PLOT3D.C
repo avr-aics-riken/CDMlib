@@ -138,7 +138,7 @@ FILE* convOutput_PLOT3D::OutputFile_Open(
             cdm_DFI::Generate_FileName(prefix,
                                        id,
                                        step,
-                                       "func",
+                                       "fun",
                                        fnameformat,
                                        mio,
                                        CDM::E_CDM_OFF);

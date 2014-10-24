@@ -139,7 +139,7 @@ cdm_DFI::WriteData(const unsigned step,
 {
   //フィールドデータの変数の個数と登録された変数名の個数の一致確認
   if ( DFI_Finfo.NumVariables != DFI_Finfo.VariableName.size()) {
-    printf("\tError : Number of valiable names\n");
+    printf("\tError : Number of valiable names %d %d\n", DFI_Finfo.NumVariables, DFI_Finfo.VariableName.size());
     return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES;
   }
 

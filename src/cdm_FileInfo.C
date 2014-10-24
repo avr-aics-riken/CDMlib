@@ -184,15 +184,15 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_FILEFORMAT;
   }
-  if( !strcasecmp(str.c_str(),"sph" ) ) {
+  if( !strcasecmp(str.c_str(), D_CDM_EXT_SPH ) ) {
     FileFormat=CDM::E_CDM_FMT_SPH;
     ArrayShape=CDM::E_CDM_NIJK;
   }
-  else if( !strcasecmp(str.c_str(),"bov" ) ) {
+  else if( !strcasecmp(str.c_str(), D_CDM_EXT_BOV ) ) {
     FileFormat=CDM::E_CDM_FMT_BOV;
     ArrayShape=CDM::E_CDM_IJKN;
   }
-  else if( !strcasecmp(str.c_str(),"fun" ) ) {
+  else if( !strcasecmp(str.c_str(), "plot3d" ) ) {
     FileFormat=CDM::E_CDM_FMT_PLOT3D;
     ArrayShape=CDM::E_CDM_IJKN;
   }
@@ -337,7 +337,7 @@ cdm_FileInfo::Write(FILE* fp,
   } else if( FileFormat == CDM::E_CDM_FMT_BOV ) {
     fprintf(fp, "FileFormat         = \"bov\"\n");
   } else if( FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
-    fprintf(fp, "FileFormat         = \"fun\"\n");
+    fprintf(fp, "FileFormat         = \"plot3d\"\n");
   }
 
 //FCONV 20140116.s
