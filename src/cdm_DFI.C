@@ -100,6 +100,15 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
     ret = CDM::E_CDM_ERROR_READ_FILEPATH;
     return NULL;
   }
+  
+  /** VisItオプションの読込み */
+  cdm_VisIt visit;
+  if( visit.Read(tpCntl) != CDM::E_CDM_SUCCESS )
+  {
+    printf("\tVisIt Data Read error %s\n",DfiName.c_str());
+    ret = CDM::E_CDM_ERROR_READ_FILEPATH;
+    return NULL;
+  }
 
   /** Unitの読込み */
   cdm_Unit unit;
@@ -181,13 +190,20 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   cdm_DFI *dfi = NULL;
   // CIOlibではSPHをサポートしていたが、CDMlibではSPHはサポートしない。
   // ↓SPHを復活させた(2014.10.17)
-  if( F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
-    dfi = new cdm_DFI_SPH(F_info, F_path, unit, domain, mpi, TimeSlice, process);
-  } else if( F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
-    dfi = new cdm_DFI_BOV(F_info, F_path, unit, domain, mpi, TimeSlice, process);
-  } else if( F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
-    dfi = new cdm_DFI_PLOT3D(F_info, F_path, unit, domain, mpi, TimeSlice, process);
-  } else {
+  if( F_info.FileFormat == CDM::E_CDM_FMT_SPH )
+  {
+    dfi = new cdm_DFI_SPH(F_info, F_path, visit, unit, domain, mpi, TimeSlice, process);
+  }
+  else if( F_info.FileFormat == CDM::E_CDM_FMT_BOV )
+  {
+    dfi = new cdm_DFI_BOV(F_info, F_path, visit, unit, domain, mpi, TimeSlice, process);
+  }
+  else if( F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D )
+  {
+    dfi = new cdm_DFI_PLOT3D(F_info, F_path, visit, unit, domain, mpi, TimeSlice, process);
+  }
+  else
+  {
     return NULL;
   }
 
@@ -248,6 +264,21 @@ cdm_FilePath* cdm_DFI::GetcdmFilePath()
 {
   return &DFI_Fpath;
 }
+
+// #################################################################
+void
+cdm_DFI::SetcdmVisIt(cdm_VisIt Visit)
+{
+  DFI_VisIt = Visit;
+}
+
+// #################################################################
+const
+cdm_VisIt* cdm_DFI::GetcdmVisIt()
+{
+  return &DFI_VisIt;
+}
+
 
 // #################################################################
 // cdm_Unitクラスのポインタ取得
@@ -441,6 +472,9 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   cdm_FilePath out_F_path;
   out_F_path.ProcDFIFile = proc_fname;
 
+  cdm_VisIt out_visit;
+  out_visit.PlotGC = "off";
+  
   cdm_Unit out_unit;
 
   cdm_MPI out_mpi;
@@ -478,20 +512,20 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   if( gethostname(tmpname, 512) != 0 ) printf("*** error gethostname() \n");
 
   if( out_F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
-    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
-    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.s
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_AVS ) {
-    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
-    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_VTK ) {
-    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.e
   } else return NULL;

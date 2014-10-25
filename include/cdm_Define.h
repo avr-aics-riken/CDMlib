@@ -235,6 +235,7 @@ namespace CDM
 ,   E_CDM_ERROR_WRITE_UNIT                  = 3514 ///< Unit出力失敗
 ,   E_CDM_ERROR_WRITE_TIMESLICE             = 3515 ///< TimeSlice出力失敗
 ,   E_CDM_ERROR_WRITE_FILEPATH              = 3516 ///< FilePath出力失敗
+,   E_CDM_ERROR_WRITE_VISIT                 = 3517 ///< Visit出力失敗
 ,   E_CDM_WARN_GETUNIT                      = 4000 ///< Unitの単位がない
   };
 

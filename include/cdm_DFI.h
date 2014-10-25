@@ -35,6 +35,7 @@
 
 #include "cdm_FileInfo.h"
 #include "cdm_FilePath.h"
+#include "cdm_VisIt.h"
 #include "cdm_Unit.h"
 #include "cdm_TimeSlice.h"
 #include "cdm_Domain.h"
@@ -56,6 +57,7 @@ protected :
 
   cdm_FileInfo      DFI_Finfo;       ///< FileInfo class
   cdm_FilePath      DFI_Fpath;       ///< FilePath class
+  cdm_VisIt         DFI_VisIt;       ///< VisIt class
   cdm_Unit          DFI_Unit;        ///< Unit class
   cdm_Domain        DFI_Domain;      ///< Domain class
   cdm_MPI           DFI_MPI;         ///< MPI class
@@ -109,6 +111,17 @@ public:
    */
   void SetcdmFilePath(cdm_FilePath FPath); 
 
+  /**
+   * @brief cdm_VisItクラスのポインタを取得
+   * @return cdm_VisItクラスポインタ
+   */
+  const cdm_VisIt* GetcdmVisIt();
+  
+  /**
+   * @brief cdm_VisItクラスのセット
+   */
+  void SetcdmVisIt(cdm_VisIt Visit);
+  
   /**
    * @brief cdm_Unitクラスのポインタを取得
    * @return cdm_Unitクラスポインタ

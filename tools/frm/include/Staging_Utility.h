@@ -88,6 +88,7 @@ public:
 
   const cdm_FileInfo  *dfi_Finfo;   ///< DFI cdm_FileInfoのポインタ
   const cdm_FilePath  *dfi_Fpath;   ///< DFI cdm_FilePathのポインタ
+  const cdm_VisIt     *dfi_Visit;   ///< DFI cdm_VisItのポインタ
   const cdm_Unit      *dfi_Unit;    ///< DFI cdm_Unitのポインタ
   const cdm_Domain    *dfi_Domain;  ///< DFI cdm_Domainのポインタ
   const cdm_MPI       *dfi_MPI;     ///< DFI cdm_MPIのポインタ

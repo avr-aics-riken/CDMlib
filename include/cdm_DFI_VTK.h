@@ -30,6 +30,7 @@ public:
    * @brief コンストラクタ 
    * @param [in] F_Info  FileInfo
    * @param [in] F_Path  FilePath
+   * @param [in] visit   VisIt option
    * @param [in] unit    Unit
    * @param [in] domain  Domain
    * @param [in] mpi     MPI
@@ -37,7 +38,8 @@ public:
    * @param [in] process Process
    */
   cdm_DFI_VTK(const cdm_FileInfo F_Info, 
-              const cdm_FilePath F_Path, 
+              const cdm_FilePath F_Path,
+              const cdm_VisIt visit,
               const cdm_Unit unit, 
               const cdm_Domain domain, 
               const cdm_MPI mpi,
@@ -46,6 +48,7 @@ public:
   {
     DFI_Finfo      = F_Info; 
     DFI_Fpath      = F_Path;
+    DFI_VisIt      = visit;
     DFI_Unit       = unit;
     DFI_Domain     = domain;
     DFI_MPI        = mpi;

@@ -11,6 +11,11 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-25
+- add cdm_VisIt.h/C
+- VisIt用のオプションを追加 /VisIt/PlotGuideCell = "on" / "off"
+
+------------------
 2014-10-24
 - plot3d check
 - #define D_CDM_EXT_FUNC "func" >> "fun" // 拡張子は"fun", FileFormat識別子は"plot3d"

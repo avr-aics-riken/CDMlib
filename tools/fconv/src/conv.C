@@ -957,7 +957,17 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
       return false;
     }
     delete Fpath;
-
+    
+    //Visitの出力
+    cdm_VisIt *dfi_Visit = (cdm_VisIt *)dfi->GetcdmVisIt();
+    cdm_VisIt *Visit = new cdm_VisIt("off");
+    if( Visit->Write(fp, 1) != CDM::E_CDM_SUCCESS )
+    {
+      fclose(fp);
+      return false;
+    }
+    delete Visit;
+    
     //Unitの出力
     cdm_Unit *dfi_Unit = (cdm_Unit *)dfi->GetcdmUnit();
     if( dfi_Unit->Write(fp, 0) != CDM::E_CDM_SUCCESS )

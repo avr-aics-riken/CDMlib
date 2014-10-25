@@ -53,6 +53,12 @@ cdm_DFI::WriteIndexDfiFile(const std::string dfi_name)
     return CDM::E_CDM_ERROR_WRITE_FILEPATH;
   }
 
+  // VisIt用のオプション出力
+  if( DFI_VisIt.Write(fp, 1) != CDM::E_CDM_SUCCESS )
+  {
+    fclose(fp);
+    return CDM::E_CDM_ERROR_WRITE_VISIT;
+  }
 
   //Unit {} の出力
   if( DFI_Unit.Write(fp, 0) != CDM::E_CDM_SUCCESS ) 
