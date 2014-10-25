@@ -101,24 +101,24 @@ cdm_NonUniformDomain<T>::Read(cdm_TextParser tpCntl)
   }
   CoordinateFile=str;
 
-  //CoordinateFileFormat
-  label = "/Domain/CoordinateFileFormat";
+  //CoordinateFileType
+  label = "/Domain/CoordinateFileType";
   if ( !(tpCntl.GetValue(label, &str )) )
   {
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
-    return CDM::E_CDM_ERROR_READ_DFI_COORDINATEFILEFORMAT;
+    return CDM::E_CDM_ERROR_READ_DFI_COORDINATEFILETYPE;
   }
   if( !strcasecmp(str.c_str(),"ascii" ) ) {
-    CoordinateFileFormat=CDM::E_CDM_FILE_TYPE_ASCII;
+    CoordinateFileType=CDM::E_CDM_FILE_TYPE_ASCII;
   } else if( !strcasecmp(str.c_str(),"binary" ) ) {
-    CoordinateFileFormat=CDM::E_CDM_FILE_TYPE_BINARY;
+    CoordinateFileType=CDM::E_CDM_FILE_TYPE_BINARY;
   } else {
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
-    return CDM::E_CDM_ERROR_READ_DFI_COORDINATEFILEFORMAT;
+    return CDM::E_CDM_ERROR_READ_DFI_COORDINATEFILETYPE;
   }
 
   //CoordinateFilePrecision
-  if ( CoordinateFileFormat == CDM::E_CDM_FILE_TYPE_BINARY ) {
+  if ( CoordinateFileType == CDM::E_CDM_FILE_TYPE_BINARY ) {
     label = "/Domain/CoordinateFilePrecision";
     if ( !(tpCntl.GetValue(label, &str )) )
     {
@@ -164,7 +164,7 @@ cdm_NonUniformDomain<T>::Read_CoordinateFile(FILE* fp)
   double reg_Coord;
 
   //ascii
-  if( CoordinateFileFormat == CDM::E_CDM_FILE_TYPE_ASCII ) {
+  if( CoordinateFileType == CDM::E_CDM_FILE_TYPE_ASCII ) {
 
     //x
     fscanf(fp,"%d\n",&szGrid[0]);
@@ -340,10 +340,10 @@ cdm_NonUniformDomain<T>::Write(FILE* fp,
   fprintf(fp,"CoordinateFile      = \"%s\"\n",CoordinateFile.c_str());
 
   _CDM_WRITE_TAB(fp, tab+1);
-  if(        CoordinateFileFormat == CDM::E_CDM_FILE_TYPE_ASCII ) {
-    fprintf(fp, "CoordinateFileFormat = \"ascii\"\n");
-  } else if( CoordinateFileFormat == CDM::E_CDM_FILE_TYPE_BINARY ) {
-    fprintf(fp, "CoordinateFileFormat = \"binary\"\n");
+  if(        CoordinateFileType == CDM::E_CDM_FILE_TYPE_ASCII ) {
+    fprintf(fp, "CoordinateFileType  = \"ascii\"\n");
+  } else if( CoordinateFileType == CDM::E_CDM_FILE_TYPE_BINARY ) {
+    fprintf(fp, "CoordinateFileType  = \"binary\"\n");
   }
 
   _CDM_WRITE_TAB(fp, tab+1);

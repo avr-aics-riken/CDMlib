@@ -12,6 +12,11 @@ REVISION HISTORY
 
 ------------------
 2014-10-25
+Change CoordinateFileFormat to CoordinateFileType
+変数CoordinateFileFormatをCoordinateFileTypeに変更した。
+
+------------------
+2014-10-25
 Merge branch advance_develop_NonUniform into branch advance_develop
 ブランチadvance_develop_NonUniformをブランチadvance_developにマージした。
 その際、cdm_DFI.h,cdm_DFI.Cは競合が発生したので解決した。

@@ -26,7 +26,7 @@ private:
   T *YCoordinates;                           ///<Y座標データポインタ(Domainの格子点)
   T *ZCoordinates;                           ///<Z座標データポインタ(Domainの格子点)
   std::string CoordinateFile;                ///<CoordinateFileファイル名
-  CDM::E_CDM_FILE_TYPE CoordinateFileFormat; ///<座標ファイルのデータフォーマット
+  CDM::E_CDM_FILE_TYPE CoordinateFileType;   ///<座標ファイルのファイルタイプ
   CDM::E_CDM_DTYPE CoordinateFilePrecision;  ///<座標ファイルのデータタイプ
   T pit_gcXsta;                              ///<X方向のガイドセルの格子幅(始点側)
   T pit_gcXend;                              ///<X方向のガイドセルの格子幅(終点側)
@@ -49,7 +49,7 @@ public:
   cdm_NonUniformDomain() : cdm_Domain(), XCoordinates(NULL), YCoordinates(NULL), ZCoordinates(NULL)
   {
     CoordinateFile = "";
-    CoordinateFileFormat = CDM::E_CDM_FILE_TYPE_DEFAULT;
+    CoordinateFileType = CDM::E_CDM_FILE_TYPE_DEFAULT;
     CoordinateFilePrecision = CDM::E_CDM_DTYPE_UNKNOWN;
   }
 
@@ -64,7 +64,7 @@ public:
   * @param [in] _YCoordinates   Y座標データポインタ(Domainの格子点)
   * @param [in] _ZCoordinates   Z座標データポインタ(Domainの格子点)
   * @param [in] _CoordinateFile          座標データ名
-  * @param [in] _CoordinateFileFormat    座標データのファイルタイプ
+  * @param [in] _CoordinateFileType      座標データのファイルタイプ
   * @param [in] _CoordinateFilePrecision 座標データの精度
   * @param [in] _gc                      ガイドセル数
   */ 
@@ -77,7 +77,7 @@ public:
                        const T* _YCoordinates,
                        const T* _ZCoordinates,
                        const std::string _CoordinateFile,
-                       const CDM::E_CDM_FILE_TYPE _CoordinateFileFormat,
+                       const CDM::E_CDM_FILE_TYPE _CoordinateFileType,
                        const CDM::E_CDM_DTYPE _CoordinateFilePrecision,
                        const int _gc=0)
   : cdm_Domain(_GlobalOrigin,_GlobalPitch,_GlobalVoxel,_GlobalDivision,_iblank)
@@ -95,7 +95,7 @@ public:
       ZCoordinates[k] = _ZCoordinates[k];
     }
     CoordinateFile = _CoordinateFile;
-    CoordinateFileFormat = _CoordinateFileFormat;
+    CoordinateFileType = _CoordinateFileType;
     CoordinateFilePrecision = _CoordinateFilePrecision;
 
     //GlobalOrigin,GlobalRegionの設定（cdm_Domainのコンストラクタで設定したものを上書き）
