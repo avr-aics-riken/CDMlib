@@ -108,7 +108,7 @@ bool convMx1::exec()
   //dfi*stepのループ 
   for (int i=0;i<m_StepRankList.size();i++) {
 
-    cdm_Domain* DFI_Domian = (cdm_Domain *)m_StepRankList[i].dfi->GetcdmDomain();
+    const cdm_Domain* DFI_Domian = m_StepRankList[i].dfi->GetcdmDomain();
     cdm_Process* DFI_Process = (cdm_Process *)m_StepRankList[i].dfi->GetcdmProcess();
     //全体サイズのキープ
     l_imax= DFI_Domian->GlobalVoxel[0];
@@ -182,7 +182,7 @@ bool convMx1::exec()
     div[1]=DFI_Domian->GlobalDivision[1];
     div[2]=DFI_Domian->GlobalDivision[2];
     //mapHeadX,Y,Zの生成
-    DFI_Process->CreateRankList(*DFI_Domian,
+    DFI_Process->CreateRankList(DFI_Domian,
                                 mapHeadX,
                                 mapHeadY,
                                 mapHeadZ);

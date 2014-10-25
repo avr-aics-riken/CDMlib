@@ -41,7 +41,7 @@ public:
   cdm_DFI_PLOT3D(const cdm_FileInfo F_Info, 
                  const cdm_FilePath F_Path, 
                  const cdm_Unit unit, 
-                 const cdm_Domain domain, 
+                 const cdm_Domain* domain, 
                  const cdm_MPI mpi,
                  const cdm_TimeSlice TSlice, 
                  const cdm_Process process)
@@ -186,15 +186,13 @@ protected:
   write_GridData(); 
 
   /**
-   * @brief xyzを計算して出力
+   * @brief xyzを出力
    * @param [in] fp  出力ファイルポインタ
-   * @param [in] org 原点座標値
-   * @param [in] pit ピッチ
    * @param [in] sz  サイズ
    */ 
   template<class T>
   void
-  write_XYZ(FILE* fp, T* org, T* pit, int sz[3]);
+  write_XYZ(FILE* fp, int sz[3]);
 
   /**
    * @brief func data 出力

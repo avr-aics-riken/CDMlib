@@ -86,8 +86,8 @@ void cdm_FileInfo::setVariableName(int pvari,
 // 変数名を取得する
 std::string cdm_FileInfo::getVariableName(int pvari)
 {
-  std::string CompName="";
-  if(VariableName.size()<pvari+1) return CompName;
+  std::string VariName="";
+  if(VariableName.size()<pvari+1) return VariName;
   return VariableName[pvari];
 }
 
@@ -107,10 +107,13 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
   //DFIType
   label = "/FileInfo/DFIType";
   if( !(tpCntl.GetValue(label, &str )) ) {
-    DFIType = CDM::E_CDM_DFITYPE_CARTESIAN;
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_DFITYPE;
   } else {
     if( !strcasecmp(str.c_str(),"Cartesian" ) ) {
       DFIType = CDM::E_CDM_DFITYPE_CARTESIAN;
+    } else if( !strcasecmp(str.c_str(),"Non_Uniform_Cartesian" ) ) {
+      DFIType = CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN;
     } else {
       printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
       return CDM::E_CDM_ERROR_READ_DFI_DFITYPE;
@@ -315,7 +318,11 @@ cdm_FileInfo::Write(FILE* fp,
 
 //FCONV 20140116.s
   _CDM_WRITE_TAB(fp, tab+1);
-  fprintf(fp, "DFIType            = \"Cartesian\"\n");
+  if(        DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
+    fprintf(fp, "DFIType            = \"Cartesian\"\n");
+  } else if( DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
+    fprintf(fp, "DFIType            = \"Non_Uniform_Cartesian\"\n");
+  }
 //FCONV 20140116.s
 
   _CDM_WRITE_TAB(fp, tab+1);

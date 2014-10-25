@@ -44,7 +44,7 @@ public:
    */
   CDM::E_CDM_ERRORCODE
   Read(cdm_TextParser tpCntl, 
-       const cdm_Domain domain); 
+       const cdm_Domain* domain); 
 
   /**
    * @brief DFIファイル:MPIを出力する

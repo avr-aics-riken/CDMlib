@@ -318,9 +318,10 @@ bool convMxM::mxmsolv(std::string dfiname,
   tail[0]=head[0]+l_imax_th-1;
   tail[1]=head[1]+l_jmax_th-1;
   tail[2]=head[2]+l_kmax_th-1;
-  cdm_DFI* out_dfi = cdm_DFI::WriteInit(
+  cdm_DFI* out_dfi = cdm_DFI::WriteInit<double>(
                      MPI_COMM_WORLD,
                      "",
+                     DFI_FInfo->DFIType,
                      m_param->Get_OutputDir(),
                      DFI_FInfo->Prefix,
                      m_param->Get_OutputFormat(),

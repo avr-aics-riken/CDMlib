@@ -43,7 +43,7 @@ cdm_MPI::~cdm_MPI()
 // DFIファイル：MPI要素の読込み
 CDM::E_CDM_ERRORCODE
 cdm_MPI::Read(cdm_TextParser tpCntl, 
-              const cdm_Domain domain) 
+              const cdm_Domain* domain) 
 {
 
   std::string str;
@@ -53,7 +53,7 @@ cdm_MPI::Read(cdm_TextParser tpCntl,
   //NumberOfRank
   label = "/MPI/NumberOfRank";
   if ( !(tpCntl.GetValue(label, &ct )) ) {
-    ct = domain.GlobalDivision[0]*domain.GlobalDivision[1]*domain.GlobalDivision[2];
+    ct = domain->GlobalDivision[0]*domain->GlobalDivision[1]*domain->GlobalDivision[2];
   }
   else {
     NumberOfRank = ct;

@@ -311,7 +311,7 @@ cdm_Process::Read(cdm_TextParser tpCntl)
 // #################################################################
 // 読込みランクリストの作成
 CDM::E_CDM_ERRORCODE 
-cdm_Process::CheckReadRank(cdm_Domain dfi_domain, 
+cdm_Process::CheckReadRank(const cdm_Domain* dfi_domain, 
                            const int head[3],
                            const int tail[3],
                            CDM::E_CDM_READTYPE readflag,
@@ -328,7 +328,7 @@ cdm_Process::CheckReadRank(cdm_Domain dfi_domain,
 
   //rankMapが未定義（DFIにProcess/Rank[@]がある場合）
   if( m_rankMap == NULL ) {
-    m_rankMap = CreateRankMap(dfi_domain.GlobalDivision, mapHeadX, mapHeadY, mapHeadZ); 
+    m_rankMap = CreateRankMap(dfi_domain->GlobalDivision, mapHeadX, mapHeadY, mapHeadZ); 
   }
 
   //mapHeadX,mapHeadY,mapHeadZが未定義
@@ -351,7 +351,7 @@ cdm_Process::CheckReadRank(cdm_Domain dfi_domain,
 // #################################################################
 // DFIのProcessにHeadIndex,TailIndex指定が無い場合RankListを生成
 CDM::E_CDM_ERRORCODE 
-cdm_Process::CreateRankList(cdm_Domain dfi_domain,
+cdm_Process::CreateRankList(const cdm_Domain* dfi_domain,
                             map<int,int> &mapHeadX,
                             map<int,int> &mapHeadY,
                             map<int,int> &mapHeadZ)
@@ -364,9 +364,9 @@ cdm_Process::CreateRankList(cdm_Domain dfi_domain,
   ret = CreateSubDomainInfo(dfi_domain,subDomainInfo);
   if( ret != CDM::E_CDM_SUCCESS ) return ret;
   
-  m_rankMap = CreateRankMap(dfi_domain.GlobalDivision,subDomainInfo);
+  m_rankMap = CreateRankMap(dfi_domain->GlobalDivision,subDomainInfo);
 
-  ret = CreateRankList(dfi_domain.GlobalDivision, dfi_domain.GlobalVoxel,
+  ret = CreateRankList(dfi_domain->GlobalDivision, dfi_domain->GlobalVoxel,
                        mapHeadX, mapHeadY, mapHeadZ);
 
   return ret;
@@ -376,19 +376,19 @@ cdm_Process::CreateRankList(cdm_Domain dfi_domain,
 // #################################################################
 // ActiveSubDomain情報を作成
 CDM::E_CDM_ERRORCODE 
-cdm_Process::CreateSubDomainInfo(cdm_Domain domain,
+cdm_Process::CreateSubDomainInfo(const cdm_Domain* domain,
                                  vector<cdm_ActiveSubDomain> &subDomainInfo)
 {
-  if( !domain.ActiveSubdomainFile.empty() ) {
+  if( !domain->ActiveSubdomainFile.empty() ) {
     int divSudomain[3] = {0,0,0};
-    CDM::E_CDM_ERRORCODE ret = ReadActiveSubdomainFile( domain.ActiveSubdomainFile,
+    CDM::E_CDM_ERRORCODE ret = ReadActiveSubdomainFile( domain->ActiveSubdomainFile,
                                                    subDomainInfo, divSudomain);
     if( ret != CDM::E_CDM_SUCCESS ) return ret;
   } else {
     //活性サブドメイン情報
-    for( int k=0;k<domain.GlobalDivision[2];k++ ){
-    for( int j=0;j<domain.GlobalDivision[1];j++ ){
-    for( int i=0;i<domain.GlobalDivision[0];i++ ){
+    for( int k=0;k<domain->GlobalDivision[2];k++ ){
+    for( int j=0;j<domain->GlobalDivision[1];j++ ){
+    for( int i=0;i<domain->GlobalDivision[0];i++ ){
       int pos[3] = {i,j,k};
       cdm_ActiveSubDomain dom( pos );
       subDomainInfo.push_back(dom);
@@ -401,8 +401,8 @@ cdm_Process::CreateSubDomainInfo(cdm_Domain domain,
 // #################################################################
 // subDomainをもとにCPM同様の分割方法でRankListを生成する
 CDM::E_CDM_ERRORCODE 
-cdm_Process::CreateRankList(int div[3],
-                            int gvox[3],
+cdm_Process::CreateRankList(const int div[3],
+                            const int gvox[3],
                             map<int,int> &mapHeadX,
                             map<int,int> &mapHeadY,
                             map<int,int> &mapHeadZ )
@@ -590,7 +590,7 @@ int cdm_Process::isMatchEndianSbdmMagick( int ident )
 // #################################################################
 // ランクマップを生成 （非活性を含む）
 int* cdm_Process::CreateRankMap(
-                                int div[3],
+                                const int div[3],
                                 std::vector<cdm_ActiveSubDomain> &subDomainInfo)
 {
 
@@ -668,7 +668,7 @@ void cdm_Process::CreateHeadMap(int* head,
 
 // #################################################################
 //DFI用ランクマップを生成
-int* cdm_Process::CreateRankMap(int div[3],
+int* cdm_Process::CreateRankMap(const int div[3],
                                 headT &mapHeadX,
                                 headT &mapHeadY,
                                 headT &mapHeadZ)
@@ -716,7 +716,7 @@ int* cdm_Process::CreateRankMap(int div[3],
 // #################################################################
 //  読込みランクファイルリストの作成
 CDM::E_CDM_ERRORCODE 
-cdm_Process::CheckStartEnd(cdm_Domain dfi_domain,
+cdm_Process::CheckStartEnd(const cdm_Domain* dfi_domain,
                            const int head[3],
                            const int tail[3],
                            CDM::E_CDM_READTYPE readflag,
@@ -728,9 +728,9 @@ cdm_Process::CheckStartEnd(cdm_Domain dfi_domain,
 
   int StartEnd[6];
 
-  int ndiv = dfi_domain.GlobalDivision[0]*
-             dfi_domain.GlobalDivision[1]*
-             dfi_domain.GlobalDivision[2];
+  int ndiv = dfi_domain->GlobalDivision[0]*
+             dfi_domain->GlobalDivision[1]*
+             dfi_domain->GlobalDivision[2];
   int head2[3],tail2[3];
   if( readflag == CDM::E_CDM_SAMEDIV_SAMERES || readflag == CDM::E_CDM_DIFFDIV_SAMERES ) {
     for(int i=0; i<3; i++) {
@@ -775,9 +775,9 @@ cdm_Process::CheckStartEnd(cdm_Domain dfi_domain,
   for(int k=StartEnd[2]; k<=StartEnd[5]; k++) {
   for(int j=StartEnd[1]; j<=StartEnd[4]; j++) {
   for(int i=StartEnd[0]; i<=StartEnd[3]; i++) {
-    int rank = m_rankMap[_CDM_IDX_IJK(i,j,k,dfi_domain.GlobalDivision[0],
-                                          dfi_domain.GlobalDivision[1],
-                                          dfi_domain.GlobalDivision[2],0)];
+    int rank = m_rankMap[_CDM_IDX_IJK(i,j,k,dfi_domain->GlobalDivision[0],
+                                          dfi_domain->GlobalDivision[1],
+                                          dfi_domain->GlobalDivision[2],0)];
     if( rank<0 ) continue;
 
     readRankList.push_back(rank);

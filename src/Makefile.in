@@ -381,6 +381,7 @@ CDM_include_HEADERS = \
     $(top_builddir)/include/cdm_Unit.h \
     $(top_builddir)/include/cdm_TimeSlice.h \
     $(top_builddir)/include/cdm_Domain.h \
+    $(top_builddir)/include/cdm_NonUniformDomain.h \
     $(top_builddir)/include/cdm_MPI.h \
     $(top_builddir)/include/cdm_Process.h \
     $(top_builddir)/include/cdm_DFI_BOV.h \
@@ -398,7 +399,8 @@ CDM_inline_includedir = $(includedir)/inline
 CDM_inline_include_HEADERS = \
     $(top_builddir)/include/inline/cdm_Array_inline.h \
     $(top_builddir)/include/inline/cdm_DFI_inline.h \
-    $(top_builddir)/include/inline/cdm_Plot3d_inline.h
+    $(top_builddir)/include/inline/cdm_Plot3d_inline.h \
+    $(top_builddir)/include/inline/cdm_NonUniformDomain_inline.h
 
 all: all-am
 

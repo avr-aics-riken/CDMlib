@@ -203,8 +203,9 @@ void convMxN::VoxelInit()
     //格子点出力のとき、出力ガイドセルを0に設定
     if( m_bgrid_interp_flag ) outGc=0; 
 
-    cdm_DFI* dfi=cdm_DFI::WriteInit(MPI_COMM_WORLD,
+    cdm_DFI* dfi=cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
                           outdfifname,
+                          DFI_FInfo->DFIType,
                           m_param->Get_OutputDir(),
                           DFI_FInfo->Prefix,
                           m_param->Get_OutputFormat(),

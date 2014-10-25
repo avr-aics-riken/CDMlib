@@ -46,8 +46,8 @@ cdm_DFI::ReadData(cdm_Array *dst,
   CDM::E_CDM_READTYPE readflag; ///<読込み判定フラグ
 
   /** 読込みフラグ取得 */
-  readflag = CheckReadType(Gvoxel, DFI_Domain.GlobalVoxel,
-                           Gdivision, DFI_Domain.GlobalDivision);
+  readflag = CheckReadType(Gvoxel, DFI_Domain->GlobalVoxel,
+                           Gdivision, DFI_Domain->GlobalDivision);
 
   /** 粗密フラグセット */
   if( readflag == CDM::E_CDM_SAMEDIV_REFINEMENT || readflag == CDM::E_CDM_DIFFDIV_REFINEMENT ) isSame = false; 

@@ -20,29 +20,29 @@
 // コンストラクタ
 cdm_Domain::cdm_Domain()
 {
-
   for(int i=0; i<3; i++) GlobalOrigin[i]=0.0;
   for(int i=0; i<3; i++) GlobalRegion[i]=0.0;
   for(int i=0; i<3; i++) GlobalVoxel[i]=0;
   for(int i=0; i<3; i++) GlobalDivision[i]=0;
+  for(int i=0; i<3; i++) Pitch[i]=0.0;
   ActiveSubdomainFile="";
-
 }
 
 // #################################################################
 // コンストラクタ
-cdm_Domain::cdm_Domain(const double* _GlobalOrigin, 
-                       const double* _GlobalRegion, 
+cdm_Domain::cdm_Domain(const double* _GlobalOrigin,
+                       const double* _GlobalPitch,
                        const int* _GlobalVoxel,
-                       const int* _GlobalDivision)
+                       const int* _GlobalDivision,
+                       const int* _iblank)
 {
   GlobalOrigin[0]=_GlobalOrigin[0];
   GlobalOrigin[1]=_GlobalOrigin[1];
   GlobalOrigin[2]=_GlobalOrigin[2];
 
-  GlobalRegion[0]=_GlobalRegion[0];
-  GlobalRegion[1]=_GlobalRegion[1];
-  GlobalRegion[2]=_GlobalRegion[2];
+  Pitch[0]=_GlobalPitch[0];
+  Pitch[1]=_GlobalPitch[1];
+  Pitch[2]=_GlobalPitch[2];
 
   GlobalVoxel[0]=_GlobalVoxel[0];
   GlobalVoxel[1]=_GlobalVoxel[1];
@@ -51,19 +51,59 @@ cdm_Domain::cdm_Domain(const double* _GlobalOrigin,
   GlobalDivision[0]=_GlobalDivision[0];
   GlobalDivision[1]=_GlobalDivision[1];
   GlobalDivision[2]=_GlobalDivision[2];
+
+  GlobalRegion[0]=_GlobalPitch[0]*_GlobalVoxel[0];
+  GlobalRegion[1]=_GlobalPitch[1]*_GlobalVoxel[1];
+  GlobalRegion[2]=_GlobalPitch[2]*_GlobalVoxel[2];
+
+  iblank = _iblank;
+}
+
+cdm_Domain::cdm_Domain(const float* _GlobalOrigin,
+                       const float* _GlobalPitch,
+                       const int* _GlobalVoxel,
+                       const int* _GlobalDivision,
+                       const int* _iblank)
+{
+  GlobalOrigin[0]=(double)_GlobalOrigin[0];
+  GlobalOrigin[1]=(double)_GlobalOrigin[1];
+  GlobalOrigin[2]=(double)_GlobalOrigin[2];
+
+  Pitch[0]=(double)_GlobalPitch[0];
+  Pitch[1]=(double)_GlobalPitch[1];
+  Pitch[2]=(double)_GlobalPitch[2];
+
+  GlobalVoxel[0]=_GlobalVoxel[0];
+  GlobalVoxel[1]=_GlobalVoxel[1];
+  GlobalVoxel[2]=_GlobalVoxel[2];
+
+  GlobalRegion[0]=(double)_GlobalPitch[0]*_GlobalVoxel[0];
+  GlobalRegion[1]=(double)_GlobalPitch[1]*_GlobalVoxel[1];
+  GlobalRegion[2]=(double)_GlobalPitch[2]*_GlobalVoxel[2];
+
+  iblank = _iblank;
+}
+
+void cdm_Domain::Clear()
+{
+  for(int i=0; i<3; i++) GlobalOrigin[i]=0.0;
+  for(int i=0; i<3; i++) GlobalRegion[i]=0.0;
+  for(int i=0; i<3; i++) GlobalVoxel[i]=0;
+  for(int i=0; i<3; i++) GlobalDivision[i]=0;
+  for(int i=0; i<3; i++) Pitch[i]=0.0;
+  ActiveSubdomainFile="";
 }
 
 // #################################################################
 // デストラクタ
 cdm_Domain::~cdm_Domain()
 {
-
 }
 
 // #################################################################
 // Domain の読込み関数
 CDM::E_CDM_ERRORCODE
-cdm_Domain::Read(cdm_TextParser tpCntl) 
+cdm_Domain::Read(cdm_TextParser tpCntl)
 {
 
   std::string str;
@@ -119,6 +159,11 @@ cdm_Domain::Read(cdm_TextParser tpCntl)
   GlobalDivision[1]=iv[1];
   GlobalDivision[2]=iv[2];
 
+  //Pitch
+  Pitch[0] = GlobalRegion[0] / GlobalVoxel[0];
+  Pitch[1] = GlobalRegion[1] / GlobalVoxel[1];
+  Pitch[2] = GlobalRegion[2] / GlobalVoxel[2];
+
   //ActiveSubdomain
   label = "/Domain/ActiveSubdomainFile";
   if ( !(tpCntl.GetValue(label, &str )) )
@@ -135,7 +180,7 @@ cdm_Domain::Read(cdm_TextParser tpCntl)
 // DFIファイル:Domain要素を出力する
 CDM::E_CDM_ERRORCODE
 cdm_Domain::Write(FILE* fp, 
-                  const unsigned tab)
+                  const unsigned tab) const
 {
 
   fprintf(fp, "Domain {\n");

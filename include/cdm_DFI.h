@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/stat.h>
-#include <typeinfo>
 #include <set>
 #include <map>
 #include <string>
@@ -57,7 +56,7 @@ protected :
   cdm_FileInfo      DFI_Finfo;       ///< FileInfo class
   cdm_FilePath      DFI_Fpath;       ///< FilePath class
   cdm_Unit          DFI_Unit;        ///< Unit class
-  cdm_Domain        DFI_Domain;      ///< Domain class
+  const cdm_Domain* DFI_Domain;      ///< Domain class
   cdm_MPI           DFI_MPI;         ///< MPI class
   cdm_TimeSlice     DFI_TimeSlice;   ///< TimeSlice class
   cdm_Process       DFI_Process;     ///< Process class
@@ -74,7 +73,7 @@ public:
   cdm_DFI();
   
   /**　デストラクタ */
-  ~cdm_DFI();
+  virtual ~cdm_DFI();
 
   /**
    * @brief read インスタンス(BOVもしくはPLOT3Dの場合にインスタンス生成)
@@ -130,7 +129,7 @@ public:
   /**
    * @brief cdm_Domainクラスのセット
    */
-  void SetcdmDomain(cdm_Domain domain); 
+  void SetcdmDomain(cdm_Domain* domain); 
 
   /**
    * @brief cdm_MPIクラスのポインタ取得
@@ -205,9 +204,10 @@ public:
                                 CDM::E_CDM_ONOFF TimeSliceDirFlag);
 
   /**
-   * @brief write インスタンス float型
+   * @brief write インスタンス (template function)
    * @param [in] comm        MPIコミュニケータ
    * @param [in] DfiName     DFIファイル名
+   * @param [in] DfiType     格子タイプ
    * @param [in] Path        フィールドデータのディレクトリ
    * @param [in] prefix      ベースファイル名
    * @param [in] format      ファイルフォーマット
@@ -224,11 +224,19 @@ public:
    * @param [in] hostname    ホスト名
    * @param [in] TSliceOnOff TimeSliceフラグ
    * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
+   * @param [in] coord_X     X座標データポインタ
+   * @param [in] coord_Y     Y座標データポインタ
+   * @param [in] coord_Z     Z座標データポインタ
+   * @param [in] coord_file          座標データ名
+   * @param [in] coord_fileformat    座標データのファイルタイプ
+   * @param [in] coord_fileprecision 座標データの精度
    * @return インスタンスされたクラスのポインタ
    */
+  template<typename T>
   static cdm_DFI*
   WriteInit(const MPI_Comm comm,
             const std::string DfiName,
+            const CDM::E_CDM_DFITYPE DfiType,
             const std::string Path,
             const std::string prefix,
             const CDM::E_CDM_FORMAT format,
@@ -237,56 +245,20 @@ public:
             const int nVari,
             const std::string proc_fname,
             const int G_size[3],
-            const float pitch[3],
-            const float G_origin[3],
+            const T pitch[3],
+            const T G_origin[3],
             const int division[3],
             const int head[3],
             const int tail[3],
             const std::string hostname,
             const CDM::E_CDM_ONOFF TSliceOnOff,
-            const int* iblank = NULL);
-
-  /**
-   * @brief write インスタンス double型
-   * @param [in] comm        MPIコミュニケータ
-   * @param [in] DfiName     DFIファイル名
-   * @param [in] Path        フィールドデータのディレクトリ
-   * @param [in] prefix      ベースファイル名
-   * @param [in] format      ファイルフォーマット
-   * @param [in] GCell       出力仮想セル数　　　
-   * @param [in] DataType    データタイプ　　　　
-   * @param [in] nVari       変数の個数　　　　　　　
-   * @param [in] proc_fname  proc.dfiファイル名
-   * @param [in] G_size      グローバルボクセルサイズ　
-   * @param [in] pitch       ピッチ　　　　　　　　　　
-   * @param [in] G_origin    原点座標値　　　　　　　　
-   * @param [in] division    領域分割数　　　　　　　　
-   * @param [in] head        計算領域の開始位置　　　　
-   * @param [in] tail        計算領域の終了位置　　　　
-   * @param [in] hostname    ホスト名　　　　　　　　　
-   * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
-   * @param [in] TSliceOnOff TimeSliceフラグ
-   * @return インスタンスされたクラスのポインタ
-   */
-  static cdm_DFI* 
-  WriteInit(const MPI_Comm comm,
-            const std::string DfiName,
-            const std::string Path,
-            const std::string prefix,
-            const CDM::E_CDM_FORMAT format,
-            const int GCell,
-            const CDM::E_CDM_DTYPE DataType,
-            const int nVari,
-            const std::string proc_fname,
-            const int G_size[3],
-            const double pitch[3],
-            const double G_origin[3],
-            const int division[3],
-            const int head[3],
-            const int tail[3],
-            const std::string hostname,
-            const CDM::E_CDM_ONOFF TSliceOnOff,
-            const int* iblank = NULL);
+            const int* iblank = NULL,
+            const T* coord_X = NULL,
+            const T* coord_Y = NULL,
+            const T* coord_Z = NULL,
+            const std::string coord_file = "",
+            const CDM::E_CDM_FILE_TYPE coord_fileformat = CDM::E_CDM_FILE_TYPE_DEFAULT,
+            const CDM::E_CDM_DTYPE coord_fileprecision = CDM::E_CDM_DTYPE_UNKNOWN);
 
   /**
    * @brief RankIDをセットする
@@ -569,14 +541,14 @@ public:
    * @brief DFI DomainのGlobalVoxelの取り出し
    * @return GlobalVoxelのポインタ
    */
-  int* 
+  const int* 
   GetDFIGlobalVoxel(); 
 
   /**
    * @brief DFI DomainのGlobalDivisionの取り出し
    * @return GlobalDivisionのポインタ
    */
-  int* 
+  const int* 
   GetDFIGlobalDivision(); 
 
   /**
@@ -676,7 +648,7 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  CheckReadRank(cdm_Domain dfi_domain,
+  CheckReadRank(const cdm_Domain* dfi_domain,
                 const int head[3],
                 const int tail[3],
                 CDM::E_CDM_READTYPE readflag,

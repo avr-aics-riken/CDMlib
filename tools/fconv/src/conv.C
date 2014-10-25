@@ -340,7 +340,7 @@ void CONV::PrintDFI(FILE* fp)
       fprintf(fp,"\tDFI_Info->TimeSliceDirFlag         = \"off\"\n");
     }
     fprintf(fp,"\tDFI_Info->Prefix                   = \"%s\"\n",DFI_Info->Prefix.c_str());
-    fprintf(fp,"\tDFI_Info->FileFormat               = \"%s\2\n",
+    fprintf(fp,"\tDFI_Info->FileFormat               = \"%s\"\n",
             dfi->GetFileFormatString().c_str());
     if( DFI_Info->FieldFilenameFormat == CDM::E_CDM_FNAME_RANK_STEP ) {
       fprintf(fp,"\tDFI_Info->FieldFilenameFormat      = \"rank_step\"\n");
@@ -1052,9 +1052,6 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
     Gvoxel[2]=Gvoxel[2]-(dfi_domain->GlobalVoxel[2]-IndexEnd[2]);
   }
 
-  //Gregionの更新
-  for(int i=0; i<3; i++) Gregion[i]=(double)Gvoxel[i]*pit[i];
-
   //間引きありのときボクセルサイズを更新
   if( thin_count > 1 ) {
     for(int i=0; i<3; i++) {
@@ -1066,7 +1063,8 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
   if( numProc == 1 ) for(int i=0; i<3; i++) Gdiv[i]=1;
 
   //out_domainの生成 
-  out_domain = new cdm_Domain(Gorigin,Gregion,Gvoxel,Gdiv);
+  int *iblank = NULL; //cdm_Domainコンストラクタのiblank追加による一時的な対処(AS田中)
+  out_domain = new cdm_Domain(Gorigin,pit,Gvoxel,Gdiv,iblank);
 
   //Process 情報の生成
   const cdm_Process* dfi_Process = dfi->GetcdmProcess();

@@ -11,6 +11,16 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-25
+Merge branch advance_develop_NonUniform into branch advance_develop
+ブランチadvance_develop_NonUniformをブランチadvance_developにマージした。
+その際、cdm_DFI.h,cdm_DFI.Cは競合が発生したので解決した。
+また、
+E_CDM_OUTPUT_TYPE-> E_CDM_FILE_TYPE
+CompName -> VariName
+に変更できていない部分があったので変更した。
+
+------------------
 2014-10-24
 - plot3d check
 - #define D_CDM_EXT_FUNC "func" >> "fun" // 拡張子は"fun", FileFormat識別子は"plot3d"
