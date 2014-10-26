@@ -27,7 +27,7 @@ private:
   T *ZCoordinates;                           ///<Z座標データポインタ(Domainの格子点)
   std::string CoordinateFile;                ///<CoordinateFileファイル名
   CDM::E_CDM_FILE_TYPE CoordinateFileType;   ///<座標ファイルのファイルタイプ
-  CDM::E_CDM_DTYPE CoordinateFilePrecision;  ///<座標ファイルのデータタイプ
+  CDM::E_CDM_DTYPE CoordinateFilePrecision;  ///<座標ファイルのデータ精度
   T pit_gcXsta;                              ///<X方向のガイドセルの格子幅(始点側)
   T pit_gcXend;                              ///<X方向のガイドセルの格子幅(終点側)
   T pit_gcYsta;                              ///<Y方向のガイドセルの格子幅(始点側)

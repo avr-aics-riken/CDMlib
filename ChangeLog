@@ -11,6 +11,11 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-26
+Minor corrections about coordinatefile information
+座標ファイルに関する情報の変数名やコメント文の訂正を行った。
+
+------------------
 2014-10-25
 Change CoordinateFileFormat to CoordinateFileType
 変数CoordinateFileFormatをCoordinateFileTypeに変更した。

@@ -358,7 +358,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const T* coord_Y,
                             const T* coord_Z,
                             const std::string coord_file,
-                            const CDM::E_CDM_FILE_TYPE coord_fileformat,
+                            const CDM::E_CDM_FILE_TYPE coord_filetype,
                             const CDM::E_CDM_DTYPE coord_fileprecision)
 {
 
@@ -433,7 +433,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                                              coord_Y,
                                              coord_Z,
                                              coord_file,
-                                             coord_fileformat,
+                                             coord_filetype,
                                              coord_fileprecision,
                                              GCell);
   } else {
