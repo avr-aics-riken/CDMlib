@@ -125,9 +125,9 @@ cdm_NonUniformDomain<T>::Read(cdm_TextParser tpCntl)
       printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
       return CDM::E_CDM_ERROR_READ_DFI_COORDINATEFILEPRECISION;
     }
-    if( !strcasecmp(str.c_str(),"float32" ) ) {
+    if( !strcasecmp(str.c_str(),"Float32" ) ) {
       CoordinateFilePrecision=CDM::E_CDM_FLOAT32;
-    } else if( !strcasecmp(str.c_str(),"float64" ) ) {
+    } else if( !strcasecmp(str.c_str(),"Float64" ) ) {
       CoordinateFilePrecision=CDM::E_CDM_FLOAT64;
     } else {
       printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());

@@ -15,6 +15,14 @@
  * @author aics    
  */
 
+#include "cdm_DFI_SPH.h"
+#include "cdm_DFI_BOV.h"
+#include "cdm_DFI_AVS.h"
+#include "cdm_DFI_PLOT3D.h"
+#include "cdm_DFI_VTK.h"
+#include "cdm_NonUniformDomain.h"
+#include <typeinfo>
+
 #ifdef CDM_INLINE
  #undef CDM_INLINE
 #endif
@@ -326,18 +334,12 @@ cdm_DFI::VolumeDataDivide(cdm_TypeArray<T> *P)
   }
 }
 
-#include "cdm_DFI_SPH.h"
-#include "cdm_DFI_BOV.h"
-#include "cdm_DFI_AVS.h"
-#include "cdm_DFI_PLOT3D.h"
-#include "cdm_DFI_VTK.h"
-#include "cdm_NonUniformDomain.h"
-
+// #################################################################
+// DFI Write インスタンス template 型 (等間隔格子用)
 template<typename T>
 CDM_INLINE
 cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const std::string DfiName,
-                            const CDM::E_CDM_DFITYPE DfiType,
                             const std::string Path,
                             const std::string prefix,
                             const CDM::E_CDM_FORMAT format,
@@ -353,13 +355,118 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const int tail[3],
                             const std::string hostname,
                             const CDM::E_CDM_ONOFF TSliceOnOff,
-                            const int* iblank,
+                            const int* iblank)
+{
+
+  //インスタンスout_domainを生成し、等間隔格子・不等間隔格子の共通処理版のWriteInit関数を呼ぶ
+
+  cdm_Domain* out_domain = NULL;
+  out_domain = new cdm_Domain(G_origin,
+                              pitch,
+                              G_size,
+                              division,
+                              iblank);
+
+  return WriteInit<T>(comm,
+                      DfiName,
+                      Path,
+                      prefix,
+                      format,
+                      GCell,
+                      DataType,
+                      nVari,
+                      proc_fname,
+                      out_domain,
+                      head,
+                      tail,
+                      hostname,
+                      TSliceOnOff);
+
+}
+
+// #################################################################
+// DFI Write インスタンス template 型 (不等間隔格子用)
+template<typename T>
+CDM_INLINE
+cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
+                            const std::string DfiName,
+                            const std::string Path,
+                            const std::string prefix,
+                            const CDM::E_CDM_FORMAT format,
+                            const int GCell,
+                            const CDM::E_CDM_DTYPE DataType,
+                            const int nVari,
+                            const std::string proc_fname,
+                            const int G_size[3],
                             const T* coord_X,
                             const T* coord_Y,
                             const T* coord_Z,
                             const std::string coord_file,
                             const CDM::E_CDM_FILE_TYPE coord_filetype,
-                            const CDM::E_CDM_DTYPE coord_fileprecision)
+                            const int division[3],
+                            const int head[3],
+                            const int tail[3],
+                            const std::string hostname,
+                            const CDM::E_CDM_ONOFF TSliceOnOff,
+                            const int* iblank)
+{
+
+  //インスタンスout_domainを生成し、等間隔格子・不等間隔格子の共通処理版のWriteInit関数を呼ぶ
+
+  if( format == CDM::E_CDM_FMT_SPH ) {
+    printf("\tCDM error : NonUniformDomain is not supported in SPH File Format.");
+    return NULL;
+  } else if ( format == CDM::E_CDM_FMT_BOV ) {
+    printf("\tCDM error : NonUniformDomain is not supported in BOV File Format.");
+    return NULL;
+  }
+
+  cdm_Domain* out_domain = NULL;
+  out_domain = new cdm_NonUniformDomain<T>(coord_X,
+                                           coord_Y,
+                                           coord_Z,
+                                           coord_file,
+                                           coord_filetype,
+                                           G_size,
+                                           division,
+                                           iblank,
+                                           GCell);
+
+  return WriteInit<T>(comm,
+                      DfiName,
+                      Path,
+                      prefix,
+                      format,
+                      GCell,
+                      DataType,
+                      nVari,
+                      proc_fname,
+                      out_domain,
+                      head,
+                      tail,
+                      hostname,
+                      TSliceOnOff);
+
+}
+
+// #################################################################
+// DFI Write インスタンス template 型 (等間隔格子・不等間隔格子の共通処理部分)
+template<typename T>
+CDM_INLINE
+cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
+                            const std::string DfiName,
+                            const std::string Path,
+                            const std::string prefix,
+                            const CDM::E_CDM_FORMAT format,
+                            const int GCell,
+                            const CDM::E_CDM_DTYPE DataType,
+                            const int nVari,
+                            const std::string proc_fname,
+                            const cdm_Domain* out_domain,
+                            const int head[3],
+                            const int tail[3],
+                            const std::string hostname,
+                            const CDM::E_CDM_ONOFF TSliceOnOff)
 {
 
 //Check for SPH format 20141022.s
@@ -380,7 +487,14 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   MPI_Comm_size( comm, &nrank );
 
   cdm_FileInfo out_F_info;
-  out_F_info.DFIType          = DfiType;
+  if( typeid(*out_domain) == typeid(cdm_Domain) ){
+    out_F_info.DFIType = CDM::E_CDM_DFITYPE_CARTESIAN;
+  } else if( typeid(*out_domain) == typeid(cdm_NonUniformDomain<T>) ) {
+    out_F_info.DFIType = CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN;
+  } else {
+    printf("\tCDM error : Can't get DFIType.\n");
+    return NULL;
+  }
   out_F_info.DirectoryPath    = Path;
   out_F_info.TimeSliceDirFlag = TSliceOnOff;
   out_F_info.Prefix           = prefix;
@@ -408,38 +522,6 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   cdm_MPI out_mpi;
   out_mpi.NumberOfRank = nrank;
   out_mpi.NumberOfGroup = 1;
-
-  cdm_Domain* out_domain = NULL;
-  if( out_F_info.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
-    out_domain = new cdm_Domain(G_origin,
-                                pitch,
-                                G_size,
-                                division,
-                                iblank);
-  } else if(out_F_info.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN) {
-    if( out_F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
-      printf("\tCDM error : NonUniformDomain is not supported in SPH File Format.");
-      return NULL;
-    } else if ( out_F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
-      printf("\tCDM error : NonUniformDomain is not supported in BOV File Format.");
-      return NULL;
-    }
-    out_domain = new cdm_NonUniformDomain<T>(G_origin,
-                                             pitch,
-                                             G_size,
-                                             division,
-                                             iblank,
-                                             coord_X,
-                                             coord_Y,
-                                             coord_Z,
-                                             coord_file,
-                                             coord_filetype,
-                                             coord_fileprecision,
-                                             GCell);
-  } else {
-    printf("\tCDM error : DFIType is not correct.\n");
-    return NULL;
-  }
 
   cdm_Process out_Process;
   cdm_Rank out_Rank;

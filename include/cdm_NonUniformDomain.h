@@ -16,6 +16,7 @@
  */
 
 #include "cdm_Domain.h"
+#include <typeinfo>
 
 /** proc.dfi ファイルの Domain */
 template<class T>
@@ -55,33 +56,38 @@ public:
 
   /** 
   * @brief コンストラクタ 
-  * @param [in] _GlobalOrigin   起点座標
-  * @param [in] _GlobalPitch    ボクセルの長さ
-  * @param [in] _GlobalVoxel    ボクセル数
-  * @param [in] _GlobalDivision 分割数
-  * @param [in] _iblank         iblankデータポインタ(PLOT3Dのxyzファイル用)
   * @param [in] _XCoordinates   X座標データポインタ(Domainの格子点)
   * @param [in] _YCoordinates   Y座標データポインタ(Domainの格子点)
   * @param [in] _ZCoordinates   Z座標データポインタ(Domainの格子点)
   * @param [in] _CoordinateFile          座標データ名
   * @param [in] _CoordinateFileType      座標データのファイルタイプ
-  * @param [in] _CoordinateFilePrecision 座標データの精度
-  * @param [in] _gc                      ガイドセル数
+  * @param [in] _GlobalVoxel    ボクセル数
+  * @param [in] _GlobalDivision 分割数
+  * @param [in] _iblank         iblankデータポインタ(PLOT3Dのxyzファイル用)
+  * @param [in] _gc             ガイドセル数
   */ 
-  cdm_NonUniformDomain(const T* _GlobalOrigin, 
-                       const T* _GlobalPitch, 
-                       const int* _GlobalVoxel, 
-                       const int* _GlobalDivision,
-                       const int* _iblank,
-                       const T* _XCoordinates,
+  cdm_NonUniformDomain(const T* _XCoordinates,
                        const T* _YCoordinates,
                        const T* _ZCoordinates,
                        const std::string _CoordinateFile,
                        const CDM::E_CDM_FILE_TYPE _CoordinateFileType,
-                       const CDM::E_CDM_DTYPE _CoordinateFilePrecision,
+                       const int* _GlobalVoxel, 
+                       const int* _GlobalDivision,
+                       const int* _iblank,
                        const int _gc=0)
-  : cdm_Domain(_GlobalOrigin,_GlobalPitch,_GlobalVoxel,_GlobalDivision,_iblank)
   {
+    //GlobalVoxel,GlobalDivision,iblankの設定
+    GlobalVoxel[0]=_GlobalVoxel[0];
+    GlobalVoxel[1]=_GlobalVoxel[1];
+    GlobalVoxel[2]=_GlobalVoxel[2];
+
+    GlobalDivision[0]=_GlobalDivision[0];
+    GlobalDivision[1]=_GlobalDivision[1];
+    GlobalDivision[2]=_GlobalDivision[2];
+
+    iblank = _iblank;
+
+    // 座標に関する設定
     XCoordinates = new T[GlobalVoxel[0]+1];
     YCoordinates = new T[GlobalVoxel[1]+1];
     ZCoordinates = new T[GlobalVoxel[2]+1];
@@ -96,12 +102,17 @@ public:
     }
     CoordinateFile = _CoordinateFile;
     CoordinateFileType = _CoordinateFileType;
-    CoordinateFilePrecision = _CoordinateFilePrecision;
+    if( typeid(T) == typeid(float) ){
+      CoordinateFilePrecision = CDM::E_CDM_FLOAT32;
+    } else if( typeid(T) == typeid(double) ) {
+      CoordinateFilePrecision = CDM::E_CDM_FLOAT64;
+    }
 
-    //GlobalOrigin,GlobalRegionの設定（cdm_Domainのコンストラクタで設定したものを上書き）
+    //GlobalOrigin,GlobalRegionの設定
     GlobalOrigin[0] = XCoordinates[0];
     GlobalOrigin[1] = YCoordinates[0];
     GlobalOrigin[2] = ZCoordinates[0];
+
     GlobalRegion[0] = XCoordinates[GlobalVoxel[0]] - XCoordinates[0];
     GlobalRegion[1] = YCoordinates[GlobalVoxel[1]] - YCoordinates[0];
     GlobalRegion[2] = ZCoordinates[GlobalVoxel[2]] - ZCoordinates[0];

@@ -205,7 +205,6 @@ void convMxN::VoxelInit()
 
     cdm_DFI* dfi=cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
                           outdfifname,
-                          DFI_FInfo->DFIType,
                           m_param->Get_OutputDir(),
                           DFI_FInfo->Prefix,
                           m_param->Get_OutputFormat(),

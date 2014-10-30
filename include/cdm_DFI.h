@@ -204,10 +204,9 @@ public:
                                 CDM::E_CDM_ONOFF TimeSliceDirFlag);
 
   /**
-   * @brief write インスタンス (template function)
+   * @brief write インスタンス template function (等間隔格子用)
    * @param [in] comm        MPIコミュニケータ
    * @param [in] DfiName     DFIファイル名
-   * @param [in] DfiType     格子タイプ
    * @param [in] Path        フィールドデータのディレクトリ
    * @param [in] prefix      ベースファイル名
    * @param [in] format      ファイルフォーマット
@@ -224,19 +223,12 @@ public:
    * @param [in] hostname    ホスト名
    * @param [in] TSliceOnOff TimeSliceフラグ
    * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
-   * @param [in] coord_X     X座標データポインタ
-   * @param [in] coord_Y     Y座標データポインタ
-   * @param [in] coord_Z     Z座標データポインタ
-   * @param [in] coord_file          座標ファイル名
-   * @param [in] coord_filetype      座標ファイルのファイルタイプ
-   * @param [in] coord_fileprecision 座標ファイルのデータ精度
    * @return インスタンスされたクラスのポインタ
    */
   template<typename T>
   static cdm_DFI*
   WriteInit(const MPI_Comm comm,
             const std::string DfiName,
-            const CDM::E_CDM_DFITYPE DfiType,
             const std::string Path,
             const std::string prefix,
             const CDM::E_CDM_FORMAT format,
@@ -252,13 +244,92 @@ public:
             const int tail[3],
             const std::string hostname,
             const CDM::E_CDM_ONOFF TSliceOnOff,
-            const int* iblank = NULL,
-            const T* coord_X = NULL,
-            const T* coord_Y = NULL,
-            const T* coord_Z = NULL,
-            const std::string coord_file = "",
-            const CDM::E_CDM_FILE_TYPE coord_filetype = CDM::E_CDM_FILE_TYPE_DEFAULT,
-            const CDM::E_CDM_DTYPE coord_fileprecision = CDM::E_CDM_DTYPE_UNKNOWN);
+            const int* iblank = NULL);
+
+  /**
+   * @brief write インスタンス template function (不等間隔格子用)
+   * @details templateの型より、座標ファイルのデータ精度を指定
+   * @param [in] comm        MPIコミュニケータ
+   * @param [in] DfiName     DFIファイル名
+   * @param [in] Path        フィールドデータのディレクトリ
+   * @param [in] prefix      ベースファイル名
+   * @param [in] format      ファイルフォーマット
+   * @param [in] GCell       出力仮想セル数　　　
+   * @param [in] DataType    データタイプ　　　　
+   * @param [in] nVari       変数の個数　　　　　　　
+   * @param [in] proc_fname  proc.dfiファイル名
+   * @param [in] G_size      グローバルボクセルサイズ　
+   * @param [in] coord_X     X座標データポインタ
+   * @param [in] coord_Y     Y座標データポインタ
+   * @param [in] coord_Z     Z座標データポインタ
+   * @param [in] coord_file          座標ファイル名
+   * @param [in] coord_filetype      座標ファイルのファイルタイプ
+   * @param [in] division    領域分割数　　　　　　　　
+   * @param [in] head        計算領域の開始位置　　　　
+   * @param [in] tail        計算領域の終了位置　　　　
+   * @param [in] hostname    ホスト名
+   * @param [in] TSliceOnOff TimeSliceフラグ
+   * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
+   * @return インスタンスされたクラスのポインタ
+   */
+  template<typename T>
+  static cdm_DFI*
+  WriteInit(const MPI_Comm comm,
+            const std::string DfiName,
+            const std::string Path,
+            const std::string prefix,
+            const CDM::E_CDM_FORMAT format,
+            const int GCell,
+            const CDM::E_CDM_DTYPE DataType,
+            const int nVari,
+            const std::string proc_fname,
+            const int G_size[3],
+            const T* coord_X,
+            const T* coord_Y,
+            const T* coord_Z,
+            const std::string coord_file,
+            const CDM::E_CDM_FILE_TYPE coord_filetype,
+            const int division[3],
+            const int head[3],
+            const int tail[3],
+            const std::string hostname,
+            const CDM::E_CDM_ONOFF TSliceOnOff,
+            const int* iblank = NULL);
+
+  /**
+   * @brief write インスタンス template function (等間隔格子・不等間隔格子の共通処理部分)
+   * @param [in] comm        MPIコミュニケータ
+   * @param [in] DfiName     DFIファイル名
+   * @param [in] Path        フィールドデータのディレクトリ
+   * @param [in] prefix      ベースファイル名
+   * @param [in] format      ファイルフォーマット
+   * @param [in] GCell       出力仮想セル数　　　
+   * @param [in] DataType    データタイプ　　　　
+   * @param [in] nVari       変数の個数　　　　　　　
+   * @param [in] proc_fname  proc.dfiファイル名
+   * @param [in] out_domain  domainインスタンス　　
+   * @param [in] head        計算領域の開始位置　　　　
+   * @param [in] tail        計算領域の終了位置　　　　
+   * @param [in] hostname    ホスト名
+   * @param [in] TSliceOnOff TimeSliceフラグ
+   * @return インスタンスされたクラスのポインタ
+   */
+  template<typename T>
+  static cdm_DFI*
+  WriteInit(const MPI_Comm comm,
+            const std::string DfiName,
+            const std::string Path,
+            const std::string prefix,
+            const CDM::E_CDM_FORMAT format,
+            const int GCell,
+            const CDM::E_CDM_DTYPE DataType,
+            const int nVari,
+            const std::string proc_fname,
+            const cdm_Domain* out_domain,
+            const int head[3],
+            const int tail[3],
+            const std::string hostname,
+            const CDM::E_CDM_ONOFF TSliceOnOff);
 
   /**
    * @brief RankIDをセットする

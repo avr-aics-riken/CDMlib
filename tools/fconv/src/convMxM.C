@@ -321,7 +321,6 @@ bool convMxM::mxmsolv(std::string dfiname,
   cdm_DFI* out_dfi = cdm_DFI::WriteInit<double>(
                      MPI_COMM_WORLD,
                      "",
-                     DFI_FInfo->DFIType,
                      m_param->Get_OutputDir(),
                      DFI_FInfo->Prefix,
                      m_param->Get_OutputFormat(),
