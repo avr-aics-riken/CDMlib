@@ -112,7 +112,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
 template<class T>
 CDM_INLINE
 void
-cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
+cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3], const int* iblank)
 {
 
   int ngrid=1;
@@ -148,9 +148,9 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
     }}}
 
     //iblank
-    if (DFI_Domain.iblank != NULL) {
+    if (iblank != NULL) {
       for(int i=0; i<sz[0]*sz[1]*sz[2]; i++) {
-        fprintf(fp,"%2d\n",DFI_Domain.iblank[i]);
+        fprintf(fp,"%2d\n",iblank[i]);
       }
     }
 
@@ -169,7 +169,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
     fwrite(&dmy, sizeof(int), 1, fp);
 
     dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*3);
-    if (DFI_Domain.iblank != NULL) {
+    if (iblank != NULL) {
       dmy += sizeof(int)*(sz[0]*sz[1]*sz[2]);
     }
     fwrite(&dmy, sizeof(int), 1, fp);
@@ -198,8 +198,8 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
     }}}
 
     //iblank
-    if (DFI_Domain.iblank != NULL) {
-      fwrite(DFI_Domain.iblank, sizeof(int), sz[0]*sz[1]*sz[2], fp);
+    if (iblank != NULL) {
+      fwrite(iblank, sizeof(int), sz[0]*sz[1]*sz[2], fp);
     }
     fwrite(&dmy, sizeof(int), 1, fp);
 
@@ -235,8 +235,8 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3])
     }}}
 
     //iblank
-    if (DFI_Domain.iblank != NULL) {
-      fwrite(DFI_Domain.iblank, sizeof(int), sz[0]*sz[1]*sz[2], fp);
+    if (iblank != NULL) {
+      fwrite(iblank, sizeof(int), sz[0]*sz[1]*sz[2], fp);
     }
 
   }

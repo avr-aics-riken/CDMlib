@@ -154,13 +154,6 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
                                  const int n)
 {
 
-  //GRID データファイル出力処理
-  if( m_OutputGrid == true ) {
-    write_GridData();
-    m_OutputGrid = false;
-    DFI_Domain.iblank = NULL;
-  }
-
   //フィールドデータの配列サイズ取得(ガイドセル含む)
   const int *szVal = val->_getArraySizeInt();
 
@@ -226,7 +219,7 @@ cdm_DFI_PLOT3D::write_averaged(FILE* fp,
 // #################################################################
 // GRID データファイル出力コントロール
 bool
-cdm_DFI_PLOT3D::write_GridData()
+cdm_DFI_PLOT3D::write_GridData(const int* iblank)
 {
 
   bool mio = false;
@@ -262,7 +255,7 @@ cdm_DFI_PLOT3D::write_GridData()
       if( DFI_Finfo.GuideCell>1 ) org[i]=org[i]-pit[i]*(float)DFI_Finfo.GuideCell;
     }
     //xyzを計算して出力
-    write_XYZ(fp,org,pit,sz);
+    write_XYZ(fp,org,pit,sz,iblank);
   }else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) {
     double pit[3],org[3];
     for(int i=0; i<3; i++) {
@@ -271,7 +264,7 @@ cdm_DFI_PLOT3D::write_GridData()
       if( DFI_Finfo.GuideCell>1 ) org[i]=org[i]-pit[i]*(double)DFI_Finfo.GuideCell;
     }
     //xyzを計算して出力
-    write_XYZ(fp,org,pit,sz);
+    write_XYZ(fp,org,pit,sz,iblank);
   }
 
   //file close

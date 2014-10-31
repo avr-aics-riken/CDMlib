@@ -52,7 +52,6 @@ public:
     DFI_MPI        = mpi;
     DFI_TimeSlice  = TSlice;
     DFI_Process    = process;
-    m_OutputGrid   = true;
     m_bgrid_interp_flag = false;
     m_input_type   = CDM::E_CDM_FILE_TYPE_FBINARY;
     m_output_type  = CDM::E_CDM_FILE_TYPE_FBINARY;
@@ -180,20 +179,22 @@ protected:
 
   /**
    * @brief Grid data file 出力 コントロール
+   * @param [in] iblank  iblankデータポインタ
    */
   bool
-  write_GridData(); 
+  write_GridData(const int* iblank); 
 
   /**
    * @brief xyzを計算して出力
-   * @param [in] fp  出力ファイルポインタ
-   * @param [in] org 原点座標値
-   * @param [in] pit ピッチ
-   * @param [in] sz  サイズ
+   * @param [in] fp      出力ファイルポインタ
+   * @param [in] org     原点座標値
+   * @param [in] pit     ピッチ
+   * @param [in] sz      サイズ
+   * @param [in] iblank  iblankデータポインタ
    */ 
   template<class T>
   void
-  write_XYZ(FILE* fp, T* org, T* pit, int sz[3]);
+  write_XYZ(FILE* fp, T* org, T* pit, int sz[3], const int* iblank);
 
   /**
    * @brief func data 出力
