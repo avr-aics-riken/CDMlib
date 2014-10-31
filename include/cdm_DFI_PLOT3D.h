@@ -19,10 +19,6 @@
 
 class cdm_DFI_PLOT3D : public cdm_DFI {
 
-protected:
-
-  bool m_OutputGrid;  ///< plot3d grid file 出力指示
-
 public:
 
   /** コンストラクタ */

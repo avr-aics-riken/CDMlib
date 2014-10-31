@@ -11,6 +11,16 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-10-31
+Add API method set_OutputGrid to set whether to output grid file
+PLOT3D形式やAVS形式において、座標ファイルを出力するかどうか
+制御できるように、APIメソッドset_OutputGridを追加した。
+また、PLOT3D形式において、メソッドWriteDataでxyzファイルを出力
+したら、DomainクラスのポインタiblankをNULLに設定するようにした。
+(xyzファイルを出力後、ソルバー側でiblankをデアロケートしてもライブラリ側
+に問題が生じないようにするため。)
+
+------------------
 2014-10-25
 - add cdm_VisIt.h/C
 - VisIt用のオプションを追加 /VisIt/PlotGuideCell = "on" / "off"

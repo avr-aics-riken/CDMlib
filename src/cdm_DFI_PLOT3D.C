@@ -158,6 +158,7 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
   if( m_OutputGrid == true ) {
     write_GridData();
     m_OutputGrid = false;
+    DFI_Domain.iblank = NULL;
   }
 
   //フィールドデータの配列サイズ取得(ガイドセル含む)

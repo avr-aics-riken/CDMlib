@@ -67,8 +67,9 @@ protected :
   vector<int>m_readRankList;         ///< 読込みランクリスト
 
   bool m_bgrid_interp_flag;               ///< 節点への補間フラグ
-  CDM::E_CDM_FILE_TYPE  m_input_type;   ///< 入力形式(ascii,binary,FortarnBinary)
-  CDM::E_CDM_FILE_TYPE  m_output_type;  ///< 出力形式(ascii,binary,FortarnBinary)
+  bool m_OutputGrid;                      ///< grid file 出力指示
+  CDM::E_CDM_FILE_TYPE  m_input_type;     ///< 入力形式(ascii,binary,FortarnBinary)
+  CDM::E_CDM_FILE_TYPE  m_output_type;    ///< 出力形式(ascii,binary,FortarnBinary)
   CDM::E_CDM_OUTPUT_FNAME m_output_fname; ///< 出力ファイル命名規約(step_rank,rank_step)   
 
 public:
@@ -328,6 +329,13 @@ public:
    */
   void set_output_fname(CDM::E_CDM_OUTPUT_FNAME output_fname)
   { m_output_fname = output_fname; };
+
+  /**
+   * @brief GRIDデータファイルの出力フラグをセット
+   * @param [in] flag_OutputGrid 出力フラグ (true:出力する false:出力しない)
+   */
+  void set_OutputGrid(bool flag_OutputGrid)
+  { m_OutputGrid = flag_OutputGrid; };
 
   /**
    * @brief DFIファイル名の取り出し
