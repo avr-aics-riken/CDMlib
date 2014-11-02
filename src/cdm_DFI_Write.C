@@ -208,6 +208,34 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
 }
 
 // #################################################################
+// grid ファイル出力
+CDM::E_CDM_ERRORCODE
+cdm_DFI::WriteGridFile(const int* iblank)
+{
+
+  bool flag;
+  //ファイルフォーマットチェック。gridファイルがあるのは、PLOT3DとAVSのみ。
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D )
+  {
+    flag = write_GridData(iblank);
+    if ( !flag ) return CDM::E_CDM_ERROR_WRITE_GRIDFILE;
+  }
+  else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS )
+  {
+    std::cout << "Output cod file (Not supported yet)" << std::endl;
+    return CDM::E_CDM_ERROR_WRITE_GRIDFILE;
+  }
+  else
+  {
+    std::cout << "This file format has no grid file. " << std::endl;
+    return CDM::E_CDM_ERROR_WRITE_GRIDFILE;
+  }
+
+  return CDM::E_CDM_SUCCESS;
+
+}
+
+// #################################################################
 // fileld data 出力
 CDM::E_CDM_ERRORCODE
 cdm_DFI::WriteData(const unsigned step,

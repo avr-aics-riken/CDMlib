@@ -377,8 +377,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const int head[3],
                             const int tail[3],
                             const std::string hostname,
-                            const CDM::E_CDM_ONOFF TSliceOnOff,
-                            const int* iblank)
+                            const CDM::E_CDM_ONOFF TSliceOnOff)
 {
 
   // float型をdouble型に変換してdouble版WriteInit関数を呼ぶ
@@ -405,8 +404,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                    head, 
                    tail, 
                    hostname,
-                   TSliceOnOff,
-                   iblank);
+                   TSliceOnOff);
 
 }
 
@@ -428,8 +426,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const int head[3],
                             const int tail[3],
                             const std::string hostname,
-                            const CDM::E_CDM_ONOFF TSliceOnOff,
-                            const int* iblank)
+                            const CDM::E_CDM_ONOFF TSliceOnOff)
 {
 
 //Check for SPH format 20141022.s
@@ -497,7 +494,6 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
     out_Process.RankList[RankID].VoxelSize[i]=tail[i]-head[i]+1;
   }
 
-  out_domain.iblank = iblank;
   for(int i=0; i<3; i++) {
     out_domain.GlobalVoxel[i]  = G_size[i];
     out_domain.GlobalDivision[i] = division[i];

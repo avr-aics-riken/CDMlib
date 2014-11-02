@@ -67,8 +67,8 @@ protected :
   vector<int>m_readRankList;         ///< 読込みランクリスト
 
   bool m_bgrid_interp_flag;               ///< 節点への補間フラグ
-  CDM::E_CDM_FILE_TYPE  m_input_type;   ///< 入力形式(ascii,binary,FortarnBinary)
-  CDM::E_CDM_FILE_TYPE  m_output_type;  ///< 出力形式(ascii,binary,FortarnBinary)
+  CDM::E_CDM_FILE_TYPE  m_input_type;     ///< 入力形式(ascii,binary,FortarnBinary)
+  CDM::E_CDM_FILE_TYPE  m_output_type;    ///< 出力形式(ascii,binary,FortarnBinary)
   CDM::E_CDM_OUTPUT_FNAME m_output_fname; ///< 出力ファイル命名規約(step_rank,rank_step)   
 
 public:
@@ -236,7 +236,6 @@ public:
    * @param [in] tail        計算領域の終了位置　　　　
    * @param [in] hostname    ホスト名
    * @param [in] TSliceOnOff TimeSliceフラグ
-   * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
    * @return インスタンスされたクラスのポインタ
    */
   static cdm_DFI*
@@ -256,8 +255,7 @@ public:
             const int head[3],
             const int tail[3],
             const std::string hostname,
-            const CDM::E_CDM_ONOFF TSliceOnOff,
-            const int* iblank = NULL);
+            const CDM::E_CDM_ONOFF TSliceOnOff);
 
   /**
    * @brief write インスタンス double型
@@ -277,7 +275,6 @@ public:
    * @param [in] head        計算領域の開始位置　　　　
    * @param [in] tail        計算領域の終了位置　　　　
    * @param [in] hostname    ホスト名　　　　　　　　　
-   * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)
    * @param [in] TSliceOnOff TimeSliceフラグ
    * @return インスタンスされたクラスのポインタ
    */
@@ -298,8 +295,7 @@ public:
             const int head[3],
             const int tail[3],
             const std::string hostname,
-            const CDM::E_CDM_ONOFF TSliceOnOff,
-            const int* iblank = NULL);
+            const CDM::E_CDM_ONOFF TSliceOnOff);
 
   /**
    * @brief RankIDをセットする
@@ -506,6 +502,13 @@ public:
   WriteProcDfiFile(const MPI_Comm comm, 
                    bool out_host=false);
                    //double* org=NULL);
+
+  /**
+   * @brief grid ファイル出力コントロール
+   * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)　　　　
+   */
+  CDM::E_CDM_ERRORCODE
+  WriteGridFile(const int* iblank=NULL);
 
   /**
    * @brief 配列形状を文字列で返す
@@ -909,6 +912,12 @@ protected :
                  const unsigned step_avr,
                  const double time_avr)=0;
 
+  /**
+   * @brief Grid data file 出力 コントロール
+   * @param [in] iblank  iblankデータポインタ(PLOT3Dのxyzファイル用)
+   */
+  virtual bool
+  write_GridData(const int* iblank) {}; 
 
 //FEAST 20131125.s
   /**
