@@ -267,7 +267,7 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
   //BRICK_ORIGN
   double org[3];
   for(int i=0; i<3; i++) org[i]=DFI_Domain.GlobalOrigin[i]+0.5*pch[i];
-  if( DFI_Finfo.GuideCell>1 ) for(int i=0; i<3; i++) org[i]=org[i]-pch[i]*(double)DFI_Finfo.GuideCell;
+  if( DFI_Finfo.GuideCell>0 ) for(int i=0; i<3; i++) org[i]=org[i]-pch[i]*(double)DFI_Finfo.GuideCell;
   /*
   fprintf(fp,"BRICK_ORIGN: %e %e %e\n",DFI_Domain.GlobalOrigin[0],
                                        DFI_Domain.GlobalOrigin[1],

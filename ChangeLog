@@ -11,6 +11,11 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-03
+Bug fix DFI_Finfo.GuideCell
+ - (DFI_Finfo.GuideCell>1) >>  (DFI_Finfo.GuideCell>0)
+
+------------------
 2014-11-02
 Accept pull request from develop_plot3d
 
