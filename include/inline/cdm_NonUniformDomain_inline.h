@@ -97,9 +97,23 @@ cdm_NonUniformDomain<T>::Read(cdm_TextParser tpCntl)
   label = "/Domain/CoordinateFile";
   if ( !(tpCntl.GetValue(label, &str )) )
   {
-    str="";
+    printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_COORDINATEFILE;
   }
   CoordinateFile=str;
+  //Check of extension of CoordinateFile
+  string ext;
+  size_t pos_dot = CoordinateFile.rfind('.');
+  if(pos_dot != string::npos){
+    ext = CoordinateFile.substr(pos_dot+1, CoordinateFile.size()-pos_dot);
+  } else {
+    printf("\tFail to get extension of '%s'\n",CoordinateFile.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_COORDINATEFILE;
+  }
+  if(ext != "crd"){
+    printf("\tExtension of Coordinate File '%s' is not 'crd'. \n",ext.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_COORDINATEFILE;
+  }
 
   //CoordinateFileType
   label = "/Domain/CoordinateFileType";

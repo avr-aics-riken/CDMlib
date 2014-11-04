@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-04
+Add check for reading coordinate file
+不等間隔格子で座標ファイルを読み込む際、座標ファイルが読み込めているか
+どうか、また拡張子はcrdになっているかのチェックを付け加えた。
+
+------------------
 2014-10-30
 Apply function overloading to method WriteInit and edit class cdm_NonUniformDomain
 API関数WriteInitにオーバーロード機能の適用し、等間隔格子用と不等間隔格子用の
