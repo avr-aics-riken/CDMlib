@@ -70,15 +70,15 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
 
   //ascii
   if( m_input_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
-    fscanf(fp,"%d\n",&ngrid);
+    //fscanf(fp,"%d\n",&ngrid);
     fscanf(fp,"%d%d%d%d\n",&szVal[0],&szVal[1],&szVal[2],&nvari);
   //Fortran Binary
   } else if( m_input_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
     unsigned int dmy;
-    dmy = sizeof(int);
-    fread(&dmy, sizeof(int), 1, fp);
-    fread(&ngrid, sizeof(int), 1, fp);
-    fread(&dmy, sizeof(int), 1, fp);
+    //dmy = sizeof(int);
+    //fread(&dmy, sizeof(int), 1, fp);
+    //fread(&ngrid, sizeof(int), 1, fp);
+    //fread(&dmy, sizeof(int), 1, fp);
     dmy = sizeof(int)*4;
     fread(&dmy, sizeof(int), 1, fp);
     fread(&szVal[0], sizeof(int), 1, fp);
@@ -86,9 +86,9 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
     fread(&szVal[2], sizeof(int), 1, fp);
     fread(&nvari, sizeof(int), 1, fp);
     fread(&dmy, sizeof(int), 1, fp);
-  //Bunary
+  //Binary
   } else {
-    fread(&ngrid, sizeof(int), 1, fp);
+    //fread(&ngrid, sizeof(int), 1, fp);
     fread(&szVal[0], sizeof(int), 1, fp);
     fread(&szVal[1], sizeof(int), 1, fp);
     fread(&szVal[2], sizeof(int), 1, fp);
@@ -168,15 +168,15 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
   int ngrid=1;
   //ascii
   if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
-    fprintf(fp,"%5d\n",ngrid);
+    //fprintf(fp,"%5d\n",ngrid);
     fprintf(fp,"%5d%5d%5d%5d\n",szVal[0],szVal[1],szVal[2],nvari);
   //Fortran Binary
   } else if( m_output_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
     unsigned int dmy;
-    dmy = sizeof(int);
-    fwrite(&dmy, sizeof(int), 1, fp);
-    fwrite(&ngrid, sizeof(int), 1, fp);
-    fwrite(&dmy, sizeof(int), 1, fp);
+    //dmy = sizeof(int);
+    //fwrite(&dmy, sizeof(int), 1, fp);
+    //fwrite(&ngrid, sizeof(int), 1, fp);
+    //fwrite(&dmy, sizeof(int), 1, fp);
 
     dmy = sizeof(int)*4;
     fwrite(&dmy, sizeof(int), 1, fp);
@@ -185,9 +185,9 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
     fwrite(&szVal[2], sizeof(int), 1, fp);
     fwrite(&nvari, sizeof(int), 1, fp);
     fwrite(&dmy, sizeof(int), 1, fp);
-  //Bunary
+  //Binary
   } else {
-    fwrite(&ngrid, sizeof(int), 1, fp);
+    //fwrite(&ngrid, sizeof(int), 1, fp);
     fwrite(&szVal[0], sizeof(int), 1, fp);
     fwrite(&szVal[1], sizeof(int), 1, fp);
     fwrite(&szVal[2], sizeof(int), 1, fp);
@@ -235,6 +235,10 @@ cdm_DFI_PLOT3D::write_GridData(const int* iblank)
     fname = m_directoryPath + "/" + DFI_Finfo.DirectoryPath +"/"+ tmp;
   }
 
+  // ディレクトリ作成
+  std::string dir = CDM::cdmPath_DirName(fname);
+  if ( MakeDirectory(dir) != 1 ) return CDM::E_CDM_ERROR_MAKEDIRECTORY;
+  
   //GRID data file open
   FILE* fp=NULL;
   if( (fp = fopen(fname.c_str(),"w"))  == NULL ) {

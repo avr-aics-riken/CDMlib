@@ -99,7 +99,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
       }}
     }
 
-  //NIJK (Plot3dの配列形状はIJNK。)
+  //NIJK (Plot3dの配列形状はIJKN)
   } else {
     return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
   }
@@ -120,7 +120,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3], const int* iblank
 
   //ascii
   if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
-    fprintf(fp,"%5d\n",ngrid);
+    //fprintf(fp,"%5d\n",ngrid);
     fprintf(fp,"%5d%5d%5d\n",sz[0],sz[1],sz[2]);
 
     //x
@@ -157,10 +157,10 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3], const int* iblank
   //Fortran Binary
   } else if( m_output_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
     unsigned int dmy;
-    dmy = sizeof(int);
-    fwrite(&dmy, sizeof(int), 1, fp);
-    fwrite(&ngrid, sizeof(int), 1, fp);
-    fwrite(&dmy, sizeof(int), 1, fp);
+    //dmy = sizeof(int);
+    //fwrite(&dmy, sizeof(int), 1, fp);
+    //fwrite(&ngrid, sizeof(int), 1, fp);
+    //fwrite(&dmy, sizeof(int), 1, fp);
     dmy = sizeof(int)*3;
     fwrite(&dmy, sizeof(int), 1, fp);
     fwrite(&sz[0], sizeof(int), 1, fp);
@@ -205,7 +205,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3], const int* iblank
 
   //Binary
   } else {
-    fwrite(&ngrid, sizeof(int), 1, fp);
+    //fwrite(&ngrid, sizeof(int), 1, fp);
     fwrite(&sz[0], sizeof(int), 1, fp);
     fwrite(&sz[1], sizeof(int), 1, fp);
     fwrite(&sz[2], sizeof(int), 1, fp);

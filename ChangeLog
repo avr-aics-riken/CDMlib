@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-05
+Bug fix : write_XYZ(), write_GridData(), write_DataRecord(), read_DataRecord()
+ - comment out 'ngrid', multi-grid format was incorrectly implemented
+ - if there is no target directory, an XYZ file can not be written. Added MakeDirectory(dir).
+
+------------------
 2014-11-03
 Bug fix DFI_Finfo.GuideCell
  - (DFI_Finfo.GuideCell>1) >>  (DFI_Finfo.GuideCell>0)
