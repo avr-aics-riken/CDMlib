@@ -157,7 +157,7 @@ cdm_DFI_BOV::write_DataRecord(FILE* fp,
   for(int i=0; i<3; i++ ) size[i] = (int)DFI_Process.RankList[n].VoxelSize[i]+(int)(2*gc);
 
   size_t dLen = (size_t)(size[0] * size[1] * size[2]);
-  if( DFI_Finfo.NumVariables > 1 ) dLen *= 3;
+  if( DFI_Finfo.NumVariables > 1 ) dLen *= (size_t)DFI_Finfo.NumVariables;
 
   unsigned int dmy = dLen * Real_size;
 
