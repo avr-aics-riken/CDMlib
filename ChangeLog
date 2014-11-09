@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-09
+Change D_CDM_EXT_BOV to bov in if statement for reading FileFormat
+dfiファイルのFileFormatの読み込み判定文において、BOV形式であるかの
+判定をD_CDM_EXT_BOVから"bov"に変更した。
+
+------------------
 2014-11-07
 Modify write_DataRecord in cdm_DFI_BOV
 BOV形式のwrite_DataRecordにおいて、ベクトル成分⇒変数の個数に
