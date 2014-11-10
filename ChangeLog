@@ -11,6 +11,27 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-09
+Change D_CDM_EXT_BOV to bov in if statement for reading FileFormat
+dfiファイルのFileFormatの読み込み判定文において、BOV形式であるかの
+判定をD_CDM_EXT_BOVから"bov"に変更した。
+
+------------------
+2014-11-07
+Modify write_DataRecord in cdm_DFI_BOV
+BOV形式のwrite_DataRecordにおいて、ベクトル成分⇒変数の個数に
+対応できていない部分が残っていたので修正した。
+
+------------------
+2014-11-07
+Remove temporary array setting in the case of mismatch of guide cells
+メソッドWriteDataにおいて、WriteDataの引数で指定するガイドセル値と
+DFI_Finfoのガイドセル値が一致しない場合、テンポラリに配列を作成する
+ようにしていたが、それを作成しないようにした。その代わりに、WriteDataの
+引数で指定するガイドセル値とDFI_Finfoのガイドセル値が一致しない場合は
+エラーを返すようにした。
+
+------------------
 2014-11-05
 Bug fix : write_XYZ(), write_GridData(), write_DataRecord(), read_DataRecord()
  - comment out 'ngrid', multi-grid format was incorrectly implemented
