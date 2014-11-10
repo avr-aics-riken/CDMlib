@@ -24,9 +24,11 @@
 #define D_CDM_DFITYPE_CARTESIAN "Cartesian"
 
 #define D_CDM_EXT_SPH "sph"
-#define D_CDM_EXT_BOV "dat"
+#define D_CDM_EXT_BOV "bov"
 #define D_CDM_EXT_FUNC "fun"
 #define D_CDM_EXT_VTK  "vtk"
+
+#define D_CDM_EXT_BOV_DATAFILE "dat"
 
 #define D_CDM_ON  "on"
 #define D_CDM_OFF "off"

@@ -844,11 +844,11 @@ std::string cdm_DFI::Generate_FieldFileName(int RankID,
   if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH ) {
     fmt=D_CDM_EXT_SPH;
   } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_BOV ) {
-    fmt=D_CDM_EXT_BOV;
+    fmt=D_CDM_EXT_BOV_DATAFILE;
 //FCONV 20131122.s
   } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS ) {
     //fmt=D_CDM_EXT_SPH;
-    fmt=D_CDM_EXT_BOV;
+    fmt=D_CDM_EXT_BOV_DATAFILE;
   } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_VTK ) {
     fmt=D_CDM_EXT_VTK;
   } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {

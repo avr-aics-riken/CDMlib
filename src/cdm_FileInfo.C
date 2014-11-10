@@ -188,7 +188,7 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
     FileFormat=CDM::E_CDM_FMT_SPH;
     ArrayShape=CDM::E_CDM_NIJK;
   }
-  else if( !strcasecmp(str.c_str(),"bov" ) ) {
+  else if( !strcasecmp(str.c_str(), D_CDM_EXT_BOV ) ) {
     FileFormat=CDM::E_CDM_FMT_BOV;
     ArrayShape=CDM::E_CDM_IJKN;
   }

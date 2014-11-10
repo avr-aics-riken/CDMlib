@@ -267,10 +267,10 @@ cdm_DFI::WriteData(const unsigned step,
     if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH ) {
       ext = D_CDM_EXT_SPH;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_BOV ) {
-      ext = D_CDM_EXT_BOV;
+      ext = D_CDM_EXT_BOV_DATAFILE;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS ) {
       //ext = D_CDM_EXT_SPH;
-      ext = D_CDM_EXT_BOV;
+      ext = D_CDM_EXT_BOV_DATAFILE;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_VTK ) {
       ext = D_CDM_EXT_VTK;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
