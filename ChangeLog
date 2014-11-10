@@ -11,6 +11,14 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-10
+Add check of file format for non-uniform cartesian
+SPH形式とBOV形式は不等間隔格子に対応していないので、これらの形式で
+不等間隔格子の入出力を行おうとした場合はエラーを返すようにした。
+また、不等間隔格子でproc.dfiファイルを出力する際、座標ファイル
+の拡張子がcrdになっているかのチェックも加えた。
+
+------------------
 2014-11-04
 Add check for reading coordinate file
 不等間隔格子で座標ファイルを読み込む際、座標ファイルが読み込めているか

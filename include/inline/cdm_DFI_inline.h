@@ -413,11 +413,26 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
 
   //インスタンスout_domainを生成し、等間隔格子・不等間隔格子の共通処理版のWriteInit関数を呼ぶ
 
+  //Check format
   if( format == CDM::E_CDM_FMT_SPH ) {
-    printf("\tCDM error : NonUniformDomain is not supported in SPH File Format.");
+    printf("\tCDM error : Non_Uniform_Cartesian is not supported in SPH File Format.\n");
     return NULL;
   } else if ( format == CDM::E_CDM_FMT_BOV ) {
-    printf("\tCDM error : NonUniformDomain is not supported in BOV File Format.");
+    printf("\tCDM error : Non_Uniform_Cartesian is not supported in BOV File Format.\n");
+    return NULL;
+  }
+
+  //Check of extension of CoordinateFile
+  string ext;
+  size_t pos_dot = coord_file.rfind('.');
+  if(pos_dot != string::npos){
+    ext = coord_file.substr(pos_dot+1, coord_file.size()-pos_dot);
+  } else {
+    printf("\tFail to get extension of '%s'\n",coord_file.c_str());
+    return NULL;
+  }
+  if(ext != "crd"){
+    printf("\tCDM error : Extension of Coordinate File '%s' is not 'crd'. \n",ext.c_str());
     return NULL;
   }
 

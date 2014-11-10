@@ -188,10 +188,20 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
     return CDM::E_CDM_ERROR_READ_DFI_FILEFORMAT;
   }
   if( !strcasecmp(str.c_str(), D_CDM_EXT_SPH ) ) {
+    //Check DFIType
+    if( DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
+      printf("\tCDM error : Non_Uniform_Cartesian is not supported in SPH File Format.\n");
+      return CDM::E_CDM_ERROR_READ_DFI_FILEFORMAT;
+    }
     FileFormat=CDM::E_CDM_FMT_SPH;
     ArrayShape=CDM::E_CDM_NIJK;
   }
   else if( !strcasecmp(str.c_str(), D_CDM_EXT_BOV ) ) {
+    //Check DFIType
+    if( DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
+      printf("\tCDM error : Non_Uniform_Cartesian is not supported in BOV File Format.\n");
+      return CDM::E_CDM_ERROR_READ_DFI_FILEFORMAT;
+    }
     FileFormat=CDM::E_CDM_FMT_BOV;
     ArrayShape=CDM::E_CDM_IJKN;
   }
