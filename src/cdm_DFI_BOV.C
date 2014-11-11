@@ -157,7 +157,7 @@ cdm_DFI_BOV::write_DataRecord(FILE* fp,
   for(int i=0; i<3; i++ ) size[i] = (int)DFI_Process.RankList[n].VoxelSize[i]+(int)(2*gc);
 
   size_t dLen = (size_t)(size[0] * size[1] * size[2]);
-  if( DFI_Finfo.NumVariables > 1 ) dLen *= 3;
+  if( DFI_Finfo.NumVariables > 1 ) dLen *= (size_t)DFI_Finfo.NumVariables;
 
   unsigned int dmy = dLen * Real_size;
 
@@ -192,7 +192,7 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
   tmp = Generate_FileName(DFI_Finfo.Prefix,
                           m_RankID,
                           step,
-                          "bov",
+                          D_CDM_EXT_BOV,
                           m_output_fname,
                           mio,
                           DFI_Finfo.TimeSliceDirFlag);
@@ -217,7 +217,7 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
   o_fname = Generate_FileName(DFI_Finfo.Prefix,
                               m_RankID,
                               step,
-                              "dat",
+                              D_CDM_EXT_BOV_DATAFILE,
                               m_output_fname,
                               mio,
                               DFI_Finfo.TimeSliceDirFlag);

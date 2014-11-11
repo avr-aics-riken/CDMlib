@@ -267,10 +267,10 @@ cdm_DFI::WriteData(const unsigned step,
     if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH ) {
       ext = D_CDM_EXT_SPH;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_BOV ) {
-      ext = D_CDM_EXT_BOV;
+      ext = D_CDM_EXT_BOV_DATAFILE;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS ) {
       //ext = D_CDM_EXT_SPH;
-      ext = D_CDM_EXT_BOV;
+      ext = D_CDM_EXT_BOV_DATAFILE;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_VTK ) {
       ext = D_CDM_EXT_VTK;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
@@ -295,17 +295,6 @@ cdm_DFI::WriteData(const unsigned step,
   if( MakeDirectory(dir) != 1 ) return CDM::E_CDM_ERROR_MAKEDIRECTORY;
 
   cdm_Array *outArray = val;
-  if( gc != DFI_Finfo.GuideCell ) {
-    //出力用バッファのインスタンス
-    outArray = cdm_Array::instanceArray
-               ( DFI_Finfo.DataType
-               , DFI_Finfo.ArrayShape
-               , DFI_Process.RankList[m_RankID].VoxelSize
-               , DFI_Finfo.GuideCell
-               , DFI_Finfo.NumVariables); 
-    //配列のコピー val -> outArray
-    int ret = val->copyArray(outArray);
-  }
 
   // フィールドデータの出力
   CDM::E_CDM_ERRORCODE err = CDM::E_CDM_SUCCESS;
