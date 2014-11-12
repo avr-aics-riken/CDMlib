@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-12
+Remove constraint on number of variables in method interp_coarse
+クラスcdm_Arrayのメソッドinterp_coarseにおいて、変数の個数が1か3に
+制限されたままだったので、その制限を削除した。
+
+------------------
 2014-11-10
 Change bov to D_CDM_EXT_BOV in if statement for reading FileFormat and 
 define D_CDM_EXT_BOV_DATAFILE as dat
