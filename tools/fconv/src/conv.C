@@ -706,7 +706,7 @@ std::string CONV::GetFilenameExt(int file_format_type)
 {
 
   if     ( file_format_type == CDM::E_CDM_FMT_SPH ) return D_CDM_EXT_SPH;
-  else if( file_format_type == CDM::E_CDM_FMT_BOV ) return D_CDM_EXT_BOV;
+  else if( file_format_type == CDM::E_CDM_FMT_BOV ) return D_CDM_EXT_BOV_DATAFILE;
   else if( file_format_type == CDM::E_CDM_FMT_AVS ) return D_CDM_EXT_SPH;
   else if( file_format_type == CDM::E_CDM_FMT_PLOT3D ) return D_CDM_EXT_FUNC;
   else if( file_format_type == CDM::E_CDM_FMT_VTK ) return D_CDM_EXT_VTK;

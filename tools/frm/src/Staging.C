@@ -1477,7 +1477,7 @@ std::string Staging::Generate_FileName(int RankID, int step, const bool mio)
   if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_SPH ) {
     fmt=D_CDM_EXT_SPH;
   } else if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_BOV ) {
-    fmt=D_CDM_EXT_BOV;
+    fmt=D_CDM_EXT_BOV_DATAFILE;
   }
 
   int len = dfi_Finfo->DirectoryPath.size() + dfi_Finfo->Prefix.size() +
