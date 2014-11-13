@@ -11,6 +11,10 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-13
+Bug fix, release 0.6.0
+
+------------------
 2014-11-12
 Remove constraint on number of variables in method interp_coarse
 クラスcdm_Arrayのメソッドinterp_coarseにおいて、変数の個数が1か3に
