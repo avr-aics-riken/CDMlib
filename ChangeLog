@@ -11,6 +11,10 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-14
+Add ResultFormat at VisIt section, release 0.6.1
+
+------------------
 2014-11-13
 Bug fix, release 0.6.0
 
