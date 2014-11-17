@@ -295,6 +295,23 @@ cdm_DFI::WriteData(const unsigned step,
   if( MakeDirectory(dir) != 1 ) return CDM::E_CDM_ERROR_MAKEDIRECTORY;
 
   cdm_Array *outArray = val;
+  if( gc > DFI_Finfo.GuideCell ) {
+    //出力用バッファのインスタンス
+    outArray = cdm_Array::instanceArray
+               ( DFI_Finfo.DataType
+               , DFI_Finfo.ArrayShape
+               , DFI_Process.RankList[m_RankID].VoxelSize
+               , DFI_Finfo.GuideCell
+               , DFI_Finfo.NumVariables); 
+    //配列のコピー val -> outArray
+    int ret = val->copyArray(outArray);
+  }
+  else if( gc < DFI_Finfo.GuideCell )
+  {
+    //出力用に用意したデータのガイドセル値より出力するガイドセル値の方が大きい場合はエラー
+    printf("\tError : Number of guide cells %d %d\n", gc, DFI_Finfo.GuideCell);
+    return CDM::E_CDM_ERROR_NUM_OF_GUIDECELLS;
+  }
 
   // フィールドデータの出力
   CDM::E_CDM_ERRORCODE err = CDM::E_CDM_SUCCESS;

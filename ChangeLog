@@ -11,6 +11,19 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-17
+Restore temporary array setting in method WriteData and 
+fix bug in method write_DataRecord in class cdm_DFI_PLOT3D
+"Remove temporary array setting in the case of mismatch of guide cells"の
+リビジョンで削除したテンポラリ配列の作成箇所を復活させた。
+出力用に用意したデータのガイドセル値(WriteDataの引数)より出力する
+ガイドセル値(DFI_Finfo.GuideCell)の方が小さい場合に、このテンポラリ配列
+を適用するため。出力するガイドセル値の方が大きい場合はエラー。
+また、クラスcdm_DFI_PLOT3Dのメソッドwrite_DataRecordにおいて、
+出力するガイドセル値(DFI_Finfo.GuideCell)を適用すべき所に、
+出力用に用意したデータのガイドセル値(WriteDataの引数)を適用していたので修正した。
+
+------------------
 2014-11-14
 Add ResultFormat at VisIt section, release 0.6.1
 
