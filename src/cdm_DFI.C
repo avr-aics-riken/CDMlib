@@ -102,6 +102,15 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
     ret = CDM::E_CDM_ERROR_READ_FILEPATH;
     return NULL;
   }
+  
+  /** VisItオプションの読込み */
+  cdm_VisIt visit;
+  if( visit.Read(tpCntl) != CDM::E_CDM_SUCCESS )
+  {
+    printf("\tVisIt Data Read error %s\n",DfiName.c_str());
+    ret = CDM::E_CDM_ERROR_READ_FILEPATH;
+    return NULL;
+  }
 
   /** Unitの読込み */
   cdm_Unit unit;
@@ -188,13 +197,20 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   cdm_DFI *dfi = NULL;
   // CIOlibではSPHをサポートしていたが、CDMlibではSPHはサポートしない。
   // ↓SPHを復活させた(2014.10.17)
-  if( F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
-    dfi = new cdm_DFI_SPH(F_info, F_path, unit, domain, mpi, TimeSlice, process);
-  } else if( F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
-    dfi = new cdm_DFI_BOV(F_info, F_path, unit, domain, mpi, TimeSlice, process);
-  } else if( F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
-    dfi = new cdm_DFI_PLOT3D(F_info, F_path, unit, domain, mpi, TimeSlice, process);
-  } else {
+  if( F_info.FileFormat == CDM::E_CDM_FMT_SPH )
+  {
+    dfi = new cdm_DFI_SPH(F_info, F_path, visit, unit, domain, mpi, TimeSlice, process);
+  }
+  else if( F_info.FileFormat == CDM::E_CDM_FMT_BOV )
+  {
+    dfi = new cdm_DFI_BOV(F_info, F_path, visit, unit, domain, mpi, TimeSlice, process);
+  }
+  else if( F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D )
+  {
+    dfi = new cdm_DFI_PLOT3D(F_info, F_path, visit, unit, domain, mpi, TimeSlice, process);
+  }
+  else
+  {
     return NULL;
   }
 
@@ -255,6 +271,21 @@ cdm_FilePath* cdm_DFI::GetcdmFilePath()
 {
   return &DFI_Fpath;
 }
+
+// #################################################################
+void
+cdm_DFI::SetcdmVisIt(cdm_VisIt Visit)
+{
+  DFI_VisIt = Visit;
+}
+
+// #################################################################
+const
+cdm_VisIt* cdm_DFI::GetcdmVisIt()
+{
+  return &DFI_VisIt;
+}
+
 
 // #################################################################
 // cdm_Unitクラスのポインタ取得
@@ -643,11 +674,11 @@ std::string cdm_DFI::Generate_FieldFileName(int RankID,
   if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH ) {
     fmt=D_CDM_EXT_SPH;
   } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_BOV ) {
-    fmt=D_CDM_EXT_BOV;
+    fmt=D_CDM_EXT_BOV_DATAFILE;
 //FCONV 20131122.s
   } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS ) {
     //fmt=D_CDM_EXT_SPH;
-    fmt=D_CDM_EXT_BOV;
+    fmt=D_CDM_EXT_BOV_DATAFILE;
   } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_VTK ) {
     fmt=D_CDM_EXT_VTK;
   } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {

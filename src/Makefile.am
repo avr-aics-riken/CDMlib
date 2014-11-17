@@ -18,6 +18,7 @@ libCDM_a_SOURCES = \
     cdm_DFI.C \
     cdm_FileInfo.C \
     cdm_FilePath.C \
+    cdm_VisIt.C \
     cdm_Unit.C \
     cdm_TimeSlice.C \
     cdm_Domain.C \
@@ -43,6 +44,7 @@ CDM_include_HEADERS = \
     $(top_builddir)/include/cdm_DFI.h \
     $(top_builddir)/include/cdm_FileInfo.h \
     $(top_builddir)/include/cdm_FilePath.h \
+    $(top_builddir)/include/cdm_VisIt.h \
     $(top_builddir)/include/cdm_Unit.h \
     $(top_builddir)/include/cdm_TimeSlice.h \
     $(top_builddir)/include/cdm_Domain.h \

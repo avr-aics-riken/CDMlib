@@ -61,6 +61,7 @@ bool Staging::Initial( string infofile )
   /*
   dfi_Finfo = DFI->GetcdmFileInfo();
   dfi_Fpath = DFI->GetcdmFilePath();
+  dfi_Visit = DFI->GetcdmVisIt();
   dfi_Unit  = DFI->GetcdmUnit();
   dfi_Domain= DFI->GetcdmDomain();
   dfi_MPI   = DFI->GetcdmMPI();
@@ -1330,6 +1331,7 @@ bool Staging::FileCopy(step_rank_info info, int myRank)
   dfi_Finfo   = info.dfi->GetcdmFileInfo();
   dfi_TSlice  = info.dfi->GetcdmTimeSlice();
   dfi_Fpath   = info.dfi->GetcdmFilePath();
+  dfi_Visit   = info.dfi->GetcdmVisIt();
   dfi_Unit    = info.dfi->GetcdmUnit();
   dfi_Domain  = info.dfi->GetcdmDomain();
   dfi_MPI     = info.dfi->GetcdmMPI();
@@ -1475,7 +1477,7 @@ std::string Staging::Generate_FileName(int RankID, int step, const bool mio)
   if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_SPH ) {
     fmt=D_CDM_EXT_SPH;
   } else if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_BOV ) {
-    fmt=D_CDM_EXT_BOV;
+    fmt=D_CDM_EXT_BOV_DATAFILE;
   }
 
   int len = dfi_Finfo->DirectoryPath.size() + dfi_Finfo->Prefix.size() +
@@ -1640,6 +1642,14 @@ Staging::WriteIndexDfiFile(const std::string dfi_name)
     fclose(fp);
     return CDM::E_CDM_ERROR_WRITE_FILEPATH;
   }
+  
+  //VisIt {} の出力
+  cdm_VisIt *t_Visit = (cdm_VisIt *)dfi_Visit;
+  if( t_Visit->Write(fp, 0) != CDM::E_CDM_SUCCESS )
+  {
+    fclose(fp);
+    return CDM::E_CDM_ERROR_WRITE_VISIT;
+  }
 
   //Unit {} の出力
   cdm_Unit *t_Unit = (cdm_Unit *)dfi_Unit;
@@ -1725,6 +1735,14 @@ Staging::WriteIndexDfiFile(const std::string dfi_name, const step_rank_info info
     return CDM::E_CDM_ERROR_WRITE_FILEPATH;
   }
 
+  //VisIt {} の出力
+  cdm_VisIt *t_Visit = (cdm_VisIt *)dfi_Visit;
+  if( t_Visit->Write(fp, 0) != CDM::E_CDM_SUCCESS )
+  {
+    fclose(fp);
+    return CDM::E_CDM_ERROR_WRITE_VISIT;
+  }
+  
   //Unit {} の出力
  cdm_Unit *t_Unit = (cdm_Unit *)dfi_Unit;
   if( t_Unit->Write(fp, 0) != CDM::E_CDM_SUCCESS )

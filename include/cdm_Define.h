@@ -24,9 +24,11 @@
 #define D_CDM_DFITYPE_CARTESIAN "Cartesian"
 
 #define D_CDM_EXT_SPH "sph"
-#define D_CDM_EXT_BOV "dat"
+#define D_CDM_EXT_BOV "bov"
 #define D_CDM_EXT_FUNC "fun"
 #define D_CDM_EXT_VTK  "vtk"
+
+#define D_CDM_EXT_BOV_DATAFILE "dat"
 
 #define D_CDM_ON  "on"
 #define D_CDM_OFF "off"
@@ -203,6 +205,7 @@ namespace CDM
 ,   E_CDM_ERROR_UNMATCH_VOXELSIZE           = 2050 ///< SPHのボクセルサイズとDFIのボクセルサイズが合致しない
 ,   E_CDM_ERROR_NOMATCH_ENDIAN              = 2051 ///< 出力Fornatが合致しない（Endian形式がBig,Little以外）
 ,   E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES    = 2052 ///< フィールドデータの変数の個数と登録された変数名の個数が合致しない
+,   E_CDM_ERROR_UNMATCH_NUM_OF_GUIDECELLS   = 2053 ///< WriteDataで指定するガイドセル値とDFI GuideCellの値が合致しない
 ,   E_CDM_ERROR_READ_BOV_FILE               = 2100 ///< BOVファイル読込みエラー
 ,   E_CDM_ERROR_READ_FIELD_HEADER_RECORD    = 2102 ///< フィールドヘッダーレコード読込み失敗
 ,   E_CDM_ERROR_READ_FIELD_DATA_RECORD      = 2103 ///< フィールドデータレコード読込み失敗
@@ -241,6 +244,8 @@ namespace CDM
 ,   E_CDM_ERROR_WRITE_UNIT                  = 3514 ///< Unit出力失敗
 ,   E_CDM_ERROR_WRITE_TIMESLICE             = 3515 ///< TimeSlice出力失敗
 ,   E_CDM_ERROR_WRITE_FILEPATH              = 3516 ///< FilePath出力失敗
+,   E_CDM_ERROR_WRITE_VISIT                 = 3517 ///< Visit出力失敗
+,   E_CDM_ERROR_WRITE_GRIDFILE              = 3518 ///< gridファイル出力失敗
 ,   E_CDM_WARN_GETUNIT                      = 4000 ///< Unitの単位がない
   };
 

@@ -96,6 +96,7 @@ int main( int argc, char **argv )
 
     STG.dfi_Finfo = STG.DFI[i]->GetcdmFileInfo();
     STG.dfi_Fpath = STG.DFI[i]->GetcdmFilePath();
+    STG.dfi_Visit = STG.DFI[i]->GetcdmVisIt();
     STG.dfi_Unit  = STG.DFI[i]->GetcdmUnit();
     STG.dfi_Domain= STG.DFI[i]->GetcdmDomain();
     STG.dfi_MPI   = STG.DFI[i]->GetcdmMPI();

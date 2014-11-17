@@ -63,7 +63,6 @@ public:
   * @param [in] _CoordinateFileType      座標データのファイルタイプ
   * @param [in] _GlobalVoxel    ボクセル数
   * @param [in] _GlobalDivision 分割数
-  * @param [in] _iblank         iblankデータポインタ(PLOT3Dのxyzファイル用)
   * @param [in] _gc             ガイドセル数
   */ 
   cdm_NonUniformDomain(const T* _XCoordinates,
@@ -73,10 +72,9 @@ public:
                        const CDM::E_CDM_FILE_TYPE _CoordinateFileType,
                        const int* _GlobalVoxel, 
                        const int* _GlobalDivision,
-                       const int* _iblank,
                        const int _gc=0)
   {
-    //GlobalVoxel,GlobalDivision,iblankの設定
+    //GlobalVoxel,GlobalDivisionの設定
     GlobalVoxel[0]=_GlobalVoxel[0];
     GlobalVoxel[1]=_GlobalVoxel[1];
     GlobalVoxel[2]=_GlobalVoxel[2];
@@ -84,8 +82,6 @@ public:
     GlobalDivision[0]=_GlobalDivision[0];
     GlobalDivision[1]=_GlobalDivision[1];
     GlobalDivision[2]=_GlobalDivision[2];
-
-    iblank = _iblank;
 
     // 座標に関する設定
     XCoordinates = new T[GlobalVoxel[0]+1];

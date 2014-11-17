@@ -25,7 +25,6 @@ public:
   int GlobalVoxel[3];                 ///<計算領域全体のボクセル数
   int GlobalDivision[3];              ///<計算領域の分割数
   std::string ActiveSubdomainFile;    ///<ActiveSubdomainファイル名
-  const int* iblank;                  ///<iblankデータポインタ(PLOT3Dのxyzファイル用)
 
 private:
   double Pitch[3];                    ///<計算空間のピッチ
@@ -42,18 +41,15 @@ public:
   * @param [in] _GlobalPitch    ボクセルの長さ
   * @param [in] _GlobalVoxel    ボクセル数
   * @param [in] _GlobalDivision 分割数
-  * @param [in] _iblank         iblankデータポインタ(PLOT3Dのxyzファイル用)
   */ 
   cdm_Domain(const double* _GlobalOrigin,
              const double* _GlobalPitch, 
              const int* _GlobalVoxel, 
-             const int* _GlobalDivision,
-             const int* _iblank);
+             const int* _GlobalDivision);
   cdm_Domain(const float* _GlobalOrigin, 
              const float* _GlobalPitch, 
              const int* _GlobalVoxel, 
-             const int* _GlobalDivision,
-             const int* _iblank);
+             const int* _GlobalDivision);
 
   /** デストラクタ **/
   virtual ~cdm_Domain();
@@ -87,7 +83,6 @@ public:
       this->GlobalDivision[i] = other.GlobalDivision[i];
       this->Pitch[i] = other.Pitch[i];
     }
-    this->iblank = other.iblank;
   }
 
   /**

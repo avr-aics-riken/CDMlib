@@ -11,6 +11,17 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-17
+Merge master into branch advance_develop
+masterのリビジョン"Add ResultFormat at VisIt section, release 0.6.1"を
+ブランチadvance_developにマージした。
+Plot3d対応で追加修正した部分を不等間隔格子対応に取り込むため。
+その際、競合が発生したファイルが存在したので解決した。
+また、Plot3d対応の追加修正において、iblankの設定方法を変更したが、
+単にマージしただけでは変更が反映されない部分があったので、
+iblankの設定方法の変更に沿って修正を加えた。
+
+------------------
 2014-11-10
 Add check of file format for non-uniform cartesian
 SPH形式とBOV形式は不等間隔格子に対応していないので、これらの形式で

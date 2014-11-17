@@ -99,7 +99,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
       }}
     }
 
-  //NIJK (Plot3dの配列形状はIJNK。)
+  //NIJK (Plot3dの配列形状はIJKN)
   } else {
     return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
   }
@@ -112,7 +112,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
 template<class T>
 CDM_INLINE
 void
-cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3])
+cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
 {
 
   int ngrid=1;
@@ -122,7 +122,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3])
 
   //ascii
   if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
-    fprintf(fp,"%5d\n",ngrid);
+    //fprintf(fp,"%5d\n",ngrid);
     fprintf(fp,"%5d%5d%5d\n",sz[0],sz[1],sz[2]);
 
     //x
@@ -150,19 +150,19 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3])
     }}}
 
     //iblank
-    if (DFI_Domain->iblank != NULL) {
+    if (iblank != NULL) {
       for(int i=0; i<sz3d_gc; i++) {
-        fprintf(fp,"%2d\n",DFI_Domain->iblank[i]);
+        fprintf(fp,"%2d\n",iblank[i]);
       }
     }
 
   //Fortran Binary
   } else if( m_output_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
     unsigned int dmy;
-    dmy = sizeof(int);
-    fwrite(&dmy, sizeof(int), 1, fp);
-    fwrite(&ngrid, sizeof(int), 1, fp);
-    fwrite(&dmy, sizeof(int), 1, fp);
+    //dmy = sizeof(int);
+    //fwrite(&dmy, sizeof(int), 1, fp);
+    //fwrite(&ngrid, sizeof(int), 1, fp);
+    //fwrite(&dmy, sizeof(int), 1, fp);
     dmy = sizeof(int)*3;
     fwrite(&dmy, sizeof(int), 1, fp);
     dmy = sz[0]+2*gc;
@@ -175,7 +175,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3])
     fwrite(&dmy, sizeof(int), 1, fp);
 
     dmy = sizeof(T)*(sz3d_gc*3);
-    if (DFI_Domain->iblank != NULL) {
+    if (iblank != NULL) {
       dmy += sizeof(int)*sz3d_gc;
     }
     fwrite(&dmy, sizeof(int), 1, fp);
@@ -204,15 +204,15 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3])
     }}}
 
     //iblank
-    if (DFI_Domain->iblank != NULL) {
-      fwrite(DFI_Domain->iblank, sizeof(int), sz3d_gc, fp);
+    if (iblank != NULL) {
+      fwrite(iblank, sizeof(int), sz3d_gc, fp);
     }
     fwrite(&dmy, sizeof(int), 1, fp);
 
   //Binary
   } else {
     unsigned int dmy;
-    fwrite(&ngrid, sizeof(int), 1, fp);
+    //fwrite(&ngrid, sizeof(int), 1, fp);
     dmy = sz[0]+2*gc;
     fwrite(&dmy, sizeof(int), 1, fp);
     dmy = sz[1]+2*gc;
@@ -245,8 +245,8 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3])
     }}}
 
     //iblank
-    if (DFI_Domain->iblank != NULL) {
-      fwrite(DFI_Domain->iblank, sizeof(int), sz3d_gc, fp);
+    if (iblank != NULL) {
+      fwrite(iblank, sizeof(int), sz3d_gc, fp);
     }
 
   }

@@ -706,7 +706,7 @@ std::string CONV::GetFilenameExt(int file_format_type)
 {
 
   if     ( file_format_type == CDM::E_CDM_FMT_SPH ) return D_CDM_EXT_SPH;
-  else if( file_format_type == CDM::E_CDM_FMT_BOV ) return D_CDM_EXT_BOV;
+  else if( file_format_type == CDM::E_CDM_FMT_BOV ) return D_CDM_EXT_BOV_DATAFILE;
   else if( file_format_type == CDM::E_CDM_FMT_AVS ) return D_CDM_EXT_SPH;
   else if( file_format_type == CDM::E_CDM_FMT_PLOT3D ) return D_CDM_EXT_FUNC;
   else if( file_format_type == CDM::E_CDM_FMT_VTK ) return D_CDM_EXT_VTK;
@@ -957,7 +957,17 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
       return false;
     }
     delete Fpath;
-
+    
+    //Visitの出力
+    cdm_VisIt *dfi_Visit = (cdm_VisIt *)dfi->GetcdmVisIt();
+    cdm_VisIt *Visit = new cdm_VisIt("off");
+    if( Visit->Write(fp, 1) != CDM::E_CDM_SUCCESS )
+    {
+      fclose(fp);
+      return false;
+    }
+    delete Visit;
+    
     //Unitの出力
     cdm_Unit *dfi_Unit = (cdm_Unit *)dfi->GetcdmUnit();
     if( dfi_Unit->Write(fp, 0) != CDM::E_CDM_SUCCESS )
@@ -1063,8 +1073,7 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
   if( numProc == 1 ) for(int i=0; i<3; i++) Gdiv[i]=1;
 
   //out_domainの生成 
-  int *iblank = NULL; //cdm_Domainコンストラクタのiblank追加による一時的な対処(AS田中)
-  out_domain = new cdm_Domain(Gorigin,pit,Gvoxel,Gdiv,iblank);
+  out_domain = new cdm_Domain(Gorigin,pit,Gvoxel,Gdiv);
 
   //Process 情報の生成
   const cdm_Process* dfi_Process = dfi->GetcdmProcess();

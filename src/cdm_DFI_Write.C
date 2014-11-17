@@ -53,6 +53,12 @@ cdm_DFI::WriteIndexDfiFile(const std::string dfi_name)
     return CDM::E_CDM_ERROR_WRITE_FILEPATH;
   }
 
+  // VisIt用のオプション出力
+  if( DFI_VisIt.Write(fp, 1) != CDM::E_CDM_SUCCESS )
+  {
+    fclose(fp);
+    return CDM::E_CDM_ERROR_WRITE_VISIT;
+  }
 
   //Unit {} の出力
   if( DFI_Unit.Write(fp, 0) != CDM::E_CDM_SUCCESS ) 
@@ -181,6 +187,34 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
 }
 
 // #################################################################
+// grid ファイル出力
+CDM::E_CDM_ERRORCODE
+cdm_DFI::WriteGridFile(const int* iblank)
+{
+
+  bool flag;
+  //ファイルフォーマットチェック。gridファイルがあるのは、PLOT3DとAVSのみ。
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D )
+  {
+    flag = write_GridData(iblank);
+    if ( !flag ) return CDM::E_CDM_ERROR_WRITE_GRIDFILE;
+  }
+  else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS )
+  {
+    std::cout << "Output cod file (Not supported yet)" << std::endl;
+    return CDM::E_CDM_ERROR_WRITE_GRIDFILE;
+  }
+  else
+  {
+    std::cout << "This file format has no grid file. " << std::endl;
+    return CDM::E_CDM_ERROR_WRITE_GRIDFILE;
+  }
+
+  return CDM::E_CDM_SUCCESS;
+
+}
+
+// #################################################################
 // fileld data 出力
 CDM::E_CDM_ERRORCODE
 cdm_DFI::WriteData(const unsigned step,
@@ -212,10 +246,10 @@ cdm_DFI::WriteData(const unsigned step,
     if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH ) {
       ext = D_CDM_EXT_SPH;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_BOV ) {
-      ext = D_CDM_EXT_BOV;
+      ext = D_CDM_EXT_BOV_DATAFILE;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS ) {
       //ext = D_CDM_EXT_SPH;
-      ext = D_CDM_EXT_BOV;
+      ext = D_CDM_EXT_BOV_DATAFILE;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_VTK ) {
       ext = D_CDM_EXT_VTK;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
@@ -240,17 +274,6 @@ cdm_DFI::WriteData(const unsigned step,
   if( MakeDirectory(dir) != 1 ) return CDM::E_CDM_ERROR_MAKEDIRECTORY;
 
   cdm_Array *outArray = val;
-  if( gc != DFI_Finfo.GuideCell ) {
-    //出力用バッファのインスタンス
-    outArray = cdm_Array::instanceArray
-               ( DFI_Finfo.DataType
-               , DFI_Finfo.ArrayShape
-               , DFI_Process.RankList[m_RankID].VoxelSize
-               , DFI_Finfo.GuideCell
-               , DFI_Finfo.NumVariables); 
-    //配列のコピー val -> outArray
-    int ret = val->copyArray(outArray);
-  }
 
   // フィールドデータの出力
   CDM::E_CDM_ERRORCODE err = CDM::E_CDM_SUCCESS;

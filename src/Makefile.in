@@ -140,11 +140,11 @@ libCDM_a_AR = $(AR) $(ARFLAGS)
 libCDM_a_LIBADD =
 am_libCDM_a_OBJECTS = libCDM_a-cdm_ActiveSubDomain.$(OBJEXT) \
 	libCDM_a-cdm_DFI.$(OBJEXT) libCDM_a-cdm_FileInfo.$(OBJEXT) \
-	libCDM_a-cdm_FilePath.$(OBJEXT) libCDM_a-cdm_Unit.$(OBJEXT) \
-	libCDM_a-cdm_TimeSlice.$(OBJEXT) libCDM_a-cdm_Domain.$(OBJEXT) \
-	libCDM_a-cdm_MPI.$(OBJEXT) libCDM_a-cdm_Process.$(OBJEXT) \
-	libCDM_a-cdm_DFI_BOV.$(OBJEXT) libCDM_a-cdm_DFI_SPH.$(OBJEXT) \
-	libCDM_a-cdm_DFI_AVS.$(OBJEXT) \
+	libCDM_a-cdm_FilePath.$(OBJEXT) libCDM_a-cdm_VisIt.$(OBJEXT) \
+	libCDM_a-cdm_Unit.$(OBJEXT) libCDM_a-cdm_TimeSlice.$(OBJEXT) \
+	libCDM_a-cdm_Domain.$(OBJEXT) libCDM_a-cdm_MPI.$(OBJEXT) \
+	libCDM_a-cdm_Process.$(OBJEXT) libCDM_a-cdm_DFI_BOV.$(OBJEXT) \
+	libCDM_a-cdm_DFI_SPH.$(OBJEXT) libCDM_a-cdm_DFI_AVS.$(OBJEXT) \
 	libCDM_a-cdm_DFI_PLOT3D.$(OBJEXT) \
 	libCDM_a-cdm_DFI_VTK.$(OBJEXT) libCDM_a-cdm_DFI_Read.$(OBJEXT) \
 	libCDM_a-cdm_DFI_Write.$(OBJEXT) \
@@ -353,6 +353,7 @@ libCDM_a_SOURCES = \
     cdm_DFI.C \
     cdm_FileInfo.C \
     cdm_FilePath.C \
+    cdm_VisIt.C \
     cdm_Unit.C \
     cdm_TimeSlice.C \
     cdm_Domain.C \
@@ -378,6 +379,7 @@ CDM_include_HEADERS = \
     $(top_builddir)/include/cdm_DFI.h \
     $(top_builddir)/include/cdm_FileInfo.h \
     $(top_builddir)/include/cdm_FilePath.h \
+    $(top_builddir)/include/cdm_VisIt.h \
     $(top_builddir)/include/cdm_Unit.h \
     $(top_builddir)/include/cdm_TimeSlice.h \
     $(top_builddir)/include/cdm_Domain.h \
@@ -496,6 +498,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_TextParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_TimeSlice.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_Unit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_VisIt.Po@am__quote@
 
 .C.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -566,6 +569,20 @@ libCDM_a-cdm_FilePath.obj: cdm_FilePath.C
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cdm_FilePath.C' object='libCDM_a-cdm_FilePath.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -c -o libCDM_a-cdm_FilePath.obj `if test -f 'cdm_FilePath.C'; then $(CYGPATH_W) 'cdm_FilePath.C'; else $(CYGPATH_W) '$(srcdir)/cdm_FilePath.C'; fi`
+
+libCDM_a-cdm_VisIt.o: cdm_VisIt.C
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -MT libCDM_a-cdm_VisIt.o -MD -MP -MF $(DEPDIR)/libCDM_a-cdm_VisIt.Tpo -c -o libCDM_a-cdm_VisIt.o `test -f 'cdm_VisIt.C' || echo '$(srcdir)/'`cdm_VisIt.C
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libCDM_a-cdm_VisIt.Tpo $(DEPDIR)/libCDM_a-cdm_VisIt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cdm_VisIt.C' object='libCDM_a-cdm_VisIt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -c -o libCDM_a-cdm_VisIt.o `test -f 'cdm_VisIt.C' || echo '$(srcdir)/'`cdm_VisIt.C
+
+libCDM_a-cdm_VisIt.obj: cdm_VisIt.C
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -MT libCDM_a-cdm_VisIt.obj -MD -MP -MF $(DEPDIR)/libCDM_a-cdm_VisIt.Tpo -c -o libCDM_a-cdm_VisIt.obj `if test -f 'cdm_VisIt.C'; then $(CYGPATH_W) 'cdm_VisIt.C'; else $(CYGPATH_W) '$(srcdir)/cdm_VisIt.C'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libCDM_a-cdm_VisIt.Tpo $(DEPDIR)/libCDM_a-cdm_VisIt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cdm_VisIt.C' object='libCDM_a-cdm_VisIt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -c -o libCDM_a-cdm_VisIt.obj `if test -f 'cdm_VisIt.C'; then $(CYGPATH_W) 'cdm_VisIt.C'; else $(CYGPATH_W) '$(srcdir)/cdm_VisIt.C'; fi`
 
 libCDM_a-cdm_Unit.o: cdm_Unit.C
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -MT libCDM_a-cdm_Unit.o -MD -MP -MF $(DEPDIR)/libCDM_a-cdm_Unit.Tpo -c -o libCDM_a-cdm_Unit.o `test -f 'cdm_Unit.C' || echo '$(srcdir)/'`cdm_Unit.C

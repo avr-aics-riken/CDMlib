@@ -151,6 +151,12 @@ cdm_DFI::WriteData(const unsigned step,
     return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES;
   }
 
+  //WriteDataの引数で指定するガイドセル値とDFI_Finfoのガイドセル値の一致確認
+  if( gc != DFI_Finfo.GuideCell ) {
+    printf("\tError : Number of guide cells %d %d\n", gc, DFI_Finfo.GuideCell);
+    return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_GUIDECELLS;
+  }
+
   cdm_Array *data = cdm_Array::instanceArray
                     ( val
                     , DFI_Finfo.ArrayShape
@@ -354,8 +360,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const int head[3],
                             const int tail[3],
                             const std::string hostname,
-                            const CDM::E_CDM_ONOFF TSliceOnOff,
-                            const int* iblank)
+                            const CDM::E_CDM_ONOFF TSliceOnOff)
 {
 
   //インスタンスout_domainを生成し、等間隔格子・不等間隔格子の共通処理版のWriteInit関数を呼ぶ
@@ -364,8 +369,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   out_domain = new cdm_Domain(G_origin,
                               pitch,
                               G_size,
-                              division,
-                              iblank);
+                              division);
 
   return WriteInit<T>(comm,
                       DfiName,
@@ -407,8 +411,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const int head[3],
                             const int tail[3],
                             const std::string hostname,
-                            const CDM::E_CDM_ONOFF TSliceOnOff,
-                            const int* iblank)
+                            const CDM::E_CDM_ONOFF TSliceOnOff)
 {
 
   //インスタンスout_domainを生成し、等間隔格子・不等間隔格子の共通処理版のWriteInit関数を呼ぶ
@@ -444,7 +447,6 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                                            coord_filetype,
                                            G_size,
                                            division,
-                                           iblank,
                                            GCell);
 
   return WriteInit<T>(comm,
@@ -532,6 +534,9 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   cdm_FilePath out_F_path;
   out_F_path.ProcDFIFile = proc_fname;
 
+  cdm_VisIt out_visit;
+  out_visit.PlotGC = "off";
+  
   cdm_Unit out_unit;
 
   cdm_MPI out_mpi;
@@ -560,20 +565,20 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   if( gethostname(tmpname, 512) != 0 ) printf("*** error gethostname() \n");
 
   if( out_F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
-    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
-    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.s
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_AVS ) {
-    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
-    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
   } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_VTK ) {
-    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_unit, out_domain, out_mpi,
+    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.e
   } else return NULL;

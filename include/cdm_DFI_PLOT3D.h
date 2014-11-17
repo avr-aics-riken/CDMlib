@@ -19,10 +19,6 @@
 
 class cdm_DFI_PLOT3D : public cdm_DFI {
 
-protected:
-
-  bool m_OutputGrid;  ///< plot3d grid file 出力指示
-
 public:
 
   /** コンストラクタ */
@@ -32,6 +28,7 @@ public:
    * @brief コンストラクタ 
    * @param [in] F_Info  FileInfo
    * @param [in] F_Path  FilePath
+   * @param [in] visit   VisIt option
    * @param [in] unit    Unit
    * @param [in] domain  Domain
    * @param [in] mpi     MPI
@@ -39,7 +36,8 @@ public:
    * @param [in] process Process
    */
   cdm_DFI_PLOT3D(const cdm_FileInfo F_Info, 
-                 const cdm_FilePath F_Path, 
+                 const cdm_FilePath F_Path,
+                 const cdm_VisIt visit,
                  const cdm_Unit unit, 
                  const cdm_Domain* domain, 
                  const cdm_MPI mpi,
@@ -48,12 +46,12 @@ public:
   {
     DFI_Finfo      = F_Info; 
     DFI_Fpath      = F_Path;
+    DFI_VisIt      = visit;
     DFI_Unit       = unit;
     DFI_Domain     = domain;
     DFI_MPI        = mpi;
     DFI_TimeSlice  = TSlice;
     DFI_Process    = process;
-    m_OutputGrid   = true;
     m_bgrid_interp_flag = false;
     m_input_type   = CDM::E_CDM_FILE_TYPE_FBINARY;
     m_output_type  = CDM::E_CDM_FILE_TYPE_FBINARY;
@@ -181,18 +179,20 @@ protected:
 
   /**
    * @brief Grid data file 出力 コントロール
+   * @param [in] iblank  iblankデータポインタ
    */
   bool
-  write_GridData(); 
+  write_GridData(const int* iblank); 
 
   /**
    * @brief xyzを出力
    * @param [in] fp  出力ファイルポインタ
    * @param [in] sz  サイズ
+   * @param [in] iblank  iblankデータポインタ
    */ 
   template<class T>
   void
-  write_XYZ(FILE* fp, int sz[3]);
+  write_XYZ(FILE* fp, int sz[3], const int* iblank);
 
   /**
    * @brief func data 出力

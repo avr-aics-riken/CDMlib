@@ -594,13 +594,7 @@ cdm_Array::interp_coarse( cdm_Array *src, int &err, bool head0start )
   CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
 
   // 変数の個数
-  // 変数の個数は1か3のみ対応
   int nvari = src->getNvari();
-  if( nvari != 1 && nvari != 3 )
-  {
-    err = -1;
-    return NULL;
-  }
 
   // その他の情報の取得
   int gcS = src->getGc();

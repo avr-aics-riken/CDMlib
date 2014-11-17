@@ -33,8 +33,7 @@ cdm_Domain::cdm_Domain()
 cdm_Domain::cdm_Domain(const double* _GlobalOrigin,
                        const double* _GlobalPitch,
                        const int* _GlobalVoxel,
-                       const int* _GlobalDivision,
-                       const int* _iblank)
+                       const int* _GlobalDivision)
 {
   GlobalOrigin[0]=_GlobalOrigin[0];
   GlobalOrigin[1]=_GlobalOrigin[1];
@@ -55,15 +54,12 @@ cdm_Domain::cdm_Domain(const double* _GlobalOrigin,
   GlobalRegion[0]=_GlobalPitch[0]*_GlobalVoxel[0];
   GlobalRegion[1]=_GlobalPitch[1]*_GlobalVoxel[1];
   GlobalRegion[2]=_GlobalPitch[2]*_GlobalVoxel[2];
-
-  iblank = _iblank;
 }
 
 cdm_Domain::cdm_Domain(const float* _GlobalOrigin,
                        const float* _GlobalPitch,
                        const int* _GlobalVoxel,
-                       const int* _GlobalDivision,
-                       const int* _iblank)
+                       const int* _GlobalDivision)
 {
   GlobalOrigin[0]=(double)_GlobalOrigin[0];
   GlobalOrigin[1]=(double)_GlobalOrigin[1];
@@ -80,8 +76,6 @@ cdm_Domain::cdm_Domain(const float* _GlobalOrigin,
   GlobalRegion[0]=(double)_GlobalPitch[0]*_GlobalVoxel[0];
   GlobalRegion[1]=(double)_GlobalPitch[1]*_GlobalVoxel[1];
   GlobalRegion[2]=(double)_GlobalPitch[2]*_GlobalVoxel[2];
-
-  iblank = _iblank;
 }
 
 void cdm_Domain::Clear()
