@@ -143,12 +143,6 @@ cdm_DFI::WriteData(const unsigned step,
     return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES;
   }
 
-  //WriteDataの引数で指定するガイドセル値とDFI_Finfoのガイドセル値の一致確認
-  if( gc != DFI_Finfo.GuideCell ) {
-    printf("\tError : Number of guide cells %d %d\n", gc, DFI_Finfo.GuideCell);
-    return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_GUIDECELLS;
-  }
-
   cdm_Array *data = cdm_Array::instanceArray
                     ( val
                     , DFI_Finfo.ArrayShape
