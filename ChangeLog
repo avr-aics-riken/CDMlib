@@ -11,6 +11,14 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-18
+Edit path setting for coordinate file and add check for coordinates
+座標ファイルのパス指定をDFIのディレクトリからの相対パス、もしくは絶対パス
+で指定できるようにした。
+また、WriteInit時に引数に与える座標配列がアロケートされているかの
+チェックや、ReadInit時に座標ファイル内の座標データ数のチェックを加えた。
+
+------------------
 2014-11-17
 Merge master into branch advance_develop
 masterのリビジョン"Add ResultFormat at VisIt section, release 0.6.1"を

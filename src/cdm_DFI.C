@@ -165,7 +165,7 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   } else if(F_info.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN) {
     domain = new cdm_NonUniformDomain<double>;
   }
-  if( domain->Read(tpCntl) != CDM::E_CDM_SUCCESS )
+  if( domain->Read(tpCntl, dirName) != CDM::E_CDM_SUCCESS )
   {
     printf("\tDomain Data Read error %s\n",procfile.c_str());
     ret = CDM::E_CDM_ERROR_READ_DOMAIN;

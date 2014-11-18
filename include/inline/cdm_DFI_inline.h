@@ -425,6 +425,12 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
     return NULL;
   }
 
+  //Check pointer to coordinates
+  if ( coord_X == NULL || coord_Y == NULL || coord_Z == NULL ) {
+    printf("\tCDM error : Pointer to coordinates is not set.\n");
+    return NULL;
+  }
+
   //Check of extension of CoordinateFile
   string ext;
   size_t pos_dot = coord_file.rfind('.');

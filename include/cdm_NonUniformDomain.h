@@ -194,7 +194,7 @@ public:
   }
 
   CDM::E_CDM_ERRORCODE
-  Read(cdm_TextParser tpCntl);
+  Read(cdm_TextParser tpCntl, std::string dirName);
 
   CDM::E_CDM_ERRORCODE
   Read_CoordinateFile(FILE* fp);

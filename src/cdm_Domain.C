@@ -73,6 +73,10 @@ cdm_Domain::cdm_Domain(const float* _GlobalOrigin,
   GlobalVoxel[1]=_GlobalVoxel[1];
   GlobalVoxel[2]=_GlobalVoxel[2];
 
+  GlobalDivision[0]=_GlobalDivision[0];
+  GlobalDivision[1]=_GlobalDivision[1];
+  GlobalDivision[2]=_GlobalDivision[2];
+
   GlobalRegion[0]=(double)_GlobalPitch[0]*_GlobalVoxel[0];
   GlobalRegion[1]=(double)_GlobalPitch[1]*_GlobalVoxel[1];
   GlobalRegion[2]=(double)_GlobalPitch[2]*_GlobalVoxel[2];
@@ -97,7 +101,8 @@ cdm_Domain::~cdm_Domain()
 // #################################################################
 // Domain の読込み関数
 CDM::E_CDM_ERRORCODE
-cdm_Domain::Read(cdm_TextParser tpCntl)
+cdm_Domain::Read(cdm_TextParser tpCntl,
+                 std::string dirName)
 {
 
   std::string str;

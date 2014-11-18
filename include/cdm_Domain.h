@@ -88,10 +88,12 @@ public:
   /**
    * @brief read Domain(proc.dfi)
    * @param [in]   tpCntl  cdm_TextParserクラス 
+   * @param [in]   dirName DFIのディレクトリパス
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  virtual Read(cdm_TextParser tpCntl);
+  virtual Read(cdm_TextParser tpCntl,
+               std::string dirName);
 
   /**
    * @brief DFIファイル:Domainを出力する
