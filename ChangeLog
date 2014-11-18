@@ -11,6 +11,10 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-19
+accept pull request #8
+
+------------------
 2014-11-17
 Restore temporary array setting in method WriteData and 
 fix bug in method write_DataRecord in class cdm_DFI_PLOT3D

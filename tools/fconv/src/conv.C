@@ -294,9 +294,9 @@ void CONV::OpenLogFile()
     printf("\tFile Open Error : '%s'\n",logname.c_str());
     Exit(0);
   }
-  fprintf(m_fplog,"####################\n",logname.c_str());
-  fprintf(m_fplog,"### log_comb.txt ###\n",logname.c_str());
-  fprintf(m_fplog,"####################\n",logname.c_str());
+  fprintf(m_fplog,"####################\n");
+  fprintf(m_fplog,"### log_comb.txt ###\n");
+  fprintf(m_fplog,"####################\n");
   fprintf(m_fplog,"\n");
   
   fprintf(m_fplog,"procGrp  = %d\n", m_procGrp);
