@@ -155,16 +155,16 @@ cdm_DFI::WriteData(const unsigned step,
   double d_time = (double)time;
   double d_time_avr = (double)time_avr;
   double *d_minmax=NULL;
+  int num_minmax;
   if( minmax ) {
-    if( DFI_Finfo.NumVariables>1 ) {
-      d_minmax = new double[DFI_Finfo.NumVariables*2+2];
-      for(int i=0; i<DFI_Finfo.NumVariables*2+2; i++) {
-        d_minmax[i] = minmax[i];
-      }
-    } else { 
-      d_minmax = new double[2];
-      d_minmax[0] = minmax[0];
-      d_minmax[1] = minmax[1];
+    if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH && DFI_Finfo.NumVariables == 3 ) {
+      num_minmax = DFI_Finfo.NumVariables*2+2;
+    } else {
+      num_minmax = DFI_Finfo.NumVariables*2;
+    }
+    d_minmax = new double[num_minmax];
+    for(int i=0; i<num_minmax; i++) {
+      d_minmax[i] = minmax[i];
     }
   }
 

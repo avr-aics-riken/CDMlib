@@ -15,6 +15,33 @@
 #include "cdm_DFI.h"
 
 // #################################################################
+// Index DFIファイルの出力 (API関数)
+CDM::E_CDM_ERRORCODE
+cdm_DFI::WriteIndexDfiFile()
+{
+
+  CDM::E_CDM_ERRORCODE err = CDM::E_CDM_SUCCESS;
+
+  if( m_indexDfiName != "" ) {
+    //index dfi ファイルのディレクトリ作成
+    cdm_DFI::MakeDirectory(m_directoryPath);
+    std::string dfiname = CDM::cdmPath_FileName(m_indexDfiName,".dfi");
+    std::string fname = CDM::cdmPath_ConnectPath( m_directoryPath, dfiname );
+
+    //index dfi のファイル出力
+    if( m_RankID == 0 ) {
+      err = WriteIndexDfiFile(fname);
+    }
+  } else {
+    printf("\tError : dfi file name is not set\n");
+    return CDM::E_CDM_ERROR_WRITE_INDEXFILENAME_EMPTY;
+  }
+
+  return err;
+
+}
+
+// #################################################################
 // Index DFIファイルの出力
 CDM::E_CDM_ERRORCODE
 cdm_DFI::WriteIndexDfiFile(const std::string dfi_name)
@@ -324,21 +351,26 @@ cdm_DFI::WriteData(const unsigned step,
 
   if( err != CDM::E_CDM_SUCCESS ) return err;
 
+/* indexファイル出力部 */
 //FCONV 20131218.s
   if( m_indexDfiName != "" ) {
     //index dfi ファイルのディレクトリ作成
+    /*
     cdm_DFI::MakeDirectory(m_directoryPath);
     std::string dfiname = CDM::cdmPath_FileName(m_indexDfiName,".dfi");
     std::string fname = CDM::cdmPath_ConnectPath( m_directoryPath, dfiname );
+    */
 
     //Slice へのセット
     DFI_TimeSlice.AddSlice(step, time, minmax, DFI_Finfo.NumVariables, DFI_Finfo.FileFormat,
                            avr_mode, step_avr, time_avr);
 
     //index dfi のファイル出力
+    /*
     if( m_RankID == 0 ) {
       err = WriteIndexDfiFile(fname);
     }
+    */
   }
 //FCONV 20131218.e
 //FCONV 20131125.s

@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-20
+Add API method WriteIndexDfiFile and modify method WriteData
+dfiファイルを出力するAPI関数WriteIndexDfiFile()を追加した。
+また、メソッドWriteData内の最小値・最大値設定で、ベクトル成分⇒変数に
+対応できていない部分があったので修正した。
+
+------------------
 2014-11-19
 accept pull request #8
 

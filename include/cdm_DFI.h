@@ -504,6 +504,12 @@ public:
                    //double* org=NULL);
 
   /**
+   * @brief index DFIファイル出力 (API関数)
+   */
+  CDM::E_CDM_ERRORCODE
+  WriteIndexDfiFile();
+
+  /**
    * @brief grid ファイル出力コントロール
    * @param [in] iblank      iblankデータポインタ(PLOT3Dのxyzファイル用)　　　　
    */
