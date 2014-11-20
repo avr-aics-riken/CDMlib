@@ -617,6 +617,24 @@ public:
           const bool BsetDiff=false);
 
   /**
+   * @brief TimeSliceをセットする
+   * @param [in] step     出力ステップ番号
+   * @param [in] time     出力時刻　　　
+   * @param [in] minmax   フィールデータのMinMax
+   * @param [in] avr_mode 平均ステップ＆時間出力　false : 出力 true  : 出力しない
+   * @param [in] step_avr 平均ステップ
+   * @param [in] time_avr 平均時間
+   */
+  template<class T, class TimeT, class TimeAvrT>
+  void 
+  AddTimeSlice(const unsigned step,
+               TimeT time,
+               T* minmax=NULL, 
+               bool avr_mode=true, 
+               unsigned step_avr=0, 
+               TimeAvrT time_avr=0.0);
+
+  /**
    * @brief UuitElemを取得する
    * @param[in]  Name 取得する単位系
    * @param[out] unit 取得したcdm_UnitElem

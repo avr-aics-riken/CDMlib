@@ -182,6 +182,43 @@ cdm_DFI::WriteData(const unsigned step,
 }
 
 // #################################################################
+// TimeSliceをセット
+template<class T, class TimeT, class TimeAvrT> 
+CDM_INLINE
+void 
+cdm_DFI::AddTimeSlice(const unsigned step,
+                      TimeT time,
+                      T* minmax,
+                      bool avr_mode,
+                      unsigned step_avr,
+                      TimeAvrT time_avr)
+{
+
+  double d_time = (double)time;
+  double d_time_avr = (double)time_avr;
+  double *d_minmax=NULL;
+  int num_minmax;
+  if( minmax ) {
+    if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH && DFI_Finfo.NumVariables == 3 ) {
+      num_minmax = DFI_Finfo.NumVariables*2+2;
+    } else {
+      num_minmax = DFI_Finfo.NumVariables*2;
+    }
+    d_minmax = new double[num_minmax];
+    for(int i=0; i<num_minmax; i++) {
+      d_minmax[i] = minmax[i];
+    }
+  }
+
+  //Slice へのセット
+  DFI_TimeSlice.AddSlice(step, d_time, d_minmax, DFI_Finfo.NumVariables, DFI_Finfo.FileFormat,
+                         avr_mode, step_avr, d_time_avr);
+
+  if( d_minmax ) delete [] d_minmax;
+
+}
+
+// #################################################################
 //セル中心データを 格子点にセット
 template<class T1, class T2>
 CDM_INLINE

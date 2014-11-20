@@ -12,6 +12,14 @@ REVISION HISTORY
 
 ------------------
 2014-11-20
+Add API method AddTimeSlice and remove output function of dfi file from method WriteData
+DFIの出力用インスタンスのメンバクラスDFI_TimeSliceにTimeSliceの情報
+を追加するAPI関数AddTimeSliceを追加した。
+また、メソッドWriteData内でTimeSliceの情報追加、およびdfiファイル
+の出力を行っていた部分を削除した(コメント文として残しています)。
+
+------------------
+2014-11-20
 Add API method WriteIndexDfiFile and modify method WriteData
 dfiファイルを出力するAPI関数WriteIndexDfiFile()を追加した。
 また、メソッドWriteData内の最小値・最大値設定で、ベクトル成分⇒変数に
