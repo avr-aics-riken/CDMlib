@@ -54,35 +54,58 @@ public:
   /** デストラクタ **/
   virtual ~cdm_Domain();
 
-  /** セル中心の座標を出力 */
+  /**
+   * @brief セル中心のX座標を取得
+   * @param [in] i X方向のセル番号
+   * @return セル中心のX座標
+   */
   virtual double CellX(int i) const{
     return GlobalOrigin[0] + Pitch[0]*(i+0.5);
   }
+
+  /**
+   * @brief セル中心のY座標を取得
+   * @param [in] j Y方向のセル番号
+   * @return セル中心のY座標
+   */
   virtual double CellY(int j) const{
     return GlobalOrigin[1] + Pitch[1]*(j+0.5);
   }
+
+  /**
+   * @brief セル中心のZ座標を取得
+   * @param [in] k Z方向のセル番号
+   * @return セル中心のZ座標
+   */
   virtual double CellZ(int k) const{
     return GlobalOrigin[2] + Pitch[2]*(k+0.5);
   }
-  /** 格子の座標を出力 */
+
+  /**
+   * @brief 格子点のX座標を取得
+   * @param [in] i X方向の格子番号
+   * @return 格子点のX座標
+   */
   virtual double NodeX(int i) const{
     return GlobalOrigin[0] + Pitch[0]*i;
   }
+
+  /**
+   * @brief 格子点のY座標を取得
+   * @param [in] j Y方向の格子番号
+   * @return 格子点のY座標
+   */
   virtual double NodeY(int j) const{
     return GlobalOrigin[1] + Pitch[1]*j;
   }
+
+  /**
+   * @brief 格子点のZ座標を取得
+   * @param [in] k Z方向の格子番号
+   * @return 格子点のZ座標
+   */
   virtual double NodeZ(int k) const{
     return GlobalOrigin[2] + Pitch[2]*k;
-  }
-
-  virtual cdm_Domain& operator=(const cdm_Domain& other){
-    for(int i=0;i<3;++i){
-      this->GlobalOrigin[i] = other.GlobalOrigin[i];
-      this->GlobalRegion[i] = other.GlobalRegion[i];
-      this->GlobalVoxel[i] = other.GlobalVoxel[i];
-      this->GlobalDivision[i] = other.GlobalDivision[i];
-      this->Pitch[i] = other.Pitch[i];
-    }
   }
 
   /**
@@ -99,7 +122,7 @@ public:
    * @brief DFIファイル:Domainを出力する
    * @param [in] fp         ファイルポインタ
    * @param [in] tab        インデント
-   * @return true:出力成功 false:出力失敗
+   * @return error code
    */
   CDM::E_CDM_ERRORCODE
   virtual Write(FILE* fp, 

@@ -181,8 +181,9 @@ namespace CDM
 ,   E_CDM_ERROR_READ_DFI_COORDINATEFILE         = 1028 ///< DFI Coordinate File 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_COORDINATEFILETYPE     = 1029 ///< DFI Coordinate File Type 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_COORDINATEFILEPRECISION= 1030 ///< DFI Coordinate File Precision 読込みエラー
-,   E_CDM_ERROR_OPEN_COORDINATEFILE             = 1031 ///< Coordinate File オープンに失敗
-,   E_CDM_ERROR_READ_COORDINATEFILE             = 1032 ///< Coordinate File 読込みエラー
+,   E_CDM_ERROR_READ_DFI_COORDINATEFILEENDIAN   = 1031 ///< DFI Coordinate File Endian 読込みエラー
+,   E_CDM_ERROR_OPEN_COORDINATEFILE             = 1032 ///< Coordinate File オープンに失敗
+,   E_CDM_ERROR_READ_COORDINATEFILE             = 1033 ///< Coordinate File 読込みエラー
 ,   E_CDM_ERROR_READ_INDEXFILE_OPENERROR    = 1050 ///< Indexファイルオープンエラー
 ,   E_CDM_ERROR_TEXTPARSER                  = 1051 ///< TextParserエラー
 ,   E_CDM_ERROR_READ_FILEINFO               = 1052 ///< FileInfo読込みエラー

@@ -275,6 +275,7 @@ public:
    * @param [in] coord_Z     Z座標データポインタ
    * @param [in] coord_file          座標ファイル名
    * @param [in] coord_filetype      座標ファイルのファイルタイプ
+   * @param [in] coord_fileEndian    座標ファイルのエンディアンタイプ
    * @param [in] division    領域分割数　　　　　　　　
    * @param [in] head        計算領域の開始位置　　　　
    * @param [in] tail        計算領域の終了位置　　　　
@@ -299,6 +300,7 @@ public:
             const T* coord_Z,
             const std::string coord_file,
             const CDM::E_CDM_FILE_TYPE coord_filetype,
+            const CDM::E_CDM_ENDIANTYPE coord_fileEndian,
             const int division[3],
             const int head[3],
             const int tail[3],

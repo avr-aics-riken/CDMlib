@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-21
+Add CoordinateFileEndian and edit class cdm_NonUniformDomain
+不等間隔格子の場合に座標ファイルのエンディアンを示す変数CoordinateFileEndian
+を追加した。また、クラスcdm_NonUniformDomainのコードおよびコメント文の
+整理を行った。
+
+------------------
 2014-11-18
 Edit path setting for coordinate file and add check for coordinates
 座標ファイルのパス指定をDFIのディレクトリからの相対パス、もしくは絶対パス

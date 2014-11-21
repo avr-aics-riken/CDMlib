@@ -23,18 +23,19 @@ template<class T>
 class cdm_NonUniformDomain : public cdm_Domain {
 
 private:
-  T *XCoordinates;                           ///<X座標データポインタ(Domainの格子点)
-  T *YCoordinates;                           ///<Y座標データポインタ(Domainの格子点)
-  T *ZCoordinates;                           ///<Z座標データポインタ(Domainの格子点)
-  std::string CoordinateFile;                ///<CoordinateFileファイル名
-  CDM::E_CDM_FILE_TYPE CoordinateFileType;   ///<座標ファイルのファイルタイプ
-  CDM::E_CDM_DTYPE CoordinateFilePrecision;  ///<座標ファイルのデータ精度
-  T pit_gcXsta;                              ///<X方向のガイドセルの格子幅(始点側)
-  T pit_gcXend;                              ///<X方向のガイドセルの格子幅(終点側)
-  T pit_gcYsta;                              ///<Y方向のガイドセルの格子幅(始点側)
-  T pit_gcYend;                              ///<Y方向のガイドセルの格子幅(終点側)
-  T pit_gcZsta;                              ///<Z方向のガイドセルの格子幅(始点側)
-  T pit_gcZend;                              ///<Z方向のガイドセルの格子幅(終点側)
+  T *XCoordinates;                            ///<X座標データポインタ(Domainの格子点)
+  T *YCoordinates;                            ///<Y座標データポインタ(Domainの格子点)
+  T *ZCoordinates;                            ///<Z座標データポインタ(Domainの格子点)
+  std::string CoordinateFile;                 ///<CoordinateFileファイル名
+  CDM::E_CDM_FILE_TYPE CoordinateFileType;    ///<座標ファイルのファイルタイプ
+  CDM::E_CDM_DTYPE CoordinateFilePrecision;   ///<座標ファイルのデータ精度
+  CDM::E_CDM_ENDIANTYPE CoordinateFileEndian; ///<座標ファイルのエンディアンタイプ
+  T pit_gcXsta;                               ///<X方向のガイドセルの格子幅(始点側)
+  T pit_gcXend;                               ///<X方向のガイドセルの格子幅(終点側)
+  T pit_gcYsta;                               ///<Y方向のガイドセルの格子幅(始点側)
+  T pit_gcYend;                               ///<Y方向のガイドセルの格子幅(終点側)
+  T pit_gcZsta;                               ///<Z方向のガイドセルの格子幅(始点側)
+  T pit_gcZend;                               ///<Z方向のガイドセルの格子幅(終点側)
 
 protected:
   virtual void Clear()
@@ -52,6 +53,7 @@ public:
     CoordinateFile = "";
     CoordinateFileType = CDM::E_CDM_FILE_TYPE_DEFAULT;
     CoordinateFilePrecision = CDM::E_CDM_DTYPE_UNKNOWN;
+    CoordinateFileEndian = CDM::E_CDM_ENDIANTYPE_UNKNOWN;
   }
 
   /** 
@@ -61,6 +63,7 @@ public:
   * @param [in] _ZCoordinates   Z座標データポインタ(Domainの格子点)
   * @param [in] _CoordinateFile          座標データ名
   * @param [in] _CoordinateFileType      座標データのファイルタイプ
+  * @param [in] _CoordinateFileEndian    座標データのエンディアンタイプ
   * @param [in] _GlobalVoxel    ボクセル数
   * @param [in] _GlobalDivision 分割数
   * @param [in] _gc             ガイドセル数
@@ -70,6 +73,7 @@ public:
                        const T* _ZCoordinates,
                        const std::string _CoordinateFile,
                        const CDM::E_CDM_FILE_TYPE _CoordinateFileType,
+                       const CDM::E_CDM_ENDIANTYPE _CoordinateFileEndian,
                        const int* _GlobalVoxel, 
                        const int* _GlobalDivision,
                        const int _gc=0)
@@ -103,6 +107,7 @@ public:
     } else if( typeid(T) == typeid(double) ) {
       CoordinateFilePrecision = CDM::E_CDM_FLOAT64;
     }
+    CoordinateFileEndian = _CoordinateFileEndian;
 
     //GlobalOrigin,GlobalRegionの設定
     GlobalOrigin[0] = XCoordinates[0];
@@ -132,7 +137,11 @@ public:
     if( ZCoordinates != NULL ){ delete[] ZCoordinates; }
   }
 
-  /** セル中心の座標を出力 */
+  /**
+   * @brief セル中心のX座標を取得
+   * @param [in] i X方向のセル番号
+   * @return セル中心のX座標
+   */
   double CellX(int i) const{
     if( i < 0 ){
       return (double)0.5*(XCoordinates[0]+XCoordinates[1]) - (double)pit_gcXsta*(-i);
@@ -142,6 +151,12 @@ public:
       return (double)0.5*(XCoordinates[i]+XCoordinates[i+1]);
     }
   }
+
+  /**
+   * @brief セル中心のY座標を取得
+   * @param [in] j Y方向のセル番号
+   * @return セル中心のX座標
+   */
   double CellY(int j) const{
     if( j < 0 ) {
       return (double)0.5*(YCoordinates[0]+YCoordinates[1]) - (double)pit_gcYsta*(-j);
@@ -151,6 +166,12 @@ public:
       return (double)0.5*(YCoordinates[j]+YCoordinates[j+1]);
     }
   }
+
+  /**
+   * @brief セル中心のZ座標を取得
+   * @param [in] k Z方向のセル番号
+   * @return セル中心のX座標
+   */
   double CellZ(int k) const{
     if( k < 0 ) {
       return (double)0.5*(ZCoordinates[0]+ZCoordinates[1]) - (double)pit_gcZsta*(-k);
@@ -160,47 +181,97 @@ public:
       return (double)0.5*(ZCoordinates[k]+ZCoordinates[k+1]);
     }
   }
-  /** 格子の座標を出力 */
+
+  /**
+   * @brief 格子点のX座標を取得
+   * @param [in] i X方向の格子番号
+   * @return 格子点のX座標
+   */
   double NodeX(int i) const{
     return (double)XCoordinates[i];
   }
+
+  /**
+   * @brief 格子点のY座標を取得
+   * @param [in] j Y方向の格子番号
+   * @return 格子点のY座標
+   */
   double NodeY(int j) const{
     return (double)YCoordinates[j];
   }
+
+  /**
+   * @brief 格子点のZ座標を取得
+   * @param [in] k Z方向の格子番号
+   * @return 格子点のZ座標
+   */
   double NodeZ(int k) const{
     return (double)ZCoordinates[k];
   }
 
-  cdm_NonUniformDomain& operator=(const cdm_NonUniformDomain& other){
-    Clear();
-    for(int i=0;i<3;++i){
-      this->GlobalOrigin[i] = other.GlobalOrigin[i];
-      this->GlobalRegion[i] = other.GlobalRegion[i];
-      this->GlobalVoxel[i] = other.GlobalVoxel[i];
-      this->GlobalDivision[i] = other.GlobalDivision[i];
-    }
-    XCoordinates = new T[GlobalVoxel[0]+1];
-    for(int i=0;i<GlobalVoxel[0]+1;++i){
-      this->XCoordinates[i] = other.XCoordinates[i];
-    }
-    YCoordinates = new T[GlobalVoxel[1]+1];
-    for(int j=0;j<GlobalVoxel[1]+1;++j){
-      this->YCoordinates[j] = other.YCoordinates[j];
-    }
-    ZCoordinates = new T[GlobalVoxel[2]+1];
-    for(int k=0;k<GlobalVoxel[2]+1;++k){
-      this->ZCoordinates[k] = other.ZCoordinates[k];
-    }
-  }
-
+  /**
+   * @brief Domain(proc.dfi)を読込む
+   * @param [in]   tpCntl  cdm_TextParserクラス 
+   * @param [in]   dirName DFIのディレクトリパス
+   * @return error code
+   */
   CDM::E_CDM_ERRORCODE
-  Read(cdm_TextParser tpCntl, std::string dirName);
+  Read(cdm_TextParser tpCntl,
+       std::string dirName);
 
+  /**
+   * @brief CoordinateFileを読込む
+   * @param [in]   fp  ファイルポインタ
+   * @return error code
+   */
   CDM::E_CDM_ERRORCODE
   Read_CoordinateFile(FILE* fp);
 
+  /**
+   * @brief CoordinateFileの各方向の座標データ数を読込む
+   * @param [in]   fp          ファイルポインタ
+   * @param [in]   matchEndian true:Endian一致
+   * @param [in]   globalVoxel 計算領域のボクセル数
+   * @param [out]  dataCount   座標データ数
+   * @param [out]  nread       読込みデータ数
+   * @return error code
+   */
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, const unsigned tab) const;
+  readCoordDataCount(FILE* fp,
+                     bool matchEndian,
+                     int globalVoxel,
+                     int* dataCount,
+                     size_t* nread);
+
+  /**
+   * @brief CoordinateFileの各方向の座標データを読込む
+   * @param [in]   fp           ファイルポインタ
+   * @param [in]   matchEndian  true:Endian一致
+   * @param [in]   dataCount    座標データ数
+   * @param [in]   globalOrigin 計算空間の起点座標
+   * @param [in]   globalRegion 計算空間の各軸方向の長さ
+   * @param [out]  coordinates  読み込んだ座標データのポインタ
+   * @param [out]  nread        読込みデータ数
+   * @return error code
+   */
+  CDM::E_CDM_ERRORCODE
+  readCoordData(FILE* fp,
+                bool matchEndian,
+                int* dataCount,
+                double globalOrigin,
+                double globalRegion,
+                T* coordinates,
+                size_t* nread);
+
+  /**
+   * @brief DFIファイル:Domainを出力する
+   * @param [in]   fp  ファイルポインタ
+   * @param [in]   tab インデント
+   * @return error code
+   */
+  CDM::E_CDM_ERRORCODE
+  Write(FILE* fp,
+        const unsigned tab) const;
 
 };
 
