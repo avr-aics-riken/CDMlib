@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-21
+Add API method WriteFieldDataFile and restore output function of dfi file in method WriteData
+フィールドデータのみを出力するAPI関数WriteFieldDataFileを追加した。
+また、メソッドWriteData内で削除(コメントアウト)していたTimeSliceの情報追加、
+およびdfiファイルの出力部分を元に戻した。
+
+------------------
 2014-11-20
 Add API method AddTimeSlice and remove output function of dfi file from method WriteData
 DFIの出力用インスタンスのメンバクラスDFI_TimeSliceにTimeSliceの情報

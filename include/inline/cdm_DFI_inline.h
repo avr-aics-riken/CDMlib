@@ -182,6 +182,47 @@ cdm_DFI::WriteData(const unsigned step,
 }
 
 // #################################################################
+// フィールドデータの出力(dfi fileの出力なし)
+template<class T, class TimeT, class TimeAvrT> 
+CDM_INLINE
+CDM::E_CDM_ERRORCODE
+cdm_DFI:: WriteFieldDataFile(const unsigned step,
+                             TimeT time,
+                             const int sz[3],
+                             const int nVari,
+                             const int gc,
+                             T* val,
+                             const bool avr_mode,
+                             const unsigned step_avr,
+                             TimeAvrT time_avr)
+{
+  //フィールドデータの変数の個数と登録された変数名の個数の一致確認
+  if ( DFI_Finfo.NumVariables != DFI_Finfo.VariableName.size()) {
+    printf("\tError : Number of valiable names %d %d\n", DFI_Finfo.NumVariables, DFI_Finfo.VariableName.size());
+    return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES;
+  }
+
+  cdm_Array *data = cdm_Array::instanceArray
+                    ( val
+                    , DFI_Finfo.ArrayShape
+                    , DFI_Process.RankList[m_RankID].VoxelSize[0]
+                    , DFI_Process.RankList[m_RankID].VoxelSize[1]
+                    , DFI_Process.RankList[m_RankID].VoxelSize[2]
+                    , gc
+                    , DFI_Finfo.NumVariables);
+
+  double d_time = (double)time;
+  double d_time_avr = (double)time_avr;
+
+  CDM::E_CDM_ERRORCODE ret;
+  ret = WriteFieldDataFile(step, gc, d_time, data, avr_mode, step_avr, d_time_avr);
+
+  delete data;
+  return ret;
+
+}
+
+// #################################################################
 // TimeSliceをセット
 template<class T, class TimeT, class TimeAvrT> 
 CDM_INLINE

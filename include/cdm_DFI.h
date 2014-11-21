@@ -458,6 +458,31 @@ public:
             TimeAvrT time_avr=0.0);
 
   /**
+   * @brief write field data record (template function)
+   * @details フィールドデータのみ出力。dfiファイルの出力はなし。
+   * @param [in] step     出力ステップ番号
+   * @param [in] time     出力時刻　　　　
+   * @param [in] sz       valの実ボクセルサイズ
+   * @param [in] nVari    valの変数の個数
+   * @param [in] gc       valの仮想セル数　　　
+   * @param [in] val      出力データポインタ
+   * @param [in] avr_mode 平均ステップ＆時間出力　false : 出力 true  : 出力しない
+   * @param [in] step_avr 平均ステップ
+   * @param [in] time_avr 平均時間
+   */ 
+  template<class T, class TimeT, class TimeAvrT>
+  CDM::E_CDM_ERRORCODE
+  WriteFieldDataFile(const unsigned step,
+                     TimeT time,
+                     const int sz[3], 
+                     const int nVari,
+                     const int gc, 
+                     T* val, 
+                     bool avr_mode=true, 
+                     unsigned step_avr=0, 
+                     TimeAvrT time_avr=0.0);
+
+  /**
    * @brief write field data record
    * @details template WriteData関数で方に応じた配列を確保した後、呼び出される 
    * @param [in] step     出力ステップ番号
@@ -479,6 +504,27 @@ public:
             const bool avr_mode, 
             const unsigned step_avr, 
             double time_avr);
+
+  /**
+   * @brief write field data record (not output dfi file)
+   * @details template WriteFieldDataFile関数で方に応じた配列を確保した後、呼び出される 
+   * @param [in] step     出力ステップ番号
+   * @param [in] gc       仮想セル数　　　
+   * @param [in] time     出力時刻　　　　
+   * @param [in] val      出力データポインタ
+   * @param [in] avr_mode 平均ステップ＆時間出力　false : 出力
+   *                                              true  : 出力しない
+   * @param [in] step_avr 平均ステップ
+   * @param [in] time_avr 平均時間
+   */ 
+  CDM::E_CDM_ERRORCODE
+  WriteFieldDataFile(const unsigned step, 
+                     const int gc, 
+                     double time, 
+                     cdm_Array* val, 
+                     const bool avr_mode, 
+                     const unsigned step_avr, 
+                     double time_avr);
 
   /**
    * @brief proc DFIファイル出力コントロール (float)
