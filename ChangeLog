@@ -11,6 +11,11 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-28
+Minor correction about print statements in class cdm_NonUniformDomain
+クラスcdm_NonUniformDomain内にあるprint文の訂正を行った。
+
+------------------
 2014-11-21
 Add CoordinateFileEndian and edit class cdm_NonUniformDomain
 不等間隔格子の場合に座標ファイルのエンディアンを示す変数CoordinateFileEndian

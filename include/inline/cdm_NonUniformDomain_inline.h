@@ -367,7 +367,7 @@ cdm_NonUniformDomain<T>::readCoordDataCount(FILE* fp,
 
   //GlobalVoxelの確認
   if ( dataCount[0] != globalVoxel+1 ) {
-    printf("\tError in Read CoordinateFile: Number of grid in X direction\n");
+    printf("\tError in Read CoordinateFile: Number of grid\n");
     return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
   }
 
@@ -401,13 +401,13 @@ cdm_NonUniformDomain<T>::readCoordData(FILE* fp,
   //GlobalOriginとGlobalRegionの確認
   double eps = 1e-10;
   if ( fabs(coordinates[0]-globalOrigin) > eps) {
-    printf("\tError in Read CoordinateFile: Origin in X direction\n");
+    printf("\tError in Read CoordinateFile: Origin\n");
     cout << globalOrigin << endl;
     return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
   }
   double reg_Coord = coordinates[dataCount[0]-1]-coordinates[0];
   if ( fabs(reg_Coord-globalRegion) > eps) {
-    printf("\tError in Read CoordinateFile: Region in X direction\n");
+    printf("\tError in Read CoordinateFile: Region\n");
     return CDM::E_CDM_ERROR_READ_COORDINATEFILE;
   }
 
