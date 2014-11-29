@@ -11,6 +11,10 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-29
+accept pull request #9
+
+------------------
 2014-11-21
 Add API method WriteFieldDataFile and restore output function of dfi file in method WriteData
 フィールドデータのみを出力するAPI関数WriteFieldDataFileを追加した。
