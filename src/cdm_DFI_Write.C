@@ -15,6 +15,33 @@
 #include "cdm_DFI.h"
 
 // #################################################################
+// Index DFIファイルの出力 (API関数)
+CDM::E_CDM_ERRORCODE
+cdm_DFI::WriteIndexDfiFile()
+{
+
+  CDM::E_CDM_ERRORCODE err = CDM::E_CDM_SUCCESS;
+
+  if( m_indexDfiName != "" ) {
+    //index dfi ファイルのディレクトリ作成
+    cdm_DFI::MakeDirectory(m_directoryPath);
+    std::string dfiname = CDM::cdmPath_FileName(m_indexDfiName,".dfi");
+    std::string fname = CDM::cdmPath_ConnectPath( m_directoryPath, dfiname );
+
+    //index dfi のファイル出力
+    if( m_RankID == 0 ) {
+      err = WriteIndexDfiFile(fname);
+    }
+  } else {
+    printf("\tError : dfi file name is not set\n");
+    return CDM::E_CDM_ERROR_WRITE_INDEXFILENAME_EMPTY;
+  }
+
+  return err;
+
+}
+
+// #################################################################
 // Index DFIファイルの出力
 CDM::E_CDM_ERRORCODE
 cdm_DFI::WriteIndexDfiFile(const std::string dfi_name)
@@ -274,6 +301,23 @@ cdm_DFI::WriteData(const unsigned step,
   if( MakeDirectory(dir) != 1 ) return CDM::E_CDM_ERROR_MAKEDIRECTORY;
 
   cdm_Array *outArray = val;
+  if( gc > DFI_Finfo.GuideCell ) {
+    //出力用バッファのインスタンス
+    outArray = cdm_Array::instanceArray
+               ( DFI_Finfo.DataType
+               , DFI_Finfo.ArrayShape
+               , DFI_Process.RankList[m_RankID].VoxelSize
+               , DFI_Finfo.GuideCell
+               , DFI_Finfo.NumVariables); 
+    //配列のコピー val -> outArray
+    int ret = val->copyArray(outArray);
+  }
+  else if( gc < DFI_Finfo.GuideCell )
+  {
+    //出力用に用意したデータのガイドセル値より出力するガイドセル値の方が大きい場合はエラー
+    printf("\tError : Number of guide cells %d %d\n", gc, DFI_Finfo.GuideCell);
+    return CDM::E_CDM_ERROR_NUM_OF_GUIDECELLS;
+  }
 
   // フィールドデータの出力
   CDM::E_CDM_ERRORCODE err = CDM::E_CDM_SUCCESS;
@@ -303,6 +347,99 @@ cdm_DFI::WriteData(const unsigned step,
     }
   }
 //FCONV 20131218.e
+//FCONV 20131125.s
+  if( !write_ascii_header(step,time) ) return CDM::E_CDM_ERROR;
+//FCONV 20131125.e
+
+  return err;
+}
+
+// #################################################################
+// fileld data 出力(dfi fileの出力なし)
+CDM::E_CDM_ERRORCODE
+cdm_DFI::WriteFieldDataFile(const unsigned step,
+                            const int gc,
+                            double time,
+                            cdm_Array* val,
+                            const bool avr_mode,
+                            const unsigned step_avr,
+                            double time_avr)
+{
+
+  bool mio=false;
+  if( DFI_MPI.NumberOfRank > 1 ) mio=true;
+
+  std::string outFile,tmp;
+//FCONV 20131128.s
+  if( m_output_fname != CDM::E_CDM_FNAME_RANK_STEP ) {
+    tmp = Generate_FieldFileName(m_RankID,step,mio);
+    if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
+      outFile = tmp;
+    } else {
+      outFile = m_directoryPath + "/"+ tmp;
+    }
+  } else {
+    std::string ext;
+    if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH ) {
+      ext = D_CDM_EXT_SPH;
+    } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_BOV ) {
+      ext = D_CDM_EXT_BOV_DATAFILE;
+    } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS ) {
+      //ext = D_CDM_EXT_SPH;
+      ext = D_CDM_EXT_BOV_DATAFILE;
+    } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_VTK ) {
+      ext = D_CDM_EXT_VTK;
+    } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
+      ext = D_CDM_EXT_FUNC;
+    }
+    tmp = Generate_FileName(DFI_Finfo.Prefix,
+                            m_RankID,
+                            step,ext,
+                            m_output_fname,
+                            mio,
+                            DFI_Finfo.TimeSliceDirFlag);
+    if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
+      outFile = DFI_Finfo.DirectoryPath +"/"+ tmp;
+    } else {
+      outFile = m_directoryPath + "/" + DFI_Finfo.DirectoryPath +"/"+ tmp;
+    }
+  }
+//FCONV 20131128.e
+
+  std::string dir = CDM::cdmPath_DirName(outFile);
+
+  if( MakeDirectory(dir) != 1 ) return CDM::E_CDM_ERROR_MAKEDIRECTORY;
+
+  cdm_Array *outArray = val;
+  if( gc > DFI_Finfo.GuideCell ) {
+    //出力用バッファのインスタンス
+    outArray = cdm_Array::instanceArray
+               ( DFI_Finfo.DataType
+               , DFI_Finfo.ArrayShape
+               , DFI_Process.RankList[m_RankID].VoxelSize
+               , DFI_Finfo.GuideCell
+               , DFI_Finfo.NumVariables); 
+    //配列のコピー val -> outArray
+    int ret = val->copyArray(outArray);
+  }
+  else if( gc < DFI_Finfo.GuideCell )
+  {
+    //出力用に用意したデータのガイドセル値より出力するガイドセル値の方が大きい場合はエラー
+    printf("\tError : Number of guide cells %d %d\n", gc, DFI_Finfo.GuideCell);
+    return CDM::E_CDM_ERROR_NUM_OF_GUIDECELLS;
+  }
+
+  // フィールドデータの出力
+  CDM::E_CDM_ERRORCODE err = CDM::E_CDM_SUCCESS;
+  err = WriteFieldData(outFile, step, time, outArray, avr_mode, step_avr, time_avr);
+
+  //出力バッファのメモリ解放
+  if( val != outArray ) {
+    delete outArray;
+  }
+
+  if( err != CDM::E_CDM_SUCCESS ) return err;
+
 //FCONV 20131125.s
   if( !write_ascii_header(step,time) ) return CDM::E_CDM_ERROR;
 //FCONV 20131125.e

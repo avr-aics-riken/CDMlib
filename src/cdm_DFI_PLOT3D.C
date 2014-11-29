@@ -154,8 +154,9 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
                                  const int n)
 {
 
-  //フィールドデータの配列サイズ取得(ガイドセル含む)
-  const int *szVal = val->_getArraySizeInt();
+  const int *szVal_without_gc = val->getArraySizeInt();
+  int szVal[3];
+  for(int i=0; i<3; i++) szVal[i] = szVal_without_gc[i] +(int)(2*gc);
 
   //配列における変数の個数の取得
   int nvari = val->getNvari();

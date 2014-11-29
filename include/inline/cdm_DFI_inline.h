@@ -151,12 +151,6 @@ cdm_DFI::WriteData(const unsigned step,
     return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES;
   }
 
-  //WriteDataの引数で指定するガイドセル値とDFI_Finfoのガイドセル値の一致確認
-  if( gc != DFI_Finfo.GuideCell ) {
-    printf("\tError : Number of guide cells %d %d\n", gc, DFI_Finfo.GuideCell);
-    return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_GUIDECELLS;
-  }
-
   cdm_Array *data = cdm_Array::instanceArray
                     ( val
                     , DFI_Finfo.ArrayShape
@@ -169,16 +163,16 @@ cdm_DFI::WriteData(const unsigned step,
   double d_time = (double)time;
   double d_time_avr = (double)time_avr;
   double *d_minmax=NULL;
+  int num_minmax;
   if( minmax ) {
-    if( DFI_Finfo.NumVariables>1 ) {
-      d_minmax = new double[DFI_Finfo.NumVariables*2+2];
-      for(int i=0; i<DFI_Finfo.NumVariables*2+2; i++) {
-        d_minmax[i] = minmax[i];
-      }
-    } else { 
-      d_minmax = new double[2];
-      d_minmax[0] = minmax[0];
-      d_minmax[1] = minmax[1];
+    if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH && DFI_Finfo.NumVariables == 3 ) {
+      num_minmax = DFI_Finfo.NumVariables*2+2;
+    } else {
+      num_minmax = DFI_Finfo.NumVariables*2;
+    }
+    d_minmax = new double[num_minmax];
+    for(int i=0; i<num_minmax; i++) {
+      d_minmax[i] = minmax[i];
     }
   }
 
@@ -193,6 +187,84 @@ cdm_DFI::WriteData(const unsigned step,
   delete data;
   return ret;
                                           
+}
+
+// #################################################################
+// フィールドデータの出力(dfi fileの出力なし)
+template<class T, class TimeT, class TimeAvrT> 
+CDM_INLINE
+CDM::E_CDM_ERRORCODE
+cdm_DFI:: WriteFieldDataFile(const unsigned step,
+                             TimeT time,
+                             const int sz[3],
+                             const int nVari,
+                             const int gc,
+                             T* val,
+                             const bool avr_mode,
+                             const unsigned step_avr,
+                             TimeAvrT time_avr)
+{
+  //フィールドデータの変数の個数と登録された変数名の個数の一致確認
+  if ( DFI_Finfo.NumVariables != DFI_Finfo.VariableName.size()) {
+    printf("\tError : Number of valiable names %d %d\n", DFI_Finfo.NumVariables, DFI_Finfo.VariableName.size());
+    return CDM::E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES;
+  }
+
+  cdm_Array *data = cdm_Array::instanceArray
+                    ( val
+                    , DFI_Finfo.ArrayShape
+                    , DFI_Process.RankList[m_RankID].VoxelSize[0]
+                    , DFI_Process.RankList[m_RankID].VoxelSize[1]
+                    , DFI_Process.RankList[m_RankID].VoxelSize[2]
+                    , gc
+                    , DFI_Finfo.NumVariables);
+
+  double d_time = (double)time;
+  double d_time_avr = (double)time_avr;
+
+  CDM::E_CDM_ERRORCODE ret;
+  ret = WriteFieldDataFile(step, gc, d_time, data, avr_mode, step_avr, d_time_avr);
+
+  delete data;
+  return ret;
+
+}
+
+// #################################################################
+// TimeSliceをセット
+template<class T, class TimeT, class TimeAvrT> 
+CDM_INLINE
+void 
+cdm_DFI::AddTimeSlice(const unsigned step,
+                      TimeT time,
+                      T* minmax,
+                      bool avr_mode,
+                      unsigned step_avr,
+                      TimeAvrT time_avr)
+{
+
+  double d_time = (double)time;
+  double d_time_avr = (double)time_avr;
+  double *d_minmax=NULL;
+  int num_minmax;
+  if( minmax ) {
+    if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH && DFI_Finfo.NumVariables == 3 ) {
+      num_minmax = DFI_Finfo.NumVariables*2+2;
+    } else {
+      num_minmax = DFI_Finfo.NumVariables*2;
+    }
+    d_minmax = new double[num_minmax];
+    for(int i=0; i<num_minmax; i++) {
+      d_minmax[i] = minmax[i];
+    }
+  }
+
+  //Slice へのセット
+  DFI_TimeSlice.AddSlice(step, d_time, d_minmax, DFI_Finfo.NumVariables, DFI_Finfo.FileFormat,
+                         avr_mode, step_avr, d_time_avr);
+
+  if( d_minmax ) delete [] d_minmax;
+
 }
 
 // #################################################################

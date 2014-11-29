@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-11-29
+Merge master into branch advance_develop
+masterのリビジョン"accept pull request #9"をブランチadvance_developにマージした。
+Plot3d対応で追加修正した部分を不等間隔格子対応に取り込むため。
+その際、競合が発生したファイルが存在したので解決した。
+
+------------------
 2014-11-28
 Minor correction about print statements in class cdm_NonUniformDomain
 クラスcdm_NonUniformDomain内にあるprint文の訂正を行った。
