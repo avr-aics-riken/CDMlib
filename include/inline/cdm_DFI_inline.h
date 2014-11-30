@@ -15,6 +15,14 @@
  * @author aics    
  */
 
+#include "cdm_DFI_SPH.h"
+#include "cdm_DFI_BOV.h"
+#include "cdm_DFI_AVS.h"
+#include "cdm_DFI_PLOT3D.h"
+#include "cdm_DFI_VTK.h"
+#include "cdm_NonUniformDomain.h"
+#include <typeinfo>
+
 #ifdef CDM_INLINE
  #undef CDM_INLINE
 #endif
@@ -404,5 +412,265 @@ cdm_DFI::VolumeDataDivide(cdm_TypeArray<T> *P)
   }
 }
 
+// #################################################################
+// DFI Write インスタンス template 型 (等間隔格子用)
+template<typename T>
+CDM_INLINE
+cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
+                            const std::string DfiName,
+                            const std::string Path,
+                            const std::string prefix,
+                            const CDM::E_CDM_FORMAT format,
+                            const int GCell,
+                            const CDM::E_CDM_DTYPE DataType,
+                            const int nVari,
+                            const std::string proc_fname,
+                            const int G_size[3],
+                            const T pitch[3],
+                            const T G_origin[3],
+                            const int division[3],
+                            const int head[3],
+                            const int tail[3],
+                            const std::string hostname,
+                            const CDM::E_CDM_ONOFF TSliceOnOff)
+{
+
+  //インスタンスout_domainを生成し、等間隔格子・不等間隔格子の共通処理版のWriteInit関数を呼ぶ
+
+  cdm_Domain* out_domain = NULL;
+  out_domain = new cdm_Domain(G_origin,
+                              pitch,
+                              G_size,
+                              division);
+
+  return WriteInit<T>(comm,
+                      DfiName,
+                      Path,
+                      prefix,
+                      format,
+                      GCell,
+                      DataType,
+                      nVari,
+                      proc_fname,
+                      out_domain,
+                      head,
+                      tail,
+                      hostname,
+                      TSliceOnOff);
+
+}
+
+// #################################################################
+// DFI Write インスタンス template 型 (不等間隔格子用)
+template<typename T>
+CDM_INLINE
+cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
+                            const std::string DfiName,
+                            const std::string Path,
+                            const std::string prefix,
+                            const CDM::E_CDM_FORMAT format,
+                            const int GCell,
+                            const CDM::E_CDM_DTYPE DataType,
+                            const int nVari,
+                            const std::string proc_fname,
+                            const int G_size[3],
+                            const T* coord_X,
+                            const T* coord_Y,
+                            const T* coord_Z,
+                            const std::string coord_file,
+                            const CDM::E_CDM_FILE_TYPE coord_filetype,
+                            const CDM::E_CDM_ENDIANTYPE coord_fileEndian,
+                            const int division[3],
+                            const int head[3],
+                            const int tail[3],
+                            const std::string hostname,
+                            const CDM::E_CDM_ONOFF TSliceOnOff)
+{
+
+  //インスタンスout_domainを生成し、等間隔格子・不等間隔格子の共通処理版のWriteInit関数を呼ぶ
+
+  //Check format
+  if( format == CDM::E_CDM_FMT_SPH ) {
+    printf("\tCDM error : Non_Uniform_Cartesian is not supported in SPH File Format.\n");
+    return NULL;
+  } else if ( format == CDM::E_CDM_FMT_BOV ) {
+    printf("\tCDM error : Non_Uniform_Cartesian is not supported in BOV File Format.\n");
+    return NULL;
+  }
+
+  //Check pointer to coordinates
+  if ( coord_X == NULL || coord_Y == NULL || coord_Z == NULL ) {
+    printf("\tCDM error : Pointer to coordinates is not set.\n");
+    return NULL;
+  }
+
+  //Check of extension of CoordinateFile
+  string ext;
+  size_t pos_dot = coord_file.rfind('.');
+  if(pos_dot != string::npos){
+    ext = coord_file.substr(pos_dot+1, coord_file.size()-pos_dot);
+  } else {
+    printf("\tFail to get extension of '%s'\n",coord_file.c_str());
+    return NULL;
+  }
+  if(ext != "crd"){
+    printf("\tCDM error : Extension of Coordinate File '%s' is not 'crd'. \n",ext.c_str());
+    return NULL;
+  }
+
+  cdm_Domain* out_domain = NULL;
+  out_domain = new cdm_NonUniformDomain<T>(coord_X,
+                                           coord_Y,
+                                           coord_Z,
+                                           coord_file,
+                                           coord_filetype,
+                                           coord_fileEndian,
+                                           G_size,
+                                           division,
+                                           GCell);
+
+  return WriteInit<T>(comm,
+                      DfiName,
+                      Path,
+                      prefix,
+                      format,
+                      GCell,
+                      DataType,
+                      nVari,
+                      proc_fname,
+                      out_domain,
+                      head,
+                      tail,
+                      hostname,
+                      TSliceOnOff);
+
+}
+
+// #################################################################
+// DFI Write インスタンス template 型 (等間隔格子・不等間隔格子の共通処理部分)
+template<typename T>
+CDM_INLINE
+cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
+                            const std::string DfiName,
+                            const std::string Path,
+                            const std::string prefix,
+                            const CDM::E_CDM_FORMAT format,
+                            const int GCell,
+                            const CDM::E_CDM_DTYPE DataType,
+                            const int nVari,
+                            const std::string proc_fname,
+                            const cdm_Domain* out_domain,
+                            const int head[3],
+                            const int tail[3],
+                            const std::string hostname,
+                            const CDM::E_CDM_ONOFF TSliceOnOff)
+{
+
+//Check for SPH format 20141022.s
+  if( format == CDM::E_CDM_FMT_SPH ) {
+    if( nVari != 1 && nVari != 3 ) {
+      printf("\tCDM error sph file undefined except for number of valiables 1 or 3.\n");
+      return NULL;
+    }
+  }
+//Check for SPH format 20141022.e
+
+  cdm_DFI *dfi = NULL;
+
+  int RankID;
+  MPI_Comm_rank( comm, &RankID );
+
+  int nrank;
+  MPI_Comm_size( comm, &nrank );
+
+  cdm_FileInfo out_F_info;
+  if( typeid(*out_domain) == typeid(cdm_Domain) ){
+    out_F_info.DFIType = CDM::E_CDM_DFITYPE_CARTESIAN;
+  } else if( typeid(*out_domain) == typeid(cdm_NonUniformDomain<T>) ) {
+    out_F_info.DFIType = CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN;
+  } else {
+    printf("\tCDM error : Can't get DFIType.\n");
+    return NULL;
+  }
+  out_F_info.DirectoryPath    = Path;
+  out_F_info.TimeSliceDirFlag = TSliceOnOff;
+  out_F_info.Prefix           = prefix;
+  out_F_info.FileFormat       = format;
+  out_F_info.GuideCell        = GCell;
+  out_F_info.DataType         = DataType;
+  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D ) {
+    out_F_info.ArrayShape = CDM::E_CDM_IJKN;
+  }
+  else if( format == CDM::E_CDM_FMT_SPH || format == CDM::E_CDM_FMT_AVS || format == CDM::E_CDM_FMT_VTK) {
+    out_F_info.ArrayShape = CDM::E_CDM_NIJK;
+  }
+  out_F_info.NumVariables     = nVari;
+
+  int idumy = 1;
+  char* cdumy = (char*)(&idumy);
+  if( cdumy[0] == 0x01 ) out_F_info.Endian = CDM::E_CDM_LITTLE;
+  if( cdumy[0] == 0x00 ) out_F_info.Endian = CDM::E_CDM_BIG;
+
+  cdm_FilePath out_F_path;
+  out_F_path.ProcDFIFile = proc_fname;
+
+  cdm_VisIt out_visit;
+  out_visit.PlotGC = "off";
+  
+  cdm_Unit out_unit;
+
+  cdm_MPI out_mpi;
+  out_mpi.NumberOfRank = nrank;
+  out_mpi.NumberOfGroup = 1;
+
+  cdm_Process out_Process;
+  cdm_Rank out_Rank;
+
+  for(int i=0; i<nrank; i++ ) {
+     out_Process.RankList.push_back(out_Rank);
+  }
+
+  out_Process.RankList[RankID].RankID=RankID;
+  out_Process.RankList[RankID].HostName=hostname;
+  for(int i=0; i<3; i++) {
+    out_Process.RankList[RankID].HeadIndex[i]=head[i];
+    out_Process.RankList[RankID].TailIndex[i]=tail[i];
+    out_Process.RankList[RankID].VoxelSize[i]=tail[i]-head[i]+1;
+  }
+
+  cdm_TimeSlice out_TSlice;
+
+  char tmpname[512];
+  memset(tmpname,0x00,sizeof(char)*512);
+  if( gethostname(tmpname, 512) != 0 ) printf("*** error gethostname() \n");
+
+  if( out_F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
+    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
+                          out_TSlice, out_Process);
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
+    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
+                          out_TSlice, out_Process);
+//FCONV 20131122.s
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_AVS ) {
+    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
+                          out_TSlice, out_Process);
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
+    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
+                          out_TSlice, out_Process);
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_VTK ) {
+    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
+                          out_TSlice, out_Process);
+//FCONV 20131122.e
+  } else return NULL;
+
+
+  dfi->m_indexDfiName = DfiName;
+  dfi->m_directoryPath = CDM::cdmPath_DirName(DfiName);
+  dfi->m_comm = comm;
+  dfi->m_RankID = RankID;
+
+  return dfi;
+
+}
 
 #endif // _CDM_DFI_INLINE_H_

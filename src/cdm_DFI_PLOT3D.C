@@ -247,29 +247,14 @@ cdm_DFI_PLOT3D::write_GridData(const int* iblank)
     return false;
   }
 
-  //xyzを求めて出力
+  //xyzを出力
   int sz[3];
   for(int i=0; i<3; i++) sz[i] = DFI_Process.RankList[m_RankID].VoxelSize[i];
-  if( DFI_Finfo.GuideCell>0 ) for(int i=0; i<3; i++) sz[i] = sz[i]+2*DFI_Finfo.GuideCell;
 
   if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) {
-    float pit[3],org[3];
-    for(int i=0; i<3; i++) {
-      pit[i]=(float)DFI_Domain.GlobalRegion[i]/(float)DFI_Domain.GlobalVoxel[i];
-      org[i]=(float)DFI_Domain.GlobalOrigin[i]+pit[i]*0.5;
-      if( DFI_Finfo.GuideCell>0 ) org[i]=org[i]-pit[i]*(float)DFI_Finfo.GuideCell;
-    }
-    //xyzを計算して出力
-    write_XYZ(fp,org,pit,sz,iblank);
+    write_XYZ<float>(fp,sz,iblank);
   }else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) {
-    double pit[3],org[3];
-    for(int i=0; i<3; i++) {
-      pit[i]=(double)DFI_Domain.GlobalRegion[i]/(double)DFI_Domain.GlobalVoxel[i];
-      org[i]=(double)DFI_Domain.GlobalOrigin[i]+pit[i]*0.5;
-      if( DFI_Finfo.GuideCell>0 ) org[i]=org[i]-pit[i]*(double)DFI_Finfo.GuideCell;
-    }
-    //xyzを計算して出力
-    write_XYZ(fp,org,pit,sz,iblank);
+    write_XYZ<double>(fp,sz,iblank);
   }
 
   //file close

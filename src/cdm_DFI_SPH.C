@@ -340,17 +340,17 @@ cdm_DFI_SPH::write_HeaderRecord(FILE* fp,
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC3;
   if( dType == 1 ) {
     float pch[3];
-    for(int i=0; i<3; i++ ) pch[i]=(float)DFI_Domain.GlobalRegion[i]/DFI_Domain.GlobalVoxel[i];
+    for(int i=0; i<3; i++ ) pch[i]=(float)DFI_Domain->GlobalRegion[i]/DFI_Domain->GlobalVoxel[i];
     float org[3];
     //for(int i=0; i<3; i++ ) org[i]=(float)DFI_Domain.GlobalOrigin[i];
-    for(int i=0; i<3; i++ ) org[i]=(float)DFI_Domain.GlobalOrigin[i]+0.5*pch[i];
+    for(int i=0; i<3; i++ ) org[i]=(float)DFI_Domain->GlobalOrigin[i]+0.5*pch[i];
     if( DFI_Finfo.GuideCell>0 ) for(int i=0; i<3; i++) org[i]=org[i]-pch[i]*(float)DFI_Finfo.GuideCell;
     if( fwrite(org, sizeof(float), 3, fp) !=3 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC3;
   } else {
     double pch[3];
-    for(int i=0; i<3; i++ ) pch[i]=(double)DFI_Domain.GlobalRegion[i]/DFI_Domain.GlobalVoxel[i];
+    for(int i=0; i<3; i++ ) pch[i]=(double)DFI_Domain->GlobalRegion[i]/DFI_Domain->GlobalVoxel[i];
     double org[3];
-    for(int i=0; i<3; i++ ) org[i]=(double)DFI_Domain.GlobalOrigin[i]+0.5*pch[i];
+    for(int i=0; i<3; i++ ) org[i]=(double)DFI_Domain->GlobalOrigin[i]+0.5*pch[i];
     if( DFI_Finfo.GuideCell>0 ) for(int i=0; i<3; i++) org[i]=org[i]-pch[i]*(double)DFI_Finfo.GuideCell;
     if( fwrite(org, sizeof(double), 3, fp) !=3 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC3;
   }
@@ -361,11 +361,11 @@ cdm_DFI_SPH::write_HeaderRecord(FILE* fp,
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC4;
   if( dType == 1 ) {
     float pch[3];
-    for(int i=0; i<3; i++ ) pch[i]=(float)DFI_Domain.GlobalRegion[i]/DFI_Domain.GlobalVoxel[i];
+    for(int i=0; i<3; i++ ) pch[i]=(float)DFI_Domain->GlobalRegion[i]/DFI_Domain->GlobalVoxel[i];
     if( fwrite(pch, sizeof(float), 3, fp) !=3 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC4;
   } else {
     double pch[3];
-    for(int i=0; i<3; i++ ) pch[i]=(double)DFI_Domain.GlobalRegion[i]/DFI_Domain.GlobalVoxel[i];
+    for(int i=0; i<3; i++ ) pch[i]=(double)DFI_Domain->GlobalRegion[i]/DFI_Domain->GlobalVoxel[i];
     if( fwrite(pch, sizeof(double), 3, fp) !=3 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC4;
   }
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC4;

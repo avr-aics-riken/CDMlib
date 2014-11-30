@@ -214,7 +214,7 @@ int main( int argc, char **argv )
            (const int *)STG.m_GRankInfo[j].HeadIndex,
            (const int *)STG.m_GRankInfo[j].TailIndex,readflag,readRankList);
        */
-       ret=STG.dfi_Process->CheckReadRank(domain,
+       ret=STG.dfi_Process->CheckReadRank(&domain,
            (const int *)head,
            (const int *)tail,readflag,readRankList);
 

@@ -39,7 +39,7 @@ public:
                  const cdm_FilePath F_Path,
                  const cdm_VisIt visit,
                  const cdm_Unit unit, 
-                 const cdm_Domain domain, 
+                 const cdm_Domain* domain, 
                  const cdm_MPI mpi,
                  const cdm_TimeSlice TSlice, 
                  const cdm_Process process)
@@ -185,16 +185,14 @@ protected:
   write_GridData(const int* iblank); 
 
   /**
-   * @brief xyzを計算して出力
-   * @param [in] fp      出力ファイルポインタ
-   * @param [in] org     原点座標値
-   * @param [in] pit     ピッチ
-   * @param [in] sz      サイズ
+   * @brief xyzを出力
+   * @param [in] fp  出力ファイルポインタ
+   * @param [in] sz  サイズ
    * @param [in] iblank  iblankデータポインタ
    */ 
   template<class T>
   void
-  write_XYZ(FILE* fp, T* org, T* pit, int sz[3], const int* iblank);
+  write_XYZ(FILE* fp, int sz[3], const int* iblank);
 
   /**
    * @brief func data 出力

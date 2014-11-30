@@ -41,7 +41,7 @@ public:
               const cdm_FilePath F_Path,
               const cdm_VisIt visit,
               const cdm_Unit unit, 
-              const cdm_Domain domain, 
+              const cdm_Domain* domain, 
               const cdm_MPI mpi,
               const cdm_TimeSlice TSlice, 
               const cdm_Process process)

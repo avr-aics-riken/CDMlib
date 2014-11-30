@@ -153,31 +153,10 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
   out_mpi.NumberOfRank = nrank;
   out_mpi.NumberOfGroup = 1;
 
-  cdm_Domain out_domain;
   cdm_Process out_Process;
 
   //出力するProcess情報の生成
   cdm_Create_dfiProcessInfo(comm, out_Process);
-
-  //orign の設定
-  /*
-  if( org!=NULL ) {
-    for(int i=0; i<3; i++) {
-      out_domain.GlobalOrigin[i] = org[i];
-    }
-  } else {
-  */
-    for(int i=0; i<3; i++) {
-      out_domain.GlobalOrigin[i] = DFI_Domain.GlobalOrigin[i];
-    }
-  //}
-
-  //Domain の設定
-  for(int i=0; i<3; i++) {
-    out_domain.GlobalVoxel[i]    = DFI_Domain.GlobalVoxel[i];
-    out_domain.GlobalDivision[i] = DFI_Domain.GlobalDivision[i];
-    out_domain.GlobalRegion[i]   = DFI_Domain.GlobalRegion[i];
-  }
 
   //ホスト名出力指示ありの時、各ランクのホスト名を集める
   if( out_host ) {
@@ -207,7 +186,7 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
     }
 
     //Domain {} の出力
-    if( out_domain.Write(fp, 0) != CDM::E_CDM_SUCCESS )
+    if( DFI_Domain->Write(fp, 0) != CDM::E_CDM_SUCCESS )
     {
       if (fp) fclose(fp);
       return CDM::E_CDM_ERROR_WRITE_DOMAIN;

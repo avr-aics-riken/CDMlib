@@ -76,12 +76,12 @@ bool cdm_DFI_AVS::write_ascii_header(const unsigned step,
 
   //ピッチを計算
   for(int i=0; i<3; i++) {
-    pit[i]=(DFI_Domain.GlobalRegion[i]/DFI_Domain.GlobalVoxel[i]);
+    pit[i]=(DFI_Domain->GlobalRegion[i]/DFI_Domain->GlobalVoxel[i]);
   }
 
   //座標値の最小値、最大値をセット
   for(int i=0; i<3; i++) {
-    min_ext[i]=DFI_Domain.GlobalOrigin[i]-pit[i]*0.5;
+    min_ext[i]=DFI_Domain->GlobalOrigin[i]-pit[i]*0.5;
     max_ext[i]=min_ext[i]+((double)DFI_Process.RankList[m_RankID].VoxelSize[i])*pit[i];
   }
 

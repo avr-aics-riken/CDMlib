@@ -63,8 +63,9 @@ namespace CDM
 
   enum E_CDM_DFITYPE
   {
-    E_CDM_DFITYPE_UNKNOWN = -1, ///< 未定
-    E_CDM_DFITYPE_CARTESIAN,    ///< Cartesian
+    E_CDM_DFITYPE_UNKNOWN = -1,          ///< 未定
+    E_CDM_DFITYPE_CARTESIAN,             ///< Cartesian
+    E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN, ///< Non Uniform Cartesian
   };
 
 /** File 形式 */
@@ -177,6 +178,12 @@ namespace CDM
 ,   E_CDM_ERROR_READ_DFI_MAX                = 1025 ///< DFI Max 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_DFITYPE            = 1026 ///< DFI DFIType 読込みエラー
 ,   E_CDM_ERROR_READ_DFI_FIELDFILENAMEFORMAT= 1027 ///< DFI FieldfilenameFormat 読込みエラー
+,   E_CDM_ERROR_READ_DFI_COORDINATEFILE         = 1028 ///< DFI Coordinate File 読込みエラー
+,   E_CDM_ERROR_READ_DFI_COORDINATEFILETYPE     = 1029 ///< DFI Coordinate File Type 読込みエラー
+,   E_CDM_ERROR_READ_DFI_COORDINATEFILEPRECISION= 1030 ///< DFI Coordinate File Precision 読込みエラー
+,   E_CDM_ERROR_READ_DFI_COORDINATEFILEENDIAN   = 1031 ///< DFI Coordinate File Endian 読込みエラー
+,   E_CDM_ERROR_OPEN_COORDINATEFILE             = 1032 ///< Coordinate File オープンに失敗
+,   E_CDM_ERROR_READ_COORDINATEFILE             = 1033 ///< Coordinate File 読込みエラー
 ,   E_CDM_ERROR_READ_INDEXFILE_OPENERROR    = 1050 ///< Indexファイルオープンエラー
 ,   E_CDM_ERROR_TEXTPARSER                  = 1051 ///< TextParserエラー
 ,   E_CDM_ERROR_READ_FILEINFO               = 1052 ///< FileInfo読込みエラー
@@ -198,7 +205,7 @@ namespace CDM
 ,   E_CDM_ERROR_READ_SPH_REC7               = 2007 ///< SPHファイルレコード7読込みエラー
 ,   E_CDM_ERROR_UNMATCH_VOXELSIZE           = 2050 ///< SPHのボクセルサイズとDFIのボクセルサイズが合致しない
 ,   E_CDM_ERROR_NOMATCH_ENDIAN              = 2051 ///< 出力Fornatが合致しない（Endian形式がBig,Little以外）
-,   E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES    = 2052 ///< フィールドデータの変数の個数と登録された変数名の個数が一致しない
+,   E_CDM_ERROR_UNMATCH_NUM_OF_VARIABLES    = 2052 ///< フィールドデータの変数の個数と登録された変数名の個数が合致しない
 ,   E_CDM_ERROR_NUM_OF_GUIDECELLS           = 2053 ///< フィールドデータのガイドセル値エラー
 ,   E_CDM_ERROR_READ_BOV_FILE               = 2100 ///< BOVファイル読込みエラー
 ,   E_CDM_ERROR_READ_FIELD_HEADER_RECORD    = 2102 ///< フィールドヘッダーレコード読込み失敗

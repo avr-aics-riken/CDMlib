@@ -14,6 +14,7 @@
 
 #include "cdm_DFI.h"
 #include <unistd.h> // for gethostname() of FX10/K
+#include <typeinfo>
 #include "cdm_DFI_SPH.h"
 #include "cdm_DFI_BOV.h"
 //FCONV 20131122.s
@@ -21,6 +22,7 @@
 #include "cdm_DFI_PLOT3D.h"
 #include "cdm_DFI_VTK.h"
 //FCONV 20131122.e
+#include "cdm_NonUniformDomain.h"
 
 // #################################################################
 // コンストラクタ
@@ -41,7 +43,7 @@ cdm_DFI::cdm_DFI()
 // デストラクタ
 cdm_DFI::~cdm_DFI()
 {
-
+  if( DFI_Domain != NULL ){ delete DFI_Domain; }
 }
 
 // #################################################################
@@ -157,8 +159,13 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   }
 
   /** Domainの読込み */
-  cdm_Domain domain;
-  if( domain.Read(tpCntl) != CDM::E_CDM_SUCCESS ) 
+  cdm_Domain* domain = NULL;
+  if( F_info.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
+    domain = new cdm_Domain;
+  } else if(F_info.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN) {
+    domain = new cdm_NonUniformDomain<double>;
+  }
+  if( domain->Read(tpCntl, dirName) != CDM::E_CDM_SUCCESS )
   {
     printf("\tDomain Data Read error %s\n",procfile.c_str());
     ret = CDM::E_CDM_ERROR_READ_DOMAIN;
@@ -208,8 +215,8 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   }
 
   //読込みタイプのチェック
-  dfi->m_read_type = dfi->CheckReadType(G_Voxel,dfi->DFI_Domain.GlobalVoxel,
-                                         G_Div,dfi->DFI_Domain.GlobalDivision);
+  dfi->m_read_type = dfi->CheckReadType(G_Voxel,dfi->DFI_Domain->GlobalVoxel,
+                                         G_Div,dfi->DFI_Domain->GlobalDivision);
   if( dfi->m_read_type == CDM::E_CDM_READTYPE_UNKNOWN ) {
     //printf("\tDimension size error (%d %d %d)\n", 
     //       G_Voxel[0], G_Voxel[1], G_Voxel[2]);
@@ -300,13 +307,13 @@ void cdm_DFI::SetcdmUnit(cdm_Unit unit)
 const
 cdm_Domain* cdm_DFI::GetcdmDomain()
 {
-  return &DFI_Domain;
+  return DFI_Domain;
 }
 
 // #################################################################
 //
 void 
-cdm_DFI::SetcdmDomain(cdm_Domain domain)
+cdm_DFI::SetcdmDomain(cdm_Domain* domain)
 {
   DFI_Domain = domain;
 }
@@ -357,183 +364,6 @@ void
 cdm_DFI::SetcdmProcess(cdm_Process Process)
 {
   DFI_Process = Process;
-}
-
-// #################################################################
-// DFI Write インスタンス float 型
-cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
-                            const std::string DfiName,
-                            const std::string Path,
-                            const std::string prefix,
-                            const CDM::E_CDM_FORMAT format,
-                            const int GCell,
-                            const CDM::E_CDM_DTYPE DataType,
-                            const int nVari,
-                            const std::string proc_fname,
-                            const int G_size[3],
-                            const float pitch[3],
-                            const float G_origin[3],
-                            const int division[3],
-                            const int head[3],
-                            const int tail[3],
-                            const std::string hostname,
-                            const CDM::E_CDM_ONOFF TSliceOnOff)
-{
-
-  // float型をdouble型に変換してdouble版WriteInit関数を呼ぶ
- 
-  double d_pch[3],d_org[3];
-  for(int i=0; i<3; i++) {
-    d_pch[i]=(double)pitch[i];
-    d_org[i]=(double)G_origin[i];
-  }
-
-  return WriteInit(comm, 
-                   DfiName, 
-                   Path, 
-                   prefix, 
-                   format, 
-                   GCell, 
-                   DataType,
-                   nVari, 
-                   proc_fname,
-                   G_size, 
-                   d_pch,
-                   d_org, 
-                   division, 
-                   head, 
-                   tail, 
-                   hostname,
-                   TSliceOnOff);
-
-}
-
-// #################################################################
-// DFI Write インスタンス double 型
-cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
-                            const std::string DfiName,
-                            const std::string Path,
-                            const std::string prefix,
-                            const CDM::E_CDM_FORMAT format,
-                            const int GCell,
-                            const CDM::E_CDM_DTYPE DataType,
-                            const int nVari,
-                            const std::string proc_fname,
-                            const int G_size[3],
-                            const double pitch[3],
-                            const double G_origin[3],
-                            const int division[3],
-                            const int head[3],
-                            const int tail[3],
-                            const std::string hostname,
-                            const CDM::E_CDM_ONOFF TSliceOnOff)
-{
-
-//Check for SPH format 20141022.s
-  if( format == CDM::E_CDM_FMT_SPH ) {
-    if( nVari != 1 && nVari != 3 ) {
-      printf("\tCDM error sph file undefined except for number of valiables 1 or 3.\n");
-      return NULL;
-    }
-  }
-//Check for SPH format 20141022.e
-
-  cdm_DFI *dfi = NULL;
-
-  int RankID;
-  MPI_Comm_rank( comm, &RankID );
-
-  int nrank;
-  MPI_Comm_size( comm, &nrank );
-
-  cdm_FileInfo out_F_info;
-  out_F_info.DirectoryPath    = Path;
-  out_F_info.TimeSliceDirFlag = TSliceOnOff;
-  out_F_info.Prefix           = prefix;
-  out_F_info.FileFormat       = format;
-  out_F_info.GuideCell        = GCell;
-  out_F_info.DataType         = DataType;
-  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D ) {
-    out_F_info.ArrayShape = CDM::E_CDM_IJKN;
-  }
-  else if( format == CDM::E_CDM_FMT_SPH || format == CDM::E_CDM_FMT_AVS || format == CDM::E_CDM_FMT_VTK) {
-    out_F_info.ArrayShape = CDM::E_CDM_NIJK;
-  }
-  out_F_info.NumVariables     = nVari;
-
-  int idumy = 1;
-  char* cdumy = (char*)(&idumy);
-  if( cdumy[0] == 0x01 ) out_F_info.Endian = CDM::E_CDM_LITTLE;
-  if( cdumy[0] == 0x00 ) out_F_info.Endian = CDM::E_CDM_BIG;
-
-  cdm_FilePath out_F_path;
-  out_F_path.ProcDFIFile = proc_fname;
-
-  cdm_VisIt out_visit;
-  out_visit.PlotGC = "off";
-  
-  cdm_Unit out_unit;
-
-  cdm_MPI out_mpi;
-  out_mpi.NumberOfRank = nrank;
-  out_mpi.NumberOfGroup = 1;
-
-  cdm_Domain out_domain;
-  cdm_Process out_Process;
-  cdm_Rank out_Rank;
-
-  for(int i=0; i<nrank; i++ ) {
-     out_Process.RankList.push_back(out_Rank);
-  }
-
-  out_Process.RankList[RankID].RankID=RankID;
-  out_Process.RankList[RankID].HostName=hostname;
-  for(int i=0; i<3; i++) {
-    out_Process.RankList[RankID].HeadIndex[i]=head[i];
-    out_Process.RankList[RankID].TailIndex[i]=tail[i];
-    out_Process.RankList[RankID].VoxelSize[i]=tail[i]-head[i]+1;
-  }
-
-  for(int i=0; i<3; i++) {
-    out_domain.GlobalVoxel[i]  = G_size[i];
-    out_domain.GlobalDivision[i] = division[i];
-    out_domain.GlobalOrigin[i] = G_origin[i];
-    out_domain.GlobalRegion[i] = pitch[i]*G_size[i];
-  }
-
-  cdm_TimeSlice out_TSlice;
-
-  char tmpname[512];
-  memset(tmpname,0x00,sizeof(char)*512);
-  if( gethostname(tmpname, 512) != 0 ) printf("*** error gethostname() \n");
-
-  if( out_F_info.FileFormat == CDM::E_CDM_FMT_SPH ) {
-    dfi = new cdm_DFI_SPH(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
-                          out_TSlice, out_Process);
-  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_BOV ) {
-    dfi = new cdm_DFI_BOV(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
-                          out_TSlice, out_Process);
-//FCONV 20131122.s
-  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_AVS ) {
-    dfi = new cdm_DFI_AVS(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
-                          out_TSlice, out_Process);
-  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
-    dfi = new cdm_DFI_PLOT3D(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
-                          out_TSlice, out_Process);
-  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_VTK ) {
-    dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
-                          out_TSlice, out_Process);
-//FCONV 20131122.e
-  } else return NULL;
-
-
-  dfi->m_indexDfiName = DfiName;
-  dfi->m_directoryPath = CDM::cdmPath_DirName(DfiName);
-  dfi->m_comm = comm;
-  dfi->m_RankID = RankID;
-
-  return dfi;
-
 }
 
 // #################################################################
@@ -659,16 +489,16 @@ int cdm_DFI::get_cdm_Datasize(CDM::E_CDM_DTYPE Dtype)
 
 // #################################################################
 // DFI DomainのGlobalVoxelの取り出し
-int* cdm_DFI::GetDFIGlobalVoxel()
+const int* cdm_DFI::GetDFIGlobalVoxel()
 {
-  return DFI_Domain.GlobalVoxel;
+  return DFI_Domain->GlobalVoxel;
 }
 
 // #################################################################
 // DFI DomainのGlobalDivisionの取り出し
-int* cdm_DFI::GetDFIGlobalDivision()
+const int* cdm_DFI::GetDFIGlobalDivision()
 {
-  return DFI_Domain.GlobalDivision;
+  return DFI_Domain->GlobalDivision;
 }
 // #################################################################
 // Create Domain & Process  
@@ -807,8 +637,8 @@ void cdm_DFI::CreateReadStartEnd(bool isSame,
     }
  
     //仮想セルが読込みの実セル内のときの処理
-    if( ( isSame  && copy_end[i] == DFI_Domain.GlobalVoxel[i] )  ||
-        ( !isSame && copy_end[i] == DFI_Domain.GlobalVoxel[i]*2 ) ) {
+    if( ( isSame  && copy_end[i] == DFI_Domain->GlobalVoxel[i] )  ||
+        ( !isSame && copy_end[i] == DFI_Domain->GlobalVoxel[i]*2 ) ) {
       copy_end[i] += min(gc,src_gc);
     } else if( tail[i]<src_tail[i] ) {
       copy_end[i] = min(tail[i]+gc,src_tail[i]);
@@ -1145,7 +975,7 @@ CDM::E_CDM_ERRORCODE cdm_DFI::getMinMax(const unsigned step,
 // #################################################################
 // 読込みランクリストの作成
 CDM::E_CDM_ERRORCODE
-cdm_DFI::CheckReadRank(cdm_Domain dfi_domain,
+cdm_DFI::CheckReadRank(const cdm_Domain* dfi_domain,
                        const int head[3],
                        const int tail[3],
                        CDM::E_CDM_READTYPE readflag,

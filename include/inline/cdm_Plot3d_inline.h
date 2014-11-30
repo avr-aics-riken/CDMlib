@@ -112,11 +112,13 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
 template<class T>
 CDM_INLINE
 void
-cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3], const int* iblank)
+cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
 {
 
   int ngrid=1;
   T xyz;
+  int gc = DFI_Finfo.GuideCell;
+  int sz3d_gc = (sz[0]+2*gc)*(sz[1]+2*gc)*(sz[2]+2*gc);
 
   //ascii
   if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
@@ -124,32 +126,32 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3], const int* iblank
     fprintf(fp,"%5d%5d%5d\n",sz[0],sz[1],sz[2]);
 
     //x
-    for(int k=0; k<sz[2]; k++) {
-    for(int j=0; j<sz[1]; j++) {
-    for(int i=0; i<sz[0]; i++) {
-      xyz = org[0]+pit[0]*(T)i;
+    for(int k=-gc; k<sz[2]+gc; k++) {
+    for(int j=-gc; j<sz[1]+gc; j++) {
+    for(int i=-gc; i<sz[0]+gc; i++) {
+      xyz = (T)(DFI_Domain->CellX(i));
       fprintf(fp,"%15.6E\n",xyz);
     }}}
 
     //y
-    for(int k=0; k<sz[2]; k++) {
-    for(int j=0; j<sz[1]; j++) {
-    for(int i=0; i<sz[0]; i++) {
-      xyz = org[1]+pit[1]*(T)j;
+    for(int k=-gc; k<sz[2]+gc; k++) {
+    for(int j=-gc; j<sz[1]+gc; j++) {
+    for(int i=-gc; i<sz[0]+gc; i++) {
+      xyz = (T)(DFI_Domain->CellY(j));
       fprintf(fp,"%15.6E\n",xyz);
     }}}
 
     //z
-    for(int k=0; k<sz[2]; k++) {
-    for(int j=0; j<sz[1]; j++) {
-    for(int i=0; i<sz[0]; i++) {
-      xyz = org[2]+pit[2]*(T)k;
+    for(int k=-gc; k<sz[2]+gc; k++) {
+    for(int j=-gc; j<sz[1]+gc; j++) {
+    for(int i=-gc; i<sz[0]+gc; i++) {
+      xyz = (T)(DFI_Domain->CellZ(k));
       fprintf(fp,"%15.6E\n",xyz);
     }}}
 
     //iblank
     if (iblank != NULL) {
-      for(int i=0; i<sz[0]*sz[1]*sz[2]; i++) {
+      for(int i=0; i<sz3d_gc; i++) {
         fprintf(fp,"%2d\n",iblank[i]);
       }
     }
@@ -163,80 +165,88 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, T* org, T* pit, int sz[3], const int* iblank
     //fwrite(&dmy, sizeof(int), 1, fp);
     dmy = sizeof(int)*3;
     fwrite(&dmy, sizeof(int), 1, fp);
-    fwrite(&sz[0], sizeof(int), 1, fp);
-    fwrite(&sz[1], sizeof(int), 1, fp);
-    fwrite(&sz[2], sizeof(int), 1, fp);
+    dmy = sz[0]+2*gc;
+    fwrite(&dmy, sizeof(int), 1, fp);
+    dmy = sz[1]+2*gc;
+    fwrite(&dmy, sizeof(int), 1, fp);
+    dmy = sz[2]+2*gc;
+    fwrite(&dmy, sizeof(int), 1, fp);
+    dmy = sizeof(int)*3;
     fwrite(&dmy, sizeof(int), 1, fp);
 
-    dmy = sizeof(T)*(sz[0]*sz[1]*sz[2]*3);
+    dmy = sizeof(T)*(sz3d_gc*3);
     if (iblank != NULL) {
-      dmy += sizeof(int)*(sz[0]*sz[1]*sz[2]);
+      dmy += sizeof(int)*sz3d_gc;
     }
     fwrite(&dmy, sizeof(int), 1, fp);
     //x
-    for(int k=0; k<sz[2]; k++) {
-    for(int j=0; j<sz[1]; j++) {
-    for(int i=0; i<sz[0]; i++) {
-      xyz = org[0]+pit[0]*(T)i;
+    for(int k=-gc; k<sz[2]+gc; k++) {
+    for(int j=-gc; j<sz[1]+gc; j++) {
+    for(int i=-gc; i<sz[0]+gc; i++) {
+      xyz = (T)(DFI_Domain->CellX(i));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
     //y
-    for(int k=0; k<sz[2]; k++) {
-    for(int j=0; j<sz[1]; j++) {
-    for(int i=0; i<sz[0]; i++) {
-      xyz = org[1]+pit[1]*(T)j;
+    for(int k=-gc; k<sz[2]+gc; k++) {
+    for(int j=-gc; j<sz[1]+gc; j++) {
+    for(int i=-gc; i<sz[0]+gc; i++) {
+      xyz = (T)(DFI_Domain->CellY(j));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
     //z
-    for(int k=0; k<sz[2]; k++) {
-    for(int j=0; j<sz[1]; j++) {
-    for(int i=0; i<sz[0]; i++) {
-      xyz = org[2]+pit[2]*(T)k;
+    for(int k=-gc; k<sz[2]+gc; k++) {
+    for(int j=-gc; j<sz[1]+gc; j++) {
+    for(int i=-gc; i<sz[0]+gc; i++) {
+      xyz = (T)(DFI_Domain->CellZ(k));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
     //iblank
     if (iblank != NULL) {
-      fwrite(iblank, sizeof(int), sz[0]*sz[1]*sz[2], fp);
+      fwrite(iblank, sizeof(int), sz3d_gc, fp);
     }
     fwrite(&dmy, sizeof(int), 1, fp);
 
   //Binary
   } else {
+    unsigned int dmy;
     //fwrite(&ngrid, sizeof(int), 1, fp);
-    fwrite(&sz[0], sizeof(int), 1, fp);
-    fwrite(&sz[1], sizeof(int), 1, fp);
-    fwrite(&sz[2], sizeof(int), 1, fp);
+    dmy = sz[0]+2*gc;
+    fwrite(&dmy, sizeof(int), 1, fp);
+    dmy = sz[1]+2*gc;
+    fwrite(&dmy, sizeof(int), 1, fp);
+    dmy = sz[2]+2*gc;
+    fwrite(&dmy, sizeof(int), 1, fp);
 
     //x
-    for(int k=0; k<sz[2]; k++) {
-    for(int j=0; j<sz[1]; j++) {
-    for(int i=0; i<sz[0]; i++) {
-      xyz = org[0]+pit[0]*(T)i;
+    for(int k=-gc; k<sz[2]+gc; k++) {
+    for(int j=-gc; j<sz[1]+gc; j++) {
+    for(int i=-gc; i<sz[0]+gc; i++) {
+      xyz = (T)(DFI_Domain->CellX(i));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
     //y
-    for(int k=0; k<sz[2]; k++) {
-    for(int j=0; j<sz[1]; j++) {
-    for(int i=0; i<sz[0]; i++) {
-      xyz = org[1]+pit[1]*(T)j;
+    for(int k=-gc; k<sz[2]+gc; k++) {
+    for(int j=-gc; j<sz[1]+gc; j++) {
+    for(int i=-gc; i<sz[0]+gc; i++) {
+      xyz = (T)(DFI_Domain->CellY(j));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
     //z
-    for(int k=0; k<sz[2]; k++) {
-    for(int j=0; j<sz[1]; j++) {
-    for(int i=0; i<sz[0]; i++) {
-      xyz = org[2]+pit[2]*(T)k;
+    for(int k=-gc; k<sz[2]+gc; k++) {
+    for(int j=-gc; j<sz[1]+gc; j++) {
+    for(int i=-gc; i<sz[0]+gc; i++) {
+      xyz = (T)(DFI_Domain->CellZ(k));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
     //iblank
     if (iblank != NULL) {
-      fwrite(iblank, sizeof(int), sz[0]*sz[1]*sz[2], fp);
+      fwrite(iblank, sizeof(int), sz3d_gc, fp);
     }
 
   }
