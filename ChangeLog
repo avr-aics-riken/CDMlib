@@ -11,6 +11,15 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-02
+Add check for SPH format in FCONV and add API GetDFIType and GetDFITypeString
+FCONVで不等間隔格子のデータをSPH形式もしくはBOV形式に変換しようとしたとき、
+エラーを返すようにした。また、等間隔格子でも変数の数が1か3以外の場合に
+SPH形式に変換しようとしたとき、エラーを返すようにした。
+この編集に伴い、DFI種別を取得するAPI関数GetDFIType、GetDFITypeStringを
+追加した。また、マクロD_CDM_DFITYPE_NON_UNIFORM_CARTESIANを定義した。
+
+------------------
 2014-12-01
 accept pull request #10
 

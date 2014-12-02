@@ -22,6 +22,7 @@
 #endif
 
 #define D_CDM_DFITYPE_CARTESIAN "Cartesian"
+#define D_CDM_DFITYPE_NON_UNIFORM_CARTESIAN "Non_Uniform_Cartesian"
 
 #define D_CDM_EXT_SPH "sph"
 #define D_CDM_EXT_BOV "bov"

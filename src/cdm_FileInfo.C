@@ -110,9 +110,9 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_DFITYPE;
   } else {
-    if( !strcasecmp(str.c_str(),"Cartesian" ) ) {
+    if( !strcasecmp(str.c_str(),D_CDM_DFITYPE_CARTESIAN ) ) {
       DFIType = CDM::E_CDM_DFITYPE_CARTESIAN;
-    } else if( !strcasecmp(str.c_str(),"Non_Uniform_Cartesian" ) ) {
+    } else if( !strcasecmp(str.c_str(),D_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) ) {
       DFIType = CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN;
     } else {
       printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());

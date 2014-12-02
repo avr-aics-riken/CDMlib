@@ -635,6 +635,20 @@ public:
   CDM::E_CDM_DTYPE 
   GetDataType();
 
+  /**
+   * @brief get DFIType （dfi種別の取り出し関数）
+   * @return dfi種別（文字列)
+   */
+  std::string 
+  GetDFITypeString();
+
+  /**
+   * @brief get DFIType （dfi種別の取り出し関数）
+   * @return dfi種別(e_num番号)
+   */
+  CDM::E_CDM_DFITYPE 
+  GetDFIType();
+
   /** 
    * @brief get FileFormat （FileFormatの取り出し関数） 
    * @return FileFormat(文字列)
