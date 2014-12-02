@@ -13,13 +13,13 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.57])
-AC_INIT([CDMlib],[0.7.0],[keno@riken.jp],[CDMlib])
+AC_INIT([CDMlib],[0.7.1],[keno@riken.jp],[CDMlib])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/cdm_DFI.C])
 AM_CONFIG_HEADER([config.h])
 
 # revision No.
-CDM_REVISION="20141201_0030"
+CDM_REVISION="20141202_1730"
 AC_SUBST(CDM_REVISION)
 
 #
@@ -158,6 +158,13 @@ fi
 
 
 #
+# example
+#
+AC_ARG_WITH(example, [AC_HELP_STRING([--with-example=(no|yes)],[make example [no]])], , with_example=no)
+
+
+
+#
 # CDM special flags
 #
 CDM_CFLAGS="-I$CDM_INST_DIR/include"
@@ -189,6 +196,9 @@ if test "x$with_MPI" = "xyes" ; then
   fi
 fi
 
+if test x"$with_example" = x"yes" ; then
+MAKE_SUB_DIRS="$MAKE_SUB_DIRS"" example"
+fi
 
 
 # login node of K/FX is Intel, (cpm != none) means compile on a login node
@@ -232,6 +242,7 @@ AC_CHECK_FUNCS([gethostname memset mkdir strcasecmp strerror])
 
 AC_CONFIG_FILES([Makefile \
                  src/Makefile \
+                 example/Makefile \
                  doc/Makefile \
                  cdm-config \
                  include/cdm_Version.h \

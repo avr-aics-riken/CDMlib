@@ -41,6 +41,9 @@ Configure options:
     Computer, specify --with-MPI=no, --install-frm=yes. Default is yes. If yes, para-
     llel file converter is installed.
 
+ --with-example=(no|yes)
+    Turn on to build examples. Default setting is 'no'.
+
  --with-ompi=OPENMPI_DIR
     If the OpenMPI library is used, specify the directory path that OpenMPI library is
     installed. If a wrapper compiler, e.g., mpicxx, is used to compile, this options 
