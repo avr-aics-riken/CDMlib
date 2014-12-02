@@ -12,6 +12,14 @@ REVISION HISTORY
 
 ------------------
 2014-12-02
+Add method WriteGridFile in method VoxelInit in class convMxN
+クラスconvMxNのメソッドVoxelInitにおいて、PLOT3D形式出力の場合、
+WriteGridFileを用いてxyzファイルを出力するようにした。
+ライブラリの改修で、フィールドデータの出力と格子データの出力を
+別々のメソッドに分離したため。
+
+------------------
+2014-12-02
 Add check for SPH format in FCONV and add API GetDFIType and GetDFITypeString
 FCONVで不等間隔格子のデータをSPH形式もしくはBOV形式に変換しようとしたとき、
 エラーを返すようにした。また、等間隔格子でも変数の数が1か3以外の場合に

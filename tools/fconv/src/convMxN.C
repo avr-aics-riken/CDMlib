@@ -232,6 +232,18 @@ void convMxN::VoxelInit()
     //出力形式（ascii,binary,Fbinary)のセット
     dfi->set_output_type(m_param->Get_OutputFormatType());
 
+    //gridファイルを出力(PLOT3D形式，iblankはすべて1にセット)
+    if (m_param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D) {
+      size_t size_ib=(voxel_thin[0]+2*outGc)*(voxel_thin[1]+2*outGc)*(voxel_thin[2]+2*outGc);
+      int *iblank;
+      iblank = new int[size_ib];
+      for(int i=0; i<size_ib; i++) {
+        iblank[i] = 1;
+      }
+      dfi->WriteGridFile(iblank);
+      delete [] iblank;
+    }
+
     //Unitのセット
     std::string unit;
     double ref;
