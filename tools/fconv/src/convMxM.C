@@ -194,7 +194,7 @@ bool convMxM::mxmsolv(std::string dfiname,
 
   //出力ガイドセルの設定
   int outGc=0;
-  if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
+  if( m_param->Get_OutputGuideCell() > 0 ) outGc = m_param->Get_OutputGuideCell();
   if( outGc > 0 ) {
     const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
     if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;

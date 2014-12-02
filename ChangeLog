@@ -12,6 +12,14 @@ REVISION HISTORY
 
 ------------------
 2014-12-02
+Bug fix about GuideCell in FCONV
+FCONVの中にmasterのリビジョン"Bug fix DFI_Finfo.GuideCell"と同様のバグ
+m_param->Get_OutputGuideCell() > 1
+outGc > 1
+があったので、1->0に訂正した。
+
+------------------
+2014-12-02
 Add method WriteGridFile in method VoxelInit in class convMxN
 クラスconvMxNのメソッドVoxelInitにおいて、PLOT3D形式出力の場合、
 WriteGridFileを用いてxyzファイルを出力するようにした。

@@ -230,7 +230,7 @@ bool convMx1::exec()
 
       //ヘッダーレコードを出力
       int outGc=0;
-      if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
+      if( m_param->Get_OutputGuideCell() > 0 ) outGc = m_param->Get_OutputGuideCell();
       double t_org[3];
       for(int n=0; n<3; n++) t_org[n]=l_dorg[n];
 
@@ -458,7 +458,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
   int interp_Gc=0;
 
   //出力ガイドセルの設定
-  if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
+  if( m_param->Get_OutputGuideCell() > 0 ) outGc = m_param->Get_OutputGuideCell();
   if( outGc > 0 ) {
     const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
     if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
@@ -750,8 +750,8 @@ convMx1::convMx1_out_ijkn(FILE* fp,
   int interp_Gc=0;
 
   //出力ガイドセルの設定
-  if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
-  if( outGc > 1 ) {
+  if( m_param->Get_OutputGuideCell() > 0 ) outGc = m_param->Get_OutputGuideCell();
+  if( outGc > 0 ) {
     const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
     if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
   }
