@@ -239,7 +239,7 @@ bool convMx1::exec()
         if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
         for(int n=0; n<3; n++) t_org[n]=t_org[n]-(double)outGc*l_dpit[n];
       }
-      if( thin_count > 1 || m_bgrid_interp_flag ) outGc-0;
+      if( thin_count > 1 || m_bgrid_interp_flag ) outGc=0;
 
       if( !(ConvOut->WriteHeaderRecord(l_step, dim, d_type, 
                                        l_imax_th+2*outGc, l_jmax_th+2*outGc, l_kmax_th+2*outGc,

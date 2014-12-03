@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-03
+Bug fix in class convMx1
+クラスconvMx1内にあるif文内のバグ修正
+outGc-0 >> outGc=0
+
+------------------
 2014-12-02
 Bug fix about GuideCell in FCONV
 FCONVの中にmasterのリビジョン"Bug fix DFI_Finfo.GuideCell"と同様のバグ
