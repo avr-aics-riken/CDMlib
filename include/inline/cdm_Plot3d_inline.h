@@ -112,7 +112,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
 template<class T>
 CDM_INLINE
 void
-cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
+cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], int head[3], const int* iblank)
 {
 
   int ngrid=1;
@@ -129,7 +129,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellX(i));
+      xyz = (T)(DFI_Domain->CellX(i+head[0]-1));
       fprintf(fp,"%15.6E\n",xyz);
     }}}
 
@@ -137,7 +137,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellY(j));
+      xyz = (T)(DFI_Domain->CellY(j+head[1]-1));
       fprintf(fp,"%15.6E\n",xyz);
     }}}
 
@@ -145,7 +145,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellZ(k));
+      xyz = (T)(DFI_Domain->CellZ(k+head[2]-1));
       fprintf(fp,"%15.6E\n",xyz);
     }}}
 
@@ -183,7 +183,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellX(i));
+      xyz = (T)(DFI_Domain->CellX(i+head[0]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
@@ -191,7 +191,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellY(j));
+      xyz = (T)(DFI_Domain->CellY(j+head[1]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
@@ -199,7 +199,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellZ(k));
+      xyz = (T)(DFI_Domain->CellZ(k+head[2]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
@@ -224,7 +224,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellX(i));
+      xyz = (T)(DFI_Domain->CellX(i+head[0]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
@@ -232,7 +232,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellY(j));
+      xyz = (T)(DFI_Domain->CellY(j+head[1]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
@@ -240,7 +240,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellZ(k));
+      xyz = (T)(DFI_Domain->CellZ(k+head[2]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 

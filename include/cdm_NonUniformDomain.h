@@ -210,6 +210,38 @@ public:
   }
 
   /**
+   * @brief 座標ファイル名を取得
+   * @return 座標ファイル名
+   */
+  std::string GetCoordinateFile() const{
+    return CoordinateFile;
+  }
+
+  /**
+   * @brief 座標ファイルのファイルタイプを取得
+   * @return 座標ファイルのファイルタイプ
+   */
+  CDM::E_CDM_FILE_TYPE GetCoordinateFileType() const{
+    return CoordinateFileType;
+  }
+
+  /**
+   * @brief 座標ファイルのデータ精度を取得
+   * @return 座標ファイルのデータ精度
+   */
+  CDM::E_CDM_DTYPE GetCoordinateFilePrecision() const{
+    return CoordinateFilePrecision;
+  }
+
+  /**
+   * @brief 座標ファイルのエンディアンタイプを取得
+   * @return 座標ファイルのエンディアンタイプ
+   */
+  CDM::E_CDM_ENDIANTYPE GetCoordinateFileEndian() const{
+    return CoordinateFileEndian;
+  }
+
+  /**
    * @brief Domain(proc.dfi)を読込む
    * @param [in]   tpCntl  cdm_TextParserクラス 
    * @param [in]   dirName DFIのディレクトリパス

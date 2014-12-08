@@ -249,12 +249,16 @@ cdm_DFI_PLOT3D::write_GridData(const int* iblank)
 
   //xyzを出力
   int sz[3];
-  for(int i=0; i<3; i++) sz[i] = DFI_Process.RankList[m_RankID].VoxelSize[i];
+  int head[3];
+  for(int i=0; i<3; i++) {
+    sz[i] = DFI_Process.RankList[m_RankID].VoxelSize[i];
+    head[i] = DFI_Process.RankList[m_RankID].HeadIndex[i];
+  }
 
   if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) {
-    write_XYZ<float>(fp,sz,iblank);
+    write_XYZ<float>(fp,sz,head,iblank);
   }else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) {
-    write_XYZ<double>(fp,sz,iblank);
+    write_XYZ<double>(fp,sz,head,iblank);
   }
 
   //file close

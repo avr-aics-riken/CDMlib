@@ -504,7 +504,8 @@ bool InputParam::InputParamCheck()
   //DFI出力のチェック、出力するDFIファイル名のチェック
   if( m_output_dfi_on ) {
     //DFI出力がSPH，BOV以外で指定された場合はエラー
-    if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV ) {
+    //if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV ) {
+    if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV && m_out_format != CDM::E_CDM_FMT_PLOT3D) {
       printf("\tCan't output dfi OutputFormat. %s\n",Get_OutputFormat_string().c_str());
       ierr=false;
     }
@@ -533,7 +534,8 @@ bool InputParam::InputParamCheck()
   //出力ガイドセル数のチェック
   if( m_outputGuideCell > 0 ) {
     //sph,bov以外は出力指定不可
-    if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV ) {
+    if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV && m_out_format != CDM::E_CDM_FMT_PLOT3D ) {
+    //if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV ) {
       printf("\tCan't output guide cell : %s\n",Get_OutputFormat_string().c_str());
       ierr=false;
     }

@@ -186,13 +186,14 @@ protected:
 
   /**
    * @brief xyzを出力
-   * @param [in] fp  出力ファイルポインタ
-   * @param [in] sz  サイズ
-   * @param [in] iblank  iblankデータポインタ
+   * @param [in] fp     出力ファイルポインタ
+   * @param [in] sz     サイズ
+   * @param [in] head   dfiのHeadIndex
+   * @param [in] iblank iblankデータポインタ
    */ 
   template<class T>
   void
-  write_XYZ(FILE* fp, int sz[3], const int* iblank);
+  write_XYZ(FILE* fp, int sz[3], int head[3], const int* iblank);
 
   /**
    * @brief func data 出力

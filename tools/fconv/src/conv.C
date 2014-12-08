@@ -68,8 +68,8 @@ CONV* CONV::ConvInit(InputParam* param)
   conv->m_param = param;
 
   //格子点補間フラグのセット
-  if( param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D ||
-      param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
+  //if( param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D ||
+  if( param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
       param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
     conv->m_bgrid_interp_flag = true;
   } else {
