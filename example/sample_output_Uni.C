@@ -77,11 +77,11 @@ int main( int argc, char **argv )
   DFI_OUT->AddUnit("Pressure","NonDimensional",0.0,0.0,true);
   //procファイル出力
   int c_id = 3;
-  int bc_id = -2;
+  int bc_id = -1;
   DFI_OUT->WriteProcDfiFile(MPI_COMM_WORLD, ///<MPIコミュニケータ
+                            false,          ///<ホスト名出力指示
                             c_id,           ///<cell id
-                            bc_id,          ///<境界ID
-                            false);         ///<ホスト名出力指示
+                            bc_id);         ///<境界ID
 
   //IBLANK用配列の設定(PLOT3D形式)
   size_t size_ib=(GVoxel[0]+2*out_gc)*(GVoxel[1]+2*out_gc)*(GVoxel[2]+2*out_gc);

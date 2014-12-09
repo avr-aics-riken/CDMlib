@@ -1112,8 +1112,8 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
       rank.HeadIndex[i]=1;
       rank.TailIndex[i]=rank.HeadIndex[i]+Gvoxel[i]-1;
     }
-    rank.c_id = dfi_Process->RankList[0].c_id;
-    rank.bc_id = dfi_Process->RankList[0].bc_id;
+    rank.c_id = dfi_Process->RankList[0].c_id;   //RankID=0のCellIDをセット
+    rank.bc_id = dfi_Process->RankList[0].bc_id; //RankID=0の境界IDをセット
     out_process->RankList.push_back(rank);
   }
 

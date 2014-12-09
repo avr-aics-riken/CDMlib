@@ -12,6 +12,13 @@ REVISION HISTORY
 
 ------------------
 2014-12-09
+Make modifications to CellID and BCflagID
+クラスcdm_RankのCellIDと境界IDをランク毎に設定するように修正した。
+また、メソッドWriteProcDfiFileにおける引数out_hostのデフォルトをなくし、
+引数の順序を変更した。
+
+------------------
+2014-12-09
 Add CellID and BCflagID in class cdm_Rank
 クラスcdm_RankにCellIDと境界IDを示すメンバ変数c_id,bc_idを追加し、
 proc.dfiのProcessのところにこれらのIDを表示するようにした。
