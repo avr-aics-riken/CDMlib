@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-09
+Add CellID and BCflagID in class cdm_Rank
+クラスcdm_RankにCellIDと境界IDを示すメンバ変数c_id,bc_idを追加し、
+proc.dfiのProcessのところにこれらのIDを表示するようにした。
+
+------------------
 2014-12-02
 add examples
 

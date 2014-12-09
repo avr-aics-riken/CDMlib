@@ -134,7 +134,9 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
 // proc DFIファイルの出力コントロール
 CDM::E_CDM_ERRORCODE
 cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
-                          bool out_host)
+                          const int cell_id,
+                          const int bcf_id,
+                          const bool out_host)
                           //double* org)
 {
 
@@ -156,7 +158,7 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
   cdm_Process out_Process;
 
   //出力するProcess情報の生成
-  cdm_Create_dfiProcessInfo(comm, out_Process);
+  cdm_Create_dfiProcessInfo(comm, cell_id, bcf_id, out_Process);
 
   //ホスト名出力指示ありの時、各ランクのホスト名を集める
   if( out_host ) {

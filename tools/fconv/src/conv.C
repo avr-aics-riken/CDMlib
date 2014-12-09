@@ -1100,6 +1100,8 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
           rank.TailIndex[j]=rank.HeadIndex[j]+rank.VoxelSize[j]-1;
         }
       }  
+      rank.c_id = dfi_Process->RankList[i].c_id;
+      rank.bc_id = dfi_Process->RankList[i].bc_id;
       out_process->RankList.push_back(rank);
     }
   } else if( numProc == 1 ) {
@@ -1110,6 +1112,8 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
       rank.HeadIndex[i]=1;
       rank.TailIndex[i]=rank.HeadIndex[i]+Gvoxel[i]-1;
     }
+    rank.c_id = dfi_Process->RankList[0].c_id;
+    rank.bc_id = dfi_Process->RankList[0].bc_id;
     out_process->RankList.push_back(rank);
   }
 

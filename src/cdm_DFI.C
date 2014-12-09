@@ -503,6 +503,8 @@ const int* cdm_DFI::GetDFIGlobalDivision()
 // #################################################################
 // Create Domain & Process  
 void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm, 
+                                        const int cell_id,
+                                        const int bcf_id,
                                         cdm_Process &G_Process)
 {
 
@@ -536,6 +538,8 @@ void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm,
           G_Rank.TailIndex[j]=headtail[i*6+j+3];
           G_Rank.VoxelSize[j]=G_Rank.TailIndex[j]-G_Rank.HeadIndex[j]+1;
         }
+        G_Rank.c_id=cell_id;
+        G_Rank.bc_id=bcf_id;
         G_Process.RankList.push_back(G_Rank);
       }
     }
@@ -549,6 +553,8 @@ void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm,
       G_Rank.TailIndex[i]=DFI_Process.RankList[0].TailIndex[i];
       G_Rank.VoxelSize[i]=G_Rank.TailIndex[i]-G_Rank.HeadIndex[i]+1;
     }
+    G_Rank.c_id=cell_id;
+    G_Rank.bc_id=bcf_id;
     G_Process.RankList.push_back(G_Rank);
   }
 }

@@ -28,6 +28,8 @@ cdm_Rank::cdm_Rank()
    HeadIndex[i]=0;
    TailIndex[i]=0;
  }
+ c_id = -1;
+ bc_id = -1;
 
 }
 
@@ -168,6 +170,26 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
   TailIndex[0]=iv[0];
   TailIndex[1]=iv[1];
   TailIndex[2]=iv[2];
+
+  //CellID
+  label = "CellID";
+  if ( !(tpCntl.GetValue(label, &ct, false )) ) {
+    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_CELLID;
+  }
+  else {
+    c_id= ct;
+  }
+
+  //BCflagID
+  label = "BCflagID";
+  if ( !(tpCntl.GetValue(label, &ct, false )) ) {
+    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+    return CDM::E_CDM_ERROR_READ_DFI_BCFLAGID;
+  }
+  else {
+    bc_id= ct;
+  }
 #endif
 
   return CDM::E_CDM_SUCCESS;
@@ -200,6 +222,14 @@ cdm_Rank::Write(FILE* fp,
     fprintf(fp, "TailIndex = (%d, %d, %d)\n", TailIndex[0],
                                               TailIndex[1],
                                               TailIndex[2]);
+
+    fprintf(fp, "\n");
+
+    _CDM_WRITE_TAB(fp, tab);
+    fprintf(fp, "CellID    = %d\n", c_id);
+
+    _CDM_WRITE_TAB(fp, tab);
+    fprintf(fp, "BCflagID  = %d\n", bc_id);
 
   return CDM::E_CDM_SUCCESS;
 

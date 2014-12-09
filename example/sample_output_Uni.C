@@ -76,7 +76,11 @@ int main( int argc, char **argv )
   DFI_OUT->AddUnit("Velocity","NonDimensional",1.0);
   DFI_OUT->AddUnit("Pressure","NonDimensional",0.0,0.0,true);
   //procファイル出力
+  int c_id = 3;
+  int bc_id = -2;
   DFI_OUT->WriteProcDfiFile(MPI_COMM_WORLD, ///<MPIコミュニケータ
+                            c_id,           ///<cell id
+                            bc_id,          ///<境界ID
                             false);         ///<ホスト名出力指示
 
   //IBLANK用配列の設定(PLOT3D形式)

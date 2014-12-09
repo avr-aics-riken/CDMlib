@@ -586,12 +586,16 @@ public:
   /**
    * @brief proc DFIファイル出力コントロール
    * @param [in] comm          MPIコミュニケータ
-   * @param [in] out_host      ホスト名出力フラグ　　　　
-   * @return true:出力成功 false:出力失敗
+   * @param [in] cell_id       cell id
+   * @param [in] bcf_id        境界ID
+   * @param [in] out_host      ホスト名出力フラグ　
+   * @return 終了コード 1:正常 1以外:エラー
    */
   CDM::E_CDM_ERRORCODE
   WriteProcDfiFile(const MPI_Comm comm, 
-                   bool out_host=false);
+                   const int cell_id,
+                   const int bcf_id,
+                   const bool out_host=false);
                    //double* org=NULL);
 
   /**
@@ -1058,10 +1062,14 @@ protected :
   /**
    * @brief Create Process 
    * @param [in] comm           MPIコミュニケータ
+   * @param [in] cell_id        cell id
+   * @param [in] bcf_id         境界ID
    * @param [out] G_Process     Process class　　　
    */
   void 
   cdm_Create_dfiProcessInfo(const MPI_Comm comm,
+                            const int cell_id,
+                            const int bcf_id,
                             cdm_Process &G_Process);
 
 
