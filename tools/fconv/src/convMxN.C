@@ -287,7 +287,7 @@ void convMxN::VoxelInit()
     if( m_param->Get_Outputdfi_on() ) dfi->WriteProcDfiFile(MPI_COMM_WORLD,false);
 
     //出力形式（ascii,binary,Fbinary)のセット
-    dfi->set_output_type(m_param->Get_OutputFormatType());
+    dfi->set_output_type(m_param->Get_OutputFileType());
 
     //gridファイルを出力(PLOT3D形式，iblankはすべて1にセット)
     if (m_param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D) {

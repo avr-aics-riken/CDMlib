@@ -424,7 +424,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   out_dfi->SetcdmTimeSlice(*TSlice);
 
   //出力形式（ascii,binary,Fbinary)のセット
-  out_dfi->set_output_type(m_param->Get_OutputFormatType());
+  out_dfi->set_output_type(m_param->Get_OutputFileType());
 
   //gridファイルを出力(PLOT3D形式，iblankはすべて1にセット)
   if (m_param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D) {

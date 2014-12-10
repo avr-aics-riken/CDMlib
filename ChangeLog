@@ -12,6 +12,11 @@ REVISION HISTORY
 
 ------------------
 2014-12-10
+Replace FormatType with FileType in FCONV
+FCONV内の変数名やメソッド名に含まれるFormatTypeをFileTypeに置き換えた。
+
+------------------
+2014-12-10
 Edit class convMxM to convert plot3d non-uniform cartesian data
 FCONVのM対Mデータ変換機能において、plot3d形式の不等間隔格子データも変換
 できるようにした。現時点では、不等間隔格子で出力できるのはplot3d形式だけ。

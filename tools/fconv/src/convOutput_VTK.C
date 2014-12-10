@@ -56,12 +56,12 @@ FILE* convOutput_VTK::OutputFile_Open(
                                        CDM::E_CDM_OFF);
 
   //ファイルオープン
-  if( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_FILE_TYPE_BINARY ) {
+  if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_BINARY ) {
     if( (fp = fopen(outfile.c_str(), "w")) == NULL ) {
       printf("\tCan't open file.(%s)\n",outfile.c_str());
       Exit(0);
     }
-  } else if( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
+  } else if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
     if( (fp = fopen(outfile.c_str(), "wa")) == NULL ) {
       printf("\tCan't open file.(%s)\n",outfile.c_str());
       Exit(0);
@@ -92,9 +92,9 @@ bool convOutput_VTK::WriteHeaderRecord(
   fprintf( fp, "# vtk DataFile Version 2.0\n" );
   fprintf( fp, "step=%d,time=%g\n", step, time );
 
-  if( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_FILE_TYPE_BINARY ) {
+  if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_BINARY ) {
     fprintf( fp, "BINARY\n" );
-  } else if( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
+  } else if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
     fprintf( fp, "ASCII\n" );
   }
 
@@ -161,7 +161,7 @@ bool convOutput_VTK::WriteFieldData(FILE* fp, cdm_Array* src, size_t dLen)
   int ret = src->copyArray(out);
 
   //バイナリー出力のとき
-  if( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_FILE_TYPE_BINARY ) {
+  if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_BINARY ) {
 
     //出力タイプごとにポインターを取得して出力
     if( out->getDataType() == CDM::E_CDM_UINT8 ) {
@@ -231,7 +231,7 @@ bool convOutput_VTK::WriteFieldData(FILE* fp, cdm_Array* src, size_t dLen)
     }
 
   //アスキー出力のとき
-  } else if ( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
+  } else if ( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
 
     if( out->writeAscii(fp) != dLen ) {
       delete out;

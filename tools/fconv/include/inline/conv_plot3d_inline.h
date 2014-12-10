@@ -106,7 +106,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
     
   //open file
   FILE*fp;
-  if( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
+  if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
     if( (fp = fopen(tmp.c_str(), "wa")) == NULL ) {
       printf("\tCan't open file.(%s)\n",tmp.c_str());
       Exit(0);
@@ -206,7 +206,7 @@ convOutput_PLOT3D::WriteXYZData(FILE* fp,
   int s12 =(size_t)id*(size_t)jd;
   int ns12=s12/10;
 
-  switch (m_InputCntl->Get_OutputFormatType()) {
+  switch (m_InputCntl->Get_OutputFileType()) {
 
     //Fortran Binary 出力
     case CDM::E_CDM_FILE_TYPE_FBINARY:

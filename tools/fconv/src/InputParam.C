@@ -25,7 +25,7 @@ InputParam::InputParam(cpm_ParaManager* paraMngr)
   m_paraMngr=paraMngr;
 
   m_thin_count=1;
-  m_out_format_type=CDM::E_CDM_FILE_TYPE_BINARY;
+  m_out_file_type=CDM::E_CDM_FILE_TYPE_BINARY;
   m_outputDiv[0]=-1;m_outputDiv[1]=-1;m_outputDiv[2]=-1;
   m_outputArrayShape=CDM::E_CDM_ARRAYSHAPE_UNKNOWN;
   m_outputFilenameFormat=CDM::E_CDM_FNAME_STEP_RANK;
@@ -220,14 +220,14 @@ bool InputParam::Read(std::string input_file_name)
     }
 
     // 出力形式の読込み
-    if( !strcasecmp(str.c_str(),"OutputFormatType") ) {
-      label = "/ConvData/OutputFormatType";
+    if( !strcasecmp(str.c_str(),"OutputFileType") ) {
+      label = "/ConvData/OutputFileType";
       if( !(tpCntl.getInspectedValue(label, str )) ) {
-        m_out_format_type = CDM::E_CDM_FILE_TYPE_BINARY;
+        m_out_file_type = CDM::E_CDM_FILE_TYPE_BINARY;
       } else {
-        if     ( !strcasecmp(str.c_str(), "binary") )        m_out_format_type=CDM::E_CDM_FILE_TYPE_BINARY;
-        else if( !strcasecmp(str.c_str(), "ascii") )         m_out_format_type=CDM::E_CDM_FILE_TYPE_ASCII;
-        else if( !strcasecmp(str.c_str(), "FortranBinary") ) m_out_format_type=CDM::E_CDM_FILE_TYPE_FBINARY;
+        if     ( !strcasecmp(str.c_str(), "binary") )        m_out_file_type=CDM::E_CDM_FILE_TYPE_BINARY;
+        else if( !strcasecmp(str.c_str(), "ascii") )         m_out_file_type=CDM::E_CDM_FILE_TYPE_ASCII;
+        else if( !strcasecmp(str.c_str(), "FortranBinary") ) m_out_file_type=CDM::E_CDM_FILE_TYPE_FBINARY;
         else
         {
            printf("\tInvalid keyword is described for '%s'\n", label.c_str());
@@ -451,10 +451,10 @@ bool InputParam::InputParamCheck()
   }
 
   //出力形式のチェック
-  if( m_out_format_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
+  if( m_out_file_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
     if( m_out_format != CDM::E_CDM_FMT_PLOT3D &&
         m_out_format != CDM::E_CDM_FMT_VTK ) {
-      printf("\tCan't Converter OutputFormatType ascii.\n");
+      printf("\tCan't Converter OutputFileType ascii.\n");
       ierr=false;
     }
   }
@@ -634,13 +634,13 @@ void InputParam::PrintParam(FILE* fp)
      fprintf(fp,"\tOutputDataType       : \"undefine\"\n");
    }
 
-   if( m_out_format_type == CDM::E_CDM_FILE_TYPE_DEFAULT ) {
+   if( m_out_file_type == CDM::E_CDM_FILE_TYPE_DEFAULT ) {
      fprintf(fp,"\tOutputForamtType     : \"undefine\"\n");
-   } else if( m_out_format_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
+   } else if( m_out_file_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
      fprintf(fp,"\tOutputForamtType     : \"ascii\"\n");
-   } else if( m_out_format_type == CDM::E_CDM_FILE_TYPE_BINARY ) {
+   } else if( m_out_file_type == CDM::E_CDM_FILE_TYPE_BINARY ) {
      fprintf(fp,"\tOutputForamtType     : \"binary\"\n");
-   } else if( m_out_format_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
+   } else if( m_out_file_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
      fprintf(fp,"\tOutputForamtType     : \"Fortran Binary\"\n");
    }
 
