@@ -129,6 +129,49 @@ public:
     }
   }
 
+  /** 
+  * @brief コンストラクタ(proc.dfi出力用)
+  * @param [in] _GlobalOrigin   起点座標
+  * @param [in] _GlobalRegion   各軸方向の長さ
+  * @param [in] _GlobalVoxel    ボクセル数
+  * @param [in] _GlobalDivision 分割数
+  * @param [in] _CoordinateFile          座標データ名
+  * @param [in] _CoordinateFileType      座標データのファイルタイプ
+  * @param [in] _CoordinateFilePrecision 座標データのデータ精度
+  * @param [in] _CoordinateFileEndian    座標データのエンディアンタイプ
+  */ 
+  cdm_NonUniformDomain(const T* _GlobalOrigin,
+                       const T* _GlobalRegion,
+                       const int* _GlobalVoxel, 
+                       const int* _GlobalDivision,
+                       const std::string _CoordinateFile,
+                       const CDM::E_CDM_FILE_TYPE _CoordinateFileType,
+                       const CDM::E_CDM_DTYPE _CoordinateFilePrecision,
+                       const CDM::E_CDM_ENDIANTYPE _CoordinateFileEndian)
+  {
+    GlobalOrigin[0]=_GlobalOrigin[0];
+    GlobalOrigin[1]=_GlobalOrigin[1];
+    GlobalOrigin[2]=_GlobalOrigin[2];
+
+    GlobalRegion[0]=_GlobalRegion[0];
+    GlobalRegion[1]=_GlobalRegion[1];
+    GlobalRegion[2]=_GlobalRegion[2];
+
+    GlobalVoxel[0]=_GlobalVoxel[0];
+    GlobalVoxel[1]=_GlobalVoxel[1];
+    GlobalVoxel[2]=_GlobalVoxel[2];
+
+    GlobalDivision[0]=_GlobalDivision[0];
+    GlobalDivision[1]=_GlobalDivision[1];
+    GlobalDivision[2]=_GlobalDivision[2];
+
+    CoordinateFile = _CoordinateFile;
+    CoordinateFileType = _CoordinateFileType;
+    CoordinateFilePrecision = _CoordinateFilePrecision;
+    CoordinateFileEndian = _CoordinateFileEndian;
+
+  }
+
   /** デストラクタ **/
   ~cdm_NonUniformDomain()
   {

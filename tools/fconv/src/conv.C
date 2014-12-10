@@ -932,7 +932,7 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
     FieldFilenameFormat=m_param->Get_OutputFilenameFormat();
 
     //FileInfoの出力
-    cdm_FileInfo *Finfo = new cdm_FileInfo(CDM::E_CDM_DFITYPE_CARTESIAN,
+    cdm_FileInfo *Finfo = new cdm_FileInfo(dfi_Finfo->DFIType,
                               FieldFilenameFormat,
                               m_param->Get_OutputDir(),
                               dfi_Finfo->TimeSliceDirFlag,
@@ -1051,10 +1051,6 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
     IndexEnd[i]=Gvoxel[i];
   }
 
-  //pitを計算
-  double pit[3];
-  for(int i=0; i<3; i++) pit[i]=Gregion[i]/(double)Gvoxel[i];
- 
   //入力領域指示ありのときボクセルサイズを更新
   if( m_param->Get_CropIndexStart_on() ) {
     const int* Start=m_param->Get_CropIndexStart();
@@ -1071,6 +1067,11 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
     Gvoxel[2]=Gvoxel[2]-(dfi_domain->GlobalVoxel[2]-IndexEnd[2]);
   }
 
+  //Gregionの更新
+  for(int i=0; i<3; i++) {
+    Gregion[i] = dfi_domain->NodeX(IndexEnd[i]) - dfi_domain->NodeX(IndexStart[i]-1);
+  }
+
   //間引きありのときボクセルサイズを更新
   if( thin_count > 1 ) {
     for(int i=0; i<3; i++) {
@@ -1081,8 +1082,30 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
   //numProcが1のとき（Mx1のとき）GlobalDivisionを１にする
   if( numProc == 1 ) for(int i=0; i<3; i++) Gdiv[i]=1;
 
+  //入力領域指示・間引きを考慮したpit
+  double pit[3];
+  for(int i=0; i<3; i++) {
+    pit[i] = Gregion[i]/(double)Gvoxel[i];
+  }
+
   //out_domainの生成 
-  out_domain = new cdm_Domain(Gorigin,pit,Gvoxel,Gdiv);
+  if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_CARTESIAN )
+  {
+    //等間隔格子の場合
+    out_domain = new cdm_Domain(Gorigin,pit,Gvoxel,Gdiv);
+  }
+  else if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN )
+  {
+    //不等間隔格子の場合
+    out_domain = new cdm_NonUniformDomain<double>(Gorigin,
+                                                  Gregion,
+                                                  Gvoxel,
+                                                  Gdiv,
+                                                  dfi_domain->GetCoordinateFile(),
+                                                  dfi_domain->GetCoordinateFileType(),
+                                                  dfi_domain->GetCoordinateFilePrecision(),
+                                                  dfi_domain->GetCoordinateFileEndian());
+  }
 
   //Process 情報の生成
   const cdm_Process* dfi_Process = dfi->GetcdmProcess();
@@ -1127,7 +1150,7 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
 
 
 //#################################################################
-// index.dfiファイル出力
+// proc.dfiファイル出力
 bool CONV::WriteProcDfiFile(std::string proc_name,
                             cdm_Domain* out_domain,
                             cdm_MPI* out_mpi,

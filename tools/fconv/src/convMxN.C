@@ -256,11 +256,6 @@ void convMxN::VoxelInit()
       }
       coord_Z[voxel_thin[2]] = DFI_Domain->NodeZ(DFI_Domain->GlobalVoxel[2]);
 
-      std::string coord_file = DFI_Domain->GetCoordinateFile();
-      CDM::E_CDM_FILE_TYPE coord_filetype = DFI_Domain->GetCoordinateFileType();
-      CDM::E_CDM_DTYPE coord_fileprecision = DFI_Domain->GetCoordinateFilePrecision();
-      CDM::E_CDM_ENDIANTYPE coord_fileEndian = DFI_Domain->GetCoordinateFileEndian();
-
       dfi=cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
                                      outdfifname,
                                      m_param->Get_OutputDir(),
@@ -274,9 +269,9 @@ void convMxN::VoxelInit()
                                      coord_X,
                                      coord_Y,
                                      coord_Z,
-                                     coord_file,
-                                     coord_filetype,
-                                     coord_fileEndian,
+                                     DFI_Domain->GetCoordinateFile(),
+                                     DFI_Domain->GetCoordinateFileType(),
+                                     DFI_Domain->GetCoordinateFileEndian(),
                                      m_Gdiv,
                                      head,
                                      tail,
