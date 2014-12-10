@@ -1114,6 +1114,7 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
     }
     rank.c_id = dfi_Process->RankList[0].c_id;   //RankID=0のCellIDをセット
     rank.bc_id = dfi_Process->RankList[0].bc_id; //RankID=0の境界IDをセット
+    printf("CellID and BCflagID of all ranks were converted into those of rank 0.\n");
     out_process->RankList.push_back(rank);
   }
 

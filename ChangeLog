@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-10
+Add message when CellID and BCflagID were converted in FCONV
+FCONVのMxN変換およびMx1変換において、読み込んだ各ランクのCellIDとBCflagIDが
+ランク0のCellIDとBCflagIDに変換される時、メッセージを出力するようにした。
+
+------------------
 2014-12-09
 Make modifications to CellID and BCflagID
 クラスcdm_RankのCellIDと境界IDをランク毎に設定するように修正した。

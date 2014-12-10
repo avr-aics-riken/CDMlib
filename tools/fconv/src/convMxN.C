@@ -233,6 +233,7 @@ void convMxN::VoxelInit()
                             false,
                             DFI_Process->RankList[0].c_id,   //RankID=0のCellIDをセット
                             DFI_Process->RankList[0].bc_id); //RankID=0の境界IDをセット
+      printf("CellID and BCflagID of all ranks were converted into those of rank 0.\n");
     }
 
     //出力形式（ascii,binary,Fbinary)のセット
