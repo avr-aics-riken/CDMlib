@@ -12,6 +12,14 @@ REVISION HISTORY
 
 ------------------
 2014-12-11
+Bug fix in method write_ascii_header of class cdm_DFI_BOV and correct typo
+クラスcdm_DFI_BOVのメソッドwrite_ascii_header内の誤植
+・DATA_COMPONENT >> DATA_COMPONENTS
+・BRICK_ORIGN >> BRICK_ORIGIN
+を修正した。Orign >> Originの誤植が他の所にもあったので訂正した。
+
+------------------
+2014-12-11
 Minor modification in method WriteGridFile
 メソッドWriteGridFile内のprint文に修正を加えた。
 

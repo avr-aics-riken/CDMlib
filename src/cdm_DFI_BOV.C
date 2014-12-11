@@ -243,7 +243,7 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
   fprintf(fp,"DATA_FORMAT: %s\n",dType.c_str());
 
   //DATA_COMPONENT
-  fprintf(fp,"DATA_COMPONENT: %d\n",DFI_Finfo.NumVariables);
+  fprintf(fp,"DATA_COMPONENTS: %d\n",DFI_Finfo.NumVariables);
 
   //VARIABLE:
   fprintf(fp,"VARIABLE: %s\n",DFI_Finfo.Prefix.c_str());
@@ -264,16 +264,16 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
     pch[i]=(DFI_Domain->GlobalRegion[i]/DFI_Domain->GlobalVoxel[i]);
   }
 
-  //BRICK_ORIGN
+  //BRICK_ORIGIN
   double org[3];
   for(int i=0; i<3; i++) org[i]=DFI_Domain->GlobalOrigin[i]+0.5*pch[i];
   if( DFI_Finfo.GuideCell>0 ) for(int i=0; i<3; i++) org[i]=org[i]-pch[i]*(double)DFI_Finfo.GuideCell;
   /*
-  fprintf(fp,"BRICK_ORIGN: %e %e %e\n",DFI_Domain.GlobalOrigin[0],
+  fprintf(fp,"BRICK_ORIGIN: %e %e %e\n",DFI_Domain.GlobalOrigin[0],
                                        DFI_Domain.GlobalOrigin[1],
                                        DFI_Domain.GlobalOrigin[2]);
   */
-  fprintf(fp,"BRICK_ORIGN: %e %e %e\n",org[0],org[1],org[2]);
+  fprintf(fp,"BRICK_ORIGIN: %e %e %e\n",org[0],org[1],org[2]);
 
   //BRICK_SIZE
   fprintf(fp,"BRICK_SIZE: %e %e %e\n",

@@ -114,7 +114,7 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
                           float* org)
 {
 
-  //orign の再設定
+  //origin の再設定
   double d_org[3];
   if( org != NULL ) {
     for(int i=0; i<3; i++) {
