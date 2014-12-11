@@ -12,6 +12,11 @@ REVISION HISTORY
 
 ------------------
 2014-12-11
+Minor modification in method WriteGridFile
+メソッドWriteGridFile内のprint文に修正を加えた。
+
+------------------
+2014-12-11
 Remove parameter OutputArrayShape from input file for FCONV
 FCONVの入力ファイルから
 ・出力配列形状を指定するパラメータ:OutputArrayShape

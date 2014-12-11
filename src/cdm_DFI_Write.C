@@ -233,7 +233,7 @@ cdm_DFI::WriteGridFile(const int* iblank)
   }
   else
   {
-    std::cout << "This file format has no grid file. " << std::endl;
+    printf("\tError : File format \"%s\" has no grid file.\n", GetFileFormatString().c_str());
     return CDM::E_CDM_ERROR_WRITE_GRIDFILE;
   }
 
