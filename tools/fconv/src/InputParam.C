@@ -308,23 +308,6 @@ bool InputParam::Read(std::string input_file_name)
       continue;
     } else
 
-    //出力配列形状の読込み
-    if( !strcasecmp(str.c_str(),"OutputArrayShape") ) {
-      label = "/ConvData/OutputArrayShape";
-      if( !(tpCntl.getInspectedValue(label, str )) ) {
-        m_outputArrayShape = CDM::E_CDM_ARRAYSHAPE_UNKNOWN;  
-      } else {
-        if     ( !strcasecmp(str.c_str(), "ijkn") ) m_outputArrayShape = CDM::E_CDM_IJKN;
-        else if( !strcasecmp(str.c_str(), "nijk") ) m_outputArrayShape = CDM::E_CDM_NIJK;
-        else {
-          printf("\tInvalid keyword is described for '%s'\n", label.c_str());
-          Exit(0);
-        }
-      }
-      ncnt++;
-      continue;
-    } else
-
     //出力ファイル名命名順の読込み
     if( !strcasecmp(str.c_str(),"OutputFilenameFormat") ) {
       label = "/ConvData/OutputFilenameFormat";
@@ -518,21 +501,12 @@ bool InputParam::InputParamCheck()
     }
   }
 
-  //出力配列形状のチェック
-  //BOV以外での出力配列形状指示は無効とし、自動的に対応する配列形状で出力
-  //なので、指定があった場合はメッセージを出力する
-  if( m_outputArrayShape != CDM::E_CDM_ARRAYSHAPE_UNKNOWN ) {
-    if( m_out_format != CDM::E_CDM_FMT_BOV ) printf("\tCan't OutputArrayShape.\n");
-  }
-
-  //出力配列形状のセット
+  //出力配列形状のセット(ファイルフォーマットで固定)
   if     ( m_out_format == CDM::E_CDM_FMT_SPH ) m_outputArrayShape = CDM::E_CDM_NIJK;
   else if( m_out_format == CDM::E_CDM_FMT_AVS ) m_outputArrayShape = CDM::E_CDM_NIJK;
   else if( m_out_format == CDM::E_CDM_FMT_VTK ) m_outputArrayShape = CDM::E_CDM_NIJK;
   else if( m_out_format == CDM::E_CDM_FMT_PLOT3D ) m_outputArrayShape = CDM::E_CDM_IJKN;
-  else if( m_out_format == CDM::E_CDM_FMT_BOV && 
-           m_outputArrayShape == CDM::E_CDM_ARRAYSHAPE_UNKNOWN ) 
-       m_outputArrayShape = CDM::E_CDM_NIJK;
+  else if( m_out_format == CDM::E_CDM_FMT_BOV ) m_outputArrayShape = CDM::E_CDM_IJKN;
 
   //未対応のデータ型への変換チェック
   if( m_output_data_type != CDM::E_CDM_DTYPE_UNKNOWN ) {
@@ -721,14 +695,6 @@ void InputParam::PrintParam(FILE* fp)
 
    fprintf(fp,"\tOutputdir            : \"%s\"\n",m_outdir_name.c_str());
    fprintf(fp,"\tThinning             : %d\n",m_thin_count);
-
-   if( m_outputArrayShape == CDM::E_CDM_IJKN ) {
-     fprintf(fp,"\tOutputArrayShape     : \"ijkn\"\n");
-   }else if( m_outputArrayShape == CDM::E_CDM_NIJK ) {
-     fprintf(fp,"\tOutputArrayShape     : \"nijk\"\n");
-   }else {
-     fprintf(fp,"\tOutputArrayShape     : \"undefine\"\n");
-   }
 
    if( m_outputFilenameFormat == CDM::E_CDM_FNAME_STEP_RANK ) { 
      fprintf(fp,"\tOutputFilenameFormat : \"step_rank\"\n");

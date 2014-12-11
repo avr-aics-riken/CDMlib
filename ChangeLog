@@ -12,6 +12,13 @@ REVISION HISTORY
 
 ------------------
 2014-12-11
+Remove parameter OutputArrayShape from input file for FCONV
+FCONVの入力ファイルから
+・出力配列形状を指定するパラメータ:OutputArrayShape
+を削除した。BOV形式の配列形状をijknで固定したため。
+
+------------------
+2014-12-11
 Add parameters OutputFileTypeCoord and OutputInterpolation in input file for FCONV
 FCONVの入力ファイルに、AVSおよびVTK形式で
 ・座標データの出力形式を指定するパラメータ:OutputFileTypeCoord
