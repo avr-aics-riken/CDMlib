@@ -11,6 +11,15 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-11
+Add parameters OutputFileTypeCoord and OutputInterpolation in input file for FCONV
+FCONVの入力ファイルに、AVSおよびVTK形式で
+・座標データの出力形式を指定するパラメータ:OutputFileTypeCoord
+・節点への補間オプションを指示するパラメータ:OutputInterpolation
+を追加し、パラメータの読込み部やログ出力部等を編集した。
+ただ、AVSおよびVTK形式でデータ出力する部分との接続はまだ行っていない。
+
+------------------
 2014-12-10
 Replace FormatType with FileType in FCONV
 FCONV内の変数名やメソッド名に含まれるFormatTypeをFileTypeに置き換えた。

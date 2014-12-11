@@ -202,7 +202,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   //間引きありのとき、出力ガイドセルを0に設定
   if( thin_count > 1 ) outGc=0;
   //格子点出力のときガイドセルを0に設定
-  if( m_bgrid_interp_flag ) outGc=0;
+  if( m_param->Get_Interp_flag() ) outGc=0;
 
   //ピッチのセット
   double l_dpit[3];
@@ -425,6 +425,18 @@ bool convMxM::mxmsolv(std::string dfiname,
 
   //出力形式（ascii,binary,Fbinary)のセット
   out_dfi->set_output_type(m_param->Get_OutputFileType());
+
+  //節点への補間フラグのセット(AVSおよびVTK形式)
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
+      m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
+    out_dfi->set_interp_flag(m_param->Get_Interp_flag());
+  }
+
+  //座標データの出力形式のセット(AVSおよびVTK形式)
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
+      m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
+    out_dfi->set_output_type_coord(m_param->Get_OutputFileTypeCoord());
+  }
 
   //gridファイルを出力(PLOT3D形式，iblankはすべて1にセット)
   if (m_param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D) {

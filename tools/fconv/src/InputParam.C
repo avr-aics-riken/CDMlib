@@ -26,6 +26,7 @@ InputParam::InputParam(cpm_ParaManager* paraMngr)
 
   m_thin_count=1;
   m_out_file_type=CDM::E_CDM_FILE_TYPE_BINARY;
+  m_out_file_type_coord=CDM::E_CDM_FILE_TYPE_BINARY;
   m_outputDiv[0]=-1;m_outputDiv[1]=-1;m_outputDiv[2]=-1;
   m_outputArrayShape=CDM::E_CDM_ARRAYSHAPE_UNKNOWN;
   m_outputFilenameFormat=CDM::E_CDM_FNAME_STEP_RANK;
@@ -37,6 +38,8 @@ InputParam::InputParam(cpm_ParaManager* paraMngr)
   //m_out_proc_name.clear();
   m_dfiList.clear();
   m_output_dfi_on = false;
+  m_bgrid_interp_flag = false;
+  m_out_ftype_crd_on = false;
 
   m_cropIndexStart_on=false;
   m_cropIndexEnd_on  =false;
@@ -228,6 +231,43 @@ bool InputParam::Read(std::string input_file_name)
         if     ( !strcasecmp(str.c_str(), "binary") )        m_out_file_type=CDM::E_CDM_FILE_TYPE_BINARY;
         else if( !strcasecmp(str.c_str(), "ascii") )         m_out_file_type=CDM::E_CDM_FILE_TYPE_ASCII;
         else if( !strcasecmp(str.c_str(), "FortranBinary") ) m_out_file_type=CDM::E_CDM_FILE_TYPE_FBINARY;
+        else
+        {
+           printf("\tInvalid keyword is described for '%s'\n", label.c_str());
+           Exit(0);
+        }
+      }
+      ncnt++;
+      continue;
+    } else
+
+    // 座標データの出力形式の読込み(AVSおよびVTK形式)
+    if( !strcasecmp(str.c_str(),"OutputFileTypeCoord") ) {
+      label = "/ConvData/OutputFileTypeCoord";
+      if( !(tpCntl.getInspectedValue(label, str )) ) {
+        m_out_file_type_coord = CDM::E_CDM_FILE_TYPE_BINARY;
+      } else {
+        if     ( !strcasecmp(str.c_str(), "binary") ) m_out_file_type_coord=CDM::E_CDM_FILE_TYPE_BINARY;
+        else if( !strcasecmp(str.c_str(), "ascii") )  m_out_file_type_coord=CDM::E_CDM_FILE_TYPE_ASCII;
+        else
+        {
+           printf("\tInvalid keyword is described for '%s'\n", label.c_str());
+           Exit(0);
+        }
+        m_out_ftype_crd_on = true;
+      }
+      ncnt++;
+      continue;
+    } else
+
+    // 節点への補間オプション(AVSおよびVTK形式)
+    if( !strcasecmp(str.c_str(),"OutputInterpolation") ) {
+      label = "/ConvData/OutputInterpolation";
+      if( !(tpCntl.getInspectedValue(label, str )) ) {
+        m_bgrid_interp_flag = false;
+      } else {
+        if     ( !strcasecmp(str.c_str(), "true") ) m_bgrid_interp_flag = true;
+        else if( !strcasecmp(str.c_str(), "false") ) m_bgrid_interp_flag = false;
         else
         {
            printf("\tInvalid keyword is described for '%s'\n", label.c_str());
@@ -459,6 +499,25 @@ bool InputParam::InputParamCheck()
     }
   }
 
+  //座標データの出力形式のチェック (AVSおよびVTK形式)
+  //AVS,VTK以外で座標データの出力形式指示があった場合はメッセージを出力する
+  if( m_out_ftype_crd_on ) {
+    if( m_out_format != CDM::E_CDM_FMT_AVS &&
+        m_out_format != CDM::E_CDM_FMT_VTK ) {
+      printf("\tCan't use OutputFileTypeCoord. %s\n",Get_OutputFormat_string().c_str());
+    }
+  }
+
+  //節点への補間オプションのチェック (AVSおよびVTK形式)
+  //AVS,VTK以外で節点への補間オプションがONに指定された場合はOFFにし、メッセージを出力する
+  if( m_bgrid_interp_flag ) {
+    if( m_out_format != CDM::E_CDM_FMT_AVS &&
+        m_out_format != CDM::E_CDM_FMT_VTK ) {
+      m_bgrid_interp_flag = false;
+      printf("\tCan't use OutputInterpolation. %s\n",Get_OutputFormat_string().c_str());
+    }
+  }
+
   //出力配列形状のチェック
   //BOV以外での出力配列形状指示は無効とし、自動的に対応する配列形状で出力
   //なので、指定があった場合はメッセージを出力する
@@ -635,13 +694,29 @@ void InputParam::PrintParam(FILE* fp)
    }
 
    if( m_out_file_type == CDM::E_CDM_FILE_TYPE_DEFAULT ) {
-     fprintf(fp,"\tOutputForamtType     : \"undefine\"\n");
+     fprintf(fp,"\tOutputFileType       : \"undefine\"\n");
    } else if( m_out_file_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
-     fprintf(fp,"\tOutputForamtType     : \"ascii\"\n");
+     fprintf(fp,"\tOutputFileType       : \"ascii\"\n");
    } else if( m_out_file_type == CDM::E_CDM_FILE_TYPE_BINARY ) {
-     fprintf(fp,"\tOutputForamtType     : \"binary\"\n");
+     fprintf(fp,"\tOutputFileType       : \"binary\"\n");
    } else if( m_out_file_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
-     fprintf(fp,"\tOutputForamtType     : \"Fortran Binary\"\n");
+     fprintf(fp,"\tOutputFileType       : \"Fortran Binary\"\n");
+   }
+
+   if( m_out_ftype_crd_on ) {
+     if( m_out_file_type_coord == CDM::E_CDM_FILE_TYPE_DEFAULT ) {
+       fprintf(fp,"\tOutputFileTypeCoord  : \"undefine\"\n");
+     } else if( m_out_file_type_coord == CDM::E_CDM_FILE_TYPE_ASCII ) {
+       fprintf(fp,"\tOutputFileTypeCoord  : \"ascii\"\n");
+     } else if( m_out_file_type_coord == CDM::E_CDM_FILE_TYPE_BINARY ) {
+       fprintf(fp,"\tOutputFileTypeCoord  : \"binary\"\n");
+     }
+   }
+
+   if( m_bgrid_interp_flag ) {
+     fprintf(fp,"\tOutputInterpolation  : \"true\"\n");
+   } else {
+     fprintf(fp,"\tOutputInterpolation  : \"false\"\n");
    }
 
    fprintf(fp,"\tOutputdir            : \"%s\"\n",m_outdir_name.c_str());

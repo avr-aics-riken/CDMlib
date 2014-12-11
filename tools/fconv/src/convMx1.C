@@ -239,7 +239,7 @@ bool convMx1::exec()
         if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
         for(int n=0; n<3; n++) t_org[n]=t_org[n]-(double)outGc*l_dpit[n];
       }
-      if( thin_count > 1 || m_bgrid_interp_flag ) outGc=0;
+      if( thin_count > 1 || m_param->Get_Interp_flag() ) outGc=0;
 
       if( !(ConvOut->WriteHeaderRecord(l_step, dim, d_type, 
                                        l_imax_th+2*outGc, l_jmax_th+2*outGc, l_kmax_th+2*outGc,
@@ -469,10 +469,10 @@ convMx1::convMx1_out_nijk(FILE* fp,
   interp_Gc = outGc;
 
   //格子点出力のときガイドセルが0のとき1にセット
-  if( m_bgrid_interp_flag && outGc==0 ) interp_Gc=1;
+  if( m_param->Get_Interp_flag() && outGc==0 ) interp_Gc=1;
 
   //cell出力のとき、出力ガイドセルを0に設定
-  if( !m_bgrid_interp_flag ) interp_Gc=0;
+  if( !m_param->Get_Interp_flag() ) interp_Gc=0;
 
   //出力のヘッダー、フッターをセット
   int headS[3],tailS[3];
@@ -508,7 +508,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
   else if( nVari > 1 ) out_shape = CDM::E_CDM_NIJK;
 
   //セル中心出力のときガイドセル数を考慮してサイズ更新
-  if( !m_bgrid_interp_flag ) {
+  if( !m_param->Get_Interp_flag() ) {
     sz[0]=sz[0]+2*outGc;
     sz[1]=sz[1]+2*outGc;
   }
@@ -525,7 +525,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
   //補間用バッファ,格子点出力バッファのインスタンス
   cdm_Array* src_old = NULL;
   cdm_Array* outArray = NULL;
-  if( m_bgrid_interp_flag ) {
+  if( m_param->Get_Interp_flag() ) {
     src_old = cdm_Array::instanceArray
               ( d_type
               //, dfi->GetArrayShape()
@@ -663,7 +663,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
         } /// Loop itx
       } /// Loop ity
       //補間処理
-      if( m_bgrid_interp_flag ) {
+      if( m_param->Get_Interp_flag() ) {
         if( kp == kp_sta ) {
           for(int n=0; n<nVari; n++) {
             if( !InterPolate(src,src,outArray,n,n) ) return false;
@@ -689,7 +689,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
       if( !DtypeMinMax(outArray,min,max) ) return false;  
 
       //補間ありのとき、読込んだ層の配列ポインタをsrc_oldにコピー
-      if( m_bgrid_interp_flag ) {
+      if( m_param->Get_Interp_flag() ) {
         cdm_Array* tmp = src;
         src = src_old;
         src_old = tmp;
@@ -697,7 +697,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
     } /// Loop kp
   } /// Loop itz
 
-  if( m_bgrid_interp_flag ) {
+  if( m_param->Get_Interp_flag() ) {
     for(int n=0; n<nVari; n++) {
       if( !InterPolate(src_old,src_old,outArray,n,n) ) return false;
     }
@@ -715,7 +715,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
   }
   delete src;
 
-  if( m_bgrid_interp_flag ) {
+  if( m_param->Get_Interp_flag() ) {
     delete src_old;
     delete outArray;
   }
@@ -761,10 +761,10 @@ convMx1::convMx1_out_ijkn(FILE* fp,
   interp_Gc = outGc;
 
   //格子点出力のときガイドセルが0のとき1にセット
-  if( m_bgrid_interp_flag && outGc==0 ) interp_Gc=1;
+  if( m_param->Get_Interp_flag() && outGc==0 ) interp_Gc=1;
 
   //cell出力のとき、出力ガイドセルを0に設定
-  if( !m_bgrid_interp_flag ) interp_Gc=0;
+  if( !m_param->Get_Interp_flag() ) interp_Gc=0;
 
   //出力のヘッダー、フッターをセット
   int headS[3],tailS[3];
@@ -795,7 +795,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
   int nVari = dfi->GetNumVariables();
 
   //セル中心出力のときガイドセル数を考慮してサイズ更新
-  if( !m_bgrid_interp_flag ) {
+  if( !m_param->Get_Interp_flag() ) {
     sz[0]=sz[0]+2*outGc;
     sz[1]=sz[1]+2*outGc;
   }
@@ -811,7 +811,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
   //補間用バッファ（読込み配列形状でのDFIでインスタンス）
   cdm_Array* src_old = NULL;
   cdm_Array* outArray = NULL;
-  if( m_bgrid_interp_flag ) {
+  if( m_param->Get_Interp_flag() ) {
     src_old = cdm_Array::instanceArray
               ( d_type
               , dfi->GetArrayShape()
@@ -951,7 +951,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
           } /// Loop itx
         } /// Loop ity 
         //補間処理
-        if( m_bgrid_interp_flag ) {
+        if( m_param->Get_Interp_flag() ) {
           if( kp == kp_sta ) {
             if( !InterPolate(src,src,outArray,n,0) ) return false;
           } else {
@@ -972,7 +972,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
                                       dLen ) != true ) return false;
         }
         //補間ありのとき、読込んだ層の配列ポインタをsrc_oldにコピー
-        if( m_bgrid_interp_flag ) {
+        if( m_param->Get_Interp_flag() ) {
           cdm_Array* tmp = src;
           src = src_old;
           src_old = tmp;
@@ -980,7 +980,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
       } ///Loop kp
     } ///Loop itz
 
-    if( m_bgrid_interp_flag ) {
+    if( m_param->Get_Interp_flag() ) {
       for(int n=0; n<nVari; n++) {
         if( !InterPolate(src_old,src_old,outArray,n,0) ) return false;
       }
@@ -995,7 +995,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
   } ///Loop n
 
   delete src;
-  if( m_bgrid_interp_flag ) {
+  if( m_param->Get_Interp_flag() ) {
     delete src_old;
     delete outArray;
   }

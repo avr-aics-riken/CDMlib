@@ -33,8 +33,6 @@ CONV::CONV()
   m_lflag=0;
   m_lflagv=0;
  
-  m_bgrid_interp_flag = false;
- 
   m_in_dfi.clear();
   
   m_staging=0;
@@ -67,15 +65,6 @@ CONV* CONV::ConvInit(InputParam* param)
   //InputParamのポインタをセット
   conv->m_param = param;
 
-  //格子点補間フラグのセット
-  //if( param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D ||
-  if( param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
-      param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
-    conv->m_bgrid_interp_flag = true;
-  } else {
-    conv->m_bgrid_interp_flag = false;
-  }
- 
   return conv;
 }
 

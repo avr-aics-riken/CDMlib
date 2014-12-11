@@ -65,10 +65,11 @@ protected :
 
   vector<int>m_readRankList;         ///< 読込みランクリスト
 
-  bool m_bgrid_interp_flag;               ///< 節点への補間フラグ
-  CDM::E_CDM_FILE_TYPE  m_input_type;     ///< 入力形式(ascii,binary,FortarnBinary)
-  CDM::E_CDM_FILE_TYPE  m_output_type;    ///< 出力形式(ascii,binary,FortarnBinary)
-  CDM::E_CDM_OUTPUT_FNAME m_output_fname; ///< 出力ファイル命名規約(step_rank,rank_step)   
+  bool m_bgrid_interp_flag;                  ///< 節点への補間フラグ
+  CDM::E_CDM_FILE_TYPE  m_input_type;        ///< 入力形式(ascii,binary,FortarnBinary)
+  CDM::E_CDM_FILE_TYPE  m_output_type;       ///< 出力形式(ascii,binary,FortarnBinary)
+  CDM::E_CDM_FILE_TYPE  m_output_type_coord; ///< 座標データの出力形式(ascii,binary)
+  CDM::E_CDM_OUTPUT_FNAME m_output_fname;    ///< 出力ファイル命名規約(step_rank,rank_step)   
 
 public:
   /** コンストラクタ */
@@ -350,6 +351,13 @@ public:
   { m_RankID = rankID; };
 
   /**
+   * @brief 節点への補間フラグをセット
+   * @param [in] bgrid_interp_flag 節点への補間フラグ
+   */
+  void set_interp_flag(bool interp_flag)
+  {  m_bgrid_interp_flag = interp_flag; };
+
+  /**
    * @brief 入力形式(ascii,binary,FortranBinary)をセット
    * @param [in] input_type 出力形式
    */
@@ -362,6 +370,14 @@ public:
    */
   void set_output_type(CDM::E_CDM_FILE_TYPE output_type)
   {  m_output_type = output_type; };
+
+  /**
+   * @brief 座標データの出力形式(ascii,binary)をセット
+   * @details AVSおよびVTK形式で利用
+   * @param [in] output_type_coord 座標データの出力形式
+   */
+  void set_output_type_coord(CDM::E_CDM_FILE_TYPE output_type_coord)
+  {  m_output_type_coord = output_type_coord; };
 
   /**
    * @brief 出力ファイル命名規約(step_rank,rank_step)をセット

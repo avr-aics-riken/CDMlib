@@ -87,8 +87,6 @@ public:
   int m_numProc;           ///< 全ランク数
   std::string m_HostName;  ///< ホスト名
 
-  bool m_bgrid_interp_flag; ///< 節点への補間フラグ
- 
 private:
   
   //並列実行時のSTAGINGのON/OFF
