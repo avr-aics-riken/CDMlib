@@ -119,7 +119,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
   }
     
   //write block data
-  WriteNgrid(fp,ngrid);//if multi grid
+  //WriteNgrid(fp,ngrid);//if multi grid
   WriteBlockData(fp,id,jd,kd);
     
   for(int k=0;k<kd;k++){

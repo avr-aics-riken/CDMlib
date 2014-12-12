@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-12
+Comment out method WriteNgrid in plot3d format in FCONV
+FCONVのM対1データ変換において、plot3d形式でデータ出力する際、シングルグリッドで
+出力するため、グリッド数を記述するメソッドWriteNgridをコメントアウトした。
+
+------------------
 2014-12-11
 Bug fix in method write_ascii_header of class cdm_DFI_BOV and correct typo
 クラスcdm_DFI_BOVのメソッドwrite_ascii_header内の誤植

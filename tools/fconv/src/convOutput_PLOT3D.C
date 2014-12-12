@@ -183,7 +183,7 @@ bool convOutput_PLOT3D::WriteHeaderRecord(
   int ngrid=1;
 
   //ngrid の出力
-  WriteNgrid(fp,ngrid);
+  //WriteNgrid(fp,ngrid);
 
   //block data の出力
   
