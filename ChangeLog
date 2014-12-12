@@ -11,6 +11,14 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-13
+Bug fix of function data for FortranBinary in class convOutput_PLOT3D
+FCONVのM対1データ変換において、FortranBinary形式でplot3dデータの
+フィールドデータを出力する際、出力するデータのバイト数の書き込み位置
+(メソッドWriteDataMarkerの位置)を修正した。
+また、出力する変数が３に固定されていた部分があったので修正した。
+
+------------------
 2014-12-12
 Edit class convOutput_PLOT3D to output plot3d data for dual cells
 FCONVのM対1データ変換において、plot3d形式のデータを格子点補間せずに

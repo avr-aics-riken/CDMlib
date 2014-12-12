@@ -173,7 +173,7 @@ bool convMx1::exec()
     LOG_OUTV_ fprintf(m_fplog,"  COMBINE SPH START : %s\n", prefix.c_str());
     STD_OUTV_ printf("  COMBINE SPH START : %s\n", prefix.c_str());
     
-    //Scalar or Vector
+    //Number of Variables
     dim=m_StepRankList[i].dfi->GetNumVariables();
 
     const cdm_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcdmTimeSlice();
@@ -249,17 +249,22 @@ bool convMx1::exec()
       }
       //全体の大きさの計算とデータのヘッダ書き込み
       size_t dLen;
+      bool flag_Mark = false;
 
       //dLen = size_t(l_imax_th) * size_t(l_jmax_th) * size_t(l_kmax_th);
       dLen = size_t(l_imax_th+2*outGc) * size_t(l_jmax_th+2*outGc) * size_t(l_kmax_th+2*outGc);
-      if( dim == 3 ) dLen *= 3;
+      if( dim >1 ) dLen *= (size_t)dim;
       //if( m_param->Get_OutputDataType() == CDM::E_CDM_FLOAT32 ) {
       if( d_type == CDM::E_CDM_FLOAT32 ) {
          dummy = dLen * sizeof(float);
       } else {
          dummy = dLen * sizeof(double);
       }
-      if( !(ConvOut->WriteDataMarker(dummy, fp)) ) {
+      if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH ||
+          m_param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D) {
+        flag_Mark = true;
+      }
+      if( !(ConvOut->WriteDataMarker(dummy, fp, flag_Mark)) ) {
         printf("\twrite data header error\n");
         return false;
       }
@@ -362,7 +367,7 @@ bool convMx1::exec()
       }
 
       //データのフッタ書き込み
-      if( !(ConvOut->WriteDataMarker(dummy, fp)) ) {
+      if( !(ConvOut->WriteDataMarker(dummy, fp, flag_Mark)) ) {
         printf("\twrite data error\n");
         return false;
       }

@@ -263,15 +263,7 @@ void convOutput_PLOT3D::WriteFuncData(FILE* fp, cdm_Array* p3src)
 
   switch (m_InputCntl->Get_OutputFileType()) {
     case CDM::E_CDM_FILE_TYPE_FBINARY:
-      unsigned int dmy;
-      if( p3src->getDataType() == CDM::E_CDM_FLOAT32 ) {
-        dmy = sizeof(float)*dLen;
-      } else {
-        dmy = sizeof(double)*dLen;
-      }
-      WriteDataMarker(dmy,fp,true);
       p3src->writeBinary(fp);      
-      WriteDataMarker(dmy,fp,true);
       break;
     case CDM::E_CDM_FILE_TYPE_ASCII:
       if( p3src->getDataType() == CDM::E_CDM_FLOAT32) {
