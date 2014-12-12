@@ -75,9 +75,10 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
   id=(id-1)/thin_count;
   jd=(jd-1)/thin_count;
   kd=(kd-1)/thin_count;
-  id=id+1;
-  jd=jd+1;
-  kd=kd+1;
+  //id=id+1;
+  //jd=jd+1;
+  //kd=kd+1;
+  //格子点への補間は行わず、双対セルとして扱うため、+1は不要
   if(irest!=0) id=id+1;
   if(jrest!=0) jd=jd+1;
   if(krest!=0) kd=kd+1;

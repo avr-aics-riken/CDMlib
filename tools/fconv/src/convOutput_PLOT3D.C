@@ -49,9 +49,10 @@ void convOutput_PLOT3D::WriteGridData(std::string prefix,
   if( step != 0 ) return; 
 
   int id,jd,kd;
-  id=sz[0]+1;
-  jd=sz[1]+1;
-  kd=sz[2]+1;
+  id=sz[0]; //+1;
+  jd=sz[1]; //+1;
+  kd=sz[2]; //+1;
+  //格子点への補間は行わず、双対セルとして扱うため、+1は不要
   size_t maxsize = (size_t)id*(size_t)jd*(size_t)kd*3;
   size_t outsize = (size_t)id*(size_t)jd*(size_t)kd;
 
@@ -187,7 +188,9 @@ bool convOutput_PLOT3D::WriteHeaderRecord(
 
   //block data の出力
   
-  WriteFuncBlockData(fp,imax+1,jmax+1,kmax+1,dim);
+  WriteFuncBlockData(fp,imax,jmax,kmax,dim);
+  //WriteFuncBlockData(fp,imax+1,jmax+1,kmax+1,dim);
+  //格子点への補間は行わず、双対セルとして扱うため、+1は不要
 
   return true;
 

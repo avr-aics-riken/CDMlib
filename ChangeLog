@@ -12,6 +12,12 @@ REVISION HISTORY
 
 ------------------
 2014-12-12
+Edit class convOutput_PLOT3D to output plot3d data for dual cells
+FCONVのM対1データ変換において、plot3d形式のデータを格子点補間せずに
+双対セルとして扱って出力するため、格子ファイル出力時の格子数を修正した。
+
+------------------
+2014-12-12
 Comment out method WriteNgrid in plot3d format in FCONV
 FCONVのM対1データ変換において、plot3d形式でデータ出力する際、シングルグリッドで
 出力するため、グリッド数を記述するメソッドWriteNgridをコメントアウトした。
