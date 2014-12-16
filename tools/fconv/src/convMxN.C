@@ -163,8 +163,10 @@ void convMxN::VoxelInit()
     tail[i]=tmp_tail[i]/thin_count;
   }
 
-  //自ノードの計算領域に合わせて原点シフト(PLOT3D形式については、クラスcdm_DFI_PLOT3D内で実施)
-  if( m_param->Get_OutputFormat() != CDM::E_CDM_FMT_PLOT3D) {
+  //自ノードの計算領域に合わせて原点シフト
+  //(PLOT3D,VTK形式については、クラスcdm_DFI_PLOT3D、cdm_DFI_VTK内で実施)
+  if( m_param->Get_OutputFormat() != CDM::E_CDM_FMT_PLOT3D && 
+      m_param->Get_OutputFormat() != CDM::E_CDM_FMT_VTK ) {
     for(int i=0; i<3; i++) org[i]+=double(head[i])*pit[i];
   }
 

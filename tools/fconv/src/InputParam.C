@@ -538,7 +538,8 @@ bool InputParam::InputParamCheck()
   if( m_output_dfi_on ) {
     //DFI出力がSPH，BOV以外で指定された場合はエラー
     //if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV ) {
-    if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV && m_out_format != CDM::E_CDM_FMT_PLOT3D) {
+    //if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV && m_out_format != CDM::E_CDM_FMT_PLOT3D) {
+    if( m_out_format == CDM::E_CDM_FMT_AVS ) {
       printf("\tCan't output dfi OutputFormat. %s\n",Get_OutputFormat_string().c_str());
       ierr=false;
     }
@@ -566,10 +567,9 @@ bool InputParam::InputParamCheck()
 
   //出力ガイドセル数のチェック
   if( m_outputGuideCell > 0 ) {
-    //sph,bov以外は出力指定不可
-    if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV && m_out_format != CDM::E_CDM_FMT_PLOT3D ) {
-    //if( m_out_format != CDM::E_CDM_FMT_SPH && m_out_format != CDM::E_CDM_FMT_BOV ) {
-      printf("\tCan't output guide cell : %s\n",Get_OutputFormat_string().c_str());
+    //節点への補間オプションとガイドセル出力を両方指定は不可
+    if( m_bgrid_interp_flag ) {
+      printf("\tCan't use both OutputGuideCell and OutputInterpolation\n");
       ierr=false;
     }
     //間引きありとガイドセル出力を両方指定は不可

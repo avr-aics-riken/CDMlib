@@ -12,6 +12,13 @@ REVISION HISTORY
 
 ------------------
 2014-12-16
+Edit classes InputParam, convMxM and convMxN to output non-uniform cartesian
+ data in VTK format
+FCONVを用いてVTK形式の不等間隔格子のデータを出力できるように、
+クラスInputParam，convMxM，convMxNを編集した。
+
+------------------
+2014-12-16
 Edit class cdm_DFI_VTK to output non-uniform cartesian data
 VTK形式で不等間隔格子のデータが出力できるように、クラスcdm_DFI_VTKを編集した。
 主に、メソッドwrite_HeaderRecordを編集した。

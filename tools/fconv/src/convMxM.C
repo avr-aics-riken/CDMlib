@@ -242,12 +242,15 @@ bool convMxM::mxmsolv(std::string dfiname,
   if( (DFI_Process->RankList[RankID].HeadIndex[0]-1)%thin_count != 0 ) head[0]++;
   if( (DFI_Process->RankList[RankID].HeadIndex[1]-1)%thin_count != 0 ) head[1]++;
   if( (DFI_Process->RankList[RankID].HeadIndex[2]-1)%thin_count != 0 ) head[2]++;
-  //間引き後のオリジンを求める(PLOT3D形式については、クラスcdm_DFI_PLOT3D内で実施)
+  //間引き後のオリジンを求める
   double l_dorg[3];
   l_dorg[0]= DFI_Domain->GlobalOrigin[0];
   l_dorg[1]= DFI_Domain->GlobalOrigin[1];
   l_dorg[2]= DFI_Domain->GlobalOrigin[2];
-  if( m_param->Get_OutputFormat() != CDM::E_CDM_FMT_PLOT3D) {
+  //自ノードの計算領域に合わせて原点シフト
+  //(PLOT3D,VTK形式については、クラスcdm_DFI_PLOT3D、cdm_DFI_VTK内で実施)
+  if( m_param->Get_OutputFormat() != CDM::E_CDM_FMT_PLOT3D && 
+      m_param->Get_OutputFormat() != CDM::E_CDM_FMT_VTK ) {
     l_dorg[0] += head[0]*out_dpit[0];
     l_dorg[1] += head[1]*out_dpit[1];
     l_dorg[2] += head[2]*out_dpit[2];
