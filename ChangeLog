@@ -11,6 +11,14 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-16
+Edit class cdm_DFI_VTK to output non-uniform cartesian data
+VTK形式で不等間隔格子のデータが出力できるように、クラスcdm_DFI_VTKを編集した。
+主に、メソッドwrite_HeaderRecordを編集した。
+格子点への補間を行う場合と行わない場合の両方に対応し、補間を行わない
+場合はガイドセルも出力できるようにした。
+
+------------------
 2014-12-13
 Bug fix of function data for FortranBinary in class convOutput_PLOT3D
 FCONVのM対1データ変換において、FortranBinary形式でplot3dデータの

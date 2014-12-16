@@ -355,6 +355,8 @@ cdm_FileInfo::Write(FILE* fp,
     fprintf(fp, "FileFormat         = \"bov\"\n");
   } else if( FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
     fprintf(fp, "FileFormat         = \"plot3d\"\n");
+  }  else if( FileFormat == CDM::E_CDM_FMT_VTK ) {
+    fprintf(fp, "FileFormat         = \"vtk\"\n");
   }
 
 //FCONV 20140116.s
