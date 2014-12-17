@@ -232,53 +232,106 @@ void convMxN::VoxelInit()
     else if( DFI_FInfo->DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN )
     {
       //不等間隔格子の場合
-      double *coord_X = NULL;
-      double *coord_Y = NULL;
-      double *coord_Z = NULL;
+      if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT32 )
+      {
+        float *coord_X = NULL;
+        float *coord_Y = NULL;
+        float *coord_Z = NULL;
 
-      //全計算領域の座標をWriteInitに渡す
-      coord_X = new double[voxel_thin[0]+1]; //+1はセル数ではなく格子数のため。
-      coord_Y = new double[voxel_thin[1]+1];
-      coord_Z = new double[voxel_thin[2]+1];
+        //全計算領域の座標をWriteInitに渡す
+        coord_X = new float[voxel_thin[0]+1]; //+1はセル数ではなく格子数のため。
+        coord_Y = new float[voxel_thin[1]+1];
+        coord_Z = new float[voxel_thin[2]+1];
 
-      //配列(coord_X,coord_Y,coord_Z)に値をセット
-      //x
-      for(int ni=0; ni<voxel_thin[0]; ni++) {
-        coord_X[ni] = DFI_Domain->NodeX(ni*thin_count);
-      }
-      coord_X[voxel_thin[0]] = DFI_Domain->NodeX(DFI_Domain->GlobalVoxel[0]);
-      //y
-      for(int nj=0; nj<voxel_thin[1]; nj++) {
-        coord_Y[nj] = DFI_Domain->NodeY(nj*thin_count);
-      }
-      coord_Y[voxel_thin[1]] = DFI_Domain->NodeY(DFI_Domain->GlobalVoxel[1]);
-      //z
-      for(int nk=0; nk<voxel_thin[2]; nk++) {
-        coord_Z[nk] = DFI_Domain->NodeZ(nk*thin_count);
-      }
-      coord_Z[voxel_thin[2]] = DFI_Domain->NodeZ(DFI_Domain->GlobalVoxel[2]);
+        //配列(coord_X,coord_Y,coord_Z)に値をセット
+        //x
+        for(int ni=0; ni<voxel_thin[0]; ni++) {
+          coord_X[ni] = (float)(DFI_Domain->NodeX(ni*thin_count));
+        }
+        coord_X[voxel_thin[0]] = (float)(DFI_Domain->NodeX(DFI_Domain->GlobalVoxel[0]));
+        //y
+        for(int nj=0; nj<voxel_thin[1]; nj++) {
+          coord_Y[nj] = (float)(DFI_Domain->NodeY(nj*thin_count));
+        }
+        coord_Y[voxel_thin[1]] = (float)(DFI_Domain->NodeY(DFI_Domain->GlobalVoxel[1]));
+        //z
+        for(int nk=0; nk<voxel_thin[2]; nk++) {
+          coord_Z[nk] = (float)(DFI_Domain->NodeZ(nk*thin_count));
+        }
+        coord_Z[voxel_thin[2]] = (float)(DFI_Domain->NodeZ(DFI_Domain->GlobalVoxel[2]));
 
-      dfi=cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
-                                     outdfifname,
-                                     m_param->Get_OutputDir(),
-                                     DFI_FInfo->Prefix,
-                                     m_param->Get_OutputFormat(),
-                                     outGc,
-                                     d_type,
-                                     DFI_FInfo->NumVariables,
-                                     outprocfname,
-                                     voxel_thin,
-                                     coord_X,
-                                     coord_Y,
-                                     coord_Z,
-                                     DFI_Domain->GetCoordinateFile(),
-                                     DFI_Domain->GetCoordinateFileType(),
-                                     DFI_Domain->GetCoordinateFileEndian(),
-                                     m_Gdiv,
-                                     head,
-                                     tail,
-                                     m_HostName,
-                                     CDM::E_CDM_OFF);
+        dfi=cdm_DFI::WriteInit<float>(MPI_COMM_WORLD,
+                                      outdfifname,
+                                      m_param->Get_OutputDir(),
+                                      DFI_FInfo->Prefix,
+                                      m_param->Get_OutputFormat(),
+                                      outGc,
+                                      d_type,
+                                      DFI_FInfo->NumVariables,
+                                      outprocfname,
+                                      voxel_thin,
+                                      coord_X,
+                                      coord_Y,
+                                      coord_Z,
+                                      DFI_Domain->GetCoordinateFile(),
+                                      DFI_Domain->GetCoordinateFileType(),
+                                      DFI_Domain->GetCoordinateFileEndian(),
+                                      m_Gdiv,
+                                      head,
+                                      tail,
+                                      m_HostName,
+                                      CDM::E_CDM_OFF);
+      }
+      else if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT64 )
+      {
+        double *coord_X = NULL;
+        double *coord_Y = NULL;
+        double *coord_Z = NULL;
+
+        //全計算領域の座標をWriteInitに渡す
+        coord_X = new double[voxel_thin[0]+1]; //+1はセル数ではなく格子数のため。
+        coord_Y = new double[voxel_thin[1]+1];
+        coord_Z = new double[voxel_thin[2]+1];
+
+        //配列(coord_X,coord_Y,coord_Z)に値をセット
+        //x
+        for(int ni=0; ni<voxel_thin[0]; ni++) {
+          coord_X[ni] = (double)(DFI_Domain->NodeX(ni*thin_count));
+        }
+        coord_X[voxel_thin[0]] = (double)(DFI_Domain->NodeX(DFI_Domain->GlobalVoxel[0]));
+        //y
+        for(int nj=0; nj<voxel_thin[1]; nj++) {
+          coord_Y[nj] = (double)(DFI_Domain->NodeY(nj*thin_count));
+        }
+        coord_Y[voxel_thin[1]] = (double)(DFI_Domain->NodeY(DFI_Domain->GlobalVoxel[1]));
+        //z
+        for(int nk=0; nk<voxel_thin[2]; nk++) {
+          coord_Z[nk] = (double)(DFI_Domain->NodeZ(nk*thin_count));
+        }
+        coord_Z[voxel_thin[2]] = (double)(DFI_Domain->NodeZ(DFI_Domain->GlobalVoxel[2]));
+
+        dfi=cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
+                                       outdfifname,
+                                       m_param->Get_OutputDir(),
+                                       DFI_FInfo->Prefix,
+                                       m_param->Get_OutputFormat(),
+                                       outGc,
+                                       d_type,
+                                       DFI_FInfo->NumVariables,
+                                       outprocfname,
+                                       voxel_thin,
+                                       coord_X,
+                                       coord_Y,
+                                       coord_Z,
+                                       DFI_Domain->GetCoordinateFile(),
+                                       DFI_Domain->GetCoordinateFileType(),
+                                       DFI_Domain->GetCoordinateFileEndian(),
+                                       m_Gdiv,
+                                       head,
+                                       tail,
+                                       m_HostName,
+                                       CDM::E_CDM_OFF);
+      }
     }
     if( dfi == NULL ) {
       printf("\tFails to instance dfi\n");
