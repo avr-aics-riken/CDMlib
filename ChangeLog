@@ -12,6 +12,16 @@ REVISION HISTORY
 
 ------------------
 2014-12-18
+Edit classes InputParam, convMxM and convMxN to output non-uniform cartesian
+ data in AVS format
+FCONVを用いてAVS形式の不等間隔格子のデータを出力できるように、
+クラスInputParam，convMxM，convMxNを編集した。
+また、不等間隔格子の座標データのascii/binary指定はVTK形式では行えず
+(フィールドデータと座標データのデータタイプを別々に指定できない)、
+AVS形式のみ指定できるので、その点も修正した。
+
+------------------
+2014-12-18
 Edit class cdm_DFI_AVS to output non-uniform cartesian data
 AVS形式で不等間隔格子のデータが出力できるように、クラスcdm_DFI_AVSを編集した。
 格子点への補間を行う場合と行わない場合の両方に対応し、補間を行わない

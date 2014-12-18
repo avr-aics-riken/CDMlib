@@ -248,9 +248,9 @@ bool convMxM::mxmsolv(std::string dfiname,
   l_dorg[1]= DFI_Domain->GlobalOrigin[1];
   l_dorg[2]= DFI_Domain->GlobalOrigin[2];
   //自ノードの計算領域に合わせて原点シフト
-  //(PLOT3D,VTK形式については、クラスcdm_DFI_PLOT3D、cdm_DFI_VTK内で実施)
-  if( m_param->Get_OutputFormat() != CDM::E_CDM_FMT_PLOT3D && 
-      m_param->Get_OutputFormat() != CDM::E_CDM_FMT_VTK ) {
+  //(SPH,BOV形式のみ。他の形式については、各形式のクラス内で実施。)
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH || 
+      m_param->Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) {
     l_dorg[0] += head[0]*out_dpit[0];
     l_dorg[1] += head[1]*out_dpit[1];
     l_dorg[2] += head[2]*out_dpit[2];
@@ -488,9 +488,8 @@ bool convMxM::mxmsolv(std::string dfiname,
     out_dfi->set_interp_flag(m_param->Get_Interp_flag());
   }
 
-  //座標データの出力形式のセット(AVSおよびVTK形式)
-  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
-      m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
+  //座標データの出力形式のセット(AVS形式)
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS ) {
     out_dfi->set_output_type_coord(m_param->Get_OutputFileTypeCoord());
   }
 

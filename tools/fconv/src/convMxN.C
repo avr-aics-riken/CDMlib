@@ -164,9 +164,9 @@ void convMxN::VoxelInit()
   }
 
   //自ノードの計算領域に合わせて原点シフト
-  //(PLOT3D,VTK形式については、クラスcdm_DFI_PLOT3D、cdm_DFI_VTK内で実施)
-  if( m_param->Get_OutputFormat() != CDM::E_CDM_FMT_PLOT3D && 
-      m_param->Get_OutputFormat() != CDM::E_CDM_FMT_VTK ) {
+  //(SPH,BOV形式のみ。他の形式については、各形式のクラス内で実施。)
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH || 
+      m_param->Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) {
     for(int i=0; i<3; i++) org[i]+=double(head[i])*pit[i];
   }
 
@@ -350,9 +350,8 @@ void convMxN::VoxelInit()
       dfi->set_interp_flag(m_param->Get_Interp_flag());
     }
 
-    //座標データの出力形式のセット(AVSおよびVTK形式)
-    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
-        m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
+    //座標データの出力形式のセット(AVS形式)
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS ) {
       dfi->set_output_type_coord(m_param->Get_OutputFileTypeCoord());
     }
 

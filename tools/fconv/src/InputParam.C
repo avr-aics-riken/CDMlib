@@ -241,7 +241,7 @@ bool InputParam::Read(std::string input_file_name)
       continue;
     } else
 
-    // 座標データの出力形式の読込み(AVSおよびVTK形式)
+    // 座標データの出力形式の読込み(AVS形式)
     if( !strcasecmp(str.c_str(),"OutputFileTypeCoord") ) {
       label = "/ConvData/OutputFileTypeCoord";
       if( !(tpCntl.getInspectedValue(label, str )) ) {
@@ -482,11 +482,10 @@ bool InputParam::InputParamCheck()
     }
   }
 
-  //座標データの出力形式のチェック (AVSおよびVTK形式)
-  //AVS,VTK以外で座標データの出力形式指示があった場合はメッセージを出力する
+  //座標データの出力形式のチェック (AVS形式)
+  //AVS以外で座標データの出力形式指示があった場合はメッセージを出力する
   if( m_out_ftype_crd_on ) {
-    if( m_out_format != CDM::E_CDM_FMT_AVS &&
-        m_out_format != CDM::E_CDM_FMT_VTK ) {
+    if( m_out_format != CDM::E_CDM_FMT_AVS ) {
       printf("\tCan't use OutputFileTypeCoord. %s\n",Get_OutputFormat_string().c_str());
     }
   }
