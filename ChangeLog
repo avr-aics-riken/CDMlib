@@ -11,6 +11,15 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-18
+Edit class cdm_DFI_AVS to output non-uniform cartesian data
+AVS形式で不等間隔格子のデータが出力できるように、クラスcdm_DFI_AVSを編集した。
+格子点への補間を行う場合と行わない場合の両方に対応し、補間を行わない
+場合はガイドセルも出力できるようにした。
+また、cdm_DFI_VTK.h、cdm_DFI_AVS.hのコメント文にsphという文字が存在した
+ので、それぞれvtk、avsに訂正した。
+
+------------------
 2014-12-17
 Edit WriteInit in classes convMxM and convMxN
 クラスconvMxMとconvMxN内のWriteInitの部分において、不等間隔格子の

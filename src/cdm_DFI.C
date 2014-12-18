@@ -34,6 +34,7 @@ cdm_DFI::cdm_DFI()
 
  m_input_type = CDM::E_CDM_FILE_TYPE_DEFAULT;
  m_output_type = CDM::E_CDM_FILE_TYPE_DEFAULT;
+ m_output_type_coord = CDM::E_CDM_FILE_TYPE_BINARY;
  m_output_fname = CDM::E_CDM_FNAME_DEFAULT;
 
 }

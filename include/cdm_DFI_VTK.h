@@ -65,7 +65,7 @@ public:
 protected:
 
   /**
-   * @brief sphファイルのヘッダーレコード読込み
+   * @brief vtkファイルのヘッダーレコード読込み
    * @param[in]  fp          ファイルポインタ
    * @param[in]  matchEndian エンディアンチェックフラグ true:合致
    * @param[in]  step        ステップ番号
@@ -107,7 +107,7 @@ protected:
   { return CDM::E_CDM_SUCCESS; };
 
   /**
-   * @brief sphファイルのAverageデータレコードの読込み
+   * @brief vtkファイルのAverageデータレコードの読込み
    * @param[in]  fp          ファイルポインタ
    * @param[in]  matchEndian true:Endian一致
    * @param[in]  step        読込みstep番号

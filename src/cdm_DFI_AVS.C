@@ -43,7 +43,7 @@ cdm_DFI_AVS::write_HeaderRecord(FILE* fp,
 }
 
 // #################################################################
-// SPHデータレコードの出力
+// AVSデータレコードの出力
 CDM::E_CDM_ERRORCODE
 cdm_DFI_AVS::write_DataRecord(FILE* fp,
                               cdm_Array* val,
@@ -54,9 +54,11 @@ cdm_DFI_AVS::write_DataRecord(FILE* fp,
   CDM::E_CDM_DTYPE Dtype = (CDM::E_CDM_DTYPE)DFI_Finfo.DataType;
   int Real_size = get_cdm_Datasize(Dtype);
 
-  const int *size = val->getArraySizeInt();
-  size_t dLen = (size_t)(size[0] * size[1] * size[2]);
-  if( DFI_Finfo.NumVariables > 1 ) dLen *= 3;
+  const int* sz_without_gc = val->getArraySizeInt();
+  int sz[3];
+  for(int i=0; i<3; i++) sz[i] = sz_without_gc[i];
+  if( !m_bgrid_interp_flag ) for(int i=0; i<3; i++) sz[i] += (int)(2*gc);
+  size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*val->getNvari();
 
   if( val->writeBinary(fp) != dLen ) return CDM::E_CDM_ERROR_WRITE_FIELD_DATA_RECORD;
 
@@ -69,27 +71,21 @@ bool cdm_DFI_AVS::write_ascii_header(const unsigned step,
                                      const double time)
 {
 
-  int ndim,nspace;
+  //格子点の数をセット
   int dims[3];
-  double min_ext[3],max_ext[3];
-  double pit[3];
-
-  //ピッチを計算
-  for(int i=0; i<3; i++) {
-    pit[i]=(DFI_Domain->GlobalRegion[i]/DFI_Domain->GlobalVoxel[i]);
-  }
-
-  //座標値の最小値、最大値をセット
-  for(int i=0; i<3; i++) {
-    min_ext[i]=DFI_Domain->GlobalOrigin[i]-pit[i]*0.5;
-    max_ext[i]=min_ext[i]+((double)DFI_Process.RankList[m_RankID].VoxelSize[i])*pit[i];
+  for(int i=0; i<3; i++) dims[i] = DFI_Process.RankList[m_RankID].VoxelSize[i];
+  int gc = DFI_Finfo.GuideCell;
+  if( m_bgrid_interp_flag ) {
+    for(int i=0; i<3; i++) dims[i] += 1;
+  } else {
+    for(int i=0; i<3; i++) dims[i] += 2*gc;
   }
 
   //座標値データファイルの出力
-  if( !write_avs_cord(min_ext,max_ext) ) return false;
+  if( !write_avs_cord(dims,gc) ) return false;
 
   //ヘッダーデータファイルの出力
-  if( !write_avs_header() ) return false; 
+  if( !write_avs_header(dims) ) return false; 
 
   return true;
 
@@ -97,8 +93,8 @@ bool cdm_DFI_AVS::write_ascii_header(const unsigned step,
 
 // #################################################################
 // 座標値データファイルの出力
-bool cdm_DFI_AVS::write_avs_cord(double min_ext[3],
-                                 double max_ext[3])
+bool cdm_DFI_AVS::write_avs_cord(int dims[3],
+                                 int gc)
 {
 
   FILE* fp=NULL;
@@ -124,16 +120,108 @@ bool cdm_DFI_AVS::write_avs_cord(double min_ext[3],
     return false;
   }
 
-  //座標値データ（min,max)の出力
-  fprintf(fp,"#### X #####\n");
-  fprintf(fp,"%.6f\n",min_ext[0]);
-  fprintf(fp,"%.6f\n",max_ext[0]);
-  fprintf(fp,"#### Y #####\n");
-  fprintf(fp,"%.6f\n",min_ext[1]);
-  fprintf(fp,"%.6f\n",max_ext[1]);
-  fprintf(fp,"#### Z #####\n");
-  fprintf(fp,"%.6f\n",min_ext[2]);
-  fprintf(fp,"%.6f\n",max_ext[2]);
+  int head[3],tail[3];
+  for(int i=0; i<3; i++) {
+    head[i] = DFI_Process.RankList[m_RankID].HeadIndex[i];
+    tail[i] = DFI_Process.RankList[m_RankID].TailIndex[i];
+  }
+
+  if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
+
+    double min_ext[3],max_ext[3];
+    if( m_bgrid_interp_flag ) {
+      min_ext[0] = DFI_Domain->NodeX(head[0]-1);
+      min_ext[1] = DFI_Domain->NodeY(head[1]-1);
+      min_ext[2] = DFI_Domain->NodeZ(head[2]-1);
+      max_ext[0] = DFI_Domain->NodeX(tail[0]);
+      max_ext[1] = DFI_Domain->NodeY(tail[1]);
+      max_ext[2] = DFI_Domain->NodeZ(tail[2]);
+    } else {
+      min_ext[0] = DFI_Domain->CellX(head[0]-1-gc);
+      min_ext[1] = DFI_Domain->CellY(head[1]-1-gc);
+      min_ext[2] = DFI_Domain->CellZ(head[2]-1-gc);
+      max_ext[0] = DFI_Domain->CellX(tail[0]-1+gc);
+      max_ext[1] = DFI_Domain->CellY(tail[1]-1+gc);
+      max_ext[2] = DFI_Domain->CellZ(tail[2]-1+gc);
+    }
+    //座標値データ（min,max)の出力
+    fprintf(fp,"#### X #####\n");
+    fprintf(fp,"%.6f\n",min_ext[0]);
+    fprintf(fp,"%.6f\n",max_ext[0]);
+    fprintf(fp,"#### Y #####\n");
+    fprintf(fp,"%.6f\n",min_ext[1]);
+    fprintf(fp,"%.6f\n",max_ext[1]);
+    fprintf(fp,"#### Z #####\n");
+    fprintf(fp,"%.6f\n",min_ext[2]);
+    fprintf(fp,"%.6f\n",max_ext[2]);
+
+  } else if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
+
+    //ascii
+    if( m_output_type_coord == CDM::E_CDM_FILE_TYPE_ASCII ) {
+
+      if( m_bgrid_interp_flag ) {
+        //格子点補間する場合(ガイドセル出力はなし)
+        fprintf(fp,"#### X #####\n");
+        for (int i=0; i<dims[0]; i++ ) {
+          fprintf( fp, "%.6f\n", DFI_Domain->NodeX(i+head[0]-1) );
+        }
+        fprintf(fp,"#### Y #####\n");
+        for (int j=0; j<dims[1]; j++ ) {
+          fprintf( fp, "%.6f\n", DFI_Domain->NodeY(j+head[1]-1) );
+        }
+        fprintf(fp,"#### Z #####\n");
+        for (int k=0; k<dims[2]; k++ ) {
+          fprintf( fp, "%.6f\n", DFI_Domain->NodeZ(k+head[2]-1) );
+        }
+      } else {
+        fprintf(fp,"#### X #####\n");
+        for (int i=0; i<dims[0]; i++ ) {
+          fprintf( fp, "%.6f\n", DFI_Domain->CellX(i+head[0]-1-gc) );
+        }
+        fprintf(fp,"#### Y #####\n");
+        for (int j=0; j<dims[1]; j++ ) {
+          fprintf( fp, "%.6f\n", DFI_Domain->CellY(j+head[1]-1-gc) );
+        }
+        fprintf(fp,"#### Z #####\n");
+        for (int k=0; k<dims[2]; k++ ) {
+          fprintf( fp, "%.6f\n", DFI_Domain->CellZ(k+head[2]-1-gc) );
+        }
+      }
+
+    //binary
+    } else {
+
+      //AVS形式の座標データはfloat型のみサポート
+      float *coord_X = NULL;
+      float *coord_Y = NULL;
+      float *coord_Z = NULL;
+      coord_X = new float[dims[0]];
+      coord_Y = new float[dims[1]];
+      coord_Z = new float[dims[2]];
+
+      if( m_bgrid_interp_flag ) {
+        //格子点補間する場合(ガイドセル出力はなし)
+        for(int i=0; i<dims[0]; i++) coord_X[i] = (float)(DFI_Domain->NodeX(i+head[0]-1));
+        for(int j=0; j<dims[1]; j++) coord_Y[j] = (float)(DFI_Domain->NodeY(j+head[1]-1));
+        for(int k=0; k<dims[2]; k++) coord_Z[k] = (float)(DFI_Domain->NodeZ(k+head[2]-1));
+      } else {
+        for(int i=0; i<dims[0]; i++) coord_X[i] = (float)(DFI_Domain->CellX(i+head[0]-1-gc));
+        for(int j=0; j<dims[1]; j++) coord_Y[j] = (float)(DFI_Domain->CellY(j+head[1]-1-gc));
+        for(int k=0; k<dims[2]; k++) coord_Z[k] = (float)(DFI_Domain->CellZ(k+head[2]-1-gc));
+      }
+
+      fwrite(coord_X, sizeof(float), dims[0], fp);
+      fwrite(coord_Y, sizeof(float), dims[1], fp);
+      fwrite(coord_Z, sizeof(float), dims[2], fp);
+
+      delete [] coord_X;
+      delete [] coord_Y;
+      delete [] coord_Z;
+
+    }
+
+  }
 
   //座標値データファイルクローズ
   fclose(fp);
@@ -144,7 +232,7 @@ bool cdm_DFI_AVS::write_avs_cord(double min_ext[3],
 
 // #################################################################
 // ヘッダーデータファイルの出力
-bool cdm_DFI_AVS::write_avs_header()
+bool cdm_DFI_AVS::write_avs_header(int dims[3])
 {
   FILE* fp=NULL;
   std::string dType;
@@ -200,9 +288,9 @@ bool cdm_DFI_AVS::write_avs_header()
   fprintf(fp,"ndim=%d\n",ndim);
 
   //計算空間サイズを出力
-  fprintf(fp,"dim1=%d\n",DFI_Process.RankList[m_RankID].VoxelSize[0]+1);
-  fprintf(fp,"dim2=%d\n",DFI_Process.RankList[m_RankID].VoxelSize[1]+1);
-  fprintf(fp,"dim3=%d\n",DFI_Process.RankList[m_RankID].VoxelSize[2]+1);
+  fprintf(fp,"dim1=%d\n",dims[0]);
+  fprintf(fp,"dim2=%d\n",dims[1]);
+  fprintf(fp,"dim3=%d\n",dims[2]);
 
   //物理空間の次元数を出力
   fprintf(fp,"nspace=%d\n",nspace);
@@ -214,7 +302,11 @@ bool cdm_DFI_AVS::write_avs_header()
   fprintf(fp,"data=%s\n",dType.c_str());
 
   //座標定義情報の出力
-  fprintf(fp,"field=uniform\n");
+  if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
+    fprintf(fp,"field=uniform\n");
+  } else if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
+    fprintf( fp, "field=rectilinear\n" );
+  }
 
   //labelの出力
   for(int i=0; i<DFI_Finfo.NumVariables; i++) {
@@ -234,14 +326,16 @@ bool cdm_DFI_AVS::write_avs_header()
     for(int j=1; j<=DFI_Finfo.NumVariables; j++) {
       int skip;
       if( dType == "float" ) {
-        skip=96+(j-1)*4;
+        skip=(j-1)*4;
+        //skip=96+(j-1)*4;
       } else {
-        skip=140+(j-1)*8;
+        skip=(j-1)*8;
+        //skip=140+(j-1)*8;
       }
       out_fname=Generate_FileName(DFI_Finfo.Prefix,
                                   m_RankID,
                                   DFI_TimeSlice.SliceList[i].step,
-                                  "sph",
+                                  "dat",
                                   m_output_fname,
                                   mio,
                                   DFI_Finfo.TimeSliceDirFlag);
@@ -253,9 +347,22 @@ bool cdm_DFI_AVS::write_avs_header()
     //coord data file name 出力
     tmp = Generate_FileName("cord",m_RankID,-1,"cod",m_output_fname,mio,
                             DFI_Finfo.TimeSliceDirFlag);
-    fprintf(fp,"coord 1 file=%s filetype=ascii skip=1\n",tmp.c_str());
-    fprintf(fp,"coord 2 file=%s filetype=ascii skip=4\n",tmp.c_str());
-    fprintf(fp,"coord 3 file=%s filetype=ascii skip=7\n",tmp.c_str());
+    if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
+      fprintf(fp,"coord 1 file=%s filetype=ascii skip=1\n",tmp.c_str());
+      fprintf(fp,"coord 2 file=%s filetype=ascii skip=4\n",tmp.c_str());
+      fprintf(fp,"coord 3 file=%s filetype=ascii skip=7\n",tmp.c_str());
+    } else if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
+      if( m_output_type_coord == CDM::E_CDM_FILE_TYPE_ASCII ) {
+        fprintf(fp,"coord 1 file=%s filetype=ascii skip=%d\n",tmp.c_str(),1);
+        fprintf(fp,"coord 2 file=%s filetype=ascii skip=%d\n",tmp.c_str(),dims[0]+2);
+        fprintf(fp,"coord 3 file=%s filetype=ascii skip=%d\n",tmp.c_str(),dims[0]+dims[1]+3);
+      } else {
+        //AVS形式の座標データはfloat型(4バイト)のみサポート
+        fprintf(fp,"coord 1 file=%s filetype=binary skip=%d\n",tmp.c_str(),0);
+        fprintf(fp,"coord 2 file=%s filetype=binary skip=%d\n",tmp.c_str(),4*dims[0]);
+        fprintf(fp,"coord 3 file=%s filetype=binary skip=%d\n",tmp.c_str(),4*(dims[0]+dims[1]));
+      }
+    }
     fprintf(fp,"EOT\n");
     
   }
