@@ -11,6 +11,15 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-19
+Correct a misspelled word in classes CONV and convMx1
+クラスCONVとconvMx1において、
+DFI_Domian >> DFI_Domain
+の訂正を行った。
+スペルミスの箇所は対応するところすべてで同じミスをしていたので、
+訂正前でもFCONV上の動作に問題はなかった。
+
+------------------
 2014-12-18
 Edit classes InputParam, convMxM and convMxN to output non-uniform cartesian
  data in AVS format

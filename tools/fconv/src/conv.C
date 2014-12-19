@@ -155,11 +155,11 @@ bool CONV::CheckDFIdata()
       }
     }
     if( m_param->Get_CropIndexEnd_on() ) {
-      const cdm_Domain* DFI_Domian = m_in_dfi[i]->GetcdmDomain();
+      const cdm_Domain* DFI_Domain = m_in_dfi[i]->GetcdmDomain();
       end = m_param->Get_CropIndexEnd();
       for(int j=0; j<3; j++) {
-        if( end[j]>DFI_Domian->GlobalVoxel[j] ) {
-          end[j]=DFI_Domian->GlobalVoxel[j];
+        if( end[j]>DFI_Domain->GlobalVoxel[j] ) {
+          end[j]=DFI_Domain->GlobalVoxel[j];
           upend=false;
         }
       }

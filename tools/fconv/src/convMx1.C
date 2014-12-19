@@ -108,16 +108,16 @@ bool convMx1::exec()
   //dfi*stepのループ 
   for (int i=0;i<m_StepRankList.size();i++) {
 
-    const cdm_Domain* DFI_Domian = m_StepRankList[i].dfi->GetcdmDomain();
+    const cdm_Domain* DFI_Domain = m_StepRankList[i].dfi->GetcdmDomain();
     cdm_Process* DFI_Process = (cdm_Process *)m_StepRankList[i].dfi->GetcdmProcess();
     //全体サイズのキープ
-    l_imax= DFI_Domian->GlobalVoxel[0];
-    l_jmax= DFI_Domian->GlobalVoxel[1];
-    l_kmax= DFI_Domian->GlobalVoxel[2];
+    l_imax= DFI_Domain->GlobalVoxel[0];
+    l_jmax= DFI_Domain->GlobalVoxel[1];
+    l_kmax= DFI_Domain->GlobalVoxel[2];
 
     //オリジナルのピッチを計算
     double o_pit[3];
-    for(int j=0; j<3; j++) o_pit[j]=DFI_Domian->GlobalRegion[j]/DFI_Domian->GlobalVoxel[j];
+    for(int j=0; j<3; j++) o_pit[j]=DFI_Domain->GlobalRegion[j]/DFI_Domain->GlobalVoxel[j];
 
     //入力領域指示を考慮
     if( !m_param->Get_CropIndexStart_on() ) {
@@ -152,9 +152,9 @@ bool convMx1::exec()
     l_dpit[0]=region[0]/(double)l_imax_th;
     l_dpit[1]=region[1]/(double)l_jmax_th;
     l_dpit[2]=region[2]/(double)l_kmax_th;
-    l_dorg[0]=DFI_Domian->GlobalOrigin[0]+0.5*l_dpit[0];
-    l_dorg[1]=DFI_Domian->GlobalOrigin[1]+0.5*l_dpit[1];
-    l_dorg[2]=DFI_Domian->GlobalOrigin[2]+0.5*l_dpit[2];
+    l_dorg[0]=DFI_Domain->GlobalOrigin[0]+0.5*l_dpit[0];
+    l_dorg[1]=DFI_Domain->GlobalOrigin[1]+0.5*l_dpit[1];
+    l_dorg[2]=DFI_Domain->GlobalOrigin[2]+0.5*l_dpit[2];
 
     //GRID データ 出力
     const cdm_FileInfo* DFI_FInfo = m_StepRankList[i].dfi->GetcdmFileInfo();
@@ -178,11 +178,11 @@ bool convMx1::exec()
 
     const cdm_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcdmTimeSlice();
 
-    div[0]=DFI_Domian->GlobalDivision[0];
-    div[1]=DFI_Domian->GlobalDivision[1];
-    div[2]=DFI_Domian->GlobalDivision[2];
+    div[0]=DFI_Domain->GlobalDivision[0];
+    div[1]=DFI_Domain->GlobalDivision[1];
+    div[2]=DFI_Domain->GlobalDivision[2];
     //mapHeadX,Y,Zの生成
-    DFI_Process->CreateRankList(DFI_Domian,
+    DFI_Process->CreateRankList(DFI_Domain,
                                 mapHeadX,
                                 mapHeadY,
                                 mapHeadZ);
@@ -284,9 +284,9 @@ bool convMx1::exec()
       }
       // メモリチェック
       LOG_OUTV_ fprintf(m_fplog,"\tNode %4d - Node %4d\n", 0,
-                        DFI_Domian->GlobalVoxel[2] -1);
+                        DFI_Domain->GlobalVoxel[2] -1);
       STD_OUTV_ printf("\tNode %4d - Node %4d\n", 0,
-                       DFI_Domian->GlobalVoxel[2] -1);
+                       DFI_Domain->GlobalVoxel[2] -1);
       double mc1 = (double)asize*(double)dim;
       double mc2 = (double)vsize*(double)dim;
       if(mc1>(double)INT_MAX){// 整数値あふれ出しチェック //参考 894*894*894*3=2143550952 INT_MAX 2147483647
@@ -454,8 +454,8 @@ convMx1::convMx1_out_nijk(FILE* fp,
                            double* min, double* max)
 {
 
-  //cdm_Domain* DFI_Domian = (cdm_Domain *)m_in_dfi[0]->GetcdmDomain();
-  cdm_Domain* DFI_Domian = (cdm_Domain *)dfi->GetcdmDomain();
+  //cdm_Domain* DFI_Domain = (cdm_Domain *)m_in_dfi[0]->GetcdmDomain();
+  cdm_Domain* DFI_Domain = (cdm_Domain *)dfi->GetcdmDomain();
 
   int thin_count = m_param->Get_ThinOut();
 
@@ -494,9 +494,9 @@ convMx1::convMx1_out_nijk(FILE* fp,
     IndexStart[2]=1-outGc;
   }
   if( !m_param->Get_CropIndexEnd_on() ) {
-    IndexEnd[0]=DFI_Domian->GlobalVoxel[0]+outGc;
-    IndexEnd[1]=DFI_Domian->GlobalVoxel[1]+outGc;
-    IndexEnd[2]=DFI_Domian->GlobalVoxel[2]+outGc;
+    IndexEnd[0]=DFI_Domain->GlobalVoxel[0]+outGc;
+    IndexEnd[1]=DFI_Domain->GlobalVoxel[1]+outGc;
+    IndexEnd[2]=DFI_Domain->GlobalVoxel[2]+outGc;
   }
   
   headS[0]=IndexStart[0]-1;
@@ -746,8 +746,8 @@ convMx1::convMx1_out_ijkn(FILE* fp,
                            double* min, double* max)
 {
 
-  //cdm_Domain* DFI_Domian = (cdm_Domain *)m_in_dfi[0]->GetcdmDomain();
-  cdm_Domain* DFI_Domian = (cdm_Domain *)dfi->GetcdmDomain();
+  //cdm_Domain* DFI_Domain = (cdm_Domain *)m_in_dfi[0]->GetcdmDomain();
+  cdm_Domain* DFI_Domain = (cdm_Domain *)dfi->GetcdmDomain();
 
   int thin_count = m_param->Get_ThinOut();
 
@@ -786,9 +786,9 @@ convMx1::convMx1_out_ijkn(FILE* fp,
     IndexStart[2]=1-outGc;
   }
   if( !m_param->Get_CropIndexEnd_on() ) {
-    IndexEnd[0]=DFI_Domian->GlobalVoxel[0]+outGc;
-    IndexEnd[1]=DFI_Domian->GlobalVoxel[1]+outGc;
-    IndexEnd[2]=DFI_Domian->GlobalVoxel[2]+outGc;
+    IndexEnd[0]=DFI_Domain->GlobalVoxel[0]+outGc;
+    IndexEnd[1]=DFI_Domain->GlobalVoxel[1]+outGc;
+    IndexEnd[2]=DFI_Domain->GlobalVoxel[2]+outGc;
   }
 
   headS[0]=IndexStart[0]-1;
