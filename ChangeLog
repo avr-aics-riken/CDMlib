@@ -12,7 +12,14 @@ REVISION HISTORY
 
 ------------------
 2014-12-22
-Edit class convMx1 and add methods for outputting non-uniform cartesian data in classes convOutput_PLOT3D, convOutput_VTK and convOutput_AVS
+Edit parameter OutPutDFI in input file of FCONV
+FCONVで出力の際、BOV,SPH,PLOT3Dの形式でdfiファイルを出力できるように、
+FCONVの入力ファイルパラメータOutPutDFIについて編集した。
+
+------------------
+2014-12-22
+Edit class convMx1 and add methods for outputting non-uniform cartesian data 
+in classes convOutput_PLOT3D, convOutput_VTK and convOutput_AVS
 FCONVのMx1変換において、不等間隔格子の座標データをPLOT3D、VTK、AVS形式で
 出力できるようにクラスconvMx1を編集した。
 不等間隔格子の座標データの情報は、メソッドmakeGridInfoで生成するようにした。
