@@ -71,6 +71,31 @@ void convOutput_PLOT3D::WriteGridData(std::string prefix,
 }
 
 // #################################################################
+// grid 出力 (不等間隔格子対応版)
+void convOutput_PLOT3D::WriteGridData(std::string prefix,
+                                      int step,
+                                      int myRank,
+                                      int dType,
+                                      int guide,
+                                      cdm_Domain* out_domain,
+                                      cdm_Process* out_process)
+{
+
+  //step 0 以外は出力しない
+  if( step != 0 ) return; 
+
+  int outDtype = m_InputCntl->Get_OutputDataType();
+  if( outDtype == CDM::E_CDM_DTYPE_UNKNOWN ) outDtype = dType;
+
+  if( outDtype == CDM::E_CDM_FLOAT32 ) {
+    OutputPlot3D_xyz<float>(prefix, step, myRank, guide, out_domain, out_process);
+  }else if( outDtype == CDM::E_CDM_FLOAT64 ) {
+    OutputPlot3D_xyz<double>(prefix, step, myRank, guide, out_domain, out_process);
+  }
+
+}
+
+// #################################################################
 // グリッド数の 出力
 void convOutput_PLOT3D::WriteNgrid(FILE* fp, int ngrid)
 {

@@ -1137,6 +1137,171 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
   return true;
 }
 
+//#################################################################
+// 格子データ出力用の情報作成メソッド(メソッドmakeProcInfoを参考に作成)
+// Mx1変換でのみ利用するため、makeProcInfoでのnumProcは1として実装
+bool CONV::makeGridInfo(cdm_DFI* dfi, 
+                        cdm_Domain* &out_domain,
+                        cdm_Process* &out_process,
+                        int gc)
+{
+  //間引き数の取得
+  int thin_count = m_param->Get_ThinOut();
+
+  //Domain 情報の生成
+  cdm_Domain* dfi_domain = (cdm_Domain *)dfi->GetcdmDomain();
+  double Gorigin[3];
+  double Gregion[3];
+  int Gvoxel[3];
+  int Gdiv[3];
+  int IndexStart[3];
+  int IndexEnd[3];
+  for(int i=0; i<3; i++) {
+    Gorigin[i] = dfi_domain->GlobalOrigin[i];
+    Gregion[i] = dfi_domain->GlobalRegion[i];
+    Gvoxel[i]  = dfi_domain->GlobalVoxel[i];
+    Gdiv[i]    = dfi_domain->GlobalDivision[i];
+    IndexStart[i]=1;
+    IndexEnd[i]=Gvoxel[i];
+  }
+
+  //入力領域指示ありのときボクセルサイズを更新
+  if( m_param->Get_CropIndexStart_on() ) {
+    const int* Start=m_param->Get_CropIndexStart();
+    for(int i=0; i<3; i++) IndexStart[i]=Start[i];
+    Gvoxel[0]=Gvoxel[0]-IndexStart[0]+1;
+    Gvoxel[1]=Gvoxel[1]-IndexStart[1]+1;
+    Gvoxel[2]=Gvoxel[2]-IndexStart[2]+1;
+  }
+  if( m_param->Get_CropIndexEnd_on() ) {
+    const int* End=m_param->Get_CropIndexEnd();
+    for(int i=0; i<3; i++) IndexEnd[i]=End[i];
+    Gvoxel[0]=Gvoxel[0]-(dfi_domain->GlobalVoxel[0]-IndexEnd[0]);
+    Gvoxel[1]=Gvoxel[1]-(dfi_domain->GlobalVoxel[1]-IndexEnd[1]);
+    Gvoxel[2]=Gvoxel[2]-(dfi_domain->GlobalVoxel[2]-IndexEnd[2]);
+  }
+
+  //Gregionの更新
+  for(int i=0; i<3; i++) {
+    Gregion[i] = dfi_domain->NodeX(IndexEnd[i]) - dfi_domain->NodeX(IndexStart[i]-1);
+  }
+
+  //間引きありのときボクセルサイズを更新
+  if( thin_count > 1 ) {
+    for(int i=0; i<3; i++) {
+      if( Gvoxel[i]%thin_count != 0 ) Gvoxel[i]=Gvoxel[i]/thin_count+1;
+      else                            Gvoxel[i]=Gvoxel[i]/thin_count;
+    }
+  }
+  //GlobalDivisionを１にする
+  for(int i=0; i<3; i++) Gdiv[i]=1;
+
+  //入力領域指示・間引きを考慮したpit
+  double pit[3];
+  for(int i=0; i<3; i++) {
+    pit[i] = Gregion[i]/(double)Gvoxel[i];
+  }
+
+  //out_domainの生成 
+  if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_CARTESIAN )
+  {
+    //等間隔格子の場合
+    out_domain = new cdm_Domain(Gorigin,pit,Gvoxel,Gdiv);
+  }
+  else if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN )
+  {
+    //不等間隔格子の場合
+
+    if( dfi_domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT32 )
+    {
+      float *coord_X = NULL;
+      float *coord_Y = NULL;
+      float *coord_Z = NULL;
+
+      coord_X = new float[Gvoxel[0]+1]; //+1はセル数ではなく格子数のため。
+      coord_Y = new float[Gvoxel[1]+1];
+      coord_Z = new float[Gvoxel[2]+1];
+
+      //配列(coord_X,coord_Y,coord_Z)に値をセット
+      //x
+      for(int ni=0; ni<Gvoxel[0]; ni++) {
+        coord_X[ni] = (float)(dfi_domain->NodeX(ni*thin_count));
+      }
+      coord_X[Gvoxel[0]] = (float)(dfi_domain->NodeX(dfi_domain->GlobalVoxel[0]));
+      //y
+      for(int nj=0; nj<Gvoxel[1]; nj++) {
+        coord_Y[nj] = (float)(dfi_domain->NodeY(nj*thin_count));
+      }
+      coord_Y[Gvoxel[1]] = (float)(dfi_domain->NodeY(dfi_domain->GlobalVoxel[1]));
+      //z
+      for(int nk=0; nk<Gvoxel[2]; nk++) {
+        coord_Z[nk] = (float)(dfi_domain->NodeZ(nk*thin_count));
+      }
+      coord_Z[Gvoxel[2]] = (float)(dfi_domain->NodeZ(dfi_domain->GlobalVoxel[2]));
+
+      out_domain = new cdm_NonUniformDomain<float>(coord_X,
+                                                   coord_Y,
+                                                   coord_Z,
+                                                   dfi_domain->GetCoordinateFile(),
+                                                   dfi_domain->GetCoordinateFileType(),
+                                                   dfi_domain->GetCoordinateFileEndian(),
+                                                   Gvoxel,
+                                                   Gdiv,
+                                                   gc);
+    }
+    else if( dfi_domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT64 )
+    {
+      double *coord_X = NULL;
+      double *coord_Y = NULL;
+      double *coord_Z = NULL;
+
+      coord_X = new double[Gvoxel[0]+1]; //+1はセル数ではなく格子数のため。
+      coord_Y = new double[Gvoxel[1]+1];
+      coord_Z = new double[Gvoxel[2]+1];
+
+      //配列(coord_X,coord_Y,coord_Z)に値をセット
+      //x
+      for(int ni=0; ni<Gvoxel[0]; ni++) {
+        coord_X[ni] = (double)(dfi_domain->NodeX(ni*thin_count));
+      }
+      coord_X[Gvoxel[0]] = (double)(dfi_domain->NodeX(dfi_domain->GlobalVoxel[0]));
+      //y
+      for(int nj=0; nj<Gvoxel[1]; nj++) {
+        coord_Y[nj] = (double)(dfi_domain->NodeY(nj*thin_count));
+      }
+      coord_Y[Gvoxel[1]] = (double)(dfi_domain->NodeY(dfi_domain->GlobalVoxel[1]));
+      //z
+      for(int nk=0; nk<Gvoxel[2]; nk++) {
+        coord_Z[nk] = (double)(dfi_domain->NodeZ(nk*thin_count));
+      }
+      coord_Z[Gvoxel[2]] = (double)(dfi_domain->NodeZ(dfi_domain->GlobalVoxel[2]));
+
+      out_domain = new cdm_NonUniformDomain<double>(coord_X,
+                                                    coord_Y,
+                                                    coord_Z,
+                                                    dfi_domain->GetCoordinateFile(),
+                                                    dfi_domain->GetCoordinateFileType(),
+                                                    dfi_domain->GetCoordinateFileEndian(),
+                                                    Gvoxel,
+                                                    Gdiv,
+                                                    gc);
+    }
+  }
+
+  //Process 情報の生成
+  out_process = new cdm_Process();
+  cdm_Rank rank;
+
+  rank.RankID=0;
+  for(int i=0; i<3; i++) {
+    rank.VoxelSize[i]=Gvoxel[i];
+    rank.HeadIndex[i]=1;
+    rank.TailIndex[i]=rank.HeadIndex[i]+Gvoxel[i]-1;
+  }
+  out_process->RankList.push_back(rank);
+
+  return true;
+}
 
 //#################################################################
 // proc.dfiファイル出力

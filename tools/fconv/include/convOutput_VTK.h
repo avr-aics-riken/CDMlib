@@ -75,6 +75,31 @@ public:
                     FILE *fp); 
 
   /**
+   * @brief vtkファイルのheaderの書き込み(不等間隔格子対応版)
+   * @param[in] step        ステップ数
+   * @param[in] time        時間
+   * @param[in] dim         変数の個数
+   * @param[in] d_type      データ型タイプ
+   * @param[in] dfi_type    dfi種別
+   * @param[in] out_domain  出力用のdomainインスタンス
+   * @param[in] out_process 出力用のprocessインスタンス
+   * @param[in] gc          出力ガイドセル数
+   * @param[in] prefix      ファイル接頭文字
+   * @param[in] fp          出力ファイルポインタ
+   */
+  bool
+  WriteHeaderRecord(int step,
+                    double time,
+                    int dim,
+                    CDM::E_CDM_DTYPE d_type,
+                    CDM::E_CDM_DFITYPE dfi_type,
+                    cdm_Domain* out_domain,
+                    cdm_Process* out_process,
+                    int gc,
+                    const std::string prefix,
+                    FILE *fp); 
+
+  /**
    * @brief Field Datat 出力
    * @param [in] fp     出力ファイルポインタ
    * @param [in] src    出力データ配列ポインタ

@@ -148,13 +148,21 @@ bool convMx1::exec()
     if(l_jmax%thin_count != 0) l_jmax_th++;
     if(l_kmax%thin_count != 0) l_kmax_th++;
 
-    //sphのオリジンとピッチを作成
+    //オリジンとピッチを作成
     l_dpit[0]=region[0]/(double)l_imax_th;
     l_dpit[1]=region[1]/(double)l_jmax_th;
     l_dpit[2]=region[2]/(double)l_kmax_th;
-    l_dorg[0]=DFI_Domain->GlobalOrigin[0]+0.5*l_dpit[0];
-    l_dorg[1]=DFI_Domain->GlobalOrigin[1]+0.5*l_dpit[1];
-    l_dorg[2]=DFI_Domain->GlobalOrigin[2]+0.5*l_dpit[2];
+    l_dorg[0]=DFI_Domain->GlobalOrigin[0];
+    l_dorg[1]=DFI_Domain->GlobalOrigin[1];
+    l_dorg[2]=DFI_Domain->GlobalOrigin[2];
+    //格子点の原点からセル中心の原点へのシフト
+    //(SPH,BOV形式のみ。他の形式については、各形式の出力時に実施。)
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH || 
+        m_param->Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) {
+      l_dorg[0] += 0.5*l_dpit[0];
+      l_dorg[1] += 0.5*l_dpit[1];
+      l_dorg[2] += 0.5*l_dpit[2];
+    }
 
     //GRID データ 出力
     const cdm_FileInfo* DFI_FInfo = m_StepRankList[i].dfi->GetcdmFileInfo();
@@ -162,8 +170,30 @@ bool convMx1::exec()
     sz[0]=l_imax;
     sz[1]=l_jmax;
     sz[2]=l_kmax;
+
+    //出力ガイドセルの設定
+    int outGc=0;
+    if( m_param->Get_OutputGuideCell() > 0 ) outGc = m_param->Get_OutputGuideCell();
+    if( outGc > 0 ) {
+      if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
+    }
+    if( thin_count > 1 || m_param->Get_Interp_flag() ) outGc=0;
+
+    //格子データ出力用の情報を作成
+    cdm_Domain* out_domain = NULL;
+    cdm_Process* out_process = NULL;
+
+    if( !makeGridInfo(m_StepRankList[i].dfi,out_domain,out_process,outGc) ) {
+      printf("\tError : makeProcInfo\n");
+      return false;
+    }
+
+    /*
     ConvOut->WriteGridData(DFI_FInfo->Prefix,0, m_myRank, m_in_dfi[0]->GetDataType(),
                            DFI_FInfo->GuideCell, l_dorg, l_dpit, sz);
+    */
+    ConvOut->WriteGridData(DFI_FInfo->Prefix,0, m_myRank, m_in_dfi[0]->GetDataType(),
+                           outGc, out_domain, out_process);
 
     //dfiファイルのディレクトリの取得
     inPath = CDM::cdmPath_DirName(m_StepRankList[i].dfi->get_dfi_fname());
@@ -228,24 +258,35 @@ bool convMx1::exec()
         d_type = m_param->Get_OutputDataType();
       }
 
-      //ヘッダーレコードを出力
-      int outGc=0;
-      if( m_param->Get_OutputGuideCell() > 0 ) outGc = m_param->Get_OutputGuideCell();
+      //出力ガイドセルによるオリジンの更新
       double t_org[3];
       for(int n=0; n<3; n++) t_org[n]=l_dorg[n];
-
-      //出力ガイドセルによるオリジンの更新
       if( outGc > 0 ) {
-        if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
         for(int n=0; n<3; n++) t_org[n]=t_org[n]-(double)outGc*l_dpit[n];
       }
-      if( thin_count > 1 || m_param->Get_Interp_flag() ) outGc=0;
 
-      if( !(ConvOut->WriteHeaderRecord(l_step, dim, d_type, 
-                                       l_imax_th+2*outGc, l_jmax_th+2*outGc, l_kmax_th+2*outGc,
-                                       l_time, t_org, l_dpit, prefix, fp)) ) {
-        printf("\twrite header error\n");
-        return false;
+      //ヘッダーレコードを出力
+      if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
+        if( !(ConvOut->WriteHeaderRecord(l_step,
+                                         l_time,
+                                         dim,
+                                         d_type,
+                                         DFI_FInfo->DFIType,
+                                         out_domain,
+                                         out_process,
+                                         outGc,
+                                         prefix,
+                                         fp)) ) {
+          printf("\twrite header error (VTK format)\n");
+          return false;
+        }
+      } else {
+        if( !(ConvOut->WriteHeaderRecord(l_step, dim, d_type, 
+                                         l_imax_th+2*outGc, l_jmax_th+2*outGc, l_kmax_th+2*outGc,
+                                         l_time, t_org, l_dpit, prefix, fp)) ) {
+          printf("\twrite header error\n");
+          return false;
+        }
       }
       //全体の大きさの計算とデータのヘッダ書き込み
       size_t dLen;
@@ -376,10 +417,24 @@ bool convMx1::exec()
       ConvOut->OutputFile_Close(fp);
 
     }
+
+    //avsのヘッダーファイル出力
+    if( i==0 ){
+      ConvOut->output_avs(m_myRank,
+                          m_in_dfi,
+                          out_domain,
+                          out_process,
+                          outGc);
+    }
+
+    //クラスout_domain,out_processの解放
+    delete out_domain;
+    delete out_process;
+
   }
 
   //avsのヘッダーファイル出力
-  ConvOut->output_avs(m_myRank, m_in_dfi);
+  //ConvOut->output_avs(m_myRank, m_in_dfi);
 
   //出力dfiファイル名の取得
   //vector<std::string> out_dfi_name = m_InputCntl->Get_OutdfiNameList();

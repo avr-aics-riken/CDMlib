@@ -11,6 +11,15 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-22
+Edit class convMx1 and add methods for outputting non-uniform cartesian data in classes convOutput_PLOT3D, convOutput_VTK and convOutput_AVS
+FCONVのMx1変換において、不等間隔格子の座標データをPLOT3D、VTK、AVS形式で
+出力できるようにクラスconvMx1を編集した。
+不等間隔格子の座標データの情報は、メソッドmakeGridInfoで生成するようにした。
+また、不等間隔格子の座標データ出力に対応したメソッドをPLOT3D、VTK、AVS形式
+それぞれで作成(既存のメソッドにオーバーロードして作成)した。
+
+------------------
 2014-12-19
 Correct a misspelled word in classes CONV and convMx1
 クラスCONVとconvMx1において、
