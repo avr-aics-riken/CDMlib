@@ -227,7 +227,14 @@ void convMxN::VoxelInit()
     }
 
     //Procファイル出力
-    if( m_param->Get_Outputdfi_on() ) dfi->WriteProcDfiFile(MPI_COMM_WORLD,false);
+    const cdm_Process *DFI_Process = m_in_dfi[i]->GetcdmProcess();
+    if( m_param->Get_Outputdfi_on() ) {
+      dfi->WriteProcDfiFile(MPI_COMM_WORLD,
+                            false,
+                            DFI_Process->RankList[0].c_id,   //RankID=0のCellIDをセット
+                            DFI_Process->RankList[0].bc_id); //RankID=0の境界IDをセット
+      printf("CellID and BCflagID of all ranks were converted into those of rank 0.\n");
+    }
 
     //出力形式（ascii,binary,Fbinary)のセット
     dfi->set_output_type(m_param->Get_OutputFormatType());

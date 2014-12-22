@@ -516,8 +516,10 @@ void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm,
 
   if( nrank > 1 ) {
     int *headtail = NULL;
+    int *cbcid = NULL;
     if( RankID == 0 ) {
       headtail = new int[6*nrank];
+      cbcid = new int[2*nrank];
     }
 
     int sbuff[6];
@@ -528,6 +530,12 @@ void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm,
 
     MPI_Gather(sbuff,6,MPI_INT,headtail,6,MPI_INT,0,comm);
 
+    int sbuff_cbcid[2];
+    sbuff_cbcid[0] = DFI_Process.RankList[RankID].c_id;
+    sbuff_cbcid[1] = DFI_Process.RankList[RankID].bc_id;
+
+    MPI_Gather(sbuff_cbcid,2,MPI_INT,cbcid,2,MPI_INT,0,comm);
+
     if( RankID == 0 ) {
       for(int i=0; i<nrank; i++) {
         G_Rank.RankID=i;
@@ -536,6 +544,8 @@ void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm,
           G_Rank.TailIndex[j]=headtail[i*6+j+3];
           G_Rank.VoxelSize[j]=G_Rank.TailIndex[j]-G_Rank.HeadIndex[j]+1;
         }
+        G_Rank.c_id  = cbcid[i*2];
+        G_Rank.bc_id = cbcid[i*2+1];
         G_Process.RankList.push_back(G_Rank);
       }
     }
@@ -549,6 +559,8 @@ void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm,
       G_Rank.TailIndex[i]=DFI_Process.RankList[0].TailIndex[i];
       G_Rank.VoxelSize[i]=G_Rank.TailIndex[i]-G_Rank.HeadIndex[i]+1;
     }
+    G_Rank.c_id  = DFI_Process.RankList[0].c_id;
+    G_Rank.bc_id = DFI_Process.RankList[0].bc_id;
     G_Process.RankList.push_back(G_Rank);
   }
 }

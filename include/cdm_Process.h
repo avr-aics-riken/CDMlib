@@ -26,6 +26,8 @@ public:
   int VoxelSize[3];                     ///<ボクセルサイズ
   int HeadIndex[3];                     ///<始点インデックス
   int TailIndex[3];                     ///<終点インデックス
+  int c_id;                             ///<cell id
+  int bc_id;                            ///<境界ID
 
   /** コンストラクタ **/
   cdm_Rank();

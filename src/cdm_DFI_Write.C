@@ -134,7 +134,9 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
 // proc DFIファイルの出力コントロール
 CDM::E_CDM_ERRORCODE
 cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
-                          bool out_host)
+                          const bool out_host,
+                          const int cell_id,
+                          const int bcf_id)
                           //double* org)
 {
 
@@ -152,6 +154,10 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
   cdm_MPI out_mpi;
   out_mpi.NumberOfRank = nrank;
   out_mpi.NumberOfGroup = 1;
+
+  //CellID,境界IDをセット
+  DFI_Process.RankList[RankID].c_id = cell_id;
+  DFI_Process.RankList[RankID].bc_id = bcf_id;
 
   cdm_Process out_Process;
 
