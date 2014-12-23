@@ -214,10 +214,14 @@ bool convMxM::mxmsolv(std::string dfiname,
 
   //全体のボクセルサイズを間引きを考慮して求める
   int voxel[3];
+  /*
   for(int i=0; i<3; i++) {
     voxel[i]=DFI_Domain->GlobalVoxel[i]/thin_count;
     if( DFI_Domain->GlobalVoxel[i]%thin_count != 0 ) voxel[i]++;
   }
+  */
+  //MxMの間引き方法では、上記の方法で全体のボクセルサイズは正しく得られない。
+  for(int i=0; i<3; i++) voxel[i]=DFI_Domain->GlobalVoxel[i];
 
   //間引きを考慮したサイズのセット
   int l_imax_th = DFI_Process->RankList[RankID].VoxelSize[0]/thin_count;
@@ -352,33 +356,55 @@ bool convMxM::mxmsolv(std::string dfiname,
   else if( DFI_FInfo->DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN )
   {
     //不等間隔格子の場合
+    int head_org[3],tail_org[3]; //間引く前のhead,tail
+    for(int i=0; i<3; i++) {
+      head_org[i] = DFI_Process->RankList[RankID].HeadIndex[i];
+      tail_org[i] = DFI_Process->RankList[RankID].TailIndex[i];
+    }
+
     if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT32 )
     {
       float *coord_X = NULL;
       float *coord_Y = NULL;
       float *coord_Z = NULL;
 
-      //全計算領域の座標をWriteInitに渡す
+      //全計算領域のサイズの配列を用意し、head,tailで自ランクの座標データをセット
       coord_X = new float[voxel[0]+1]; //+1はセル数ではなく格子数のため。
       coord_Y = new float[voxel[1]+1];
       coord_Z = new float[voxel[2]+1];
 
       //配列(coord_X,coord_Y,coord_Z)に値をセット
+      /* ＜注意点＞
+       * 間引き時(thin_count>1)は、ガイドセルなし(outGc=0)
+       * 間引かない時(thin_count=1)は、ガイドセルあり(outGc>0)で、head,tailは、head_org,tail_orgと一致
+       */
       //x
-      for(int ni=0; ni<voxel[0]; ni++) {
-        coord_X[ni] = (float)(DFI_Domain->NodeX(ni*thin_count));
+      for(int ni=-outGc; ni<(l_imax_th+outGc); ni++) {
+        if ( (ni+head[0]-1 >= 0) && (ni+head[0]-1 < voxel[0]+1) ) {
+          coord_X[ni+head[0]-1] = (float)(DFI_Domain->NodeX(head_org[0]-1+ni*thin_count));
+        }
       }
-      coord_X[voxel[0]] = (float)(DFI_Domain->NodeX(DFI_Domain->GlobalVoxel[0]));
+      if ( tail[0]+outGc < voxel[0]+1 ) {
+        coord_X[tail[0]+outGc] = (float)(DFI_Domain->NodeX(tail_org[0]+outGc));
+      }
       //y
-      for(int nj=0; nj<voxel[1]; nj++) {
-        coord_Y[nj] = (float)(DFI_Domain->NodeY(nj*thin_count));
+      for(int nj=-outGc; nj<(l_jmax_th+outGc); nj++) {
+        if ( (nj+head[1]-1 >= 0) && (nj+head[1]-1 < voxel[1]+1) ) {
+          coord_Y[nj+head[1]-1] = (float)(DFI_Domain->NodeY(head_org[1]-1+nj*thin_count));
+        }
       }
-      coord_Y[voxel[1]] = (float)(DFI_Domain->NodeY(DFI_Domain->GlobalVoxel[1]));
+      if ( tail[1]+outGc < voxel[1]+1 ) {
+        coord_Y[tail[1]+outGc] = (float)(DFI_Domain->NodeY(tail_org[1]+outGc));
+      }
       //z
-      for(int nk=0; nk<voxel[2]; nk++) {
-        coord_Z[nk] = (float)(DFI_Domain->NodeZ(nk*thin_count));
+      for(int nk=-outGc; nk<(l_kmax_th+outGc); nk++) {
+        if ( (nk+head[2]-1 >= 0) && (nk+head[2]-1 < voxel[2]+1) ) {
+          coord_Z[nk+head[2]-1] = (float)(DFI_Domain->NodeZ(head_org[2]-1+nk*thin_count));
+        }
       }
-      coord_Z[voxel[2]] = (float)(DFI_Domain->NodeZ(DFI_Domain->GlobalVoxel[2]));
+      if ( tail[2]+outGc < voxel[2]+1 ) {
+        coord_Z[tail[2]+outGc] = (float)(DFI_Domain->NodeZ(tail_org[2]+outGc));
+      }
 
       out_dfi = cdm_DFI::WriteInit<float>(MPI_COMM_WORLD,
                                           "",
@@ -408,27 +434,43 @@ bool convMxM::mxmsolv(std::string dfiname,
       double *coord_Y = NULL;
       double *coord_Z = NULL;
 
-      //全計算領域の座標をWriteInitに渡す
+      //全計算領域のサイズの配列を用意し、head,tailで自ランクの座標データをセット
       coord_X = new double[voxel[0]+1]; //+1はセル数ではなく格子数のため。
       coord_Y = new double[voxel[1]+1];
       coord_Z = new double[voxel[2]+1];
 
       //配列(coord_X,coord_Y,coord_Z)に値をセット
+      /* ＜注意点＞
+       * 間引き時(thin_count>1)は、ガイドセルなし(outGc=0)
+       * 間引かない時(thin_count=1)は、ガイドセルあり(outGc>0)で、head,tailは、head_org,tail_orgと一致
+       */
       //x
-      for(int ni=0; ni<voxel[0]; ni++) {
-        coord_X[ni] = (double)(DFI_Domain->NodeX(ni*thin_count));
+      for(int ni=-outGc; ni<(l_imax_th+outGc); ni++) {
+        if ( (ni+head[0]-1 >= 0) && (ni+head[0]-1 < voxel[0]+1) ) {
+          coord_X[ni+head[0]-1] = (double)(DFI_Domain->NodeX(head_org[0]-1+ni*thin_count));
+        }
       }
-      coord_X[voxel[0]] = (double)(DFI_Domain->NodeX(DFI_Domain->GlobalVoxel[0]));
+      if ( tail[0]+outGc < voxel[0]+1 ) {
+        coord_X[tail[0]+outGc] = (double)(DFI_Domain->NodeX(tail_org[0]+outGc));
+      }
       //y
-      for(int nj=0; nj<voxel[1]; nj++) {
-        coord_Y[nj] = (double)(DFI_Domain->NodeY(nj*thin_count));
+      for(int nj=-outGc; nj<(l_jmax_th+outGc); nj++) {
+        if ( (nj+head[1]-1 >= 0) && (nj+head[1]-1 < voxel[1]+1) ) {
+          coord_Y[nj+head[1]-1] = (double)(DFI_Domain->NodeY(head_org[1]-1+nj*thin_count));
+        }
       }
-      coord_Y[voxel[1]] = (double)(DFI_Domain->NodeY(DFI_Domain->GlobalVoxel[1]));
+      if ( tail[1]+outGc < voxel[1]+1 ) {
+        coord_Y[tail[1]+outGc] = (double)(DFI_Domain->NodeY(tail_org[1]+outGc));
+      }
       //z
-      for(int nk=0; nk<voxel[2]; nk++) {
-        coord_Z[nk] = (double)(DFI_Domain->NodeZ(nk*thin_count));
+      for(int nk=-outGc; nk<(l_kmax_th+outGc); nk++) {
+        if ( (nk+head[2]-1 >= 0) && (nk+head[2]-1 < voxel[2]+1) ) {
+          coord_Z[nk+head[2]-1] = (double)(DFI_Domain->NodeZ(head_org[2]-1+nk*thin_count));
+        }
       }
-      coord_Z[voxel[2]] = (double)(DFI_Domain->NodeZ(DFI_Domain->GlobalVoxel[2]));
+      if ( tail[2]+outGc < voxel[2]+1 ) {
+        coord_Z[tail[2]+outGc] = (double)(DFI_Domain->NodeZ(tail_org[2]+outGc));
+      }
 
       out_dfi = cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
                                            "",

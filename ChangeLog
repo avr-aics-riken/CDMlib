@@ -11,6 +11,11 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-23
+Modify class convMxM for thinning
+FCONVのMxM変換で、不等間隔格子に対する間引き処理が不十分だったので修正した。
+
+------------------
 2014-12-22
 Edit parameter OutPutDFI in input file of FCONV
 FCONVで出力の際、BOV,SPH,PLOT3Dの形式でdfiファイルを出力できるように、
