@@ -131,11 +131,10 @@ protected:
   template<class T>
   CDM::E_CDM_ERRORCODE
   read_Func(FILE* fp,
-  //void read_Func(FILE* fp,
-           cdm_TypeArray<T>* dataS,
-           cdm_TypeArray<T>* dataB,
-           int head[3],
-           bool matchEndian);
+            cdm_TypeArray<T>* dataS,
+            cdm_TypeArray<T>* dataB,
+            int head[3],
+            bool matchEndian);
 
   /**
    * @brief plot3dヘッダファイルの出力

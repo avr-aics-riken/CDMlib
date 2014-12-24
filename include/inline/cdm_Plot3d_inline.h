@@ -31,10 +31,10 @@ template<class T>
 CDM_INLINE
 CDM::E_CDM_ERRORCODE
 cdm_DFI_PLOT3D::read_Func(FILE* fp,
-                         cdm_TypeArray<T>* dataS,
-                         cdm_TypeArray<T>* dataB,
-                         int head[3],
-                         bool matchEndian)
+                          cdm_TypeArray<T>* dataS,
+                          cdm_TypeArray<T>* dataB,
+                          int head[3],
+                          bool matchEndian)
 {
 
   const int *szS = dataS->getArraySizeInt();
