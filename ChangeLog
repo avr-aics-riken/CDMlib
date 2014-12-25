@@ -12,6 +12,13 @@ REVISION HISTORY
 
 ------------------
 2014-12-25
+Edit class cdm_DFI_VTK to output field data as scalar data
+VTK形式でフィールドデータを出力する際、個々の変数のデータを
+スカラーのデータとして出力するように、出力フォーマットを変更した。
+それに伴い、クラスcdm_ArrayにメソッドcopyArrayNvari_to_ijkを追加した。
+
+------------------
+2014-12-25
 Edit method convMx1_out_nijk in class convMx1
 クラスconvMx1のメソッドconvMx1_out_nijkを一部編集した。
 格子点補間しない場合、出力用の配列outArrayのz方法のheadを0に設定しないと、

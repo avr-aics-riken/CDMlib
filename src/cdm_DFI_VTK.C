@@ -252,36 +252,6 @@ cdm_DFI_VTK::write_HeaderRecord(FILE* fp,
   int nw = imax*jmax*kmax;
   fprintf( fp, "POINT_DATA %d\n", nw );
 
-  std::string d_type;
-  if(      DFI_Finfo.DataType == CDM::E_CDM_UINT8  ) d_type="unsigned_char";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_INT8   ) d_type="char";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT16 ) d_type="unsigned_short";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_INT16  ) d_type="short";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT32 ) d_type="unsigned_int";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_INT32  ) d_type="int";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT64 ) d_type="unsigned_long";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_INT64  ) d_type="long";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32) d_type="float";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64) d_type="double";
-
-  if( DFI_Finfo.NumVariables == 1 )
-  {
-    fprintf( fp, "SCALARS %s %s\n", DFI_Finfo.Prefix.c_str(),d_type.c_str() );
-    fprintf( fp, "LOOKUP_TABLE default\n" );
-  }
-  /*
-  else if( DFI_Finfo.NumVariables == 3 )
-  {
-    fprintf( fp, "VECTORS %s %s\n", DFI_Finfo.Prefix.c_str(),d_type.c_str() );
-  }
-  */
-  else
-  {
-    fprintf( fp, "FIELD %s 1\n", DFI_Finfo.Prefix.c_str() );
-    fprintf( fp, "%s %d %d %s\n", DFI_Finfo.Prefix.c_str(), DFI_Finfo.NumVariables, 
-             nw, d_type.c_str() );
-  }
-
   return CDM::E_CDM_SUCCESS;
 }
 
@@ -294,85 +264,118 @@ cdm_DFI_VTK::write_DataRecord(FILE* fp,
                               const int n)
 {
 
-  const int* sz_without_gc = val->getArraySizeInt();
-  int sz[3];
-  for(int i=0; i<3; i++) sz[i] = sz_without_gc[i];
-  if( !m_bgrid_interp_flag ) for(int i=0; i<3; i++) sz[i] += (int)(2*gc);
-  size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*val->getNvari();
-
-  //ascii
-  if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
-
-    if( val->writeAscii(fp) != dLen ) {
-      return CDM::E_CDM_ERROR;
-    }
-    fprintf( fp, "\n" );
-
-  //binary
+  const int* sz = val->getArraySizeInt();
+  size_t dLen;
+  if( !m_bgrid_interp_flag ) {
+    dLen = (size_t)(sz[0]+2*gc)*(size_t)(sz[1]+2*gc)*(size_t)(sz[2]+2*gc);
   } else {
+    dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2];
+  }
 
-    //出力実数タイプがuint8のとき
-    if( val->getDataType() == CDM::E_CDM_UINT8 ) {
-      unsigned char *data = (unsigned char*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(unsigned char), dLen, fp );
+  std::string d_type;
+  if(      DFI_Finfo.DataType == CDM::E_CDM_UINT8  ) d_type="unsigned_char";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT8   ) d_type="char";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT16 ) d_type="unsigned_short";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT16  ) d_type="short";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT32 ) d_type="unsigned_int";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT32  ) d_type="int";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT64 ) d_type="unsigned_long";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT64  ) d_type="long";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32) d_type="float";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64) d_type="double";
 
-    //出力実数タイプがint8のとき
-    }else if( val->getDataType() == CDM::E_CDM_INT8 ) {
-      char *data = (char*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(char), dLen, fp );
+  cdm_Array *out = cdm_Array::instanceArray
+                   (val->getDataType(),
+                    CDM::E_CDM_IJKN,
+                    (int *)sz,
+                    val->getGc(),
+                    1); //変数毎に出力するので、変数の個数は1
 
-    //出力実数タイプがuint16のとき
-    }else if( val->getDataType() == CDM::E_CDM_UINT16 ) {
-      unsigned short *data = (unsigned short*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(unsigned short), dLen, fp );
+  for(int nv=0; nv<DFI_Finfo.NumVariables; nv++) {
 
-    //出力実数タイプがint16のとき
-    }else if( val->getDataType() == CDM::E_CDM_INT16 ) {
-      short *data = (short*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(short), dLen, fp );
+    fprintf( fp, "SCALARS %s %s\n", getVariableName(nv).c_str(),d_type.c_str() );
+    fprintf( fp, "LOOKUP_TABLE default\n" );
 
-    //出力実数タイプがuint32のとき
-    }else if( val->getDataType() == CDM::E_CDM_UINT32 ) {
-      unsigned int *data = (unsigned int*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(unsigned int), dLen, fp );
-
-    //出力実数タイプがint32のとき
-    }else if( val->getDataType() == CDM::E_CDM_INT32 ) {
-      int *data = (int*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(int), dLen, fp );
-
-    //出力実数タイプがuint64のとき
-    }else if( val->getDataType() == CDM::E_CDM_UINT64 ) {
-      unsigned long long *data = (unsigned long long*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(unsigned long long), dLen, fp );
-
-    //出力実数タイプがint64のとき
-    }else if( val->getDataType() == CDM::E_CDM_INT64 ) {
-      long long *data = (long long*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(long long), dLen, fp );
-
-    //出力実数タイプがfloatのとき
-    }else if( val->getDataType() == CDM::E_CDM_FLOAT32 ) {
-      float *data = (float*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(float), dLen, fp );
-
-    //出力実数タイプがdoubleのとき
-    }else if( val->getDataType() == CDM::E_CDM_FLOAT64 ) {
-      double *data = (double*)val->getData();
-      DBSWAPVEC(data,dLen);
-      fwrite( data, sizeof(double), dLen, fp );
+    if( val->copyArrayNvari_to_ijk(out,nv) != 0 ) {
+      printf("\tError : copyArrayNvari_to_ijk in class cdm_DFI_VTK\n");
+      return CDM::E_CDM_ERROR_WRITE_FIELD_DATA_RECORD;
     }
 
-    fprintf( fp, "\n" );
+    //ascii
+    if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
+
+      if( out->writeAscii(fp) != dLen ) {
+        return CDM::E_CDM_ERROR_WRITE_FIELD_DATA_RECORD;
+      }
+      fprintf( fp, "\n" );
+
+    //binary
+    } else {
+
+      //出力実数タイプがuint8のとき
+      if( out->getDataType() == CDM::E_CDM_UINT8 ) {
+        unsigned char *data = (unsigned char*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(unsigned char), dLen, fp );
+
+      //出力実数タイプがint8のとき
+      }else if( out->getDataType() == CDM::E_CDM_INT8 ) {
+        char *data = (char*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(char), dLen, fp );
+
+      //出力実数タイプがuint16のとき
+      }else if( out->getDataType() == CDM::E_CDM_UINT16 ) {
+        unsigned short *data = (unsigned short*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(unsigned short), dLen, fp );
+
+      //出力実数タイプがint16のとき
+      }else if( out->getDataType() == CDM::E_CDM_INT16 ) {
+        short *data = (short*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(short), dLen, fp );
+
+      //出力実数タイプがuint32のとき
+      }else if( out->getDataType() == CDM::E_CDM_UINT32 ) {
+        unsigned int *data = (unsigned int*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(unsigned int), dLen, fp );
+
+      //出力実数タイプがint32のとき
+      }else if( out->getDataType() == CDM::E_CDM_INT32 ) {
+        int *data = (int*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(int), dLen, fp );
+
+      //出力実数タイプがuint64のとき
+      }else if( out->getDataType() == CDM::E_CDM_UINT64 ) {
+        unsigned long long *data = (unsigned long long*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(unsigned long long), dLen, fp );
+
+      //出力実数タイプがint64のとき
+      }else if( out->getDataType() == CDM::E_CDM_INT64 ) {
+        long long *data = (long long*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(long long), dLen, fp );
+
+      //出力実数タイプがfloatのとき
+      }else if( out->getDataType() == CDM::E_CDM_FLOAT32 ) {
+        float *data = (float*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(float), dLen, fp );
+
+      //出力実数タイプがdoubleのとき
+      }else if( out->getDataType() == CDM::E_CDM_FLOAT64 ) {
+        double *data = (double*)out->getData();
+        DBSWAPVEC(data,dLen);
+        fwrite( data, sizeof(double), dLen, fp );
+      }
+
+      fprintf( fp, "\n" );
+
+    }
 
   }
   return CDM::E_CDM_SUCCESS;
