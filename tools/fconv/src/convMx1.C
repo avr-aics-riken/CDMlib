@@ -733,7 +733,16 @@ convMx1::convMx1_out_nijk(FILE* fp,
             if( !InterPolate(src_old,src,outArray,n,n) ) return false;
           }
         }
-      } else outArray = src;
+      } else {
+        outArray = src;
+        //outArrayのz方向のheadを0にセット
+        const int* head_src = src->getHeadIndex();
+        int head_out[3];
+        head_out[0] = head_src[0];
+        head_out[1] = head_src[1];
+        head_out[2] = 0;
+        outArray->setHeadIndex( head_out );
+      }
 
       //一層分出力
       if( outArray ) {

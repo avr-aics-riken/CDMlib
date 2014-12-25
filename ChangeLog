@@ -12,6 +12,14 @@ REVISION HISTORY
 
 ------------------
 2014-12-25
+Edit method convMx1_out_nijk in class convMx1
+クラスconvMx1のメソッドconvMx1_out_nijkを一部編集した。
+格子点補間しない場合、出力用の配列outArrayのz方法のheadを0に設定しないと、
+PLOT3D,VTK,AVS形式でのメソッドWriteFieldData内にあるcopyArrayが
+正しく行われないため。
+
+------------------
+2014-12-25
 Remove szS and nvariB in method read_Func in class cdm_DFI_PLOT3D
 クラスcdm_DFI_PLOT3Dのメソッドread_Func内にある未使用の変数szSとnvariBを削除した。
 
