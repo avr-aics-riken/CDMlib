@@ -18,6 +18,7 @@ bin_PROGRAMS = fconv
 fconv_CXXFLAGS = \
   -I$(top_builddir)/include \
   -I$(top_builddir)/tools/fconv/include \
+  @MPI_CFLAGS@ \
   @CPM_CFLAGS@ \
   @TP_CFLAGS@ 
   

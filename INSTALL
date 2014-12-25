@@ -101,7 +101,8 @@ Here is examples.
                 CXX=mpicxx \
                 CXXFLAGS=-O3 \
                 F90=mpif90 \
-                F90FLAGS=-O3
+                F90FLAGS=-O3 \
+                --with-example=yes
 
 
 ## K-computer

@@ -18,6 +18,7 @@
  * @date   2013/11/13
  */
 
+#include "cpm_ParaManager.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,7 +37,6 @@
 
 #include "conv_Define.h"
 #include "TextParser.h"
-#include "cpm_ParaManager.h"
 #include "cdm_DFI.h"
 
 using namespace std;

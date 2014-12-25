@@ -11,6 +11,10 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-25
+accept pull request #11 and modify tools/fconv/src/Makefile.am
+
+------------------
 2014-12-10
 Add message when CellID and BCflagID were converted in FCONV
 FCONVのMxN変換およびMx1変換において、読み込んだ各ランクのCellIDとBCflagIDが
