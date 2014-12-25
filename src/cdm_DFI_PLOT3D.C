@@ -101,11 +101,11 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
   if( buf->getDataType() == CDM::E_CDM_FLOAT32 ) {
     cdm_TypeArray<float> *dataS = dynamic_cast<cdm_TypeArray<float>*>(src);
     cdm_TypeArray<float> *dataB = dynamic_cast<cdm_TypeArray<float>*>(buf);
-    ret = read_Func(fp, dataS, dataB, head, matchEndian);
+    ret = read_Func(fp, dataS, dataB, head, nz, matchEndian);
   } else if( buf->getDataType() == CDM::E_CDM_FLOAT64 ) {
     cdm_TypeArray<double> *dataS = dynamic_cast<cdm_TypeArray<double>*>(src);
     cdm_TypeArray<double> *dataB = dynamic_cast<cdm_TypeArray<double>*>(buf);
-    ret = read_Func(fp, dataS, dataB, head, matchEndian);
+    ret = read_Func(fp, dataS, dataB, head, nz, matchEndian);
   }
 
   return ret;

@@ -126,6 +126,7 @@ protected:
    * @param[in] dataS 読込みデータポインタ
    * @param[in] dataB 読込みバッファポインタ
    * @param[in] head  読込みバッファHeadIndex
+   * @param[in] nz    z方向のボクセルサイズ（実セル＋ガイドセル＊２）
    * @param[in] matchEndian true:Endian一致
    */ 
   template<class T>
@@ -134,6 +135,7 @@ protected:
             cdm_TypeArray<T>* dataS,
             cdm_TypeArray<T>* dataB,
             int head[3],
+            int nz,
             bool matchEndian);
 
   /**

@@ -34,6 +34,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
                           cdm_TypeArray<T>* dataS,
                           cdm_TypeArray<T>* dataB,
                           int head[3],
+                          int nz,
                           bool matchEndian)
 {
 
@@ -51,7 +52,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
     if( m_input_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
       double temp;
       for(int n=0; n<nvariS; n++) {
-      for(int k=0; k<szS[2]; k++) {
+      for(int k=0; k<nz; k++) {
         //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);
@@ -72,7 +73,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
       unsigned int dmy;
       fread(&dmy, sizeof(int), 1, fp);
       for(int n=0; n<nvariS; n++) {
-      for(int k=0; k<szS[2]; k++) {
+      for(int k=0; k<nz; k++) {
         //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);
@@ -87,7 +88,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
     //binary
     } else {
       for(int n=0; n<nvariS; n++) {
-      for(int k=0; k<szS[2]; k++) {
+      for(int k=0; k<nz; k++) {
         //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);

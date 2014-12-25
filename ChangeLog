@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-25
+Modify read_Func in class cdm_DFI_PLOT3D
+クラスcdm_DFI_PLOT3Dのメソッドread_Funcのz方向読込みに関して修正を加えた。
+FCONVのMx1変換での読込みに対応するため。
+
+------------------
 2014-12-24
 Minor modification in methods AddSlice and read_Func
 メソッドAddSliceのコメント文に修正を加えた。
