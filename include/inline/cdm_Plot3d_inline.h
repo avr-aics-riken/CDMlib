@@ -38,10 +38,8 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
                           bool matchEndian)
 {
 
-  const int *szS = dataS->getArraySizeInt();
   const int *szB = dataB->getArraySizeInt();
   int nvariS = dataS->getNvari();
-  int nvariB = dataB->getNvari();
 
   //１層ずつ読み込み
   int hzB = head[2];
