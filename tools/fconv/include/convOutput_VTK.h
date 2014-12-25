@@ -111,6 +111,23 @@ public:
                  size_t dLen);
 
   /**
+   * @brief Field Datat 出力 (vtk用)
+   * @param [in] fp            出力ファイルポインタ
+   * @param [in] src           出力データ配列ポインタ
+   * @param [in] dLen          出力データサイズ
+   * @param [in] d_type        データ型タイプ
+   * @param [in] flag_variname VTK形式における変数名出力フラグ
+   * @param [in] variname      VTK形式で出力する変数名
+   */
+  bool
+  WriteFieldData(FILE* fp,
+                 cdm_Array* src,
+                 size_t dLen,
+                 CDM::E_CDM_DTYPE d_type,
+                 bool flag_variname,
+                 std::string variname);
+
+  /**
    * @brief マーカーの書き込み
    * @param[in] dmy マーカー
    * @param[in] fp  出力ファイルポインタ 

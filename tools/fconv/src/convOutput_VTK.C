@@ -369,35 +369,6 @@ bool convOutput_VTK::WriteHeaderRecord(int step,
   int nw = imax*jmax*kmax;
   fprintf( fp, "POINT_DATA %d\n", nw );
 
-  std::string out_d_type;
-  if(      d_type == CDM::E_CDM_UINT8  ) out_d_type="unsigned_char";
-  else if( d_type == CDM::E_CDM_INT8   ) out_d_type="char";
-  else if( d_type == CDM::E_CDM_UINT16 ) out_d_type="unsigned_short";
-  else if( d_type == CDM::E_CDM_INT16  ) out_d_type="short";
-  else if( d_type == CDM::E_CDM_UINT32 ) out_d_type="unsigned_int";
-  else if( d_type == CDM::E_CDM_INT32  ) out_d_type="int";
-  else if( d_type == CDM::E_CDM_UINT64 ) out_d_type="unsigned_long";
-  else if( d_type == CDM::E_CDM_INT64  ) out_d_type="long";
-  else if( d_type == CDM::E_CDM_FLOAT32) out_d_type="float";
-  else if( d_type == CDM::E_CDM_FLOAT64) out_d_type="double";
-  
-  if( dim == 1 )
-  {
-    fprintf( fp, "SCALARS %s %s\n", prefix.c_str(), out_d_type.c_str() );
-    fprintf( fp, "LOOKUP_TABLE default\n" );
-  }
-  /*
-  else if( dim == 3 )
-  {
-    fprintf( fp, "VECTORS %s %s\n", prefix.c_str(), out_d_type.c_str() );
-  }
-  */
-  else
-  {
-    fprintf( fp, "FIELD %s 1\n", prefix.c_str() );
-    fprintf( fp, "%s %d %d %s\n", prefix.c_str(), dim, nw, out_d_type.c_str() );
-  }
-
   return true;
 }
 
@@ -500,6 +471,127 @@ bool convOutput_VTK::WriteFieldData(FILE* fp, cdm_Array* src, size_t dLen)
   return true;
 }
 
+// #################################################################
+//
+bool convOutput_VTK::WriteFieldData(FILE* fp,
+                                    cdm_Array* src,
+                                    size_t dLen,
+                                    CDM::E_CDM_DTYPE d_type,
+                                    bool flag_variname,
+                                    std::string variname)
+{
+
+  if( flag_variname ) {
+    std::string out_d_type;
+    if(      d_type == CDM::E_CDM_UINT8  ) out_d_type="unsigned_char";
+    else if( d_type == CDM::E_CDM_INT8   ) out_d_type="char";
+    else if( d_type == CDM::E_CDM_UINT16 ) out_d_type="unsigned_short";
+    else if( d_type == CDM::E_CDM_INT16  ) out_d_type="short";
+    else if( d_type == CDM::E_CDM_UINT32 ) out_d_type="unsigned_int";
+    else if( d_type == CDM::E_CDM_INT32  ) out_d_type="int";
+    else if( d_type == CDM::E_CDM_UINT64 ) out_d_type="unsigned_long";
+    else if( d_type == CDM::E_CDM_INT64  ) out_d_type="long";
+    else if( d_type == CDM::E_CDM_FLOAT32) out_d_type="float";
+    else if( d_type == CDM::E_CDM_FLOAT64) out_d_type="double";
+
+    fprintf( fp, "\n" );
+    fprintf( fp, "SCALARS %s %s\n", variname.c_str(), out_d_type.c_str() );
+    fprintf( fp, "LOOKUP_TABLE default\n" );
+  }
+
+  const int* sz = src->getArraySizeInt();
+  cdm_Array *out = cdm_Array::instanceArray
+                   (src->getDataType(),
+                    src->getArrayShape(),
+                    (int *)sz,
+                    0,
+                    src->getNvari());
+
+  int ret = src->copyArray(out);
+
+  //バイナリー出力のとき
+  if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_BINARY ) {
+
+    //出力タイプごとにポインターを取得して出力
+    if( out->getDataType() == CDM::E_CDM_UINT8 ) {
+      //UINT8
+      unsigned char *data = (unsigned char*)out->getData();
+      BSWAPVEC(data,dLen);
+      fwrite( data, sizeof(unsigned char), dLen, fp);
+
+    } else if( out->getDataType() == CDM::E_CDM_INT8 ) {
+      //INT8
+      char *data = (char*)out->getData();
+      BSWAPVEC(data,dLen);
+      fwrite( data, sizeof(char), dLen, fp);
+
+    } else if( out->getDataType() == CDM::E_CDM_UINT16 ) {
+      //UINT16
+      unsigned short *data = (unsigned short*)out->getData();
+      BSWAPVEC(data,dLen);
+      fwrite( data, sizeof(unsigned short), dLen, fp);
+
+    } else if( out->getDataType() == CDM::E_CDM_INT16 ) {
+      //INT16
+      short *data = (short*)out->getData();
+      BSWAPVEC(data,dLen);
+      fwrite( data, sizeof(short), dLen, fp);
+
+    } else if( out->getDataType() == CDM::E_CDM_UINT32 ) {
+      //UINT32
+      unsigned int *data = (unsigned int*)out->getData();
+      BSWAPVEC(data,dLen);
+      fwrite( data, sizeof(unsigned int), dLen, fp);
+
+    } else if( out->getDataType() == CDM::E_CDM_INT32 ) {
+      //INT32
+      int *data = (int*)out->getData();
+      BSWAPVEC(data,dLen);
+      fwrite( data, sizeof(int), dLen, fp);
+
+    } else if( out->getDataType() == CDM::E_CDM_UINT64 ) {
+      //UINT64
+      unsigned long long *data = (unsigned long long*)out->getData();
+      BSWAPVEC(data,dLen);
+      fwrite( data, sizeof(unsigned long long), dLen, fp);
+
+    } else if( out->getDataType() == CDM::E_CDM_INT64 ) {
+      //INT64
+      long long *data = (long long*)out->getData();
+      BSWAPVEC(data,dLen);
+      fwrite( data, sizeof(long long), dLen, fp);
+
+    } else if( out->getDataType() == CDM::E_CDM_FLOAT32 ) {
+      //FLOAT32
+      float *data = (float*)out->getData();
+      BSWAPVEC(data,dLen);
+      fwrite( data, sizeof(float), dLen, fp );
+
+    } else if( out->getDataType() == CDM::E_CDM_FLOAT64 ) {
+      //FLOAT 64
+      double *data = (double*)out->getData();
+      DBSWAPVEC(data,dLen);
+      fwrite( data, sizeof(double), dLen, fp );
+
+    } else {
+      printf("\tIllegal datatype\n");
+      delete out;
+      Exit(0);
+    }
+
+  //アスキー出力のとき
+  } else if ( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
+
+    if( out->writeAscii(fp) != dLen ) {
+      delete out;
+      Exit(0);
+    }
+
+  }
+
+  delete out;
+  return true;
+}
 
 // #################################################################
 //

@@ -12,6 +12,14 @@ REVISION HISTORY
 
 ------------------
 2014-12-25
+Edit class convOutput_VTK to output field data as scalar data for FCONV Mx1
+FCONVのMx1変換において、VTK形式でフィールドデータを出力する際、個々の変数の
+データをスカラーのデータとして出力するように、出力フォーマットを変更した。
+それに伴い、メソッドWriteFieldDataをvtk用にオーバーロードして、
+このフォーマット変更に対応したメソッドを定義した。
+
+------------------
+2014-12-25
 Edit class cdm_DFI_VTK to output field data as scalar data
 VTK形式でフィールドデータを出力する際、個々の変数のデータを
 スカラーのデータとして出力するように、出力フォーマットを変更した。

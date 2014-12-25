@@ -360,8 +360,8 @@ bool convMx1::exec()
      
       CDM::E_CDM_ARRAYSHAPE output_AShape = m_param->Get_OutputArrayShape();
 
-      if( output_AShape == CDM::E_CDM_NIJK ||
-          DFI_FInfo->NumVariables == 1 ){
+      if( (output_AShape == CDM::E_CDM_NIJK || DFI_FInfo->NumVariables == 1) &&
+          (m_param->Get_OutputFormat() != CDM::E_CDM_FMT_VTK) ){  //VTKの出力はijknの方を使う
 
         //output nijk
         if( !convMx1_out_nijk(fp,
@@ -812,6 +812,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
 
   //cdm_Domain* DFI_Domain = (cdm_Domain *)m_in_dfi[0]->GetcdmDomain();
   cdm_Domain* DFI_Domain = (cdm_Domain *)dfi->GetcdmDomain();
+  const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
 
   int thin_count = m_param->Get_ThinOut();
 
@@ -821,7 +822,6 @@ convMx1::convMx1_out_ijkn(FILE* fp,
   //出力ガイドセルの設定
   if( m_param->Get_OutputGuideCell() > 0 ) outGc = m_param->Get_OutputGuideCell();
   if( outGc > 0 ) {
-    const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
     if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
   }
 
@@ -906,6 +906,9 @@ convMx1::convMx1_out_ijkn(FILE* fp,
 
   //変数の個数のループ
   for(int n=0; n<nVari; n++) {
+
+    bool flag_variname = true; //VTK形式における変数名出力フラグ
+    std::string variname = DFI_FInfo->VariableName[n];
 
     //z方向の分割数回のループ
     for( headT::iterator itz=mapHeadZ.begin(); itz!= mapHeadZ.end(); itz++ ) {
@@ -1036,9 +1039,19 @@ convMx1::convMx1_out_ijkn(FILE* fp,
         if( outArray ) {
           const int* szOutArray = outArray->getArraySizeInt();
           size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNvari();
-          if( ConvOut->WriteFieldData(fp,
-                                      outArray,
-                                      dLen ) != true ) return false;
+          if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
+            if( ConvOut->WriteFieldData(fp,
+                                        outArray,
+                                        dLen,
+                                        d_type,
+                                        flag_variname,
+                                        variname) != true ) return false;
+            flag_variname = false;
+          } else {
+            if( ConvOut->WriteFieldData(fp,
+                                        outArray,
+                                        dLen ) != true ) return false;
+          }
         }
         //補間ありのとき、読込んだ層の配列ポインタをsrc_oldにコピー
         if( m_param->Get_Interp_flag() ) {
@@ -1056,9 +1069,19 @@ convMx1::convMx1_out_ijkn(FILE* fp,
       if( outArray ) {
         const int* szOutArray = outArray->getArraySizeInt();
         size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNvari();
-        if( ConvOut->WriteFieldData(fp,
-                                    outArray,
-                                    dLen ) != true ) return false;
+        if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
+          if( ConvOut->WriteFieldData(fp,
+                                      outArray,
+                                      dLen,
+                                      d_type,
+                                      flag_variname,
+                                      variname) != true ) return false;
+          flag_variname = false;
+        } else {
+          if( ConvOut->WriteFieldData(fp,
+                                      outArray,
+                                      dLen ) != true ) return false;
+        }
       } else return false;
     }
   } ///Loop n
