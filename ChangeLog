@@ -12,12 +12,20 @@ REVISION HISTORY
 
 ------------------
 2014-12-26
+Remake Makefile.am in src
+cdm_BOV_inline.hを追加したため、Makefile.amを変更した。
+(こちらでautoreconfを行ってMakefile.inを作成しようとしましたが、
+バージョンが違うためか、必要箇所以上に書き変わってしまいます。
+そちらでautoreconfしてからお使いください。)
+
+------------------
+2014-12-26
 Add buffer tuning for reading BOV file and make other modifications to buffer tuning
 BOV形式のファイル読込みに対してバッファサイズチューニング機能を追加した。
-また、BOV形式のファイル読込みメソッドread_HeaderRecordと、バッファサイズ
-取得メソッドgetBufSizeをインライン関数にした。
-バッファサイズの指定を、ライブラリのコンパイル時ではなく、ライブラリを用いる
-プログラムのコンパイル時に行うようにするため。
+以前 cdm_Array クラスの readBinary / writeBinary にバッファサイズチューニング機能を行ったが、
+これらが inline で定義されていたため、整合性を取るためにBOV形式のファイル読込みメソッドを inline 関数にした。
+この結果、バッファサイズの指定は、ライブラリのコンパイル時ではなく、ライブラリを用いる
+プログラムのコンパイル時に行うようになった。
 さらに、Plot3d形式において、ascii形式に対してのバッファサイズチューニングを削除した。
 
 ------------------
