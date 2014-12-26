@@ -660,14 +660,8 @@ size_t cdm_TypeArray<T>::readBinary( FILE *fp, bool bMatchEndian )
 {
   if( !fp ) return size_t(0);
   size_t ndata = getArrayLength();
-#if 1
-//#ifdef CDM_ENABLE_BUFFER_TUNING
-  // バッファーチューニングに対応
 #ifdef CDM_BUFFER_MB_SIZE
   int bufferMBSize = CDM_BUFFER_MB_SIZE;
-#else
-  int bufferMBSize = 10;
-#endif
   int bufferSize = bufferMBSize * 1024 * 1024 / sizeof(T);
 //  T* buffer = new T[bufferSize];
   int bufferIndex = 0;
@@ -676,7 +670,7 @@ size_t cdm_TypeArray<T>::readBinary( FILE *fp, bool bMatchEndian )
     nread += fread((m_data+bufferIndex),sizeof(T),bufferSize,fp);
 //    nread += fread(buffer,sizeof(T),bufferSize,fp);
 //    memcpy(&m_data[bufferIndex],buffer,bufferSize*sizeof(T));
-	bufferIndex += bufferSize;
+    bufferIndex += bufferSize;
   }
   nread += fread((m_data+bufferIndex),sizeof(T),ndata-bufferIndex,fp);
 //  nread += fread(buffer,sizeof(T),ndata-bufferIndex,fp);
@@ -709,29 +703,25 @@ template<class T>
 size_t cdm_TypeArray<T>::writeBinary( FILE *fp )
 {
   if( !fp ) return size_t(0);
-#ifdef CDM_ENABLE_BUFFER_TUNING
-  // バッファーチューニングに対応
+  size_t ndata = getArrayLength();
 #ifdef CDM_BUFFER_MB_SIZE
   int bufferMBSize = CDM_BUFFER_MB_SIZE;
-#else
-  int bufferMBSize = 10;
-#endif
   int bufferSize = bufferMBSize * 1024 * 1024 / sizeof(T);
 //  T* buffer = new T[bufferSize];
   int bufferIndex = 0;
   size_t nwrite = 0;
   while( bufferIndex + bufferSize < ndata ){
-//	memcpy(buffer,&m_data[bufferIndex],bufferSize*sizeof(T));
+//    memcpy(buffer,&m_data[bufferIndex],bufferSize*sizeof(T));
 //    nwrite += fwrite(buffer,sizeof(T),bufferSize,fp);
     nwrite += fwrite(m_data+bufferIndex,sizeof(T),bufferSize,fp);
-	bufferIndex += bufferSize;
+    bufferIndex += bufferSize;
   }
   nwrite += fwrite(m_data+bufferIndex,sizeof(T),ndata-bufferIndex,fp);
 //  memcpy(buffer,&m_data[bufferIndex],(ndata-bufferIndex)*sizeof(T));
 //  nwrite += fwrite(buffer,sizeof(T),ndata-bufferIndex,fp);
 //  delete[] buffer;
 #else
-  size_t nwrite = fwrite(m_data,sizeof(T),getArrayLength(),fp);
+  size_t nwrite = fwrite(m_data,sizeof(T),ndata,fp);
 #endif
   return nwrite;
 }

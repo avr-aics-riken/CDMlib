@@ -954,3 +954,14 @@ cdm_DFI::CheckReadRank(const cdm_Domain* dfi_domain,
   return DFI_Process.CheckReadRank(dfi_domain,head,tail,readflag,readRankList);
 
 }
+
+// #################################################################
+// コンパイルオプションで与えたバッファサイズを取得する
+int cdm_DFI::getBufSize()
+{
+#ifdef CDM_BUFFER_MB_SIZE
+  return CDM_BUFFER_MB_SIZE;
+#else
+  return 0;
+#endif
+}
