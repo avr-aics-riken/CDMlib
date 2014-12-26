@@ -1207,7 +1207,13 @@ public:
     std::string str(CDM_VERSION_NO);
     return str;
   }
-  
+
+  /**
+   * @brief  コンパイルオプションで与えたバッファサイズを取得
+   * @return バッファサイズ
+   */
+  int getBufSize(); 
+
 };
 
 //inline 関数

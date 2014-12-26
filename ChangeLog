@@ -12,6 +12,12 @@ REVISION HISTORY
 
 ------------------
 2014-12-26
+Merge branch advance_develop_buffer_tuning into branch advance_develop
+ブランチadvance_develop_buffer_tuningをブランチadvance_developにマージした。
+競合は発生せずにマージできた。
+
+------------------
+2014-12-26
 Merge branch advance_develop_FCONV into branch advance_develop
 ブランチadvance_develop_FCONVをブランチadvance_developにマージした。
 競合は発生せずにマージできた。

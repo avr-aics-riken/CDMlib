@@ -756,7 +756,25 @@ size_t cdm_TypeArray<T>::readBinary( FILE *fp, bool bMatchEndian )
 {
   if( !fp ) return size_t(0);
   size_t ndata = getArrayLength();
+#ifdef CDM_BUFFER_MB_SIZE
+  int bufferMBSize = CDM_BUFFER_MB_SIZE;
+  int bufferSize = bufferMBSize * 1024 * 1024 / sizeof(T);
+//  T* buffer = new T[bufferSize];
+  int bufferIndex = 0;
+  size_t nread = 0;
+  while( bufferIndex + bufferSize < ndata ){
+    nread += fread((m_data+bufferIndex),sizeof(T),bufferSize,fp);
+//    nread += fread(buffer,sizeof(T),bufferSize,fp);
+//    memcpy(&m_data[bufferIndex],buffer,bufferSize*sizeof(T));
+    bufferIndex += bufferSize;
+  }
+  nread += fread((m_data+bufferIndex),sizeof(T),ndata-bufferIndex,fp);
+//  nread += fread(buffer,sizeof(T),ndata-bufferIndex,fp);
+//  memcpy(&m_data[bufferIndex],buffer,(ndata-bufferIndex)*sizeof(T));
+//  delete[] buffer;
+#else
   size_t nread = fread(m_data,sizeof(T),ndata,fp);
+#endif
   if( !bMatchEndian )
   {
     size_t bsz = sizeof(T);
@@ -781,7 +799,27 @@ template<class T>
 size_t cdm_TypeArray<T>::writeBinary( FILE *fp )
 {
   if( !fp ) return size_t(0);
-  return fwrite(m_data,sizeof(T),getArrayLength(),fp);
+  size_t ndata = getArrayLength();
+#ifdef CDM_BUFFER_MB_SIZE
+  int bufferMBSize = CDM_BUFFER_MB_SIZE;
+  int bufferSize = bufferMBSize * 1024 * 1024 / sizeof(T);
+//  T* buffer = new T[bufferSize];
+  int bufferIndex = 0;
+  size_t nwrite = 0;
+  while( bufferIndex + bufferSize < ndata ){
+//    memcpy(buffer,&m_data[bufferIndex],bufferSize*sizeof(T));
+//    nwrite += fwrite(buffer,sizeof(T),bufferSize,fp);
+    nwrite += fwrite(m_data+bufferIndex,sizeof(T),bufferSize,fp);
+    bufferIndex += bufferSize;
+  }
+  nwrite += fwrite(m_data+bufferIndex,sizeof(T),ndata-bufferIndex,fp);
+//  memcpy(buffer,&m_data[bufferIndex],(ndata-bufferIndex)*sizeof(T));
+//  nwrite += fwrite(buffer,sizeof(T),ndata-bufferIndex,fp);
+//  delete[] buffer;
+#else
+  size_t nwrite = fwrite(m_data,sizeof(T),ndata,fp);
+#endif
+  return nwrite;
 }
 
 // 配列サイズ分のasciiデータを書き出す(戻り値は読み込んだ要素数)

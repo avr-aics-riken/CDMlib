@@ -49,6 +49,18 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
     //ascii
     if( m_input_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
       double temp;
+#ifdef CDM_ENABLE_BUFFER_TUNING
+      for(int n=0; n<nvariS; n++) {
+        for(int k=0; k<szS[2]; k++) {
+          for(int j=0; j<szB[1]; j++) {
+            for(int i=0; i<szB[0]; i++) {
+              fscanf(fp,"%lf\n",&temp);
+              dataS->val(i,j,k,n) = (T)temp;
+            }
+		  }
+        }
+      }
+#else
       for(int n=0; n<nvariS; n++) {
       for(int k=0; k<nz; k++) {
         //headインデクスをずらす
@@ -65,11 +77,15 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
         //コピー
         dataB->copyArrayNvari(dataS,n);
       }}
-
+#endif
     //Fortran Binary
     } else if( m_input_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
       unsigned int dmy;
       fread(&dmy, sizeof(int), 1, fp);
+#ifdef CDM_ENABLE_BUFFER_TUNING
+      size_t ndata = dataS->getArrayLength();
+      if( dataS->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
+#else
       for(int n=0; n<nvariS; n++) {
       for(int k=0; k<nz; k++) {
         //headインデクスをずらす
@@ -81,10 +97,15 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
         //コピー
         dataB->copyArrayNvari(dataS,n);
       }}
+#endif
       fread(&dmy, sizeof(int), 1, fp);
 
     //binary
     } else {
+#ifdef CDM_ENABLE_BUFFER_TUNING
+      size_t ndata = dataS->getArrayLength();
+      if( dataS->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
+#else
       for(int n=0; n<nvariS; n++) {
       for(int k=0; k<nz; k++) {
         //headインデクスをずらす
@@ -96,6 +117,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
         //コピー
         dataB->copyArrayNvari(dataS,n);
       }}
+#endif
     }
 
   //NIJK (Plot3dの配列形状はIJKN)
