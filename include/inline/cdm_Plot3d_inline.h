@@ -57,7 +57,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
               fscanf(fp,"%lf\n",&temp);
               dataS->val(i,j,k,n) = (T)temp;
             }
-		  }
+          }
         }
       }
 #else
