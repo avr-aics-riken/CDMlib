@@ -49,9 +49,10 @@ void convOutput_PLOT3D::WriteGridData(std::string prefix,
   if( step != 0 ) return; 
 
   int id,jd,kd;
-  id=sz[0]+1;
-  jd=sz[1]+1;
-  kd=sz[2]+1;
+  id=sz[0]; //+1;
+  jd=sz[1]; //+1;
+  kd=sz[2]; //+1;
+  //格子点への補間は行わず、双対セルとして扱うため、+1は不要
   size_t maxsize = (size_t)id*(size_t)jd*(size_t)kd*3;
   size_t outsize = (size_t)id*(size_t)jd*(size_t)kd;
 
@@ -70,10 +71,35 @@ void convOutput_PLOT3D::WriteGridData(std::string prefix,
 }
 
 // #################################################################
+// grid 出力 (不等間隔格子対応版)
+void convOutput_PLOT3D::WriteGridData(std::string prefix,
+                                      int step,
+                                      int myRank,
+                                      int dType,
+                                      int guide,
+                                      cdm_Domain* out_domain,
+                                      cdm_Process* out_process)
+{
+
+  //step 0 以外は出力しない
+  if( step != 0 ) return; 
+
+  int outDtype = m_InputCntl->Get_OutputDataType();
+  if( outDtype == CDM::E_CDM_DTYPE_UNKNOWN ) outDtype = dType;
+
+  if( outDtype == CDM::E_CDM_FLOAT32 ) {
+    OutputPlot3D_xyz<float>(prefix, step, myRank, guide, out_domain, out_process);
+  }else if( outDtype == CDM::E_CDM_FLOAT64 ) {
+    OutputPlot3D_xyz<double>(prefix, step, myRank, guide, out_domain, out_process);
+  }
+
+}
+
+// #################################################################
 // グリッド数の 出力
 void convOutput_PLOT3D::WriteNgrid(FILE* fp, int ngrid)
 {
-  switch (m_InputCntl->Get_OutputFormatType()) {
+  switch (m_InputCntl->Get_OutputFileType()) {
     case CDM::E_CDM_FILE_TYPE_FBINARY:
       unsigned int dmy;
       dmy = sizeof(int);
@@ -97,7 +123,7 @@ void convOutput_PLOT3D::WriteNgrid(FILE* fp, int ngrid)
 void convOutput_PLOT3D::WriteBlockData(FILE* fp, int id, int jd, int kd)
 {
 
-  switch (m_InputCntl->Get_OutputFormatType()) {
+  switch (m_InputCntl->Get_OutputFileType()) {
     case CDM::E_CDM_FILE_TYPE_FBINARY:
       unsigned int dmy;
       dmy = sizeof(int)*3;
@@ -145,7 +171,7 @@ FILE* convOutput_PLOT3D::OutputFile_Open(
 
   //出力ファイルオープン
   // ascii
-  if( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
+  if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
     if( (fp = fopen(outfile.c_str(), "wa")) == NULL ) {
       printf("\tCan't open file.(%s)\n",outfile.c_str());
       Exit(0);
@@ -183,11 +209,13 @@ bool convOutput_PLOT3D::WriteHeaderRecord(
   int ngrid=1;
 
   //ngrid の出力
-  WriteNgrid(fp,ngrid);
+  //WriteNgrid(fp,ngrid);
 
   //block data の出力
   
-  WriteFuncBlockData(fp,imax+1,jmax+1,kmax+1,dim);
+  WriteFuncBlockData(fp,imax,jmax,kmax,dim);
+  //WriteFuncBlockData(fp,imax+1,jmax+1,kmax+1,dim);
+  //格子点への補間は行わず、双対セルとして扱うため、+1は不要
 
   return true;
 
@@ -225,7 +253,7 @@ bool convOutput_PLOT3D::WriteFieldData(FILE* fp,
 void convOutput_PLOT3D::WriteFuncBlockData(FILE* fp, int id, int jd, int kd, int nvar)
 {
 
-  switch (m_InputCntl->Get_OutputFormatType()) {
+  switch (m_InputCntl->Get_OutputFileType()) {
     case CDM::E_CDM_FILE_TYPE_FBINARY:
       unsigned int dmy;
       dmy = sizeof(int)*4;
@@ -258,17 +286,9 @@ void convOutput_PLOT3D::WriteFuncData(FILE* fp, cdm_Array* p3src)
   const int* sz = p3src->getArraySizeInt();
   size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*p3src->getNvari();
 
-  switch (m_InputCntl->Get_OutputFormatType()) {
+  switch (m_InputCntl->Get_OutputFileType()) {
     case CDM::E_CDM_FILE_TYPE_FBINARY:
-      unsigned int dmy;
-      if( p3src->getDataType() == CDM::E_CDM_FLOAT32 ) {
-        dmy = sizeof(float)*dLen;
-      } else {
-        dmy = sizeof(double)*dLen;
-      }
-      WriteDataMarker(dmy,fp,true);
       p3src->writeBinary(fp);      
-      WriteDataMarker(dmy,fp,true);
       break;
     case CDM::E_CDM_FILE_TYPE_ASCII:
       if( p3src->getDataType() == CDM::E_CDM_FLOAT32) {
@@ -293,7 +313,7 @@ void convOutput_PLOT3D::WriteFuncData(FILE* fp, cdm_Array* p3src)
 bool convOutput_PLOT3D::WriteDataMarker(int dmy, FILE* fp, bool out)
 {
   if( !out ) return true;
-  if( m_InputCntl->Get_OutputFormatType() != CDM::E_CDM_FILE_TYPE_FBINARY ) return true;
+  if( m_InputCntl->Get_OutputFileType() != CDM::E_CDM_FILE_TYPE_FBINARY ) return true;
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
   return true;
 }

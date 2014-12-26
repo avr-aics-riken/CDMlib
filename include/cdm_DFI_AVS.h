@@ -54,7 +54,7 @@ public:
     DFI_MPI        = mpi;
     DFI_TimeSlice  = TSlice;
     DFI_Process    = process;
-    m_bgrid_interp_flag = true;
+    m_bgrid_interp_flag = false;
   };
   
   /**　デストラクタ */
@@ -65,7 +65,7 @@ public:
 protected:
 
   /**
-   * @brief sphファイルのヘッダーレコード読込み
+   * @brief avsファイルのヘッダーレコード読込み
    * @param[in]  fp          ファイルポインタ
    * @param[in]  matchEndian エンディアンチェックフラグ true:合致
    * @param[in]  step        ステップ番号
@@ -107,7 +107,7 @@ protected:
   { return CDM::E_CDM_SUCCESS; };
 
   /**
-   * @brief sphファイルのAverageデータレコードの読込み
+   * @brief avsファイルのAverageデータレコードの読込み
    * @param[in]  fp          ファイルポインタ
    * @param[in]  matchEndian true:Endian一致
    * @param[in]  step        読込みstep番号
@@ -124,7 +124,7 @@ protected:
   { return CDM::E_CDM_SUCCESS; };
 
   /**
-   * @brief SPHヘッダファイルの出力
+   * @brief avsヘッダファイルの出力
    * @param[in] fp     ファイルポインタ
    * @param[in] step   ステップ番号
    * @param[in] time   時刻
@@ -138,7 +138,7 @@ protected:
                      const int RankID);
 
   /**
-   * @brief SPHデータレコードの出力
+   * @brief avsデータレコードの出力
    * @param[in]  fp ファイルポインタ
    * @param[in]  val データポインタ
    * @param[in]  gc ガイドセル
@@ -176,18 +176,19 @@ protected:
 
   /**
    * @brief 座標値データファイル出力
-   * @param[in] min_ext 計算領域の最小値
-   * @param[in] max_ext 計算領域の最大値 
+   * @param[in] dims 計算領域のボクセル数
+   * @param[in] gc   ガイドセル数
    */
   bool
-  write_avs_cord(double min_ext[3],
-                 double max_ext[3]); 
+  write_avs_cord(int dims[3],
+                 int gc);
 
   /**
    * @brief ヘッダーデータファイルの出力
+   * @param[in] dims 計算領域のボクセル数
    */
   bool
-  write_avs_header(); 
+  write_avs_header(int dims[3]); 
 
 };
 

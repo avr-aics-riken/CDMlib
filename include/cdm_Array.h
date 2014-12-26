@@ -353,6 +353,12 @@ public:
   virtual int copyArrayNvari( int sta[3], int end[3], cdm_Array *dst, int vari ) = 0;
 //FCONV 20131216.e
 
+  /// 指定した変数の配列のみ取得し、IJK配列でdstにコピー
+  virtual int copyArrayNvari_to_ijk( cdm_Array *dst, int vari, bool ignoreGc=false ) = 0;
+
+  /// 指定した変数の配列のみ範囲指定で取得し、IJK配列でdstにコピー
+  virtual int copyArrayNvari_to_ijk( int sta[3], int end[3], cdm_Array *dst, int vari ) = 0;
+
   /// 粗密データの補間処理を行う
   static cdm_Array* interp_coarse( cdm_Array *src, int &err, bool head0start=true );
 

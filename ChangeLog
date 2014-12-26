@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2014-12-26
+Merge branch advance_develop_FCONV into branch advance_develop
+ブランチadvance_develop_FCONVをブランチadvance_developにマージした。
+競合は発生せずにマージできた。
+
+------------------
 2014-12-10
 Add message when CellID and BCflagID were converted in FCONV
 FCONVのMxN変換およびMx1変換において、読み込んだ各ランクのCellIDとBCflagIDが

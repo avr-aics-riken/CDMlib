@@ -127,7 +127,7 @@ public:
    * @param [in]  step      ステップ番号
    * @param [in]  time      時刻
    * @param [in]  minmax    minmax
-   * @param [in]  Nvari     コンポーネント数
+   * @param [in]  Nvari     変数の個数
    * @param [in]  format    ファイルフォーマット
    * @param [in]  avr_mode  Averageがあるかないかのフラグ
    * @param [in]  step_avr  Average step

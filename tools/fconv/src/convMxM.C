@@ -194,7 +194,7 @@ bool convMxM::mxmsolv(std::string dfiname,
 
   //出力ガイドセルの設定
   int outGc=0;
-  if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
+  if( m_param->Get_OutputGuideCell() > 0 ) outGc = m_param->Get_OutputGuideCell();
   if( outGc > 0 ) {
     const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
     if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
@@ -202,7 +202,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   //間引きありのとき、出力ガイドセルを0に設定
   if( thin_count > 1 ) outGc=0;
   //格子点出力のときガイドセルを0に設定
-  if( m_bgrid_interp_flag ) outGc=0;
+  if( m_param->Get_Interp_flag() ) outGc=0;
 
   //ピッチのセット
   double l_dpit[3];
@@ -214,10 +214,14 @@ bool convMxM::mxmsolv(std::string dfiname,
 
   //全体のボクセルサイズを間引きを考慮して求める
   int voxel[3];
+  /*
   for(int i=0; i<3; i++) {
     voxel[i]=DFI_Domain->GlobalVoxel[i]/thin_count;
     if( DFI_Domain->GlobalVoxel[i]%thin_count != 0 ) voxel[i]++;
   }
+  */
+  //MxMの間引き方法では、上記の方法で全体のボクセルサイズは正しく得られない。
+  for(int i=0; i<3; i++) voxel[i]=DFI_Domain->GlobalVoxel[i];
 
   //間引きを考慮したサイズのセット
   int l_imax_th = DFI_Process->RankList[RankID].VoxelSize[0]/thin_count;
@@ -244,9 +248,17 @@ bool convMxM::mxmsolv(std::string dfiname,
   if( (DFI_Process->RankList[RankID].HeadIndex[2]-1)%thin_count != 0 ) head[2]++;
   //間引き後のオリジンを求める
   double l_dorg[3];
-  l_dorg[0]= DFI_Domain->GlobalOrigin[0]+head[0]*out_dpit[0];
-  l_dorg[1]= DFI_Domain->GlobalOrigin[1]+head[1]*out_dpit[1];
-  l_dorg[2]= DFI_Domain->GlobalOrigin[2]+head[2]*out_dpit[2];
+  l_dorg[0]= DFI_Domain->GlobalOrigin[0];
+  l_dorg[1]= DFI_Domain->GlobalOrigin[1];
+  l_dorg[2]= DFI_Domain->GlobalOrigin[2];
+  //自ノードの計算領域に合わせて原点シフト
+  //(SPH,BOV形式のみ。他の形式については、各形式のクラス内で実施。)
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH || 
+      m_param->Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) {
+    l_dorg[0] += head[0]*out_dpit[0];
+    l_dorg[1] += head[1]*out_dpit[1];
+    l_dorg[2] += head[2]*out_dpit[2];
+  }
 
   //出力タイプのセット
   CDM::E_CDM_DTYPE d_type;
@@ -318,24 +330,171 @@ bool convMxM::mxmsolv(std::string dfiname,
   tail[0]=head[0]+l_imax_th-1;
   tail[1]=head[1]+l_jmax_th-1;
   tail[2]=head[2]+l_kmax_th-1;
-  cdm_DFI* out_dfi = cdm_DFI::WriteInit<double>(
-                     MPI_COMM_WORLD,
-                     "",
-                     m_param->Get_OutputDir(),
-                     DFI_FInfo->Prefix,
-                     m_param->Get_OutputFormat(),
-                     outGc,
-                     d_type,
-                     DFI_FInfo->NumVariables,
-                     "",
-                     voxel,
-                     out_dpit,
-                     l_dorg,
-                     DFI_Domain->GlobalDivision,
-                     head,
-                     tail,
-                     m_HostName,
-                     CDM::E_CDM_OFF);
+
+  cdm_DFI *out_dfi = NULL;
+  if( DFI_FInfo->DFIType == CDM::E_CDM_DFITYPE_CARTESIAN )
+  {
+    //等間隔格子の場合
+    out_dfi = cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
+                                         "",
+                                         m_param->Get_OutputDir(),
+                                         DFI_FInfo->Prefix,
+                                         m_param->Get_OutputFormat(),
+                                         outGc,
+                                         d_type,
+                                         DFI_FInfo->NumVariables,
+                                         "",
+                                         voxel,
+                                         out_dpit,
+                                         l_dorg,
+                                         DFI_Domain->GlobalDivision,
+                                         head,
+                                         tail,
+                                         m_HostName,
+                                         CDM::E_CDM_OFF);
+  }
+  else if( DFI_FInfo->DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN )
+  {
+    //不等間隔格子の場合
+    int head_org[3],tail_org[3]; //間引く前のhead,tail
+    for(int i=0; i<3; i++) {
+      head_org[i] = DFI_Process->RankList[RankID].HeadIndex[i];
+      tail_org[i] = DFI_Process->RankList[RankID].TailIndex[i];
+    }
+
+    if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT32 )
+    {
+      float *coord_X = NULL;
+      float *coord_Y = NULL;
+      float *coord_Z = NULL;
+
+      //全計算領域のサイズの配列を用意し、head,tailで自ランクの座標データをセット
+      coord_X = new float[voxel[0]+1]; //+1はセル数ではなく格子数のため。
+      coord_Y = new float[voxel[1]+1];
+      coord_Z = new float[voxel[2]+1];
+
+      //配列(coord_X,coord_Y,coord_Z)に値をセット
+      /* ＜注意点＞
+       * 間引き時(thin_count>1)は、ガイドセルなし(outGc=0)
+       * 間引かない時(thin_count=1)は、ガイドセルあり(outGc>0)で、head,tailは、head_org,tail_orgと一致
+       */
+      //x
+      for(int ni=-outGc; ni<(l_imax_th+outGc); ni++) {
+        if ( (ni+head[0]-1 >= 0) && (ni+head[0]-1 < voxel[0]+1) ) {
+          coord_X[ni+head[0]-1] = (float)(DFI_Domain->NodeX(head_org[0]-1+ni*thin_count));
+        }
+      }
+      if ( tail[0]+outGc < voxel[0]+1 ) {
+        coord_X[tail[0]+outGc] = (float)(DFI_Domain->NodeX(tail_org[0]+outGc));
+      }
+      //y
+      for(int nj=-outGc; nj<(l_jmax_th+outGc); nj++) {
+        if ( (nj+head[1]-1 >= 0) && (nj+head[1]-1 < voxel[1]+1) ) {
+          coord_Y[nj+head[1]-1] = (float)(DFI_Domain->NodeY(head_org[1]-1+nj*thin_count));
+        }
+      }
+      if ( tail[1]+outGc < voxel[1]+1 ) {
+        coord_Y[tail[1]+outGc] = (float)(DFI_Domain->NodeY(tail_org[1]+outGc));
+      }
+      //z
+      for(int nk=-outGc; nk<(l_kmax_th+outGc); nk++) {
+        if ( (nk+head[2]-1 >= 0) && (nk+head[2]-1 < voxel[2]+1) ) {
+          coord_Z[nk+head[2]-1] = (float)(DFI_Domain->NodeZ(head_org[2]-1+nk*thin_count));
+        }
+      }
+      if ( tail[2]+outGc < voxel[2]+1 ) {
+        coord_Z[tail[2]+outGc] = (float)(DFI_Domain->NodeZ(tail_org[2]+outGc));
+      }
+
+      out_dfi = cdm_DFI::WriteInit<float>(MPI_COMM_WORLD,
+                                          "",
+                                          m_param->Get_OutputDir(),
+                                          DFI_FInfo->Prefix,
+                                          m_param->Get_OutputFormat(),
+                                          outGc,
+                                          d_type,
+                                          DFI_FInfo->NumVariables,
+                                          "",
+                                          voxel,
+                                          coord_X,
+                                          coord_Y,
+                                          coord_Z,
+                                          DFI_Domain->GetCoordinateFile(),
+                                          DFI_Domain->GetCoordinateFileType(),
+                                          DFI_Domain->GetCoordinateFileEndian(),
+                                          DFI_Domain->GlobalDivision,
+                                          head,
+                                          tail,
+                                          m_HostName,
+                                          CDM::E_CDM_OFF);
+    }
+    else if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT64 )
+    {
+      double *coord_X = NULL;
+      double *coord_Y = NULL;
+      double *coord_Z = NULL;
+
+      //全計算領域のサイズの配列を用意し、head,tailで自ランクの座標データをセット
+      coord_X = new double[voxel[0]+1]; //+1はセル数ではなく格子数のため。
+      coord_Y = new double[voxel[1]+1];
+      coord_Z = new double[voxel[2]+1];
+
+      //配列(coord_X,coord_Y,coord_Z)に値をセット
+      /* ＜注意点＞
+       * 間引き時(thin_count>1)は、ガイドセルなし(outGc=0)
+       * 間引かない時(thin_count=1)は、ガイドセルあり(outGc>0)で、head,tailは、head_org,tail_orgと一致
+       */
+      //x
+      for(int ni=-outGc; ni<(l_imax_th+outGc); ni++) {
+        if ( (ni+head[0]-1 >= 0) && (ni+head[0]-1 < voxel[0]+1) ) {
+          coord_X[ni+head[0]-1] = (double)(DFI_Domain->NodeX(head_org[0]-1+ni*thin_count));
+        }
+      }
+      if ( tail[0]+outGc < voxel[0]+1 ) {
+        coord_X[tail[0]+outGc] = (double)(DFI_Domain->NodeX(tail_org[0]+outGc));
+      }
+      //y
+      for(int nj=-outGc; nj<(l_jmax_th+outGc); nj++) {
+        if ( (nj+head[1]-1 >= 0) && (nj+head[1]-1 < voxel[1]+1) ) {
+          coord_Y[nj+head[1]-1] = (double)(DFI_Domain->NodeY(head_org[1]-1+nj*thin_count));
+        }
+      }
+      if ( tail[1]+outGc < voxel[1]+1 ) {
+        coord_Y[tail[1]+outGc] = (double)(DFI_Domain->NodeY(tail_org[1]+outGc));
+      }
+      //z
+      for(int nk=-outGc; nk<(l_kmax_th+outGc); nk++) {
+        if ( (nk+head[2]-1 >= 0) && (nk+head[2]-1 < voxel[2]+1) ) {
+          coord_Z[nk+head[2]-1] = (double)(DFI_Domain->NodeZ(head_org[2]-1+nk*thin_count));
+        }
+      }
+      if ( tail[2]+outGc < voxel[2]+1 ) {
+        coord_Z[tail[2]+outGc] = (double)(DFI_Domain->NodeZ(tail_org[2]+outGc));
+      }
+
+      out_dfi = cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
+                                           "",
+                                           m_param->Get_OutputDir(),
+                                           DFI_FInfo->Prefix,
+                                           m_param->Get_OutputFormat(),
+                                           outGc,
+                                           d_type,
+                                           DFI_FInfo->NumVariables,
+                                           "",
+                                           voxel,
+                                           coord_X,
+                                           coord_Y,
+                                           coord_Z,
+                                           DFI_Domain->GetCoordinateFile(),
+                                           DFI_Domain->GetCoordinateFileType(),
+                                           DFI_Domain->GetCoordinateFileEndian(),
+                                           DFI_Domain->GlobalDivision,
+                                           head,
+                                           tail,
+                                           m_HostName,
+                                           CDM::E_CDM_OFF);
+    }
+  }
   if( out_dfi == NULL ) {
     printf("\tFails to instance dfi\n");
     return false;
@@ -362,8 +521,33 @@ bool convMxM::mxmsolv(std::string dfiname,
   out_dfi->SetcdmProcess(out_Process);
   out_dfi->SetcdmTimeSlice(*TSlice);
 
-  //出力
-  out_dfi->set_output_type(m_param->Get_OutputFormatType());
+  //出力形式（ascii,binary,Fbinary)のセット
+  out_dfi->set_output_type(m_param->Get_OutputFileType());
+
+  //節点への補間フラグのセット(AVSおよびVTK形式)
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
+      m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
+    out_dfi->set_interp_flag(m_param->Get_Interp_flag());
+  }
+
+  //座標データの出力形式のセット(AVS形式)
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS ) {
+    out_dfi->set_output_type_coord(m_param->Get_OutputFileTypeCoord());
+  }
+
+  //gridファイルを出力(PLOT3D形式，iblankはすべて1にセット)
+  if (m_param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D) {
+    size_t size_ib=(l_imax_th+2*outGc)*(l_jmax_th+2*outGc)*(l_kmax_th+2*outGc);
+    int *iblank;
+    iblank = new int[size_ib];
+    for(int i=0; i<size_ib; i++) {
+      iblank[i] = 1;
+    }
+    out_dfi->WriteGridFile(iblank);
+    delete [] iblank;
+  }
+
+  //フィールドデータ出力
   CDM::E_CDM_OUTPUT_FNAME output_fname = m_param->Get_OutputFilenameFormat();
   out_dfi->set_output_fname(output_fname);
   double tmp_minmax[8];

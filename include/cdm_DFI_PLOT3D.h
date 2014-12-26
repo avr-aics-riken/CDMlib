@@ -126,16 +126,17 @@ protected:
    * @param[in] dataS 読込みデータポインタ
    * @param[in] dataB 読込みバッファポインタ
    * @param[in] head  読込みバッファHeadIndex
+   * @param[in] nz    z方向のボクセルサイズ（実セル＋ガイドセル＊２）
    * @param[in] matchEndian true:Endian一致
    */ 
   template<class T>
   CDM::E_CDM_ERRORCODE
   read_Func(FILE* fp,
-  //void read_Func(FILE* fp,
-           cdm_TypeArray<T>* dataS,
-           cdm_TypeArray<T>* dataB,
-           int head[3],
-           bool matchEndian);
+            cdm_TypeArray<T>* dataS,
+            cdm_TypeArray<T>* dataB,
+            int head[3],
+            int nz,
+            bool matchEndian);
 
   /**
    * @brief plot3dヘッダファイルの出力
@@ -186,13 +187,14 @@ protected:
 
   /**
    * @brief xyzを出力
-   * @param [in] fp  出力ファイルポインタ
-   * @param [in] sz  サイズ
-   * @param [in] iblank  iblankデータポインタ
+   * @param [in] fp     出力ファイルポインタ
+   * @param [in] sz     サイズ
+   * @param [in] head   dfiのHeadIndex
+   * @param [in] iblank iblankデータポインタ
    */ 
   template<class T>
   void
-  write_XYZ(FILE* fp, int sz[3], const int* iblank);
+  write_XYZ(FILE* fp, int sz[3], int head[3], const int* iblank);
 
   /**
    * @brief func data 出力

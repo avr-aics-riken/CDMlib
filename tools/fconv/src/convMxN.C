@@ -15,6 +15,7 @@
  */
 
 #include "convMxN.h"
+#include "cdm_NonUniformDomain.h"
 
 // #################################################################
 // コンストラクタ
@@ -38,10 +39,6 @@ void convMxN::VoxelInit()
   int iret=0;
   const cdm_Domain *DFI_Domain = m_in_dfi[0]->GetcdmDomain();
 
-  //ピッチのセット
-  double dfi_pit[3];
-  for(int i=0; i<3; i++) dfi_pit[i]=DFI_Domain->GlobalRegion[i]/(double)DFI_Domain->GlobalVoxel[i];
-
   //入力領域指示のセット
   int IndexStart[3];
   int IndexEnd[3];
@@ -62,7 +59,9 @@ void convMxN::VoxelInit()
 
   //リージョンのセット
   double region[3];
-  for(int i=0; i<3; i++) region[i]=voxel[i]*dfi_pit[i];
+  for(int i=0; i<3; i++) {
+    region[i] = DFI_Domain->NodeX(IndexEnd[i]) - DFI_Domain->NodeX(IndexStart[i]-1);
+  }
 
   //出力領域の分割数の取得
   int* Gdiv = m_param->Get_OutputDivision();
@@ -164,7 +163,12 @@ void convMxN::VoxelInit()
     tail[i]=tmp_tail[i]/thin_count;
   }
 
-  for(int i=0; i<3; i++) org[i]+=double(head[i])*pit[i];
+  //自ノードの計算領域に合わせて原点シフト
+  //(SPH,BOV形式のみ。他の形式については、各形式のクラス内で実施。)
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH || 
+      m_param->Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) {
+    for(int i=0; i<3; i++) org[i]+=double(head[i])*pit[i];
+  }
 
   for(int i=0; i<3; i++) {
     head[i]=head[i]+1;
@@ -193,34 +197,142 @@ void convMxN::VoxelInit()
 
     //出力ガイドセルの設定
     int outGc=0;
-    if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
-    if( outGc > 1 ) {
+    if( m_param->Get_OutputGuideCell() > 0 ) outGc = m_param->Get_OutputGuideCell();
+    if( outGc > 0 ) {
       const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
       if( outGc > DFI_FInfo->GuideCell ) outGc=DFI_FInfo->GuideCell;
     }
     //間引きありのとき、出力ガイドセルを0に設定
     if( thin_count > 1 ) outGc=0;
     //格子点出力のとき、出力ガイドセルを0に設定
-    if( m_bgrid_interp_flag ) outGc=0; 
+    if( m_param->Get_Interp_flag() ) outGc=0; 
 
-    cdm_DFI* dfi=cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
-                          outdfifname,
-                          m_param->Get_OutputDir(),
-                          DFI_FInfo->Prefix,
-                          m_param->Get_OutputFormat(),
-                          //0,
-                          outGc,
-                          d_type,
-                          DFI_FInfo->NumVariables,
-                          outprocfname,
-                          voxel_thin,
-                          pit,
-                          org,
-                          m_Gdiv,
-                          head,
-                          tail,
-                          m_HostName,
-                          CDM::E_CDM_OFF);
+    cdm_DFI *dfi = NULL;
+    if( DFI_FInfo->DFIType == CDM::E_CDM_DFITYPE_CARTESIAN )
+    {
+      //等間隔格子の場合
+      dfi=cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
+                                     outdfifname,
+                                     m_param->Get_OutputDir(),
+                                     DFI_FInfo->Prefix,
+                                     m_param->Get_OutputFormat(),
+                                     outGc,
+                                     d_type,
+                                     DFI_FInfo->NumVariables,
+                                     outprocfname,
+                                     voxel_thin,
+                                     pit,
+                                     org,
+                                     m_Gdiv,
+                                     head,
+                                     tail,
+                                     m_HostName,
+                                     CDM::E_CDM_OFF);
+    }
+    else if( DFI_FInfo->DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN )
+    {
+      //不等間隔格子の場合
+      if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT32 )
+      {
+        float *coord_X = NULL;
+        float *coord_Y = NULL;
+        float *coord_Z = NULL;
+
+        //全計算領域の座標をWriteInitに渡す
+        coord_X = new float[voxel_thin[0]+1]; //+1はセル数ではなく格子数のため。
+        coord_Y = new float[voxel_thin[1]+1];
+        coord_Z = new float[voxel_thin[2]+1];
+
+        //配列(coord_X,coord_Y,coord_Z)に値をセット
+        //x
+        for(int ni=0; ni<voxel_thin[0]; ni++) {
+          coord_X[ni] = (float)(DFI_Domain->NodeX(ni*thin_count));
+        }
+        coord_X[voxel_thin[0]] = (float)(DFI_Domain->NodeX(DFI_Domain->GlobalVoxel[0]));
+        //y
+        for(int nj=0; nj<voxel_thin[1]; nj++) {
+          coord_Y[nj] = (float)(DFI_Domain->NodeY(nj*thin_count));
+        }
+        coord_Y[voxel_thin[1]] = (float)(DFI_Domain->NodeY(DFI_Domain->GlobalVoxel[1]));
+        //z
+        for(int nk=0; nk<voxel_thin[2]; nk++) {
+          coord_Z[nk] = (float)(DFI_Domain->NodeZ(nk*thin_count));
+        }
+        coord_Z[voxel_thin[2]] = (float)(DFI_Domain->NodeZ(DFI_Domain->GlobalVoxel[2]));
+
+        dfi=cdm_DFI::WriteInit<float>(MPI_COMM_WORLD,
+                                      outdfifname,
+                                      m_param->Get_OutputDir(),
+                                      DFI_FInfo->Prefix,
+                                      m_param->Get_OutputFormat(),
+                                      outGc,
+                                      d_type,
+                                      DFI_FInfo->NumVariables,
+                                      outprocfname,
+                                      voxel_thin,
+                                      coord_X,
+                                      coord_Y,
+                                      coord_Z,
+                                      DFI_Domain->GetCoordinateFile(),
+                                      DFI_Domain->GetCoordinateFileType(),
+                                      DFI_Domain->GetCoordinateFileEndian(),
+                                      m_Gdiv,
+                                      head,
+                                      tail,
+                                      m_HostName,
+                                      CDM::E_CDM_OFF);
+      }
+      else if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT64 )
+      {
+        double *coord_X = NULL;
+        double *coord_Y = NULL;
+        double *coord_Z = NULL;
+
+        //全計算領域の座標をWriteInitに渡す
+        coord_X = new double[voxel_thin[0]+1]; //+1はセル数ではなく格子数のため。
+        coord_Y = new double[voxel_thin[1]+1];
+        coord_Z = new double[voxel_thin[2]+1];
+
+        //配列(coord_X,coord_Y,coord_Z)に値をセット
+        //x
+        for(int ni=0; ni<voxel_thin[0]; ni++) {
+          coord_X[ni] = (double)(DFI_Domain->NodeX(ni*thin_count));
+        }
+        coord_X[voxel_thin[0]] = (double)(DFI_Domain->NodeX(DFI_Domain->GlobalVoxel[0]));
+        //y
+        for(int nj=0; nj<voxel_thin[1]; nj++) {
+          coord_Y[nj] = (double)(DFI_Domain->NodeY(nj*thin_count));
+        }
+        coord_Y[voxel_thin[1]] = (double)(DFI_Domain->NodeY(DFI_Domain->GlobalVoxel[1]));
+        //z
+        for(int nk=0; nk<voxel_thin[2]; nk++) {
+          coord_Z[nk] = (double)(DFI_Domain->NodeZ(nk*thin_count));
+        }
+        coord_Z[voxel_thin[2]] = (double)(DFI_Domain->NodeZ(DFI_Domain->GlobalVoxel[2]));
+
+        dfi=cdm_DFI::WriteInit<double>(MPI_COMM_WORLD,
+                                       outdfifname,
+                                       m_param->Get_OutputDir(),
+                                       DFI_FInfo->Prefix,
+                                       m_param->Get_OutputFormat(),
+                                       outGc,
+                                       d_type,
+                                       DFI_FInfo->NumVariables,
+                                       outprocfname,
+                                       voxel_thin,
+                                       coord_X,
+                                       coord_Y,
+                                       coord_Z,
+                                       DFI_Domain->GetCoordinateFile(),
+                                       DFI_Domain->GetCoordinateFileType(),
+                                       DFI_Domain->GetCoordinateFileEndian(),
+                                       m_Gdiv,
+                                       head,
+                                       tail,
+                                       m_HostName,
+                                       CDM::E_CDM_OFF);
+      }
+    }
     if( dfi == NULL ) {
       printf("\tFails to instance dfi\n");
       Exit(0);
@@ -237,7 +349,32 @@ void convMxN::VoxelInit()
     }
 
     //出力形式（ascii,binary,Fbinary)のセット
-    dfi->set_output_type(m_param->Get_OutputFormatType());
+    dfi->set_output_type(m_param->Get_OutputFileType());
+
+    //節点への補間フラグのセット(AVSおよびVTK形式)
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
+        m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
+      dfi->set_interp_flag(m_param->Get_Interp_flag());
+    }
+
+    //座標データの出力形式のセット(AVS形式)
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS ) {
+      dfi->set_output_type_coord(m_param->Get_OutputFileTypeCoord());
+    }
+
+    //gridファイルを出力(PLOT3D形式，iblankはすべて1にセット)
+    if (m_param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D) {
+      int voxel_ib[3];
+      for(int i=0; i<3; i++) voxel_ib[i] = tail[i]-head[i]+1;
+      size_t size_ib=(voxel_ib[0]+2*outGc)*(voxel_ib[1]+2*outGc)*(voxel_ib[2]+2*outGc);
+      int *iblank;
+      iblank = new int[size_ib];
+      for(int i=0; i<size_ib; i++) {
+        iblank[i] = 1;
+      }
+      dfi->WriteGridFile(iblank);
+      delete [] iblank;
+    }
 
     //Unitのセット
     std::string unit;
@@ -373,14 +510,14 @@ bool convMxN::exec()
     int nVari = m_in_dfi[i]->GetNumVariables();
 
     int outGc=0;
-    if( m_param->Get_OutputGuideCell() > 1 ) outGc = m_param->Get_OutputGuideCell();
+    if( m_param->Get_OutputGuideCell() > 0 ) outGc = m_param->Get_OutputGuideCell();
     if( outGc > 0 ) {
       const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
       if( outGc > DFI_FInfo->GuideCell ) outGc = DFI_FInfo->GuideCell;
     }
 
     if( thin_count > 1 ) outGc=0;
-    if( m_bgrid_interp_flag ) outGc=0; 
+    if( m_param->Get_Interp_flag() ) outGc=0; 
 
     //読込みバッファのインスタンス
     cdm_Array* buf = cdm_Array::instanceArray
