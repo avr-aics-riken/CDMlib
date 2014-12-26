@@ -12,6 +12,16 @@ REVISION HISTORY
 
 ------------------
 2014-12-26
+Add buffer tuning for reading BOV file and make other modifications to buffer tuning
+BOV形式のファイル読込みに対してバッファサイズチューニング機能を追加した。
+また、BOV形式のファイル読込みメソッドread_HeaderRecordと、バッファサイズ
+取得メソッドgetBufSizeをインライン関数にした。
+バッファサイズの指定を、ライブラリのコンパイル時ではなく、ライブラリを用いる
+プログラムのコンパイル時に行うようにするため。
+さらに、Plot3d形式において、ascii形式に対してのバッファサイズチューニングを削除した。
+
+------------------
+2014-12-26
 Minor correction in cdm_Plot3d_inline.h
 ファイルcdm_Plot3d_inline.h内のタブをスペースに訂正した。
 
