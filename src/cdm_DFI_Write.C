@@ -114,7 +114,7 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
                           float* org)
 {
 
-  //orign の再設定
+  //origin の再設定
   double d_org[3];
   if( org != NULL ) {
     for(int i=0; i<3; i++) {
@@ -239,7 +239,7 @@ cdm_DFI::WriteGridFile(const int* iblank)
   }
   else
   {
-    std::cout << "This file format has no grid file. " << std::endl;
+    printf("\tError : File format \"%s\" has no grid file.\n", GetFileFormatString().c_str());
     return CDM::E_CDM_ERROR_WRITE_GRIDFILE;
   }
 

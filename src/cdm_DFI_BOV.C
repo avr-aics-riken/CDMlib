@@ -56,58 +56,6 @@ cdm_DFI_BOV::read_HeaderRecord(FILE* fp,
 }
 
 // #################################################################
-// ファイルのデータレコード読込み
-CDM::E_CDM_ERRORCODE
-cdm_DFI_BOV::read_Datarecord(FILE* fp,
-                             bool matchEndian,
-                             cdm_Array* buf,
-                             int head[3],
-                             int nz,
-                             cdm_Array* &src)
-{
-
-  //１層ずつ読み込み
-  int hzB = head[2];
-
-  CDM::E_CDM_ARRAYSHAPE shape = buf->getArrayShape();
-
-  //NIJKの読込み
-  if( shape == CDM::E_CDM_NIJK ) {
-    for( int k=0; k<nz; k++ ) {
-      //headインデクスをずらす
-      head[2]=hzB+k;
-      buf->setHeadIndex(head);
-
-      //１層読み込
-      size_t ndata = buf->getArrayLength();
-      if( buf->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
-
-      // コピー
-      buf->copyArray(src);
-    }
-  }
-  //IJKNの読込み 
-  else if( shape == CDM::E_CDM_IJKN ) {
-    for(int n=0; n<src->getNvari(); n++) {
-    for(int k=0; k<nz; k++) {
-      //headインデックスをずらす
-      head[2]=hzB+k;
-      buf->setHeadIndex(head);
-
-      //１層読み込
-      size_t ndata = buf->getArrayLength();
-      if( buf->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
-
-      //コピー
-      buf->copyArrayNvari(src,n);
-    }}
-  }
-
-  return CDM::E_CDM_SUCCESS;
-
-}
-
-// #################################################################
 // Averaged レコードの読込み
 CDM::E_CDM_ERRORCODE
 cdm_DFI_BOV::read_averaged(FILE* fp,
@@ -243,7 +191,7 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
   fprintf(fp,"DATA_FORMAT: %s\n",dType.c_str());
 
   //DATA_COMPONENT
-  fprintf(fp,"DATA_COMPONENT: %d\n",DFI_Finfo.NumVariables);
+  fprintf(fp,"DATA_COMPONENTS: %d\n",DFI_Finfo.NumVariables);
 
   //VARIABLE:
   fprintf(fp,"VARIABLE: %s\n",DFI_Finfo.Prefix.c_str());
@@ -264,16 +212,16 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
     pch[i]=(DFI_Domain->GlobalRegion[i]/DFI_Domain->GlobalVoxel[i]);
   }
 
-  //BRICK_ORIGN
+  //BRICK_ORIGIN
   double org[3];
   for(int i=0; i<3; i++) org[i]=DFI_Domain->GlobalOrigin[i]+0.5*pch[i];
   if( DFI_Finfo.GuideCell>0 ) for(int i=0; i<3; i++) org[i]=org[i]-pch[i]*(double)DFI_Finfo.GuideCell;
   /*
-  fprintf(fp,"BRICK_ORIGN: %e %e %e\n",DFI_Domain.GlobalOrigin[0],
+  fprintf(fp,"BRICK_ORIGIN: %e %e %e\n",DFI_Domain.GlobalOrigin[0],
                                        DFI_Domain.GlobalOrigin[1],
                                        DFI_Domain.GlobalOrigin[2]);
   */
-  fprintf(fp,"BRICK_ORIGN: %e %e %e\n",org[0],org[1],org[2]);
+  fprintf(fp,"BRICK_ORIGIN: %e %e %e\n",org[0],org[1],org[2]);
 
   //BRICK_SIZE
   fprintf(fp,"BRICK_SIZE: %e %e %e\n",

@@ -44,63 +44,213 @@ cdm_DFI_VTK::write_HeaderRecord(FILE* fp,
   fprintf( fp, "# vtk DataFile Version 2.0\n" );
   fprintf( fp, "step=%d,time=%g\n", step, time );
 
-  if( m_output_type == CDM::E_CDM_FILE_TYPE_BINARY ) {
-    fprintf( fp, "BINARY\n" );
-  } else if( m_output_type ==  CDM::E_CDM_FILE_TYPE_ASCII ) {
+  if( m_output_type ==  CDM::E_CDM_FILE_TYPE_ASCII ) {
     fprintf( fp, "ASCII\n" );
+  } else {
+    fprintf( fp, "BINARY\n" );
   }
 
-  fprintf( fp, "DATASET STRUCTURED_POINTS\n" );
+  if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
+    fprintf( fp, "DATASET STRUCTURED_POINTS\n" );
+  } else if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
+    fprintf( fp, "DATASET RECTILINEAR_GRID\n" );
+  }
 
-  int imax,jmax,kmax;
-  imax = (int)DFI_Process.RankList[n].VoxelSize[0]+(2*(int)DFI_Finfo.GuideCell);
-  jmax = (int)DFI_Process.RankList[n].VoxelSize[1]+(2*(int)DFI_Finfo.GuideCell);
-  kmax = (int)DFI_Process.RankList[n].VoxelSize[2]+(2*(int)DFI_Finfo.GuideCell);
-  fprintf( fp, "DIMENSIONS %d %d %d\n", imax+1, jmax+1, kmax+1 );
+  int sz[3];
+  int head[3];
+  for(int i=0; i<3; i++) {
+    sz[i] = DFI_Process.RankList[n].VoxelSize[i];
+    head[i] = DFI_Process.RankList[n].HeadIndex[i];
+  }
 
-  //double t_org[3];
-  double t_pit[3];
-  for(int i=0; i<3; i++ ) t_pit[i]=DFI_Domain->GlobalRegion[i]/
-                                   (double)DFI_Domain->GlobalVoxel[i];
-  //for(int i=0; i<3; i++ ) t_org[i]=DFI_Domain.GlobalOrigin[i]-(t_pit[0]*0.5);
-  fprintf( fp, "ORIGIN %e %e %e\n",DFI_Domain->GlobalOrigin[0],
-                                   DFI_Domain->GlobalOrigin[1],
-                                   DFI_Domain->GlobalOrigin[2]);
+  int gc = DFI_Finfo.GuideCell;
 
-  fprintf( fp, "ASPECT_RATIO %e %e %e\n", t_pit[0], t_pit[1], t_pit[2] );
+  int imax,jmax,kmax; 
+  if( m_bgrid_interp_flag ) {
+    //格子点補間処理ありの場合は、配列サイズを+1。(ガイドセル出力はなし)
+    imax = sz[0]+1;
+    jmax = sz[1]+1;
+    kmax = sz[2]+1;
+  } else {
+    //ガイドセルも含めた格子点の数
+    imax = sz[0]+2*gc;
+    jmax = sz[1]+2*gc;
+    kmax = sz[2]+2*gc;
+  }
+  fprintf( fp, "DIMENSIONS %d %d %d\n", imax, jmax, kmax );
 
-  //int nw = imax*jmax*kmax;
-  //fprintf( fp, "CELL_DATA %d\n", nw );
-  int nw = (imax+1)*(jmax+1)*(kmax+1);
+  if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
+
+    if( m_bgrid_interp_flag ) {
+      fprintf( fp, "ORIGIN %e %e %e\n",DFI_Domain->NodeX(head[0]-1),
+                                       DFI_Domain->NodeY(head[1]-1),
+                                       DFI_Domain->NodeZ(head[2]-1));
+    } else {
+      fprintf( fp, "ORIGIN %e %e %e\n",DFI_Domain->CellX(head[0]-1-gc),
+                                       DFI_Domain->CellY(head[1]-1-gc),
+                                       DFI_Domain->CellZ(head[2]-1-gc));
+    }
+
+    double t_pit[3];
+    for(int i=0; i<3; i++ ) t_pit[i]=DFI_Domain->GlobalRegion[i]/
+                                     (double)DFI_Domain->GlobalVoxel[i];
+    fprintf( fp, "ASPECT_RATIO %e %e %e\n", t_pit[0], t_pit[1], t_pit[2] );
+
+  } else if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
+
+    std::string d_type_coord;
+    if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT32 ) {
+      d_type_coord = "float";
+    } else if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT64 ) {
+      d_type_coord = "double";
+    }
+
+    //ascii
+    if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
+
+      if( m_bgrid_interp_flag ) {
+        //格子点補間する場合(ガイドセル出力はなし)
+        //x
+        fprintf( fp, "X_COORDINATES %d %s\n", imax, d_type_coord.c_str() );
+        for (int i=0; i<sz[0]; i++ ) {
+          fprintf( fp, "%e ", DFI_Domain->NodeX(i+head[0]-1) );
+        }
+        fprintf( fp, "%e\n", DFI_Domain->NodeX(sz[0]+head[0]-1) );
+
+        //y
+        fprintf( fp, "Y_COORDINATES %d %s\n", jmax, d_type_coord.c_str() );
+        for (int j=0; j<sz[1]; j++ ) {
+          fprintf( fp, "%e ", DFI_Domain->NodeY(j+head[1]-1) );
+        }
+        fprintf( fp, "%e\n", DFI_Domain->NodeY(sz[1]+head[1]-1) );
+
+        //z
+        fprintf( fp, "Z_COORDINATES %d %s\n", kmax, d_type_coord.c_str() );
+        for (int k=0; k<sz[2]; k++ ) {
+          fprintf( fp, "%e ", DFI_Domain->NodeZ(k+head[2]-1) );
+        }
+        fprintf( fp, "%e\n", DFI_Domain->NodeZ(sz[2]+head[2]-1) );
+
+      } else {
+
+        //x
+        fprintf( fp, "X_COORDINATES %d %s\n", imax, d_type_coord.c_str() );
+        for (int i=0; i<sz[0]+2*gc-1; i++ ) {
+          fprintf( fp, "%e ", DFI_Domain->CellX(i+head[0]-1-gc) );
+        }
+        fprintf( fp, "%e\n", DFI_Domain->CellX(sz[0]+gc+head[0]-2) );
+
+        //y
+        fprintf( fp, "Y_COORDINATES %d %s\n", jmax, d_type_coord.c_str() );
+        for (int j=0; j<sz[1]+2*gc-1; j++ ) {
+          fprintf( fp, "%e ", DFI_Domain->CellY(j+head[1]-1-gc) );
+        }
+        fprintf( fp, "%e\n", DFI_Domain->CellY(sz[1]+gc+head[1]-2) );
+
+        //z
+        fprintf( fp, "Z_COORDINATES %d %s\n", kmax, d_type_coord.c_str() );
+        for (int k=0; k<sz[2]+2*gc-1; k++ ) {
+          fprintf( fp, "%e ", DFI_Domain->CellZ(k+head[2]-1-gc) );
+        }
+        fprintf( fp, "%e\n", DFI_Domain->CellZ(sz[2]+gc+head[2]-2) );
+
+      }
+
+    //binary
+    } else {
+
+      if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT32 ) {
+
+        float *coord_X = NULL;
+        float *coord_Y = NULL;
+        float *coord_Z = NULL;
+        coord_X = new float[imax];
+        coord_Y = new float[jmax];
+        coord_Z = new float[kmax];
+
+        if( m_bgrid_interp_flag ) {
+          //格子点補間する場合(ガイドセル出力はなし)
+          for(int i=0; i<sz[0]+1; i++) coord_X[i] = (float)(DFI_Domain->NodeX(i+head[0]-1));
+          for(int j=0; j<sz[1]+1; j++) coord_Y[j] = (float)(DFI_Domain->NodeY(j+head[1]-1));
+          for(int k=0; k<sz[2]+1; k++) coord_Z[k] = (float)(DFI_Domain->NodeZ(k+head[2]-1));
+        } else {
+          for(int i=0; i<sz[0]+2*gc; i++) coord_X[i] = (float)(DFI_Domain->CellX(i+head[0]-1-gc));
+          for(int j=0; j<sz[1]+2*gc; j++) coord_Y[j] = (float)(DFI_Domain->CellY(j+head[1]-1-gc));
+          for(int k=0; k<sz[2]+2*gc; k++) coord_Z[k] = (float)(DFI_Domain->CellZ(k+head[2]-1-gc));
+        }
+
+        //x
+        fprintf( fp, "X_COORDINATES %d %s\n", imax, d_type_coord.c_str() );
+        BSWAPVEC(coord_X,imax);
+        fwrite(coord_X, sizeof(float), imax, fp);
+        fprintf( fp, "\n" );
+
+        //y
+        fprintf( fp, "Y_COORDINATES %d %s\n", jmax, d_type_coord.c_str() );
+        BSWAPVEC(coord_Y,jmax);
+        fwrite(coord_Y, sizeof(float), jmax, fp);
+        fprintf( fp, "\n" );
+
+        //z
+        fprintf( fp, "Z_COORDINATES %d %s\n", kmax, d_type_coord.c_str() );
+        BSWAPVEC(coord_Z,kmax);
+        fwrite(coord_Z, sizeof(float), kmax, fp);
+        fprintf( fp, "\n" );
+
+        delete [] coord_X;
+        delete [] coord_Y;
+        delete [] coord_Z;
+
+      } else if( DFI_Domain->GetCoordinateFilePrecision() == CDM::E_CDM_FLOAT64 ) {
+
+        double *coord_X = NULL;
+        double *coord_Y = NULL;
+        double *coord_Z = NULL;
+        coord_X = new double[imax];
+        coord_Y = new double[jmax];
+        coord_Z = new double[kmax];
+
+        if( m_bgrid_interp_flag ) {
+          //格子点補間する場合(ガイドセル出力はなし)
+          for(int i=0; i<sz[0]+1; i++) coord_X[i] = (double)(DFI_Domain->NodeX(i+head[0]-1));
+          for(int j=0; j<sz[1]+1; j++) coord_Y[j] = (double)(DFI_Domain->NodeY(j+head[1]-1));
+          for(int k=0; k<sz[2]+1; k++) coord_Z[k] = (double)(DFI_Domain->NodeZ(k+head[2]-1));
+        } else {
+          for(int i=0; i<sz[0]+2*gc; i++) coord_X[i] = (double)(DFI_Domain->CellX(i+head[0]-1-gc));
+          for(int j=0; j<sz[1]+2*gc; j++) coord_Y[j] = (double)(DFI_Domain->CellY(j+head[1]-1-gc));
+          for(int k=0; k<sz[2]+2*gc; k++) coord_Z[k] = (double)(DFI_Domain->CellZ(k+head[2]-1-gc));
+        }
+
+        //x
+        fprintf( fp, "X_COORDINATES %d %s\n", imax, d_type_coord.c_str() );
+        DBSWAPVEC(coord_X,imax);
+        fwrite(coord_X, sizeof(double), imax, fp);
+        fprintf( fp, "\n" );
+
+        //y
+        fprintf( fp, "Y_COORDINATES %d %s\n", jmax, d_type_coord.c_str() );
+        DBSWAPVEC(coord_Y,jmax);
+        fwrite(coord_Y, sizeof(double), jmax, fp);
+        fprintf( fp, "\n" );
+
+        //z
+        fprintf( fp, "Z_COORDINATES %d %s\n", kmax, d_type_coord.c_str() );
+        DBSWAPVEC(coord_Z,kmax);
+        fwrite(coord_Z, sizeof(double), kmax, fp);
+        fprintf( fp, "\n" );
+
+        delete [] coord_X;
+        delete [] coord_Y;
+        delete [] coord_Z;
+
+      }
+
+    }
+
+  }
+
+  int nw = imax*jmax*kmax;
   fprintf( fp, "POINT_DATA %d\n", nw );
-
-  std::string d_type;
-  if(      DFI_Finfo.DataType == CDM::E_CDM_UINT8  ) d_type="unsigned_char";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_INT8   ) d_type="char";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT16 ) d_type="unsigned_short";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_INT16  ) d_type="short";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT32 ) d_type="unsigned_int";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_INT32  ) d_type="int";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT64 ) d_type="unsigned_long";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_INT64  ) d_type="long";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32) d_type="float";
-  else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64) d_type="double";
-
-  if( DFI_Finfo.NumVariables == 1 )
-  {
-    fprintf( fp, "SCALARS %s %s\n", DFI_Finfo.Prefix.c_str(),d_type.c_str() );
-    fprintf( fp, "LOOKUP_TABLE default\n" );
-  }
-  else if( DFI_Finfo.NumVariables == 3 )
-  {
-    fprintf( fp, "VECTORS %s %s\n", DFI_Finfo.Prefix.c_str(),d_type.c_str() );
-  }
-  else
-  {
-    fprintf( fp, "FIELD %s 1\n", DFI_Finfo.Prefix.c_str() );
-    fprintf( fp, "%s %d %d %s\n", DFI_Finfo.Prefix.c_str(), DFI_Finfo.NumVariables, 
-             nw, d_type.c_str() );
-  }
 
   return CDM::E_CDM_SUCCESS;
 }
@@ -115,80 +265,118 @@ cdm_DFI_VTK::write_DataRecord(FILE* fp,
 {
 
   const int* sz = val->getArraySizeInt();
-  size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*val->getNvari();
+  size_t dLen;
+  if( !m_bgrid_interp_flag ) {
+    dLen = (size_t)(sz[0]+2*gc)*(size_t)(sz[1]+2*gc)*(size_t)(sz[2]+2*gc);
+  } else {
+    dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2];
+  }
 
-  if( m_output_type == CDM::E_CDM_FILE_TYPE_BINARY ) {
+  std::string d_type;
+  if(      DFI_Finfo.DataType == CDM::E_CDM_UINT8  ) d_type="unsigned_char";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT8   ) d_type="char";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT16 ) d_type="unsigned_short";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT16  ) d_type="short";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT32 ) d_type="unsigned_int";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT32  ) d_type="int";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_UINT64 ) d_type="unsigned_long";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_INT64  ) d_type="long";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32) d_type="float";
+  else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64) d_type="double";
 
-    //出力実数タイプがuint8のとき
-    if( val->getDataType() == CDM::E_CDM_UINT8 ) {
-      unsigned char *data = (unsigned char*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(unsigned char), dLen, fp );
+  cdm_Array *out = cdm_Array::instanceArray
+                   (val->getDataType(),
+                    CDM::E_CDM_IJKN,
+                    (int *)sz,
+                    val->getGc(),
+                    1); //変数毎に出力するので、変数の個数は1
 
-    //出力実数タイプがint8のとき
-    }else if( val->getDataType() == CDM::E_CDM_INT8 ) {
-      char *data = (char*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(char), dLen, fp );
+  for(int nv=0; nv<DFI_Finfo.NumVariables; nv++) {
 
-    //出力実数タイプがuint16のとき
-    }else if( val->getDataType() == CDM::E_CDM_UINT16 ) {
-      unsigned short *data = (unsigned short*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(unsigned short), dLen, fp );
+    fprintf( fp, "SCALARS %s %s\n", getVariableName(nv).c_str(),d_type.c_str() );
+    fprintf( fp, "LOOKUP_TABLE default\n" );
 
-    //出力実数タイプがint16のとき
-    }else if( val->getDataType() == CDM::E_CDM_INT16 ) {
-      short *data = (short*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(short), dLen, fp );
-
-    //出力実数タイプがuint32のとき
-    }else if( val->getDataType() == CDM::E_CDM_UINT32 ) {
-      unsigned int *data = (unsigned int*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(unsigned int), dLen, fp );
-
-    //出力実数タイプがint32のとき
-    }else if( val->getDataType() == CDM::E_CDM_INT32 ) {
-      int *data = (int*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(int), dLen, fp );
-
-    //出力実数タイプがuint64のとき
-    }else if( val->getDataType() == CDM::E_CDM_UINT64 ) {
-      unsigned long long *data = (unsigned long long*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(unsigned long long), dLen, fp );
-
-    //出力実数タイプがint64のとき
-    }else if( val->getDataType() == CDM::E_CDM_INT64 ) {
-      long long *data = (long long*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(long long), dLen, fp );
-
-    //出力実数タイプがfloatのとき
-    }else if( val->getDataType() == CDM::E_CDM_FLOAT32 ) {
-      float *data = (float*)val->getData();
-      BSWAPVEC(data,dLen);
-      fwrite( data, sizeof(float), dLen, fp );
-
-    //出力実数タイプがdoubleのとき
-    }else if( val->getDataType() == CDM::E_CDM_FLOAT64 ) {
-      double *data = (double*)val->getData();
-      DBSWAPVEC(data,dLen);
-      fwrite( data, sizeof(double), dLen, fp );
+    if( val->copyArrayNvari_to_ijk(out,nv) != 0 ) {
+      printf("\tError : copyArrayNvari_to_ijk in class cdm_DFI_VTK\n");
+      return CDM::E_CDM_ERROR_WRITE_FIELD_DATA_RECORD;
     }
 
-    fprintf( fp, "\n" );
-  } else if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
+    //ascii
+    if( m_output_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
 
-    
-    if( val->writeAscii(fp) != dLen ) {
-      return CDM::E_CDM_ERROR;
+      if( out->writeAscii(fp) != dLen ) {
+        return CDM::E_CDM_ERROR_WRITE_FIELD_DATA_RECORD;
+      }
+      fprintf( fp, "\n" );
+
+    //binary
+    } else {
+
+      //出力実数タイプがuint8のとき
+      if( out->getDataType() == CDM::E_CDM_UINT8 ) {
+        unsigned char *data = (unsigned char*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(unsigned char), dLen, fp );
+
+      //出力実数タイプがint8のとき
+      }else if( out->getDataType() == CDM::E_CDM_INT8 ) {
+        char *data = (char*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(char), dLen, fp );
+
+      //出力実数タイプがuint16のとき
+      }else if( out->getDataType() == CDM::E_CDM_UINT16 ) {
+        unsigned short *data = (unsigned short*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(unsigned short), dLen, fp );
+
+      //出力実数タイプがint16のとき
+      }else if( out->getDataType() == CDM::E_CDM_INT16 ) {
+        short *data = (short*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(short), dLen, fp );
+
+      //出力実数タイプがuint32のとき
+      }else if( out->getDataType() == CDM::E_CDM_UINT32 ) {
+        unsigned int *data = (unsigned int*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(unsigned int), dLen, fp );
+
+      //出力実数タイプがint32のとき
+      }else if( out->getDataType() == CDM::E_CDM_INT32 ) {
+        int *data = (int*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(int), dLen, fp );
+
+      //出力実数タイプがuint64のとき
+      }else if( out->getDataType() == CDM::E_CDM_UINT64 ) {
+        unsigned long long *data = (unsigned long long*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(unsigned long long), dLen, fp );
+
+      //出力実数タイプがint64のとき
+      }else if( out->getDataType() == CDM::E_CDM_INT64 ) {
+        long long *data = (long long*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(long long), dLen, fp );
+
+      //出力実数タイプがfloatのとき
+      }else if( out->getDataType() == CDM::E_CDM_FLOAT32 ) {
+        float *data = (float*)out->getData();
+        BSWAPVEC(data,dLen);
+        fwrite( data, sizeof(float), dLen, fp );
+
+      //出力実数タイプがdoubleのとき
+      }else if( out->getDataType() == CDM::E_CDM_FLOAT64 ) {
+        double *data = (double*)out->getData();
+        DBSWAPVEC(data,dLen);
+        fwrite( data, sizeof(double), dLen, fp );
+      }
+
+      fprintf( fp, "\n" );
+
     }
-    fprintf( fp, "\n" );
-  
+
   }
   return CDM::E_CDM_SUCCESS;
 }

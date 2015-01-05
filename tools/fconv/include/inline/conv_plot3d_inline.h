@@ -75,9 +75,10 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
   id=(id-1)/thin_count;
   jd=(jd-1)/thin_count;
   kd=(kd-1)/thin_count;
-  id=id+1;
-  jd=jd+1;
-  kd=kd+1;
+  //id=id+1;
+  //jd=jd+1;
+  //kd=kd+1;
+  //格子点への補間は行わず、双対セルとして扱うため、+1は不要
   if(irest!=0) id=id+1;
   if(jrest!=0) jd=jd+1;
   if(krest!=0) kd=kd+1;
@@ -106,7 +107,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
     
   //open file
   FILE*fp;
-  if( m_InputCntl->Get_OutputFormatType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
+  if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
     if( (fp = fopen(tmp.c_str(), "wa")) == NULL ) {
       printf("\tCan't open file.(%s)\n",tmp.c_str());
       Exit(0);
@@ -119,7 +120,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
   }
     
   //write block data
-  WriteNgrid(fp,ngrid);//if multi grid
+  //WriteNgrid(fp,ngrid);//if multi grid
   WriteBlockData(fp,id,jd,kd);
     
   for(int k=0;k<kd;k++){
@@ -206,7 +207,7 @@ convOutput_PLOT3D::WriteXYZData(FILE* fp,
   int s12 =(size_t)id*(size_t)jd;
   int ns12=s12/10;
 
-  switch (m_InputCntl->Get_OutputFormatType()) {
+  switch (m_InputCntl->Get_OutputFileType()) {
 
     //Fortran Binary 出力
     case CDM::E_CDM_FILE_TYPE_FBINARY:
@@ -281,4 +282,165 @@ convOutput_PLOT3D::WriteXYZ_FORMATTED(FILE* fp,
 
 }
  
+// #################################################################
+// output xyz file (不等間隔格子対応版)
+template<class T>
+CONV_INLINE
+void 
+convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
+                                    int step,
+                                    int rank,
+                                    int gc,
+                                    cdm_Domain* out_domain,
+                                    cdm_Process* out_process)
+{
+
+  // 出力ファイル名
+  std::string tmp;
+  int fnameformat = m_InputCntl->Get_OutputFilenameFormat();
+  tmp = m_InputCntl->Get_OutputDir() +"/"+ 
+        cdm_DFI::Generate_FileName(prefix,
+                                   rank,
+                                   //step,
+                                   -1,
+                                   "xyz",
+                                   (CDM::E_CDM_OUTPUT_FNAME)fnameformat,
+                                   false,
+                                   CDM::E_CDM_OFF);
+
+  //open file
+  FILE*fp;
+  if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
+    if( (fp = fopen(tmp.c_str(), "wa")) == NULL ) {
+      printf("\tCan't open file.(%s)\n",tmp.c_str());
+      Exit(0);
+    }
+  } else {
+    if( (fp = fopen(tmp.c_str(), "wb")) == NULL ) {
+      printf("\tCan't open file.(%s)\n",tmp.c_str());
+      Exit(0);
+    }
+  }
+
+  int sz[3];
+  int head[3];
+  for(int i=0; i<3; i++) {
+    sz[i] = out_process->RankList[rank].VoxelSize[i];
+    head[i] = out_process->RankList[rank].HeadIndex[i];
+  }
+
+  int ngrid=1;
+  int id,jd,kd;//出力サイズ(ガイドセル含む)
+  id = sz[0]+2*gc;
+  jd = sz[1]+2*gc;
+  kd = sz[2]+2*gc;
+
+  //write block data
+  //WriteNgrid(fp,ngrid);//if multi grid
+  WriteBlockData(fp,id,jd,kd);
+
+  size_t sz3d = (size_t)id*(size_t)jd*(size_t)kd;
+
+  T *x = new T[sz3d];
+  T *y = new T[sz3d];
+  T *z = new T[sz3d];
+  size_t ip;
+  for(int k=0;k<kd;k++){
+  for(int j=0;j<jd;j++){
+  for(int i=0;i<id;i++){
+    //配列x,y,zのインデックスの一次元化
+    size_t ip = k*(id*jd)+j*(id)+i;
+    x[ip] = (T)(out_domain->CellX(i+head[0]-1-gc));
+    y[ip] = (T)(out_domain->CellY(j+head[1]-1-gc));
+    z[ip] = (T)(out_domain->CellZ(k+head[2]-1-gc));
+  }}}
+
+  int *iblank = new int[sz3d];
+  for(int i=0; i<sz3d; i++) iblank[i] = 1;
+
+  //write
+  if(!WriteXYZData(fp, sz3d, x, y, z, iblank)) printf("\terror WriteXYZData\n");
+
+  delete [] x;
+  delete [] y;
+  delete [] z;
+  delete [] iblank;
+
+  //close file
+  fclose(fp);
+    
+}
+
+// #################################################################
+// gridデータ出力 (不等間隔格子対応版)
+template<class T>
+CONV_INLINE
+bool
+convOutput_PLOT3D::WriteXYZData(FILE* fp,
+                                size_t sz3d,
+                                T* x,
+                                T* y,
+                                T* z,
+                                int* iblank)
+{
+
+  unsigned int dmy;
+
+  switch (m_InputCntl->Get_OutputFileType()) {
+
+    //Fortran Binary 出力
+    case CDM::E_CDM_FILE_TYPE_FBINARY:
+      dmy = sizeof(T)*sz3d*3 + sizeof(int)*sz3d;
+      WriteDataMarker(dmy,fp,true);
+      fwrite(x, sizeof(T), sz3d, fp);
+      fwrite(y, sizeof(T), sz3d, fp);
+      fwrite(z, sizeof(T), sz3d, fp);
+      fwrite(iblank, sizeof(int), sz3d, fp);
+      WriteDataMarker(dmy,fp,true);
+      break;
+
+    //ascii 出力
+    case CDM::E_CDM_FILE_TYPE_ASCII:
+      WriteXYZ_FORMATTED(fp, sz3d, x);
+      WriteXYZ_FORMATTED(fp, sz3d, y);
+      WriteXYZ_FORMATTED(fp, sz3d, z);
+      WriteXYZ_FORMATTED(fp, sz3d, iblank);
+      break;
+
+    //C Binary 出力
+    case CDM::E_CDM_FILE_TYPE_BINARY:
+      fwrite(x, sizeof(T), sz3d, fp);
+      fwrite(y, sizeof(T), sz3d, fp);
+      fwrite(z, sizeof(T), sz3d, fp);
+      fwrite(iblank, sizeof(int), sz3d, fp);
+      break;
+    default:
+      return false;
+      break;
+
+  }
+  return true;
+}
+
+// #################################################################
+// gridデータ Formatted 出力 (IBLANK対応版)
+template<class T>
+CONV_INLINE
+void
+convOutput_PLOT3D::WriteXYZ_FORMATTED(FILE* fp,
+                                      size_t sz3d,
+                                      T* tmp)
+{
+  if( typeid(T) == typeid(int) ){
+    for(int i=0; i<sz3d; i++) {
+      fprintf(fp,"%2d\n", tmp[i]);
+    }
+  } else {
+    for(int i=0; i<sz3d; i++) {
+      fprintf(fp,"%15.6E\n",tmp[i]);
+    }
+  }
+
+}
+
 #endif // _CONV_PLOT3D_INLINE_H_ 

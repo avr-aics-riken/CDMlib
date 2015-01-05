@@ -67,6 +67,7 @@ CDM_inline_include_HEADERS = \
     $(top_builddir)/include/inline/cdm_Array_inline.h \
     $(top_builddir)/include/inline/cdm_DFI_inline.h \
     $(top_builddir)/include/inline/cdm_Plot3d_inline.h \
+    $(top_builddir)/include/inline/cdm_BOV_inline.h \
     $(top_builddir)/include/inline/cdm_NonUniformDomain_inline.h
 
 

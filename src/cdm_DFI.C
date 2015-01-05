@@ -34,6 +34,7 @@ cdm_DFI::cdm_DFI()
 
  m_input_type = CDM::E_CDM_FILE_TYPE_DEFAULT;
  m_output_type = CDM::E_CDM_FILE_TYPE_DEFAULT;
+ m_output_type_coord = CDM::E_CDM_FILE_TYPE_BINARY;
  m_output_fname = CDM::E_CDM_FNAME_DEFAULT;
 
 }
@@ -394,6 +395,22 @@ std::string cdm_DFI::GetDataTypeString()
 CDM::E_CDM_DTYPE cdm_DFI::GetDataType()
 {
   return (CDM::E_CDM_DTYPE)DFI_Finfo.DataType;
+}
+
+// #################################################################
+// dfi種別の取り出し(文字列)
+std::string cdm_DFI::GetDFITypeString()
+{
+  if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) return D_CDM_DFITYPE_CARTESIAN;
+  if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) return D_CDM_DFITYPE_NON_UNIFORM_CARTESIAN;
+  return "";
+}
+
+// #################################################################
+// dfi種別の取り出し(e_num)
+CDM::E_CDM_DFITYPE cdm_DFI::GetDFIType()
+{
+  return (CDM::E_CDM_DFITYPE)DFI_Finfo.DFIType;
 }
 
 //FCONV 20140123.s

@@ -108,6 +108,18 @@ public:
     return GlobalOrigin[2] + Pitch[2]*k;
   }
 
+  /** 座標ファイル名を取得 */
+  virtual std::string GetCoordinateFile() const{};
+
+  /** 座標ファイルのファイルタイプを取得 */
+  virtual CDM::E_CDM_FILE_TYPE GetCoordinateFileType() const{};
+
+  /** 座標ファイルのデータ精度を取得 */
+  virtual CDM::E_CDM_DTYPE GetCoordinateFilePrecision() const{};
+
+  /** 座標ファイルのエンディアンタイプを取得 */
+  virtual CDM::E_CDM_ENDIANTYPE GetCoordinateFileEndian() const{};
+
   /**
    * @brief read Domain(proc.dfi)
    * @param [in]   tpCntl  cdm_TextParserクラス 

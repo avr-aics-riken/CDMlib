@@ -110,7 +110,7 @@ cdm_Domain::Read(cdm_TextParser tpCntl,
   double v[3];
   int iv[3];
 
-  //GlobalOrign
+  //GlobalOrigin
   label = "/Domain/GlobalOrigin";
   for (int n=0; n<3; n++) v[n]=0.0;
   if ( !(tpCntl.GetVector(label, v, 3 )) ) 

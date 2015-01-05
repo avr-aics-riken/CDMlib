@@ -19,6 +19,7 @@
  */
 
 #include "convOutput.h"
+#include <typeinfo>
 
 class convOutput_PLOT3D : public convOutput {
 
@@ -54,6 +55,23 @@ public:
                      double pit[3],
                      int sz[3]); 
 
+  /**
+   * @brief GRID ファイル出力 (不等間隔格子対応版)
+   * @param [in] prefix      ファイル接頭文字
+   * @param [in] step        step番号
+   * @param [in] myRank      ランク番号
+   * @param [in] dType       dfiのデータタイプ
+   * @param [in] guide       ガイドセル数
+   * @param [in] out_domain  出力用のdomainインスタンス
+   * @param [in] out_process 出力用のprocessインスタンス
+   */
+  void WriteGridData(std::string prefix,
+                     int step,
+                     int myRank,
+                     int dType,
+                     int guide,
+                     cdm_Domain* out_domain,
+                     cdm_Process* out_process);
 
   /**
    * @brief xyzファイルの出力(template 関数)
@@ -80,6 +98,22 @@ public:
                         T2* y, 
                         T2* z);
 
+  /**
+   * @brief xyzファイルの出力(不等間隔格子対応版)
+   * @param [in] prefix ファイル接頭文字
+   * @param [in] step   ステップ
+   * @param [in] rank   ランク
+   * @param [in] guide  ガイドセル数
+   * @param [in] out_domain  出力用のdomainインスタンス
+   * @param [in] out_process 出力用のprocessインスタンス
+   */
+  template<class T>
+  void OutputPlot3D_xyz(std::string prefix,
+                        int step,
+                        int rank,
+                        int guide,
+                        cdm_Domain* out_domain,
+                        cdm_Process* out_process);
 
   /**
    * @brief グリッド数の書き出し
@@ -123,6 +157,24 @@ public:
                T*  z);
 
   /**
+   * @brief gridデータ出力 (不等間隔格子対応版)
+   * @param [in] fp      出力ファイルポインタ
+   * @param [in] sz3d    データサイズ
+   * @param [in] x       x座標値データポインタ
+   * @param [in] y       y座標値データポインタ
+   * @param [in] z       z座標値データポインタ
+   * @param [in] iblank  iblankデータポインタ
+   */ 
+  template<class T>
+  bool
+  WriteXYZData(FILE* fp,
+               size_t sz3d,
+               T* x,
+               T* y,
+               T* z,
+               int* iblank);
+
+  /**
    * @brief Formatted 出力
    * @param [in] fp  出力ファイルポインタ
    * @param [in] id  i方向サイズ
@@ -137,6 +189,18 @@ public:
                      int jd,
                      int kd,
                      T* x); 
+
+  /**
+   * @brief Formatted 出力 (IBLANK対応版)
+   * @param [in] fp   出力ファイルポインタ
+   * @param [in] sz3d データサイズ
+   * @param [in] tmp  出力データポインタ
+   */
+  template<class T>
+  void
+  WriteXYZ_FORMATTED(FILE *fp,
+                     size_t sz3d,
+                     T* tmp); 
 
   /**
    * @brief 出力ファイルをオープンする
