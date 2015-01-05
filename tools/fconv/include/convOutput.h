@@ -107,6 +107,25 @@ public:
                 int sz[3]) {};
 
   /**
+   * @brief grid 出力(plot3d用, 不等間隔格子対応版)
+   * @param [in] prefix ファイル接頭文字
+   * @param [in] step   step番号
+   * @param [in] myRank ランク番号
+   * @param [in] dType  dfiのデータタイプ
+   * @param [in] guide  ガイドセル数
+   * @param [in] out_domain  出力用のdomainインスタンス
+   * @param [in] out_process 出力用のprocessインスタンス
+   */
+  virtual void
+  WriteGridData(std::string prefix, 
+                int step,
+                int myRank,
+                int dType,
+                int guide,
+                cdm_Domain* out_domain,
+                cdm_Process* out_proces) {};
+
+  /**
    * @brief ファイルのheaderの書き込み
    * @param[in] step     ステップ数
    * @param[in] dim      変数の個数
@@ -135,6 +154,32 @@ public:
   { return true; };
 
   /**
+   * @brief ファイルのheaderの書き込み(vtk用、不等間隔格子対応版)
+   * @param[in] step        ステップ数
+   * @param[in] time        時間
+   * @param[in] dim         変数の個数
+   * @param[in] d_type      データ型タイプ
+   * @param[in] dfi_type    dfi種別
+   * @param[in] out_domain  出力用のdomainインスタンス
+   * @param[in] out_process 出力用のprocessインスタンス
+   * @param[in] gc          出力ガイドセル数
+   * @param[in] prefix      ファイル接頭文字
+   * @param[in] fp          出力ファイルポインタ
+   */
+  virtual bool
+  WriteHeaderRecord(int step,
+                    double time,
+                    int dim,
+                    CDM::E_CDM_DTYPE d_type,
+                    CDM::E_CDM_DFITYPE dfi_type,
+                    cdm_Domain* out_domain,
+                    cdm_Process* out_process,
+                    int gc,
+                    const std::string prefix,
+                    FILE *fp)
+  { return true; };
+
+  /**
    * @brief Field Datat 出力
    * @param [in] fp     出力ファイルポインタ
    * @param [in] src    出力データ配列ポインタ
@@ -144,6 +189,24 @@ public:
   WriteFieldData(FILE* fp, 
                  cdm_Array* src, 
                  size_t dLen);
+
+  /**
+   * @brief Field Datat 出力 (vtk用)
+   * @param [in] fp            出力ファイルポインタ
+   * @param [in] src           出力データ配列ポインタ
+   * @param [in] dLen          出力データサイズ
+   * @param [in] d_type        データ型タイプ
+   * @param [in] flag_variname VTK形式における変数名出力フラグ
+   * @param [in] variname      VTK形式で出力する変数名
+   */
+  virtual bool
+  WriteFieldData(FILE* fp, 
+                 cdm_Array* src, 
+                 size_t dLen,
+                 CDM::E_CDM_DTYPE d_type,
+                 bool flag_variname,
+                 std::string variname)
+  { return true; };
 
   /**
    * @brief マーカーの書き込み
@@ -164,6 +227,21 @@ public:
   output_avs( 
              int myRank,
              vector<cdm_DFI *>in_dfi){};
+
+  /**
+   * @brief avs のヘッダーレコード出力コントロール (不等間隔格子対応版)
+   * @param [in] myRank      rankID
+   * @param [in] in_dfi      dfiのポインター
+   * @param [in] out_domain  出力用のdomainインスタンス
+   * @param [in] out_process 出力用のprocessインスタンス
+   * @param [in] gc          出力ガイドセル数
+   */
+  virtual void
+  output_avs(int myRank,
+             vector<cdm_DFI *>in_dfi,
+             cdm_Domain* out_domain,
+             cdm_Process* out_process,
+             int gc){};
 
 protected :
 

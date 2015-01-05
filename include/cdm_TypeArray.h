@@ -125,6 +125,12 @@ public:
   virtual int copyArrayNvari( int sta[3], int end[3], cdm_Array *dst, int vari );
 //FCONV 20131216.e
 
+  /// 指定した変数の配列のみ取得し、IJK配列でdstにコピー
+  virtual int copyArrayNvari_to_ijk( cdm_Array *dst, int vari, bool ignoreGc=false );
+
+  /// 指定した変数の配列のみ範囲指定で取得し、IJK配列でdstにコピー
+  virtual int copyArrayNvari_to_ijk( int sta[3], int end[3], cdm_Array *dst, int vari );
+
   /// 配列サイズ分のバイナリデータを読み込み(戻り値は読み込んだ要素数)
   virtual size_t readBinary( FILE *fp, bool bMatchEndian );
 

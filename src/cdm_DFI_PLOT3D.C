@@ -101,11 +101,11 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
   if( buf->getDataType() == CDM::E_CDM_FLOAT32 ) {
     cdm_TypeArray<float> *dataS = dynamic_cast<cdm_TypeArray<float>*>(src);
     cdm_TypeArray<float> *dataB = dynamic_cast<cdm_TypeArray<float>*>(buf);
-    ret = read_Func(fp, dataS, dataB, head, matchEndian);
+    ret = read_Func(fp, dataS, dataB, head, nz, matchEndian);
   } else if( buf->getDataType() == CDM::E_CDM_FLOAT64 ) {
     cdm_TypeArray<double> *dataS = dynamic_cast<cdm_TypeArray<double>*>(src);
     cdm_TypeArray<double> *dataB = dynamic_cast<cdm_TypeArray<double>*>(buf);
-    ret = read_Func(fp, dataS, dataB, head, matchEndian);
+    ret = read_Func(fp, dataS, dataB, head, nz, matchEndian);
   }
 
   return ret;
@@ -249,12 +249,16 @@ cdm_DFI_PLOT3D::write_GridData(const int* iblank)
 
   //xyzを出力
   int sz[3];
-  for(int i=0; i<3; i++) sz[i] = DFI_Process.RankList[m_RankID].VoxelSize[i];
+  int head[3];
+  for(int i=0; i<3; i++) {
+    sz[i] = DFI_Process.RankList[m_RankID].VoxelSize[i];
+    head[i] = DFI_Process.RankList[m_RankID].HeadIndex[i];
+  }
 
   if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) {
-    write_XYZ<float>(fp,sz,iblank);
+    write_XYZ<float>(fp,sz,head,iblank);
   }else if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) {
-    write_XYZ<double>(fp,sz,iblank);
+    write_XYZ<double>(fp,sz,head,iblank);
   }
 
   //file close

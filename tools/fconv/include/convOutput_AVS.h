@@ -65,6 +65,20 @@ public:
                   int myRank, 
                   vector<cdm_DFI *>in_dfi);
 
+  /**
+   * @brief avsファイルのヘッダー処理 (不等間隔格子対応版)
+   * @param [in] myRank      rankID
+   * @param [in] in_dfi      dfiのポインター
+   * @param [in] out_domain  出力用のdomainインスタンス
+   * @param [in] out_process 出力用のprocessインスタンス
+   * @param [in] gc          出力ガイドセル数
+   */
+  void output_avs(int myRank,
+                  vector<cdm_DFI *>in_dfi,
+                  cdm_Domain* out_domain,
+                  cdm_Process* out_process,
+                  int gc);
+
 protected:
   /**
    * @brief avsファイルのヘッダー処理（Mx1)
@@ -111,6 +125,24 @@ protected:
                         double max_ext[3]);
 
   /**
+   * @brief avs coord data ファイル出力 (不等間隔格子対応版)
+   * @param[in] RankID      ランクID
+   * @param[in] mio         分割出力指示
+   * @param[in] out_domain  出力用のdomainインスタンス
+   * @param[in] out_process 出力用のprocessインスタンス
+   * @param[in] dfi_type    dfi種別
+   * @param[in] dims        サイズ
+   * @param[in] gc          出力ガイドセル数
+   */
+  void output_avs_coord(int RankID,
+                        bool mio,
+                        cdm_Domain* out_domain,
+                        cdm_Process* out_process,
+                        CDM::E_CDM_DFITYPE dfi_type,
+                        int dims[3],
+                        int gc);
+
+  /**
    * @brief avsファイルヘッダー出力
    * @param[in] dfi     cdm_DFIクラスポインタ
    * @param[in] RankID  ランクID
@@ -124,6 +156,20 @@ protected:
                          bool mio,
                          int ndim,
                          int nspace,
+                         int dims[3]);  
+
+  /**
+   * @brief avsファイルヘッダー出力 (不等間隔格子対応版)
+   * @param[in] dfi      cdm_DFIクラスポインタ
+   * @param[in] RankID   ランクID
+   * @param[in] mio      分割出力指示
+   * @param[in] dfi_type dfi種別
+   * @param[in] dims     サイズ
+   */
+  void output_avs_header(cdm_DFI* dfi,
+                         int RankID,
+                         bool mio,
+                         CDM::E_CDM_DFITYPE dfi_type,
                          int dims[3]);  
 
 };

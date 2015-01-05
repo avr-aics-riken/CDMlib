@@ -60,6 +60,8 @@ public:
 protected:
   
   bool m_output_dfi_on;      ///<dfi出力指示フラグ
+  bool m_bgrid_interp_flag;  ///<節点への補間フラグ
+  bool m_out_ftype_crd_on;   ///<座標データの出力形式指示フラグ
   bool m_cropIndexStart_on;  ///<入力領域のスタート指示フラグ
   bool m_cropIndexEnd_on;    ///<入力領域のエンド指示フラグ
   int m_cropIndexStart[3];   ///<入力領域のスタート位置（2014対応予定)
@@ -71,7 +73,8 @@ protected:
 
   CDM::E_CDM_DTYPE              m_output_data_type;     ///<出力実数タイプ byte,short,int,float,double
   CDM::E_CDM_FORMAT             m_out_format;           ///<出力ファイルフォーマット sph,bov,avs,plot3d,vtk
-  CDM::E_CDM_FILE_TYPE          m_out_format_type;      ///<出力形式 ascii,binary,FortranBinary
+  CDM::E_CDM_FILE_TYPE          m_out_file_type;        ///<出力形式 ascii,binary,FortranBinary
+  CDM::E_CDM_FILE_TYPE          m_out_file_type_coord;  ///<座標データの出力形式(AVS形式) ascii,binary
   E_CONV_OUTPUT_CONV_TYPE       m_conv_type;            ///<convertタイプ Mx1 MxN MxM
   CDM::E_CDM_ARRAYSHAPE         m_outputArrayShape;     ///<出力配列形状
   CDM::E_CDM_OUTPUT_FNAME       m_outputFilenameFormat; ///<出力ファイル名命名順
@@ -121,6 +124,11 @@ public:
    */
   bool Get_Outputdfi_on() { return m_output_dfi_on; };
  
+  /**
+   * @brief 節点への補間フラグの取り出し
+   */
+  bool Get_Interp_flag() { return m_bgrid_interp_flag; };
+
   /**
    * @brief input dfiファイル名リストの取り出し
    */
@@ -206,7 +214,14 @@ public:
    * @brief 出力形式の取り出し（ascii,binary,FortranBinary)
    */
   CDM::E_CDM_FILE_TYPE
-  Get_OutputFormatType() { return m_out_format_type; };
+  Get_OutputFileType() { return m_out_file_type; };
+
+  /**
+   * @brief 座標データの出力形式の取り出し（ascii,binary)
+   * @details AVS形式で利用
+   */
+  CDM::E_CDM_FILE_TYPE
+  Get_OutputFileTypeCoord() { return m_out_file_type_coord; };
 
   /**
    * @brief 出力先ディレクトリ名の取り出し

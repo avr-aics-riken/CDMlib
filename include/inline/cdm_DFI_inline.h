@@ -673,4 +673,16 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
 
 }
 
+// #################################################################
+// コンパイルオプションで与えたバッファサイズを取得する
+CDM_INLINE
+int cdm_DFI::getBufSize()
+{
+#ifdef CDM_BUFFER_MB_SIZE
+  return CDM_BUFFER_MB_SIZE;
+#else
+  return 0;
+#endif
+}
+
 #endif // _CDM_DFI_INLINE_H_

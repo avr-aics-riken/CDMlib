@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2015-01-05
+Make new branch advance_develop_2 and merge branch advance_develop into it
+masterのリビジョン"accept pull request #11 and modify tools/fconv/src/Makefile.am"
+より新たにブランチadvance_develop_2を作成し、そのブランチにブランチadvance_develop
+をマージした。
+
+------------------
 2014-12-25
 accept pull request #11 and modify tools/fconv/src/Makefile.am
 

@@ -575,6 +575,108 @@ cdm_TypeArray<T>::copyArrayNvari( int _sta[3], int _end[3], cdm_Array *dstptr, i
 
 }
 
+//指定した変数の配列のみ取得し、IJK配列でコピー
+template<class T>
+CDM_MEMFUN(int)
+cdm_TypeArray<T>::copyArrayNvari_to_ijk( cdm_Array *dst, int vari, bool ignoreGc )
+{
+  cdm_TypeArray<T> *src = this;
+
+  // コピーの範囲
+  int       gcS    = src->getGcInt();
+  const int *headS = src->getHeadIndex();
+  const int *tailS = src->getTailIndex();
+  int       gcD    = dst->getGcInt();
+  const int *headD = dst->getHeadIndex();
+  const int *tailD = dst->getTailIndex();
+  if( ignoreGc )
+  {
+    gcS = gcD = 0;
+  }
+  int sta[3],end[3];
+  for( int i=0;i<3;i++ )
+  {
+    sta[i] = (headS[i]-gcS>=headD[i]-gcD) ? headS[i]-gcS : headD[i]-gcD;
+    end[i] = (tailS[i]+gcS<=tailD[i]+gcD) ? tailS[i]+gcS : tailD[i]+gcD;
+  }
+
+  return copyArrayNvari_to_ijk(sta,end,dst,vari);
+}
+
+//指定した変数の配列のみ範囲指定で取得し、IJK配列でコピー
+template<class T>
+CDM_MEMFUN(int)
+cdm_TypeArray<T>::copyArrayNvari_to_ijk( int _sta[3], int _end[3], cdm_Array *dstptr, int vari )
+{
+  cdm_TypeArray<T> *src = this;
+
+  cdm_TypeArray<T> *dst = dynamic_cast<cdm_TypeArray<T>*>(dstptr);
+  if( !dst )
+  {
+    return 1;
+  }
+
+  // データタイプのチェック
+  if( src->getDataType() != dst->getDataType() )
+  {
+    return 2;
+  }
+  CDM::E_CDM_DTYPE dtype = src->getDataType();
+
+  //配列形状
+  if( dst->getArrayShape() != CDM::E_CDM_IJKN )
+  {
+    return 3;
+  }
+  CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
+
+  //変数の個数
+  if( src->getNvari() != src->getNvari() )
+  {
+    return 4;
+  }
+
+  //コピーの範囲
+  int       gcS    = src->getGcInt();
+  const int *headS = src->getHeadIndex();
+  const int *tailS = src->getTailIndex();
+  int       gcD    = dst->getGcInt();
+  const int *headD = dst->getHeadIndex();
+  const int *tailD = dst->getTailIndex();
+  int sta[3],end[3];
+  for( int i=0;i<3;i++ )
+  {
+    sta[i] = (headS[i]-gcS>=headD[i]-gcD) ? headS[i]-gcS : headD[i]-gcD;
+    end[i] = (tailS[i]+gcS<=tailD[i]+gcD) ? tailS[i]+gcS : tailD[i]+gcD;
+  }
+  for( int i=0;i<3;i++ )
+  {
+    sta[i] = (_sta[i]>=sta[i]) ? _sta[i] : sta[i];
+    end[i] = (_end[i]<=end[i]) ? _end[i] : end[i];
+  }
+
+  // vari番目の変数の値のみ取得して、dstにコピー
+  if( m_shape == CDM::E_CDM_IJKN )
+  {
+    for( int k=sta[2];k<=end[2];k++ ){
+    for( int j=sta[1];j<=end[1];j++ ){
+    for( int i=sta[0];i<=end[0];i++ ){
+      dst->hval(i,j,k,0) = src->hval(i,j,k,vari);
+    }}}
+  }
+  else
+  {
+    for( int k=sta[2];k<=end[2];k++ ){
+    for( int j=sta[1];j<=end[1];j++ ){
+    for( int i=sta[0];i<=end[0];i++ ){
+      dst->hval(i,j,k,0) = src->hval(vari,i,j,k);
+    }}}
+  }
+
+  return 0;
+
+}
+
 // 粗密データの補間処理を行う
 CDM_MEMFUN(cdm_Array*)
 cdm_Array::interp_coarse( cdm_Array *src, int &err, bool head0start )
@@ -654,7 +756,25 @@ size_t cdm_TypeArray<T>::readBinary( FILE *fp, bool bMatchEndian )
 {
   if( !fp ) return size_t(0);
   size_t ndata = getArrayLength();
+#ifdef CDM_BUFFER_MB_SIZE
+  int bufferMBSize = CDM_BUFFER_MB_SIZE;
+  int bufferSize = bufferMBSize * 1024 * 1024 / sizeof(T);
+//  T* buffer = new T[bufferSize];
+  int bufferIndex = 0;
+  size_t nread = 0;
+  while( bufferIndex + bufferSize < ndata ){
+    nread += fread((m_data+bufferIndex),sizeof(T),bufferSize,fp);
+//    nread += fread(buffer,sizeof(T),bufferSize,fp);
+//    memcpy(&m_data[bufferIndex],buffer,bufferSize*sizeof(T));
+    bufferIndex += bufferSize;
+  }
+  nread += fread((m_data+bufferIndex),sizeof(T),ndata-bufferIndex,fp);
+//  nread += fread(buffer,sizeof(T),ndata-bufferIndex,fp);
+//  memcpy(&m_data[bufferIndex],buffer,(ndata-bufferIndex)*sizeof(T));
+//  delete[] buffer;
+#else
   size_t nread = fread(m_data,sizeof(T),ndata,fp);
+#endif
   if( !bMatchEndian )
   {
     size_t bsz = sizeof(T);
@@ -679,7 +799,27 @@ template<class T>
 size_t cdm_TypeArray<T>::writeBinary( FILE *fp )
 {
   if( !fp ) return size_t(0);
-  return fwrite(m_data,sizeof(T),getArrayLength(),fp);
+  size_t ndata = getArrayLength();
+#ifdef CDM_BUFFER_MB_SIZE
+  int bufferMBSize = CDM_BUFFER_MB_SIZE;
+  int bufferSize = bufferMBSize * 1024 * 1024 / sizeof(T);
+//  T* buffer = new T[bufferSize];
+  int bufferIndex = 0;
+  size_t nwrite = 0;
+  while( bufferIndex + bufferSize < ndata ){
+//    memcpy(buffer,&m_data[bufferIndex],bufferSize*sizeof(T));
+//    nwrite += fwrite(buffer,sizeof(T),bufferSize,fp);
+    nwrite += fwrite(m_data+bufferIndex,sizeof(T),bufferSize,fp);
+    bufferIndex += bufferSize;
+  }
+  nwrite += fwrite(m_data+bufferIndex,sizeof(T),ndata-bufferIndex,fp);
+//  memcpy(buffer,&m_data[bufferIndex],(ndata-bufferIndex)*sizeof(T));
+//  nwrite += fwrite(buffer,sizeof(T),ndata-bufferIndex,fp);
+//  delete[] buffer;
+#else
+  size_t nwrite = fwrite(m_data,sizeof(T),ndata,fp);
+#endif
+  return nwrite;
 }
 
 // 配列サイズ分のasciiデータを書き出す(戻り値は読み込んだ要素数)

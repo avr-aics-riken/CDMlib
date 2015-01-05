@@ -31,16 +31,15 @@ template<class T>
 CDM_INLINE
 CDM::E_CDM_ERRORCODE
 cdm_DFI_PLOT3D::read_Func(FILE* fp,
-                         cdm_TypeArray<T>* dataS,
-                         cdm_TypeArray<T>* dataB,
-                         int head[3],
-                         bool matchEndian)
+                          cdm_TypeArray<T>* dataS,
+                          cdm_TypeArray<T>* dataB,
+                          int head[3],
+                          int nz,
+                          bool matchEndian)
 {
 
-  const int *szS = dataS->getArraySizeInt();
   const int *szB = dataB->getArraySizeInt();
   int nvariS = dataS->getNvari();
-  int nvariB = dataB->getNvari();
 
   //１層ずつ読み込み
   int hzB = head[2];
@@ -51,7 +50,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
     if( m_input_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
       double temp;
       for(int n=0; n<nvariS; n++) {
-      for(int k=0; k<szS[2]; k++) {
+      for(int k=0; k<nz; k++) {
         //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);
@@ -66,13 +65,16 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
         //コピー
         dataB->copyArrayNvari(dataS,n);
       }}
-
     //Fortran Binary
     } else if( m_input_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
       unsigned int dmy;
       fread(&dmy, sizeof(int), 1, fp);
+#ifdef CDM_BUFFER_MB_SIZE
+      size_t ndata = dataS->getArrayLength();
+      if( dataS->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
+#else
       for(int n=0; n<nvariS; n++) {
-      for(int k=0; k<szS[2]; k++) {
+      for(int k=0; k<nz; k++) {
         //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);
@@ -82,12 +84,17 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
         //コピー
         dataB->copyArrayNvari(dataS,n);
       }}
+#endif
       fread(&dmy, sizeof(int), 1, fp);
 
     //binary
     } else {
+#ifdef CDM_BUFFER_MB_SIZE
+      size_t ndata = dataS->getArrayLength();
+      if( dataS->readBinary(fp,matchEndian) != ndata ) return CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
+#else
       for(int n=0; n<nvariS; n++) {
-      for(int k=0; k<szS[2]; k++) {
+      for(int k=0; k<nz; k++) {
         //headインデクスをずらす
         head[2]=hzB+k;
         dataB->setHeadIndex(head);
@@ -97,6 +104,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
         //コピー
         dataB->copyArrayNvari(dataS,n);
       }}
+#endif
     }
 
   //NIJK (Plot3dの配列形状はIJKN)
@@ -112,7 +120,7 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
 template<class T>
 CDM_INLINE
 void
-cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
+cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], int head[3], const int* iblank)
 {
 
   int ngrid=1;
@@ -129,7 +137,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellX(i));
+      xyz = (T)(DFI_Domain->CellX(i+head[0]-1));
       fprintf(fp,"%15.6E\n",xyz);
     }}}
 
@@ -137,7 +145,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellY(j));
+      xyz = (T)(DFI_Domain->CellY(j+head[1]-1));
       fprintf(fp,"%15.6E\n",xyz);
     }}}
 
@@ -145,7 +153,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellZ(k));
+      xyz = (T)(DFI_Domain->CellZ(k+head[2]-1));
       fprintf(fp,"%15.6E\n",xyz);
     }}}
 
@@ -183,7 +191,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellX(i));
+      xyz = (T)(DFI_Domain->CellX(i+head[0]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
@@ -191,7 +199,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellY(j));
+      xyz = (T)(DFI_Domain->CellY(j+head[1]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
@@ -199,7 +207,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellZ(k));
+      xyz = (T)(DFI_Domain->CellZ(k+head[2]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
@@ -224,7 +232,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellX(i));
+      xyz = (T)(DFI_Domain->CellX(i+head[0]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
@@ -232,7 +240,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellY(j));
+      xyz = (T)(DFI_Domain->CellY(j+head[1]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
@@ -240,7 +248,7 @@ cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], const int* iblank)
     for(int k=-gc; k<sz[2]+gc; k++) {
     for(int j=-gc; j<sz[1]+gc; j++) {
     for(int i=-gc; i<sz[0]+gc; i++) {
-      xyz = (T)(DFI_Domain->CellZ(k));
+      xyz = (T)(DFI_Domain->CellZ(k+head[2]-1));
       fwrite(&xyz, sizeof(T), 1, fp);
     }}}
 
