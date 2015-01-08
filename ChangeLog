@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2015-01-08
+Minor corrections in conv.C and cdm_Define.h
+ファイルconv.C内のif文中にあったorを||に訂正した。
+また、ファイルcdm_Define.hにおいて、エラーコードの体裁を整えた。
+
+------------------
 2015-01-05
 Make new branch advance_develop_2 and merge branch advance_develop into it
 masterのリビジョン"accept pull request #11 and modify tools/fconv/src/Makefile.am"

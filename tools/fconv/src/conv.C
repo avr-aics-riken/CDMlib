@@ -120,7 +120,7 @@ bool CONV::CheckDFIdata()
 
   for( int i=0; i<m_in_dfi.size(); i++) {
     //不等間隔格子のデータをSPH形式かBOV形式で出力しようとしたらエラー
-    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH or 
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH || 
         m_param->Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) {
       if( m_in_dfi[i]->GetDFIType() == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
         printf("\tCan't Convert Non-Uniform Cartesian data to SPH or BOV format.\n");
