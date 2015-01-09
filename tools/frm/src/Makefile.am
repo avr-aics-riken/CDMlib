@@ -12,7 +12,7 @@ bin_PROGRAMS = frm
 frm_CXXFLAGS = \
   -I$(top_builddir)/include \
   -I$(top_builddir)/tools/frm/include \
-  @TP_CFLAGS@ 
+  @TP_CFLAGS@ @CDM_BUFFER_TUNING@
 
 frm_SOURCES = \
   Staging.C \

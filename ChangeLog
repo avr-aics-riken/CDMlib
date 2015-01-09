@@ -11,6 +11,14 @@ REVISION HISTORY
 ================
 
 ------------------
+2015-01-09
+Edit configure options for buffer tuning
+バッファサイズの指定をライブラリのコンパイル時に指定するように、
+configureオプションに関する部分を修正した。
+(元々、バッファサイズの指定はライブラリのコンパイル時ではなく、
+ライブラリを用いるプログラムのコンパイル時に行うようにしていた。)
+
+------------------
 2015-01-08
 Minor corrections in conv.C and cdm_Define.h
 ファイルconv.C内のif文中にあったorを||に訂正した。
