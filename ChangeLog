@@ -12,6 +12,15 @@ REVISION HISTORY
 
 ------------------
 2015-01-09
+Edit buffer tuning for reading BOV file and remove comments in cdm_Array_inline.h
+以前、BOV形式のファイル読み込み部をinline関数にしたが、元に戻した。
+バッファサイズの指定をライブラリのコンパイル時に指定するようにしたので、
+inline関数にする必要がなくなったため。
+また、ファイルcdm_Array_inline.h内で定義しているメソッドreadBinary,writeBinary
+に記載していたコメント文を削除した。
+
+------------------
+2015-01-09
 Edit configure options for buffer tuning
 バッファサイズの指定をライブラリのコンパイル時に指定するように、
 configureオプションに関する部分を修正した。
