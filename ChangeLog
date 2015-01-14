@@ -12,12 +12,10 @@ REVISION HISTORY
 
 ------------------
 2015-01-09
-Edit buffer tuning for reading BOV file and remove comments in cdm_Array_inline.h
-以前、BOV形式のファイル読み込み部をinline関数にしたが、元に戻した。
-バッファサイズの指定をライブラリのコンパイル時に指定するようにしたので、
-inline関数にする必要がなくなったため。
-また、ファイルcdm_Array_inline.h内で定義しているメソッドreadBinary,writeBinary
-に記載していたコメント文を削除した。
+Set FortranBinary to default OutputFileType for Plot3d in FCONV
+FCONVでPlot3d形式のファイル出力をする際、デフォルトでのファイルタイプが
+FortranBinaryになるように変更した。
+また、FCONVの出力形式のチェックについて修正を加えた。
 
 ------------------
 2015-01-09
