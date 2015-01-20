@@ -20,7 +20,8 @@ fconv_CXXFLAGS = \
   -I$(top_builddir)/tools/fconv/include \
   @MPI_CFLAGS@ \
   @CPM_CFLAGS@ \
-  @TP_CFLAGS@ 
+  @TP_CFLAGS@ \
+  @CDM_BUFFER_TUNING@
   
 fconv_SOURCES = \
   main.C \

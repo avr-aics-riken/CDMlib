@@ -11,8 +11,51 @@ REVISION HISTORY
 ================
 
 ------------------
+2015-01-20
+Merge master into branch advance_develop_2
+masterのリビジョン"accept pull request #13 and modify the signature of year 2015"
+をブランチadvance_develop_2にマージした。
+
+------------------
+2015-01-20
+Bug fix for GlobalVoxel in convMxM
+FCONVのMxM変換におけるGlobalVoxelのバグを修正した。
+間引き時のGlobalVoxelを求める際、領域全体のボクセル数を間引き数で割って
+求めるのではなく、各分割領域で間引いたボクセル数の和として求めるようにした。
+
+------------------
+2015-01-14
+Set FortranBinary to default OutputFileType for Plot3d in FCONV
+FCONVでPlot3d形式のファイル出力をする際、デフォルトでのファイルタイプが
+FortranBinaryになるように変更した。
+また、FCONVの出力形式のチェックについて修正を加えた。
+
+------------------
 2015-01-10
 accept pull request #13 and modify the signature of year 2015
+
+------------------
+2015-01-09
+Edit buffer tuning for reading BOV file and remove comments in cdm_Array_inline.h
+以前、BOV形式のファイル読み込み部をinline関数にしたが、元に戻した。
+バッファサイズの指定をライブラリのコンパイル時に指定するようにしたので、
+inline関数にする必要がなくなったため。
+また、ファイルcdm_Array_inline.h内で定義しているメソッドreadBinary,writeBinary
+に記載していたコメント文を削除した。
+
+------------------
+2015-01-09
+Edit configure options for buffer tuning
+バッファサイズの指定をライブラリのコンパイル時に指定するように、
+configureオプションに関する部分を修正した。
+(元々、バッファサイズの指定はライブラリのコンパイル時ではなく、
+ライブラリを用いるプログラムのコンパイル時に行うようにしていた。)
+
+------------------
+2015-01-08
+Minor corrections in conv.C and cdm_Define.h
+ファイルconv.C内のif文中にあったorを||に訂正した。
+また、ファイルcdm_Define.hにおいて、エラーコードの体裁を整えた。
 
 ------------------
 2015-01-05

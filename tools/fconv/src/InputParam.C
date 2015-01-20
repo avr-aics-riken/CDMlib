@@ -93,6 +93,7 @@ bool InputParam::Read(std::string input_file_name)
   out_dfi_name.clear();
   out_proc_name.clear();
 
+  bool flag_OutputFileType=false;
   int ncnt=0;
   label_base = "/ConvData";
   ncnt++;
@@ -228,6 +229,7 @@ bool InputParam::Read(std::string input_file_name)
       if( !(tpCntl.getInspectedValue(label, str )) ) {
         m_out_file_type = CDM::E_CDM_FILE_TYPE_BINARY;
       } else {
+        flag_OutputFileType=true;
         if     ( !strcasecmp(str.c_str(), "binary") )        m_out_file_type=CDM::E_CDM_FILE_TYPE_BINARY;
         else if( !strcasecmp(str.c_str(), "ascii") )         m_out_file_type=CDM::E_CDM_FILE_TYPE_ASCII;
         else if( !strcasecmp(str.c_str(), "FortranBinary") ) m_out_file_type=CDM::E_CDM_FILE_TYPE_FBINARY;
@@ -441,6 +443,11 @@ bool InputParam::Read(std::string input_file_name)
     out_proc_name.clear();
   }
 
+  //Plot3d形式でOutputFileTypeを読み込まなかった場合、ファイルタイプをFortranBinaryに設定
+  if( m_out_format == CDM::E_CDM_FMT_PLOT3D && !flag_OutputFileType ){
+    m_out_file_type=CDM::E_CDM_FILE_TYPE_FBINARY;
+  }
+
   //入力パラメータのチェック
   if( !InputParamCheck() ) return false;
 
@@ -477,7 +484,13 @@ bool InputParam::InputParamCheck()
   if( m_out_file_type == CDM::E_CDM_FILE_TYPE_ASCII ) {
     if( m_out_format != CDM::E_CDM_FMT_PLOT3D &&
         m_out_format != CDM::E_CDM_FMT_VTK ) {
-      printf("\tCan't Converter OutputFileType ascii.\n");
+      printf("\tCan't use OutputFileType ascii. %s\n",Get_OutputFormat_string().c_str());
+      ierr=false;
+    }
+  }
+  if( m_out_file_type == CDM::E_CDM_FILE_TYPE_FBINARY ) {
+    if( m_out_format != CDM::E_CDM_FMT_PLOT3D ) {
+      printf("\tCan't use OutputFileType FortranBinary. %s\n",Get_OutputFormat_string().c_str());
       ierr=false;
     }
   }

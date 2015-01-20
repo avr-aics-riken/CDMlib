@@ -212,15 +212,8 @@ bool convMxM::mxmsolv(std::string dfiname,
   double out_dpit[3];
   for (int i=0;i<3;i++) out_dpit[i]=l_dpit[i]*double(thin_count);
 
-  //全体のボクセルサイズを間引きを考慮して求める
+  //全体のボクセルサイズを求める
   int voxel[3];
-  /*
-  for(int i=0; i<3; i++) {
-    voxel[i]=DFI_Domain->GlobalVoxel[i]/thin_count;
-    if( DFI_Domain->GlobalVoxel[i]%thin_count != 0 ) voxel[i]++;
-  }
-  */
-  //MxMの間引き方法では、上記の方法で全体のボクセルサイズは正しく得られない。
   for(int i=0; i<3; i++) voxel[i]=DFI_Domain->GlobalVoxel[i];
 
   //間引きを考慮したサイズのセット

@@ -169,9 +169,4 @@ protected:
   
 };
 
-
-//inline 関数
-#include "inline/cdm_BOV_inline.h"
-
-
 #endif // _cdm_DFI_BOV_H_

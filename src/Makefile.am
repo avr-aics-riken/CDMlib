@@ -11,7 +11,7 @@
 
 lib_LIBRARIES = libCDM.a
 
-libCDM_a_CXXFLAGS = @MPI_CFLAGS@ @TP_CFLAGS@ -I$(top_builddir)/include
+libCDM_a_CXXFLAGS = @MPI_CFLAGS@ @TP_CFLAGS@ -I$(top_builddir)/include @CDM_BUFFER_TUNING@
 
 libCDM_a_SOURCES = \
     cdm_ActiveSubDomain.C \
@@ -67,7 +67,6 @@ CDM_inline_include_HEADERS = \
     $(top_builddir)/include/inline/cdm_Array_inline.h \
     $(top_builddir)/include/inline/cdm_DFI_inline.h \
     $(top_builddir)/include/inline/cdm_Plot3d_inline.h \
-    $(top_builddir)/include/inline/cdm_BOV_inline.h \
     $(top_builddir)/include/inline/cdm_NonUniformDomain_inline.h
 
 
