@@ -2,7 +2,7 @@
 #
 # CDMlib - Cartesian Data Management library
 #
-# Copyright (c) 2013-2014 Advanced Institute for Computational Science, RIKEN. 
+# Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN. 
 # All rights reserved.
 #
 #########################################################################

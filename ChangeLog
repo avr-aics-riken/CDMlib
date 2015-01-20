@@ -1,7 +1,7 @@
 /*
  * CDMlib - Cartesian Data Management library
  *
- * Copyright (c) 2013-2014 Advanced Institute for Computational Science, RIKEN.
+ * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
  * All rights reserved.
  *
  */
@@ -9,6 +9,12 @@
 
 REVISION HISTORY
 ================
+
+------------------
+2015-01-20
+Merge master into branch advance_develop_2
+masterのリビジョン"accept pull request #13 and modify the signature of year 2015"
+をブランチadvance_develop_2にマージした。
 
 ------------------
 2015-01-20
@@ -23,6 +29,10 @@ Set FortranBinary to default OutputFileType for Plot3d in FCONV
 FCONVでPlot3d形式のファイル出力をする際、デフォルトでのファイルタイプが
 FortranBinaryになるように変更した。
 また、FCONVの出力形式のチェックについて修正を加えた。
+
+------------------
+2015-01-10
+accept pull request #13 and modify the signature of year 2015
 
 ------------------
 2015-01-09
