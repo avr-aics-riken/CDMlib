@@ -11,6 +11,13 @@ REVISION HISTORY
 ================
 
 ------------------
+2015-01-20
+Bug fix for GlobalVoxel in convMxM
+FCONVのMxM変換におけるGlobalVoxelのバグを修正した。
+間引き時のGlobalVoxelを求める際、領域全体のボクセル数を間引き数で割って
+求めるのではなく、各分割領域で間引いたボクセル数の和として求めるようにした。
+
+------------------
 2015-01-14
 Set FortranBinary to default OutputFileType for Plot3d in FCONV
 FCONVでPlot3d形式のファイル出力をする際、デフォルトでのファイルタイプが

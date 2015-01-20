@@ -1077,29 +1077,12 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
     pit[i] = Gregion[i]/(double)Gvoxel[i];
   }
 
-  //out_domainの生成 
-  if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_CARTESIAN )
-  {
-    //等間隔格子の場合
-    out_domain = new cdm_Domain(Gorigin,pit,Gvoxel,Gdiv);
-  }
-  else if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN )
-  {
-    //不等間隔格子の場合
-    out_domain = new cdm_NonUniformDomain<double>(Gorigin,
-                                                  Gregion,
-                                                  Gvoxel,
-                                                  Gdiv,
-                                                  dfi_domain->GetCoordinateFile(),
-                                                  dfi_domain->GetCoordinateFileType(),
-                                                  dfi_domain->GetCoordinateFilePrecision(),
-                                                  dfi_domain->GetCoordinateFileEndian());
-  }
-
   //Process 情報の生成
   const cdm_Process* dfi_Process = dfi->GetcdmProcess();
   out_process = new cdm_Process();
   cdm_Rank rank;
+  int Sum_VoxelSize[3];
+  for(int j=0; j<3; j++) Sum_VoxelSize[j]=0;
   if( numProc == dfi_Process->RankList.size() ) {
     for(int i=0; i<numProc; i++) {
       rank.RankID = dfi_Process->RankList[i].RankID;
@@ -1121,10 +1104,15 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
           rank.TailIndex[j]=rank.HeadIndex[j]+rank.VoxelSize[j]-1;
         }
       }  
+      for(int j=0; j<3; j++) Sum_VoxelSize[j] += rank.VoxelSize[j];
       rank.c_id = dfi_Process->RankList[i].c_id;
       rank.bc_id = dfi_Process->RankList[i].bc_id;
       out_process->RankList.push_back(rank);
     }
+    //MxM変換では、rank.VoxelSizeより求めたGvoxelで更新
+    Gvoxel[0] = Sum_VoxelSize[0]/(Gdiv[1]*Gdiv[2]);
+    Gvoxel[1] = Sum_VoxelSize[1]/(Gdiv[2]*Gdiv[0]);
+    Gvoxel[2] = Sum_VoxelSize[2]/(Gdiv[0]*Gdiv[1]);
   } else if( numProc == 1 ) {
     rank.RankID=0;
     for(int i=0; i<3; i++) {
@@ -1137,6 +1125,25 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
     rank.bc_id = dfi_Process->RankList[0].bc_id; //RankID=0の境界IDをセット
     printf("CellID and BCflagID of all ranks were converted into those of rank 0.\n");
     out_process->RankList.push_back(rank);
+  }
+
+  //out_domainの生成 
+  if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_CARTESIAN )
+  {
+    //等間隔格子の場合
+    out_domain = new cdm_Domain(Gorigin,pit,Gvoxel,Gdiv);
+  }
+  else if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN )
+  {
+    //不等間隔格子の場合
+    out_domain = new cdm_NonUniformDomain<double>(Gorigin,
+                                                  Gregion,
+                                                  Gvoxel,
+                                                  Gdiv,
+                                                  dfi_domain->GetCoordinateFile(),
+                                                  dfi_domain->GetCoordinateFileType(),
+                                                  dfi_domain->GetCoordinateFilePrecision(),
+                                                  dfi_domain->GetCoordinateFileEndian());
   }
 
   return true;
