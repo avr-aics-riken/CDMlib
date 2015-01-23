@@ -10,6 +10,11 @@
 REVISION HISTORY
 ================
 
+------------------ 
+2015-01-23
+Add CMake files
+CMakeを実行するために必要なファイルを追加した。
+
 ------------------
 2015-01-20
 Merge master into branch advance_develop_2
