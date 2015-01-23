@@ -11,11 +11,6 @@ REVISION HISTORY
 ================
 
 ------------------
-2015-01-22
-Add CMake files
-CMakeを実行するために必要なファイルを追加した。
-
-------------------
 2015-01-20
 Merge master into branch advance_develop_2
 masterのリビジョン"accept pull request #13 and modify the signature of year 2015"
