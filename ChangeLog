@@ -12,6 +12,11 @@ REVISION HISTORY
 
 ------------------ 
 2015-01-23
+Delete Autotools files
+Autotoolsに関するファイルを削除した。
+
+------------------ 
+2015-01-23
 Add CMake files
 CMakeを実行するために必要なファイルを追加した。
 
