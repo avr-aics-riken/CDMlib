@@ -203,6 +203,7 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
+CDM_BUFFER_TUNING = @CDM_BUFFER_TUNING@
 CDM_CFLAGS = @CDM_CFLAGS@
 CDM_CXX = @CDM_CXX@
 CDM_LDFLAGS = @CDM_LDFLAGS@
@@ -308,7 +309,7 @@ top_srcdir = @top_srcdir@
 frm_CXXFLAGS = \
   -I$(top_builddir)/include \
   -I$(top_builddir)/tools/frm/include \
-  @TP_CFLAGS@ 
+  @TP_CFLAGS@ @CDM_BUFFER_TUNING@
 
 frm_SOURCES = \
   Staging.C \
