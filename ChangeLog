@@ -10,6 +10,11 @@
 REVISION HISTORY
 ================
 
+------------------ 
+2015-02-02
+Merge branch advance_develop_CMake into branch Cmake
+ブランチadvance_develop_CMakeのリビジョン921055bをブランチCmakeにマージした。
+
 ------------------
 2015-01-31
 Latest autotools version

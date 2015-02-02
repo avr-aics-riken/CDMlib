@@ -1,15 +1,15 @@
 #
 # CDMlib - Cartesian Data Management library
 #
-# Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
+# Copyright (c) 2013-2014 Advanced Institute for Computational Science, RIKEN.
 # All rights reserved.
 #
 #! /bin/sh
 
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-includedir=@includedir@
-libdir=@libdir@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_EXEC_PREFIX@
+includedir=@CMAKE_INCLUDE_DIR@
+libdir=@CMAKE_LIB_DIR@
 
 usage()
 {
@@ -49,7 +49,7 @@ cat <<EOF
 
 CDMlib : Cartesian Data Management library  Version : @VERSION@ : @CDM_REVISION@
 
-Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
+Copyright (c) 2013-2014 Advanced Institute for Computational Science, RIKEN.
 
 EOF
       exit 0
@@ -64,11 +64,11 @@ EOF
       ;;
 
     --cflags)
-      echo @CDM_CFLAGS@ @MPI_CFLAGS@ @TP_CFLAGS@ @CDM_BUFFER_TUNING@
+      echo @CMAKE_CDM_CFLAGS@ @CMAKE_MPI_CFLAGS@ @CMAKE_TP_CFLAGS@
       ;;
 
     --libs)
-      echo @CDM_LDFLAGS@ @CDM_LIBS@ @MPI_LDFLAGS@ @MPI_LIBS@ @TP_LDFLAGS@
+      echo @CMAKE_CDM_LDFLAGS@ @CMAKE_CDM_LIBS@ @CMAKE_MPI_LDFLAGS@ @CMAKE_MPI_LIBS@ @CMAKE_TP_LDFLAGS@ @CMAKE_TP_LIBS@
       ;;
 
     *)
