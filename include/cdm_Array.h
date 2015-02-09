@@ -146,7 +146,7 @@ public:
   }
 
   /// データタイプ文字列の取得
-  char* getDataTypeString() const
+  const char* getDataTypeString() const
   {
     switch( m_dtype )
     {
