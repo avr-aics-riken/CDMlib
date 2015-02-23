@@ -13,13 +13,13 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.57])
-AC_INIT([CDMlib],[0.7.4],[keno@riken.jp],[CDMlib])
+AC_INIT([CDMlib],[0.7.5],[keno@riken.jp],[CDMlib])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/cdm_DFI.C])
 AM_CONFIG_HEADER([config.h])
 
 # revision No.
-CDM_REVISION="20150131_2100"
+CDM_REVISION="20150211_1100"
 AC_SUBST(CDM_REVISION)
 
 #
