@@ -230,7 +230,7 @@ public:
    * @param [in] proc_fname  proc.dfiファイル名
    * @param [in] G_size      グローバルボクセルサイズ　
    * @param [in] pitch       ピッチ　　　　　　　　　　
-   * @param [in] G_origin    原点座標値　　　　　　　　
+   * @param [in] L_origin    各ランクの局所領域における原点座標値
    * @param [in] division    領域分割数　　　　　　　　
    * @param [in] head        計算領域の開始位置　　　　
    * @param [in] tail        計算領域の終了位置　　　　
@@ -251,7 +251,7 @@ public:
             const std::string proc_fname,
             const int G_size[3],
             const T pitch[3],
-            const T G_origin[3],
+            const T L_origin[3],
             const int division[3],
             const int head[3],
             const int tail[3],

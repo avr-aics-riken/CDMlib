@@ -427,7 +427,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                             const std::string proc_fname,
                             const int G_size[3],
                             const T pitch[3],
-                            const T G_origin[3],
+                            const T L_origin[3],
                             const int division[3],
                             const int head[3],
                             const int tail[3],
@@ -436,6 +436,15 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
 {
 
   //インスタンスout_domainを生成し、等間隔格子・不等間隔格子の共通処理版のWriteInit関数を呼ぶ
+
+  //AVS,PLOT3D,VTK: cdm_DomainのGlobalOriginには、計算領域全体の原点座標値を与える。
+  //SPH,BOV: cdm_DomainのGlobalOriginには、各ランクの局所領域における原点座標値を与える。
+  T G_origin[3];
+  if( format == CDM::E_CDM_FMT_AVS || format == CDM::E_CDM_FMT_PLOT3D || format == CDM::E_CDM_FMT_VTK) {
+    for(int i=0; i<3; i++) G_origin[i] = L_origin[i] - ((T)(head[i]-1))*pitch[i];
+  } else {
+    for(int i=0; i<3; i++) G_origin[i] = L_origin[i];
+  }
 
   cdm_Domain* out_domain = NULL;
   out_domain = new cdm_Domain(G_origin,

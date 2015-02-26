@@ -241,17 +241,9 @@ bool convMxM::mxmsolv(std::string dfiname,
   if( (DFI_Process->RankList[RankID].HeadIndex[2]-1)%thin_count != 0 ) head[2]++;
   //間引き後のオリジンを求める
   double l_dorg[3];
-  l_dorg[0]= DFI_Domain->GlobalOrigin[0];
-  l_dorg[1]= DFI_Domain->GlobalOrigin[1];
-  l_dorg[2]= DFI_Domain->GlobalOrigin[2];
-  //自ノードの計算領域に合わせて原点シフト
-  //(SPH,BOV形式のみ。他の形式については、各形式のクラス内で実施。)
-  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH || 
-      m_param->Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) {
-    l_dorg[0] += head[0]*out_dpit[0];
-    l_dorg[1] += head[1]*out_dpit[1];
-    l_dorg[2] += head[2]*out_dpit[2];
-  }
+  l_dorg[0]= DFI_Domain->GlobalOrigin[0]+head[0]*out_dpit[0];
+  l_dorg[1]= DFI_Domain->GlobalOrigin[1]+head[1]*out_dpit[1];
+  l_dorg[2]= DFI_Domain->GlobalOrigin[2]+head[2]*out_dpit[2];
 
   //出力タイプのセット
   CDM::E_CDM_DTYPE d_type;
