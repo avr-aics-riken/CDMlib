@@ -164,11 +164,7 @@ void convMxN::VoxelInit()
   }
 
   //自ノードの計算領域に合わせて原点シフト
-  //(SPH,BOV形式のみ。他の形式については、各形式のクラス内で実施。)
-  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH || 
-      m_param->Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) {
-    for(int i=0; i<3; i++) org[i]+=double(head[i])*pit[i];
-  }
+  for(int i=0; i<3; i++) org[i]+=double(head[i])*pit[i];
 
   for(int i=0; i<3; i++) {
     head[i]=head[i]+1;
