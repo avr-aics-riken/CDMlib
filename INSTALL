@@ -22,6 +22,7 @@ HOW TO COMPILE
 
 1. with configure
 
+$ export FFV_HOME=/hogehoge
 $ ./configure [options]
 $ make
 # make install
@@ -83,8 +84,8 @@ Here is examples.
 ## for the combination of Intel compiler and OpenMPI.
 
   $ ./configure --with-ompi=/opt/openmpi \
-                --with-parser=/usr/local/FFV/TextParser \
-                --with-cpm=/usr/local/FFV/CPMlib \
+                --with-parser=${FFV_HOME}/TextParser \
+                --with-cpm=${FFV_HOME}/CPMlib \
                 CXX=icpc \
                 CXXFLAGS="-O3 -Wall" \
                 F90=ifort \
@@ -94,9 +95,9 @@ Here is examples.
 ## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
    This options installs parallel CDMlib, file converter and frm.
 
-  $ ./configure --prefix=/usr/local/FFV/CDMlib \
-                --with-parser=/usr/local/FFV/TextParser \
-                --with-cpm=/usr/local/FFV/CPMlib \
+  $ ./configure --prefix=${FFV_HOME}/CDMlib \
+                --with-parser=${FFV_HOME}/TextParser \
+                --with-cpm=${FFV_HOME}/CPMlib \
                 --with-frm=yes \
                 CXX=mpicxx \
                 CXXFLAGS=-O3 \
@@ -107,9 +108,9 @@ Here is examples.
 
 ## K-computer
 
-  $ ./configure --prefix=$1 \
-                --with-parser=hoge \
-                --with-cpm=hogehoge \
+  $ ./configure --prefix=${FFV_HOME}/CDMlib \
+                --with-parser=${FFV_HOME}/TextParser \
+                --with-cpm=${FFV_HOME}/CPMlib \
                 --host=sparc64-unknown-linux-gnu \
                 CXX=mpiFCCpx \
                 CXXFLAGS=-Kfast \
