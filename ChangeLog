@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------ 
+2015-02-26
+Modify method WriteInit for uniform cartesian
+等間隔格子版のWriteInitの引数に各ランクの局所領域の原点座標値を与えた場合、
+plot3d,vtk,avs形式で出力される格子の原点座標がずれていたので、それを修正した。
+
+------------------ 
 2015-02-02
 Merge branch advance_develop_CMake into branch Cmake
 ブランチadvance_develop_CMakeのリビジョン921055bをブランチCmakeにマージした。
