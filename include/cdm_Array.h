@@ -191,7 +191,7 @@ public:
   }
 
   /// 配列形状文字列の取得
-  char* getArrayShapeString() const
+  const char* getArrayShapeString() const
   {
     switch(m_shape)
     {
