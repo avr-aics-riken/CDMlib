@@ -11,6 +11,12 @@ REVISION HISTORY
 ================
 
 ------------------
+2015-02-26
+Change the value of argument L_origin of method WriteInit in convMxM and convMxN
+FCONVのMxM変換およびMxN変換で利用している等間隔格子版のWriteInitにおいて、
+引数L_originに各ランクの局所領域の原点座標値を与えるように変更した。
+
+------------------
 2015-02-24
 Modify method WriteInit for uniform cartesian
 等間隔格子版のWriteInitの引数に各ランクの局所領域の原点座標値を与えた場合、
