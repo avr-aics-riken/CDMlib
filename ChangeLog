@@ -11,6 +11,11 @@ REVISION HISTORY
 ================
 
 ------------------
+2015-03-02
+Add comment about GlobalOrigin in class cdm_Domain
+クラスcdm_Domainのメンバ変数GlobalOriginに関してコメント文を追加した。
+
+------------------
 2015-02-26
 Change the value of argument L_origin of method WriteInit in convMxM and convMxN
 FCONVのMxM変換およびMxN変換で利用している等間隔格子版のWriteInitにおいて、

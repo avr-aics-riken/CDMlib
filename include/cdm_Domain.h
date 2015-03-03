@@ -20,7 +20,18 @@ class cdm_Domain {
 
 public:
 
-  double GlobalOrigin[3];             ///<計算空間の起点座標
+  double GlobalOrigin[3];             ///<起点座標
+  /* メンバ変数GlobalOriginについて
+   AVS,PLOT3D,VTK形式:
+    GlobalOriginは、計算領域全体の原点座標値。
+    クラスcdm_Domain(等間隔格子)およびクラスcdm_NonUniformDomain(不等間隔格子)で
+    計算領域全体の座標値を保持し、等間隔格子・不等間隔格子のいずれの場合にも
+    メソッドCellX,CellY,CellZ,NodeX,NodeY,NodeZで計算領域の座標値を呼び出せるようにする。
+   SPH,BOV形式:
+    GlobalOriginは、各ランクの局所領域における原点座標値。
+    ファイルへの座標値出力の際は、メンバGlobalOriginを直接呼び出す。
+    CIOライブラリでの実装を保持。
+  */
   double GlobalRegion[3];             ///<計算空間の各軸方向の長さ
   int GlobalVoxel[3];                 ///<計算領域全体のボクセル数
   int GlobalDivision[3];              ///<計算領域の分割数
@@ -37,6 +48,8 @@ public:
 
   /** 
   * @brief コンストラクタ (_GlobalOrigin,_GlobalPitchは、double型とfloat型の両方あり)
+  * @details AVS,PLOT3D,VTK形式では、_GlobalOriginに計算領域全体の原点座標値を与える。
+  *          SPH,BOV形式では、_GlobalOriginに各ランクの局所領域における原点座標値を与える。
   * @param [in] _GlobalOrigin   起点座標
   * @param [in] _GlobalPitch    ボクセルの長さ
   * @param [in] _GlobalVoxel    ボクセル数
@@ -55,7 +68,7 @@ public:
   virtual ~cdm_Domain();
 
   /**
-   * @brief セル中心のX座標を取得
+   * @brief セル中心のX座標を取得(AVS,PLOT3D,VTK形式)
    * @param [in] i X方向のセル番号
    * @return セル中心のX座標
    */
@@ -64,7 +77,7 @@ public:
   }
 
   /**
-   * @brief セル中心のY座標を取得
+   * @brief セル中心のY座標を取得(AVS,PLOT3D,VTK形式)
    * @param [in] j Y方向のセル番号
    * @return セル中心のY座標
    */
@@ -73,7 +86,7 @@ public:
   }
 
   /**
-   * @brief セル中心のZ座標を取得
+   * @brief セル中心のZ座標を取得(AVS,PLOT3D,VTK形式)
    * @param [in] k Z方向のセル番号
    * @return セル中心のZ座標
    */
@@ -82,7 +95,7 @@ public:
   }
 
   /**
-   * @brief 格子点のX座標を取得
+   * @brief 格子点のX座標を取得(AVS,PLOT3D,VTK形式)
    * @param [in] i X方向の格子番号
    * @return 格子点のX座標
    */
@@ -91,7 +104,7 @@ public:
   }
 
   /**
-   * @brief 格子点のY座標を取得
+   * @brief 格子点のY座標を取得(AVS,PLOT3D,VTK形式)
    * @param [in] j Y方向の格子番号
    * @return 格子点のY座標
    */
@@ -100,7 +113,7 @@ public:
   }
 
   /**
-   * @brief 格子点のZ座標を取得
+   * @brief 格子点のZ座標を取得(AVS,PLOT3D,VTK形式)
    * @param [in] k Z方向の格子番号
    * @return 格子点のZ座標
    */
