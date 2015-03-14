@@ -13,13 +13,13 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.57])
-AC_INIT([CDMlib],[0.7.6],[keno@riken.jp],[CDMlib])
+AC_INIT([CDMlib],[0.7.7],[keno@riken.jp],[CDMlib])
 AM_INIT_AUTOMAKE()
 AC_CONFIG_SRCDIR([src/cdm_DFI.C])
 AM_CONFIG_HEADER([config.h])
 
 # revision No.
-CDM_REVISION="20150226_2000"
+CDM_REVISION="20150314_1600"
 AC_SUBST(CDM_REVISION)
 
 #
@@ -59,6 +59,8 @@ case "$CDM_CXX" in
   mpic++)   enable_mpi="wrappermpi" ;;
   mpiFCCpx) enable_mpi="wrappermpi" ;;
   CC)       enable_mpi="wrappermpi" ;;
+  mpiicc)   enable_mpi="wrappermpi" ;;
+  mpiicpc)  enable_mpi="wrappermpi" ;;
 esac
 
 # mpiFCCpx;  Fujitsu FX
@@ -227,6 +229,7 @@ AC_PROG_RANLIB
 #
 AC_HEADER_STDC
 AC_CHECK_HEADERS([stdlib.h unistd.h])
+AC_HEADER_STDBOOL
 
 
 #
