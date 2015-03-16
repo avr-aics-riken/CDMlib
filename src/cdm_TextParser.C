@@ -503,7 +503,7 @@ int cdm_TextParser::readTPfile(const std::string filename)
   if( !tp ) return TP_ERROR;
   
   // read
-  if( (ierr = tp->read(filename)) != TP_NO_ERROR )
+  if( (ierr = tp->read_local(filename)) != TP_NO_ERROR )
   {
     cout << "ERROR : in input file: " << filename << endl
     << "  ERROR CODE = "<< ierr << endl;
