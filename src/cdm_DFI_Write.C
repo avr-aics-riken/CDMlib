@@ -171,7 +171,7 @@ cdm_DFI::WriteProcDfiFile(const MPI_Comm comm,
     char  sedbuf[LEN];
     //sprintf(sedbuf,"%s",hostname.c_str());
     sprintf(sedbuf,"%s",DFI_Process.RankList[RankID].HostName.c_str());
-    MPI_Gather(sedbuf,LEN,MPI_CHAR,recbuf,LEN,MPI_CHAR,0,MPI_COMM_WORLD);
+    MPI_Gather(sedbuf,LEN,MPI_CHAR,recbuf,LEN,MPI_CHAR,0,comm);
 
     for( int i=0; i<out_Process.RankList.size(); i++ ) {
      char* hn =&(recbuf[i*LEN]);
