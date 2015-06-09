@@ -142,7 +142,7 @@ am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
 am__v_at_0 = @
 am__v_at_1 = 
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
-depcomp = $(SHELL) $(top_srcdir)/depcomp
+depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -216,7 +216,7 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
+am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/config/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -331,8 +331,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 fconv_CXXFLAGS = \
-  -I$(top_builddir)/include \
-  -I$(top_builddir)/tools/fconv/include \
+  -I$(top_srcdir)/include \
+  -I$(top_srcdir)/tools/fconv/include \
   @MPI_CFLAGS@ \
   @CPM_CFLAGS@ \
   @TP_CFLAGS@ \
@@ -354,24 +354,24 @@ fconv_SOURCES = \
 
 fconv_includedir = $(includedir)
 fconv_include_HEADERS = \
-  $(top_builddir)/tools/fconv/include/conv_Define.h \
-  $(top_builddir)/tools/fconv/include/InputParam.h \
-  $(top_builddir)/tools/fconv/include/conv.h \
-  $(top_builddir)/tools/fconv/include/convMx1.h \
-  $(top_builddir)/tools/fconv/include/convMxM.h \
-  $(top_builddir)/tools/fconv/include/convMxN.h \
-  $(top_builddir)/tools/fconv/include/convOutput.h \
-  $(top_builddir)/tools/fconv/include/convOutput_SPH.h \
-  $(top_builddir)/tools/fconv/include/convOutput_BOV.h \
-  $(top_builddir)/tools/fconv/include/convOutput_AVS.h \
-  $(top_builddir)/tools/fconv/include/convOutput_VTK.h \
-  $(top_builddir)/tools/fconv/include/convOutput_PLOT3D.h
+  $(top_srcdir)/tools/fconv/include/conv_Define.h \
+  $(top_srcdir)/tools/fconv/include/InputParam.h \
+  $(top_srcdir)/tools/fconv/include/conv.h \
+  $(top_srcdir)/tools/fconv/include/convMx1.h \
+  $(top_srcdir)/tools/fconv/include/convMxM.h \
+  $(top_srcdir)/tools/fconv/include/convMxN.h \
+  $(top_srcdir)/tools/fconv/include/convOutput.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_SPH.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_BOV.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_AVS.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_VTK.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_PLOT3D.h
 
 fconv_inline_includedir = $(includedir)/inline
 fconv_inline_include_HEADERS = \
-  $(top_builddir)/tools/fconv/include/inline/conv_inline.h \
-  $(top_builddir)/tools/fconv/include/inline/convMx1_inline.h \
-  $(top_builddir)/tools/fconv/include/inline/conv_plot3d_inline.h
+  $(top_srcdir)/tools/fconv/include/inline/conv_inline.h \
+  $(top_srcdir)/tools/fconv/include/inline/convMx1_inline.h \
+  $(top_srcdir)/tools/fconv/include/inline/conv_plot3d_inline.h
 
 fconv_LDADD = \
   -L$(top_builddir)/src \

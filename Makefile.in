@@ -203,8 +203,11 @@ CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/cdm-config.in \
-	$(srcdir)/config.h.in $(top_srcdir)/include/cdm_Version.h.in \
-	AUTHORS COPYING ChangeLog INSTALL NEWS README compile depcomp \
+	$(srcdir)/config.h.in $(top_srcdir)/config/compile \
+	$(top_srcdir)/config/install-sh $(top_srcdir)/config/missing \
+	$(top_srcdir)/include/cdm_Version.h.in AUTHORS COPYING \
+	ChangeLog INSTALL NEWS README compile config/compile \
+	config/depcomp config/install-sh config/missing depcomp \
 	install-sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
@@ -363,7 +366,7 @@ top_srcdir = @top_srcdir@
 SUBDIRS = @MAKE_SUB_DIRS@
 bin_SCRIPTS = cdm-config
 CLEANFILES = $(bin_SCRIPTS)
-EXTRA_DIST = cdm-config.in LICENSE include/mpi_stubs.h
+EXTRA_DIST = cdm-config.in LICENSE include/mpi_stubs.h BUILD_DIR/.gitkeep
 dist_data_DATA = AUTHORS COPYING ChangeLog README.md LICENSE
 dist_include_HEADERS = include/mpi_stubs.h
 all: config.h

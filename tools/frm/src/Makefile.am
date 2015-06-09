@@ -10,8 +10,8 @@
 bin_PROGRAMS = frm
 
 frm_CXXFLAGS = \
-  -I$(top_builddir)/include \
-  -I$(top_builddir)/tools/frm/include \
+  -I$(top_srcdir)/include \
+  -I$(top_srcdir)/tools/frm/include \
   @TP_CFLAGS@ @CDM_BUFFER_TUNING@
 
 frm_SOURCES = \
@@ -21,11 +21,11 @@ frm_SOURCES = \
 
 frm_includedir = $(includedir)
 frm_include_HEADERS = \
-  $(top_builddir)/tools/frm/include/ActiveSubDomain.h \
-  $(top_builddir)/tools/frm/include/Staging_Define.h \
-  $(top_builddir)/tools/frm/include/Staging_Utility.h \
-  $(top_builddir)/tools/frm/include/frm_EndianUtil.h \
-  $(top_builddir)/tools/frm/include/frm_Version.h
+  $(top_srcdir)/tools/frm/include/ActiveSubDomain.h \
+  $(top_srcdir)/tools/frm/include/Staging_Define.h \
+  $(top_srcdir)/tools/frm/include/Staging_Utility.h \
+  $(top_srcdir)/tools/frm/include/frm_EndianUtil.h \
+  $(top_srcdir)/tools/frm/include/frm_Version.h
 
 frm_LDADD = \
   -L$(top_builddir)/src \

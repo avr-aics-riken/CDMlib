@@ -11,7 +11,7 @@
 
 lib_LIBRARIES = libCDM.a
 
-libCDM_a_CXXFLAGS = @MPI_CFLAGS@ @TP_CFLAGS@ -I$(top_builddir)/include @CDM_BUFFER_TUNING@
+libCDM_a_CXXFLAGS = @MPI_CFLAGS@ @TP_CFLAGS@ -I$(top_srcdir)/include @CDM_BUFFER_TUNING@
 
 libCDM_a_SOURCES = \
     cdm_ActiveSubDomain.C \
@@ -38,35 +38,35 @@ libCDM_a_SOURCES = \
 
 CDM_includedir = $(includedir)
 CDM_include_HEADERS = \
-    $(top_builddir)/include/cdm_Array.h \
-    $(top_builddir)/include/cdm_TypeArray.h \
-    $(top_builddir)/include/cdm_ActiveSubDomain.h \
-    $(top_builddir)/include/cdm_DFI.h \
-    $(top_builddir)/include/cdm_FileInfo.h \
-    $(top_builddir)/include/cdm_FilePath.h \
-    $(top_builddir)/include/cdm_VisIt.h \
-    $(top_builddir)/include/cdm_Unit.h \
-    $(top_builddir)/include/cdm_TimeSlice.h \
-    $(top_builddir)/include/cdm_Domain.h \
-    $(top_builddir)/include/cdm_NonUniformDomain.h \
-    $(top_builddir)/include/cdm_MPI.h \
-    $(top_builddir)/include/cdm_Process.h \
-    $(top_builddir)/include/cdm_DFI_BOV.h \
-    $(top_builddir)/include/cdm_DFI_SPH.h \
-    $(top_builddir)/include/cdm_DFI_AVS.h \
-    $(top_builddir)/include/cdm_DFI_PLOT3D.h \
-    $(top_builddir)/include/cdm_DFI_VTK.h \
-    $(top_builddir)/include/cdm_Define.h \
-    $(top_builddir)/include/cdm_Version.h \
-    $(top_builddir)/include/cdm_TextParser.h \
-    $(top_builddir)/include/cdm_PathUtil.h \
-    $(top_builddir)/include/cdm_endianUtil.h
+    $(top_srcdir)/include/cdm_Array.h \
+    $(top_srcdir)/include/cdm_TypeArray.h \
+    $(top_srcdir)/include/cdm_ActiveSubDomain.h \
+    $(top_srcdir)/include/cdm_DFI.h \
+    $(top_srcdir)/include/cdm_FileInfo.h \
+    $(top_srcdir)/include/cdm_FilePath.h \
+    $(top_srcdir)/include/cdm_VisIt.h \
+    $(top_srcdir)/include/cdm_Unit.h \
+    $(top_srcdir)/include/cdm_TimeSlice.h \
+    $(top_srcdir)/include/cdm_Domain.h \
+    $(top_srcdir)/include/cdm_NonUniformDomain.h \
+    $(top_srcdir)/include/cdm_MPI.h \
+    $(top_srcdir)/include/cdm_Process.h \
+    $(top_srcdir)/include/cdm_DFI_BOV.h \
+    $(top_srcdir)/include/cdm_DFI_SPH.h \
+    $(top_srcdir)/include/cdm_DFI_AVS.h \
+    $(top_srcdir)/include/cdm_DFI_PLOT3D.h \
+    $(top_srcdir)/include/cdm_DFI_VTK.h \
+    $(top_srcdir)/include/cdm_Define.h \
+    $(top_srcdir)/include/cdm_Version.h \
+    $(top_srcdir)/include/cdm_TextParser.h \
+    $(top_srcdir)/include/cdm_PathUtil.h \
+    $(top_srcdir)/include/cdm_endianUtil.h
 
 CDM_inline_includedir = $(includedir)/inline
 CDM_inline_include_HEADERS = \
-    $(top_builddir)/include/inline/cdm_Array_inline.h \
-    $(top_builddir)/include/inline/cdm_DFI_inline.h \
-    $(top_builddir)/include/inline/cdm_Plot3d_inline.h \
-    $(top_builddir)/include/inline/cdm_NonUniformDomain_inline.h
+    $(top_srcdir)/include/inline/cdm_Array_inline.h \
+    $(top_srcdir)/include/inline/cdm_DFI_inline.h \
+    $(top_srcdir)/include/inline/cdm_Plot3d_inline.h \
+    $(top_srcdir)/include/inline/cdm_NonUniformDomain_inline.h
 
 

@@ -16,8 +16,8 @@
 bin_PROGRAMS = fconv 
 
 fconv_CXXFLAGS = \
-  -I$(top_builddir)/include \
-  -I$(top_builddir)/tools/fconv/include \
+  -I$(top_srcdir)/include \
+  -I$(top_srcdir)/tools/fconv/include \
   @MPI_CFLAGS@ \
   @CPM_CFLAGS@ \
   @TP_CFLAGS@ \
@@ -39,25 +39,25 @@ fconv_SOURCES = \
 
 fconv_includedir = $(includedir)
 fconv_include_HEADERS = \
-  $(top_builddir)/tools/fconv/include/conv_Define.h \
-  $(top_builddir)/tools/fconv/include/InputParam.h \
-  $(top_builddir)/tools/fconv/include/conv.h \
-  $(top_builddir)/tools/fconv/include/convMx1.h \
-  $(top_builddir)/tools/fconv/include/convMxM.h \
-  $(top_builddir)/tools/fconv/include/convMxN.h \
-  $(top_builddir)/tools/fconv/include/convOutput.h \
-  $(top_builddir)/tools/fconv/include/convOutput_SPH.h \
-  $(top_builddir)/tools/fconv/include/convOutput_BOV.h \
-  $(top_builddir)/tools/fconv/include/convOutput_AVS.h \
-  $(top_builddir)/tools/fconv/include/convOutput_VTK.h \
-  $(top_builddir)/tools/fconv/include/convOutput_PLOT3D.h
+  $(top_srcdir)/tools/fconv/include/conv_Define.h \
+  $(top_srcdir)/tools/fconv/include/InputParam.h \
+  $(top_srcdir)/tools/fconv/include/conv.h \
+  $(top_srcdir)/tools/fconv/include/convMx1.h \
+  $(top_srcdir)/tools/fconv/include/convMxM.h \
+  $(top_srcdir)/tools/fconv/include/convMxN.h \
+  $(top_srcdir)/tools/fconv/include/convOutput.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_SPH.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_BOV.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_AVS.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_VTK.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_PLOT3D.h
 
 
 fconv_inline_includedir = $(includedir)/inline
 fconv_inline_include_HEADERS = \
-  $(top_builddir)/tools/fconv/include/inline/conv_inline.h \
-  $(top_builddir)/tools/fconv/include/inline/convMx1_inline.h \
-  $(top_builddir)/tools/fconv/include/inline/conv_plot3d_inline.h
+  $(top_srcdir)/tools/fconv/include/inline/conv_inline.h \
+  $(top_srcdir)/tools/fconv/include/inline/convMx1_inline.h \
+  $(top_srcdir)/tools/fconv/include/inline/conv_plot3d_inline.h
 
 fconv_LDADD = \
   -L$(top_builddir)/src \

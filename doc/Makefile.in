@@ -289,10 +289,10 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 doc_includedir = $(prefix)/doc
 doc_include_HEADERS = \
-    $(top_builddir)/doc/cdmlib_ug_jp.pdf \
-    $(top_builddir)/doc/cdmlib_ug_en.pdf \
-    $(top_builddir)/doc/reference.pdf \
-    $(top_builddir)/doc/fconv_reference.pdf
+    $(top_srcdir)/doc/cdmlib_ug_jp.pdf \
+    $(top_srcdir)/doc/cdmlib_ug_en.pdf \
+    $(top_srcdir)/doc/reference.pdf \
+    $(top_srcdir)/doc/fconv_reference.pdf
 
 all: all-am
 

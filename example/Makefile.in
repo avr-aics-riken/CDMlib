@@ -137,7 +137,7 @@ am__v_at_ = $(am__v_at_@AM_DEFAULT_V@)
 am__v_at_0 = @
 am__v_at_1 = 
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
-depcomp = $(SHELL) $(top_srcdir)/depcomp
+depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -185,7 +185,7 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
+am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/config/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -303,7 +303,7 @@ DISTCLEANFILES = *~ input output output_nuc
 CLEANFILES = 
 EXTRA_DIST = sample_input.C sample_output_NonUni.C sample_output_Uni.C coord.crd coord_Ascii.crd
 input_SOURCES = sample_input.C
-input_CXXFLAGS = -I$(top_builddir)/include @MPI_CFLAGS@ @TP_CFLAGS@
+input_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@
 input_LDADD = \
     -L$(top_builddir)/src -lCDM \
     @MPI_LIBS@ \
@@ -311,7 +311,7 @@ input_LDADD = \
     @TP_LDFLAGS@
 
 output_SOURCES = sample_output_Uni.C
-output_CXXFLAGS = -I$(top_builddir)/include @MPI_CFLAGS@ @TP_CFLAGS@
+output_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@
 output_LDADD = \
     -L$(top_builddir)/src -lCDM \
     @MPI_LIBS@ \
@@ -319,7 +319,7 @@ output_LDADD = \
     @TP_LDFLAGS@
 
 output_nuc_SOURCES = sample_output_NonUni.C
-output_nuc_CXXFLAGS = -I$(top_builddir)/include @MPI_CFLAGS@ @TP_CFLAGS@
+output_nuc_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@
 output_nuc_LDADD = \
   -L$(top_builddir)/src -lCDM \
   @MPI_LIBS@ \

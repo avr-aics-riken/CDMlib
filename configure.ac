@@ -13,18 +13,64 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.57])
-AC_INIT([CDMlib],[0.7.8],[keno@riken.jp],[CDMlib])
-AM_INIT_AUTOMAKE()
-AC_CONFIG_SRCDIR([src/cdm_DFI.C])
-AM_CONFIG_HEADER([config.h])
 
+AC_INIT([CDMlib],[0.8.0],[keno@riken.jp],[CDMlib])
+
+echo "----------------------------------------"
+echo "Running CDMlib Configure Script"
+echo "----------------------------------------"
+
+
+AC_CONFIG_SRCDIR([src/cdm_DFI.C])
+
+
+#
+# Specify directory for auxillary build tools (e.g., install-sh, config.sub, config.guess) and M4 files.
+#
+
+AC_CONFIG_AUX_DIR(config)
+
+
+#
+# To prevent the source codes from breaking, we suppress to do configure in the source directory.
+#
+
+if test -e configure.ac ; then
+echo "Please run configure from a separate build directory. It is not allowd to run configure in the source directory."
+echo "Pleaes try ..."
+echo " "
+echo "$ cd BUILD_DIR"
+echo "$ ../configure [options]"
+exit
+fi
+
+
+#
+# Configure should create config.h from config.h.in
+#
+
+AC_CONFIG_HEADERS([config.h])
+
+
+#
+# Use automake
+#
+
+AM_INIT_AUTOMAKE()
+
+
+#
 # revision No.
-CDM_REVISION="20150605_1300"
+#
+
+CDM_REVISION="20150609_2300"
 AC_SUBST(CDM_REVISION)
+
 
 #
 # default prefix setting
 #
+
 AC_PREFIX_DEFAULT([/usr/local/CDMlib])
 if test "$prefix" = "NONE" ; then
   CDM_INST_DIR=/usr/local/CDMlib
@@ -277,3 +323,6 @@ AC_OUTPUT
 
 chmod +x ./cdm-config
 
+echo "---------------------------------------------"
+echo "Finished Running CDMlib Configure Script"
+echo "---------------------------------------------"
