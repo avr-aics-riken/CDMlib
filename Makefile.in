@@ -206,9 +206,8 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/cdm-config.in \
 	$(srcdir)/config.h.in $(top_srcdir)/config/compile \
 	$(top_srcdir)/config/install-sh $(top_srcdir)/config/missing \
 	$(top_srcdir)/include/cdm_Version.h.in AUTHORS COPYING \
-	ChangeLog INSTALL NEWS README compile config/compile \
-	config/depcomp config/install-sh config/missing depcomp \
-	install-sh missing
+	ChangeLog INSTALL NEWS README config/compile config/depcomp \
+	config/install-sh config/missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)

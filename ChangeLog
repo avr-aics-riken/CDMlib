@@ -11,6 +11,10 @@ REVISION HISTORY
 ================
 
 --------------------------
+2015-06-10
+clean package
+
+--------------------------
 2015-06-09
 introduce BUILD_DIR to keep source directory clean
 - Change to run configure

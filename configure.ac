@@ -14,7 +14,7 @@
 
 AC_PREREQ([2.57])
 
-AC_INIT([CDMlib],[0.8.0],[keno@riken.jp],[CDMlib])
+AC_INIT([CDMlib],[0.8.1],[keno@riken.jp],[CDMlib])
 
 echo "----------------------------------------"
 echo "Running CDMlib Configure Script"
@@ -63,7 +63,7 @@ AM_INIT_AUTOMAKE()
 # revision No.
 #
 
-CDM_REVISION="20150609_2300"
+CDM_REVISION="20150610_1300"
 AC_SUBST(CDM_REVISION)
 
 
