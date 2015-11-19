@@ -28,6 +28,9 @@
 #define D_CDM_EXT_BOV "bov"
 #define D_CDM_EXT_FUNC "fun"
 #define D_CDM_EXT_VTK  "vtk"
+//20150918.NetCDF.s
+#define D_CDM_EXT_NC  "nc"
+//20150918.NetCDF.e
 
 #define D_CDM_EXT_BOV_DATAFILE "dat"
 
@@ -58,9 +61,12 @@
 
 #define _CDM_TAB_STR "  "
 
+
 /** namespace の設定 */
 namespace CDM
 {
+  /// ファイル名のランク番号前の文字列
+  static const char *C_CDM_RANKNOPREFIX = "_id";
 
   enum E_CDM_DFITYPE
   {
@@ -78,10 +84,13 @@ namespace CDM
     E_CDM_FMT_BOV,           ///< bov format
     E_CDM_FMT_AVS,           ///< avs format
     E_CDM_FMT_PLOT3D,        ///< plot3d format
-    E_CDM_FMT_VTK            ///< vtk format
+    E_CDM_FMT_VTK,           ///< vtk format
+//20150918.NetCDF.s
+    E_CDM_FMT_NETCDF4,       ///< NetCDF4(/w HDF5) format
+//20150918.NetCDF.e
   };
 
-/** スイッチ　on or off */
+/** スイッチ on or off */
   enum E_CDM_ONOFF
   {
     E_CDM_OFF = 0,           ///< off
@@ -139,11 +148,13 @@ namespace CDM
     E_CDM_FILE_TYPE_FBINARY     ///<Fortran Binary
   };
 
+/** フィールドファイルの命名規約タイプ */
   enum E_CDM_OUTPUT_FNAME
   {
     E_CDM_FNAME_DEFAULT=-1,  ///<出力ファイル命名規約デフォルト(step_rank)
     E_CDM_FNAME_STEP_RANK=0, ///<step_rank
-    E_CDM_FNAME_RANK_STEP    ///<rank_step
+    E_CDM_FNAME_RANK_STEP,   ///<rank_step
+    E_CDM_FNAME_RANK         ///<rank(NetCDFのみ)
   };
 
 /** CDMのエラーコード */
@@ -196,6 +207,10 @@ namespace CDM
 ,   E_CDM_ERROR_READ_DOMAIN                      = 1057 ///< Domain読込みエラー
 ,   E_CDM_ERROR_READ_MPI                         = 1058 ///< MPI読込みエラー
 ,   E_CDM_ERROR_READ_PROCESS                     = 1059 ///< Process読込みエラー
+//20150918.NetCDF.s
+,   E_CDM_ERROR_READ_DFI_NETCDF                  = 1060 ///< NetCDF読込みエラー
+,   E_CDM_ERROR_READ_NETCDF_MISMATCH_TYPE        = 1061 ///< DFIとNetCDFのデータ型の不一致エラー
+//20150918.NetCDF.e
 ,   E_CDM_ERROR_READ_FIELDDATA_FILE              = 1900 ///< フィールドデータファイル読込みエラー
 ,   E_CDM_ERROR_READ_SPH_FILE                    = 2000 ///< SPHファイル読込みエラー
 ,   E_CDM_ERROR_READ_SPH_REC1                    = 2001 ///< SPHファイルレコード1読込みエラー
@@ -214,6 +229,10 @@ namespace CDM
 ,   E_CDM_ERROR_READ_FIELD_DATA_RECORD           = 2103 ///< フィールドデータレコード読込み失敗
 ,   E_CDM_ERROR_READ_FIELD_AVERAGED_RECORD       = 2104 ///< フィールドAverage読込み失敗
 //,   E_CDM_ERROR_DATATYPE                         = 2500 ///< DataType error
+//20150918.NetCDF.s
+,   E_CDM_ERROR_READ_NETCDF_FUNC                 = 2200 ///< NetCDFのnc関数でエラー
+,   E_CDM_ERROR_READ_NETCDF_VAR_1D               = 2201 ///< NetCDFの1次元配列として読み込むvariableが1次元で無い
+//20150918.NetCDF.e
 ,   E_CDM_ERROR_MISMATCH_NP_SUBDOMAIN            = 3003 ///< 並列数とサブドメイン数が一致していない
 ,   E_CDM_ERROR_INVALID_DIVNUM                   = 3011 ///< 領域分割数が不正
 ,   E_CDM_ERROR_OPEN_SBDM                        = 3012 ///< ActiveSubdomainファイルのオープンに失敗
@@ -249,6 +268,9 @@ namespace CDM
 ,   E_CDM_ERROR_WRITE_FILEPATH                   = 3516 ///< FilePath出力失敗
 ,   E_CDM_ERROR_WRITE_VISIT                      = 3517 ///< Visit出力失敗
 ,   E_CDM_ERROR_WRITE_GRIDFILE                   = 3518 ///< gridファイル出力失敗
+//20150918.NetCDF.s
+,   E_CDM_ERROR_WRITE_DFI_NETCDF                 = 3600 ///< NetCDFのDFI出力エラー
+//20150918.NetCDF.e
 ,   E_CDM_WARN_GETUNIT                           = 4000 ///< Unitの単位がない
   };
 
@@ -339,5 +361,9 @@ namespace CDM
 #define _CDM_WRITE_TAB(_FP,_NTAB) {\
  for(int _NTCNT=0; _NTCNT<_NTAB; _NTCNT++) fprintf(_FP,_CDM_TAB_STR); \
 }
+
+#ifndef stmpd_printf
+#define stmpd_printf printf("%s (%d):  ",__FILE__, __LINE__), printf
+#endif
 
 #endif /* _CDM_DEFINE_H_ */

@@ -74,6 +74,7 @@ cdm_VisIt::Write(FILE* fp,
   _CDM_WRITE_TAB(fp, tab);
   fprintf(fp, "PlotGuideCell = \"%s\"\n", PlotGC.c_str());
   
+  _CDM_WRITE_TAB(fp, tab);
   fprintf(fp, "ResultFormat  =  \"FBinary\"\n");
 
   fprintf(fp, "\n");

@@ -188,6 +188,9 @@ bool InputParam::Read(std::string input_file_name)
       else if( !strcasecmp(str.c_str(), "avs" ) )    m_out_format = CDM::E_CDM_FMT_AVS;
       else if( !strcasecmp(str.c_str(), "plot3d" ) ) m_out_format = CDM::E_CDM_FMT_PLOT3D;
       else if( !strcasecmp(str.c_str(), "vtk" ) )    m_out_format = CDM::E_CDM_FMT_VTK;
+#ifdef _WITH_NETCDF4_
+      else if( !strcasecmp(str.c_str(), "netcdf4" ) )    m_out_format = CDM::E_CDM_FMT_NETCDF4;
+#endif
       else
       {
         Hostonly_ stamped_printf("\tInvalid keyword is described for  '%s'\n", label.c_str());
@@ -318,10 +321,18 @@ bool InputParam::Read(std::string input_file_name)
       } else {
         if     ( !strcasecmp(str.c_str(), "step_rank") ) m_outputFilenameFormat = CDM::E_CDM_FNAME_STEP_RANK;
         else if( !strcasecmp(str.c_str(), "rank_step") ) m_outputFilenameFormat = CDM::E_CDM_FNAME_RANK_STEP;
+//        else if( !strcasecmp(str.c_str(), "rank") ) m_outputFilenameFormat = CDM::E_CDM_FNAME_RANK;
         else {
           printf("\tInvalid keyword is described for '%s'\n", label.c_str());
           Exit(0);
         }
+      }
+      if( m_outputFilenameFormat == CDM::E_CDM_FNAME_RANK &&
+          m_out_format != CDM::E_CDM_FMT_NETCDF4 )
+      {
+        printf("\tInvalid keyword is described for '%s'\n", label.c_str());
+        printf("\t  OutputFilenameFormat=rank is only NetCDF4\n");
+        Exit(0);
       }
       ncnt++;
       continue;
@@ -519,6 +530,7 @@ bool InputParam::InputParamCheck()
   else if( m_out_format == CDM::E_CDM_FMT_VTK ) m_outputArrayShape = CDM::E_CDM_NIJK;
   else if( m_out_format == CDM::E_CDM_FMT_PLOT3D ) m_outputArrayShape = CDM::E_CDM_IJKN;
   else if( m_out_format == CDM::E_CDM_FMT_BOV ) m_outputArrayShape = CDM::E_CDM_IJKN;
+  else if( m_out_format == CDM::E_CDM_FMT_NETCDF4 ) m_outputArrayShape = CDM::E_CDM_IJKN;
 
   //未対応のデータ型への変換チェック
   if( m_output_data_type != CDM::E_CDM_DTYPE_UNKNOWN ) {
@@ -549,9 +561,10 @@ bool InputParam::InputParamCheck()
   //DFI出力のチェック、出力するDFIファイル名のチェック
   if( m_output_dfi_on ) {
     //DFI出力がSPH，BOV,PLOT3D以外で指定された場合はエラー
-    if( m_out_format != CDM::E_CDM_FMT_SPH &&
-        m_out_format != CDM::E_CDM_FMT_BOV &&
-        m_out_format != CDM::E_CDM_FMT_PLOT3D ) {
+    if( m_out_format != CDM::E_CDM_FMT_SPH     &&
+        m_out_format != CDM::E_CDM_FMT_BOV     &&
+        m_out_format != CDM::E_CDM_FMT_PLOT3D  &&
+        m_out_format != CDM::E_CDM_FMT_NETCDF4 ) {
       printf("\tCan't output dfi OutputFormat. %s\n",Get_OutputFormat_string().c_str());
       ierr=false;
     }
@@ -651,6 +664,8 @@ void InputParam::PrintParam(FILE* fp)
      fprintf(fp,"\tOutputFormat         : \"plot3d\"\n");
    }else if( m_out_format == CDM::E_CDM_FMT_VTK ) {
      fprintf(fp,"\tOutputFormat         : \"vtk\"\n");
+   }else if( m_out_format == CDM::E_CDM_FMT_NETCDF4 ) {
+     fprintf(fp,"\tOutputFormat         : \"NetCDF4\"\n");
    }else {
      Exit(0);
    }
@@ -712,6 +727,8 @@ void InputParam::PrintParam(FILE* fp)
      fprintf(fp,"\tOutputFilenameFormat : \"step_rank\"\n");
    }else if( m_outputFilenameFormat == CDM::E_CDM_FNAME_RANK_STEP ) { 
      fprintf(fp,"\tOutputFilenameFormat : \"rank_step\"\n");
+   }else if( m_outputFilenameFormat == CDM::E_CDM_FNAME_RANK ) { 
+     fprintf(fp,"\tOutputFilenameFormat : \"rank\"\n");
    }else {
      fprintf(fp,"\tOutputFilenameFormat : \"undefine\"\n");
    }

@@ -20,6 +20,9 @@
 #include "cdm_DFI_AVS.h"
 #include "cdm_DFI_PLOT3D.h"
 #include "cdm_DFI_VTK.h"
+//20150918.NetCDF.s
+#include "cdm_DFI_NETCDF.h"
+//20150918.NetCDF.e
 #include "cdm_NonUniformDomain.h"
 #include <typeinfo>
 
@@ -607,7 +610,10 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   out_F_info.FileFormat       = format;
   out_F_info.GuideCell        = GCell;
   out_F_info.DataType         = DataType;
-  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D ) {
+//20150918.NetCDF.s
+//if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D ) {
+  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D || format == CDM::E_CDM_FMT_NETCDF4 ) {
+//20150918.NetCDF.e
     out_F_info.ArrayShape = CDM::E_CDM_IJKN;
   }
   else if( format == CDM::E_CDM_FMT_SPH || format == CDM::E_CDM_FMT_AVS || format == CDM::E_CDM_FMT_VTK) {
@@ -670,6 +676,13 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
     dfi = new cdm_DFI_VTK(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                           out_TSlice, out_Process);
 //FCONV 20131122.e
+//20150918.NetCDF.s
+#ifdef _WITH_NETCDF4_
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_NETCDF4 ) {
+    dfi = new cdm_DFI_NETCDF(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
+                             out_TSlice, out_Process);
+#endif
+//20150918.NetCDF.e
   } else return NULL;
 
 

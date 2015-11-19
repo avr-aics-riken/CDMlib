@@ -46,9 +46,13 @@ Configure options:
  --with-example=(no|yes)
     Turn on to build examples. Default setting is 'no'.
 
+ --with-nc=netCDF4_dir
+    Specify the directory path that netCDF4 library is installed when you use netCDF4
+    file format.
+
  --with-ompi=OPENMPI_DIR
     If the OpenMPI library is used, specify the directory path that OpenMPI library is
-    installed. If a wrapper compiler, e.g., mpicxx, is used to compile, this options 
+    installed. If a wrapper compiler, e.g., mpicxx, is used to compile, this options
     can be eliminated.
 
  --with-parser=TEXTPARSER_PATH
@@ -66,7 +70,7 @@ Configure options:
 
 
  CXX=CXX_COMPILER
-   Specify C++ compiler or a wrapper compiler for MPI. If a wrapper compiler is specified, 
+   Specify C++ compiler or a wrapper compiler for MPI. If a wrapper compiler is specified,
    set string as CXX=mpiCC without directory prefix. To do so, please set path before
    compilation.
 
@@ -80,11 +84,11 @@ Configure options:
     Specify fortran90 compiler options.
 
 
-Here is examples. 
+Here is examples.
 
 ## for the combination of Intel compiler and OpenMPI.
 
- $ ../configure --with-ompi=/opt/openmpi \
+ $ ../configure --with-ompi=/usr/local/opt/openmpi \
                 --with-parser=${FFV_HOME}/TextParser \
                 --with-cpm=${FFV_HOME}/CPMlib \
                 CXX=icpc \
@@ -96,10 +100,26 @@ Here is examples.
 ## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
    This options installs parallel CDMlib, file converter and frm.
 
+ $ ../configure --with-ompi=/usr/local/opt/openmpi \
+                --with-parser=${FFV_HOME}/TextParser \
+                --with-cpm=${FFV_HOME}/CPMlib \
+                --with-frm=yes \
+                CXX=mpicxx \
+                CXXFLAGS=-O3 \
+                F90=mpif90 \
+                F90FLAGS=-O3 \
+                --with-example=yes
+
+
+
+## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
+   This options installs parallel CDMlib with netCFD support, file converter and frm.
+
  $ ../configure --prefix=${FFV_HOME}/CDMlib \
                 --with-parser=${FFV_HOME}/TextParser \
                 --with-cpm=${FFV_HOME}/CPMlib \
                 --with-frm=yes \
+                --with-nc=/usr/local/netcdf \
                 CXX=mpicxx \
                 CXXFLAGS=-O3 \
                 F90=mpif90 \
@@ -129,8 +149,8 @@ edit MACRO to tell your machine environment.
 
 3. Compilation of staging tool
 
-When you install staging tool onto a login node with cross-compiling environment, the tool 
-must be compiled by native compiler on the login node. If the front-end login node does not 
+When you install staging tool onto a login node with cross-compiling environment, the tool
+must be compiled by native compiler on the login node. If the front-end login node does not
 have MPI library, specify —with-MPI=no option. Here is an example for the K-computer.
 
  $ ../configure --prefix=hogehoge \

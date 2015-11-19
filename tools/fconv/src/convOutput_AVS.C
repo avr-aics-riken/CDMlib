@@ -35,12 +35,12 @@ convOutput_AVS::~convOutput_AVS()
 
 // #################################################################
 // 出力ファイルをオープンする。
-FILE* convOutput_AVS::OutputFile_Open(const std::string prefix,
+cdm_FILE* convOutput_AVS::OutputFile_Open(const std::string prefix,
                                 const unsigned step,
                                 const int id,
                                 const bool mio)
 {
-  FILE* fp;
+  cdm_FILE* pFile;
 
   //ファイル名の生成
   std::string outfile;
@@ -55,18 +55,19 @@ FILE* convOutput_AVS::OutputFile_Open(const std::string prefix,
                                        CDM::E_CDM_OFF);
 
   //ファイルオープン
-  if( (fp = fopen(outfile.c_str(), "wb")) == NULL ) {
+  if( (pFile = cdm_FILE::OpenWriteBinary(outfile, CDM::E_CDM_FMT_AVS)) == NULL ) {
     printf("\tCan't open file.(%s)\n",outfile.c_str());
     Exit(0);
   }
 
-  return fp;
+  return pFile;
 }
 
 // #################################################################
 bool 
-convOutput_AVS::WriteFieldData(FILE* fp, cdm_Array* src, size_t dLen)
+convOutput_AVS::WriteFieldData(cdm_FILE* pFile, cdm_Array* src, size_t dLen)
 {
+  FILE *fp = pFile->m_fp;
 
   const int* sz = src->getArraySizeInt();
   

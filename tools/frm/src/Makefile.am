@@ -12,7 +12,9 @@ bin_PROGRAMS = frm
 frm_CXXFLAGS = \
   -I$(top_srcdir)/include \
   -I$(top_srcdir)/tools/frm/include \
-  @TP_CFLAGS@ @CDM_BUFFER_TUNING@
+  @TP_CFLAGS@ \
+  @CDM_BUFFER_TUNING@ \
+  @NC_CFLAGS@
 
 frm_SOURCES = \
   Staging.C \
@@ -30,6 +32,7 @@ frm_include_HEADERS = \
 frm_LDADD = \
   -L$(top_builddir)/src \
   @CDM_LIBS@ \
-  @TP_LDFLAGS@
+  @TP_LDFLAGS@ \
+  @NC_LDFLAGS@
 
 EXTRA_DIST = Makefile_hand

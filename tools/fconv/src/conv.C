@@ -342,6 +342,8 @@ void CONV::PrintDFI(FILE* fp)
             dfi->GetFileFormatString().c_str());
     if( DFI_Info->FieldFilenameFormat == CDM::E_CDM_FNAME_RANK_STEP ) {
       fprintf(fp,"\tDFI_Info->FieldFilenameFormat      = \"rank_step\"\n");
+    }else if( DFI_Info->FieldFilenameFormat == CDM::E_CDM_FNAME_RANK ) {
+      fprintf(fp,"\tDFI_Info->FieldFilenameFormat      = \"rank\"\n");
     }else {
       fprintf(fp,"\tDFI_Info->FieldFilenameFormat      = \"step_rank\"\n");
     }
@@ -1002,13 +1004,17 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
       return false;
     }
 
-    //fclose(fp);
+    fclose(fp);
     
   }
 
   return true;
 }
 
+struct stIJK
+{
+  int i, j, k;
+};
 //#################################################################
 bool CONV::makeProcInfo(cdm_DFI* dfi, 
                         cdm_Domain* &out_domain,
@@ -1070,6 +1076,7 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
   }
   //numProcが1のとき（Mx1のとき）GlobalDivisionを１にする
   if( numProc == 1 ) for(int i=0; i<3; i++) Gdiv[i]=1;
+stmpd_printf("**** voxel = %d %d %d\n", Gvoxel[0], Gvoxel[1], Gvoxel[2]);
 
   //入力領域指示・間引きを考慮したpit
   double pit[3];
@@ -1084,6 +1091,7 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
   int Sum_VoxelSize[3];
   for(int j=0; j<3; j++) Sum_VoxelSize[j]=0;
   if( numProc == dfi_Process->RankList.size() ) {
+#if 1 //こちらだとhead/tailが被るケースがある気が...
     for(int i=0; i<numProc; i++) {
       rank.RankID = dfi_Process->RankList[i].RankID;
       for(int j=0; j<3; j++) {
@@ -1113,6 +1121,107 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
     Gvoxel[0] = Sum_VoxelSize[0]/(Gdiv[1]*Gdiv[2]);
     Gvoxel[1] = Sum_VoxelSize[1]/(Gdiv[2]*Gdiv[0]);
     Gvoxel[2] = Sum_VoxelSize[2]/(Gdiv[0]*Gdiv[1]);
+#else
+    // 各方向のheadを取得
+    set<int> sHeadX, sHeadY, sHeadZ;
+    for(int i=0; i<numProc; i++)
+    {
+      sHeadX.insert(dfi_Process->RankList[i].HeadIndex[0]);
+      sHeadY.insert(dfi_Process->RankList[i].HeadIndex[1]);
+      sHeadZ.insert(dfi_Process->RankList[i].HeadIndex[2]);
+    }
+
+    // 各ランクの位置をセット
+    vector<stIJK> vecIJK;
+    for(int i=0; i<numProc; i++)
+    {
+       int cnt;
+       stIJK ijk;
+       set<int>::iterator it;
+       for( it=sHeadX.begin(),cnt=0;it!=sHeadX.end();it++,cnt++ )
+       {
+         if( dfi_Process->RankList[i].HeadIndex[0] == *it )
+         {
+           ijk.i = cnt;
+           break;
+         }
+       }
+       for( it=sHeadY.begin(),cnt=0;it!=sHeadY.end();it++,cnt++ )
+       {
+         if( dfi_Process->RankList[i].HeadIndex[1] == *it )
+         {
+           ijk.j = cnt;
+           break;
+         }
+       }
+       for( it=sHeadZ.begin(),cnt=0;it!=sHeadZ.end();it++,cnt++ )
+       {
+         if( dfi_Process->RankList[i].HeadIndex[2] == *it )
+         {
+           ijk.k = cnt;
+           break;
+         }
+       }
+       vecIJK.push_back(ijk);
+    }
+
+    //各領域分割位置のvoxelsizeをセット
+    vector<int> voxelX(Gdiv[0]);
+    vector<int> voxelY(Gdiv[1]);
+    vector<int> voxelZ(Gdiv[2]);
+    for(int i=0; i<numProc; i++)
+    {
+      stIJK ijk = vecIJK[i];
+      int vsz[3];
+      for( int j=0;j<3;j++ )
+      {
+        vsz[j] = dfi_Process->RankList[i].VoxelSize[j];
+        if( thin_count > 1 )
+        {
+          if( vsz[j]%thin_count != 0 ) vsz[j]=vsz[j]/thin_count+1;
+          else                         vsz[j]=vsz[j]/thin_count;
+        }
+      }
+      voxelX[ijk.i] = vsz[0];
+      voxelY[ijk.j] = vsz[1];
+      voxelZ[ijk.k] = vsz[2];
+    }
+
+    //head/tailを再計算
+    vector<int> headX(Gdiv[0]), headY(Gdiv[1]), headZ(Gdiv[2]);
+    vector<int> tailX(Gdiv[0]), tailY(Gdiv[1]), tailZ(Gdiv[2]);
+    headX[0] = headY[0] = headZ[0] = 1;
+    for( int i=1;i<Gdiv[0];i++ ) headX[i] = headX[i-1] + voxelX[i];
+    for( int i=1;i<Gdiv[1];i++ ) headY[i] = headY[i-1] + voxelY[i];
+    for( int i=1;i<Gdiv[2];i++ ) headZ[i] = headZ[i-1] + voxelZ[i];
+    for( int i=0;i<Gdiv[0];i++ ) tailX[i] = headX[i] + voxelX[i] - 1;
+    for( int i=0;i<Gdiv[1];i++ ) tailY[i] = headY[i] + voxelY[i] - 1;
+    for( int i=0;i<Gdiv[2];i++ ) tailZ[i] = headZ[i] + voxelZ[i] - 1;
+
+    // 各ランクの情報をセット
+    for(int i=0; i<numProc; i++)
+    {
+      stIJK ijk = vecIJK[i];
+      rank.RankID = dfi_Process->RankList[i].RankID;
+      rank.VoxelSize[0]=voxelX[ijk.i];
+      rank.VoxelSize[1]=voxelY[ijk.j];
+      rank.VoxelSize[2]=voxelZ[ijk.k];
+      rank.HeadIndex[0]=headX[ijk.i];
+      rank.HeadIndex[1]=headY[ijk.j];
+      rank.HeadIndex[2]=headZ[ijk.k];
+      rank.TailIndex[0]=tailX[ijk.i];
+      rank.TailIndex[1]=tailY[ijk.j];
+      rank.TailIndex[2]=tailZ[ijk.k];
+      rank.c_id = dfi_Process->RankList[i].c_id;
+      rank.bc_id = dfi_Process->RankList[i].bc_id;
+      out_process->RankList.push_back(rank);
+    }
+
+    // Gvoxelを更新
+    Gvoxel[0] = tailX[Gdiv[0]-1];    
+    Gvoxel[1] = tailY[Gdiv[1]-1];    
+    Gvoxel[2] = tailZ[Gdiv[2]-1];    
+#endif
   } else if( numProc == 1 ) {
     rank.RankID=0;
     for(int i=0; i<3; i++) {
@@ -1127,6 +1236,7 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
     out_process->RankList.push_back(rank);
   }
 
+stmpd_printf("**** voxel = %d %d %d\n", Gvoxel[0], Gvoxel[1], Gvoxel[2]);
   //out_domainの生成 
   if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_CARTESIAN )
   {

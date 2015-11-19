@@ -39,7 +39,7 @@ public:
    * @param [in] id     ランク番号
    * @param [in] mio    出力時の分割指定　 true = local / false = gather(default)
    */
-  FILE* OutputFile_Open(
+  cdm_FILE* OutputFile_Open(
                         const std::string prefix,
                         const unsigned step,
                         const int id,
@@ -48,11 +48,11 @@ public:
 
   /**
    * @brief Field Datat 出力
-   * @param [in] fp     出力ファイルポインタ
+   * @param [in] pFile  出力ファイルポインタ
    * @param [in] src    出力データ配列ポインタ
    * @param [in] dLen   出力データサイズ
    */
-  bool WriteFieldData(FILE* fp,
+  bool WriteFieldData(cdm_FILE* pFile,
                       cdm_Array* src,
                       size_t dLen); 
 

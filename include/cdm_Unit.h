@@ -120,6 +120,20 @@ public:
   CDM::E_CDM_ERRORCODE
   Write(FILE* fp, const unsigned tab);
 
+  /**
+   * @brief Uuitをセットする
+   * @param [in] Name       追加する単位系("Length","Velocity",,,,)
+   * @param [in] Unit       単位ラベル("M","CM","MM","M/S",,,)
+   * @param [in] reference  規格化したスケール値
+   * @param [in] difference 差の値
+   * @param [in] BsetDiff   differenceの有無
+   */
+  void 
+  AddUnit(const std::string Name,
+          const std::string Unit,
+          const double reference,
+          const double difference= 0.0,
+          const bool BsetDiff=false);
 };
 
 #endif // _CDM_UNIT_H_

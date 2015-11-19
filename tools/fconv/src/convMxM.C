@@ -532,6 +532,28 @@ bool convMxM::mxmsolv(std::string dfiname,
     delete [] iblank;
   }
 
+  //netcdfのとき、書き込み済みかどうかをセットする
+#ifdef _WITH_NETCDF4_
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_NETCDF4 )
+  {
+    cdm_DFI_NETCDF *pNC = (cdm_DFI_NETCDF*)out_dfi;
+    bool writeFlag = false;
+    if( l_step != TSlice->SliceList[0].step )
+    {
+      // 先頭ステップで無い場合、書き込み済みフラグをtrueにする
+      writeFlag = true;
+    }
+    pNC->SetWriteFlag(writeFlag);
+  }
+#endif
+
+  //変数名をセット
+  for( int i=0;i<DFI_FInfo->VariableName.size();i++ )
+  {
+    out_dfi->setVariableName(i, DFI_FInfo->VariableName[i]);
+  }
+  
+
   //フィールドデータ出力
   CDM::E_CDM_OUTPUT_FNAME output_fname = m_param->Get_OutputFilenameFormat();
   out_dfi->set_output_fname(output_fname);

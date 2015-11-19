@@ -85,7 +85,6 @@ cdm_DFI::ReadData(cdm_Array *dst,
     /** 読込み方法の取得 */
 
     /** フィールドデータの読込み */
-
     cdm_Array* src = ReadFieldData(fname, step, time, read_sta, read_end,
                                    DFI_Process.RankList[n].HeadIndex, 
                                    DFI_Process.RankList[n].TailIndex, 
@@ -100,7 +99,6 @@ cdm_DFI::ReadData(cdm_Array *dst,
       printf("\t[%s] has read :\tstep=%d  time=%e ]\n",fname.c_str(), step, time);
     }
 
-
     /** src にHead/Tailをセット */
     src->setHeadIndex(read_sta);
 
@@ -114,11 +112,9 @@ cdm_DFI::ReadData(cdm_Array *dst,
 
     src->copyArray(copy_sta,copy_end,dst);
     delete src;
-
   }
 
   return CDM::E_CDM_SUCCESS;
-
 }
 
 // #################################################################
@@ -145,8 +141,10 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
   }
 
   /** ファイルオープン */
-  FILE* fp;
-  if( !(fp=fopen(fname.c_str(),"rb")) ) {
+//  FILE *fp;
+//  if( !(fp=fopen(fname.c_str(),"rb")) ) {
+  cdm_FILE *fp;
+  if( !(fp=cdm_FILE::OpenReadBinary(fname,DFI_Finfo.FileFormat)) ) {
     printf("Can't open file. (%s)\n",fname.c_str());
     ret = CDM::E_CDM_ERROR_OPEN_FIELDDATA;
     return NULL;
@@ -171,7 +169,8 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
   {
     ret = CDM::E_CDM_ERROR_READ_FIELD_HEADER_RECORD;
     printf("**** read error\n");
-    fclose(fp);
+//  fclose(fp);
+    cdm_FILE::CloseFile(fp);
     return NULL;
   }
 
@@ -225,10 +224,11 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
 
   //data 読込み
   //if( !read_Datarecord(fp, matchEndian, buf, headB, voxsize[2], src ) ) {
-  ret = read_Datarecord(fp, matchEndian, buf, headB, voxsize[2], src );
+  ret = read_Datarecord(fp, matchEndian, step, buf, headB, voxsize[2], src );
   if( ret != CDM::E_CDM_SUCCESS) {
     ret = CDM::E_CDM_ERROR_READ_FIELD_DATA_RECORD;
-    fclose(fp);
+//  fclose(fp);
+    cdm_FILE::CloseFile(fp);
     printf("ERROR Data Record Read error!!!!\n");
     delete buf;
     return NULL;
@@ -246,7 +246,8 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
     }
   }
 
-  fclose(fp);
+//fclose(fp);
+  cdm_FILE::CloseFile(fp);
   delete buf;
 
   return src;

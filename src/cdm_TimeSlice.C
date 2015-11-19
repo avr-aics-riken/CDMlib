@@ -31,6 +31,7 @@ cdm_Slice::cdm_Slice()
   Min.clear();
   Max.clear();
 
+  avr_mode = true;
 }
 
 
@@ -164,6 +165,8 @@ cdm_Slice::Read(cdm_TextParser tpCntl,
   int ct;
   double dt;
 
+  avr_mode = true;
+
   // カレントを移動
   TextParser *tp = tpCntl.getTPPtr();
   tp->changeNode(label_leaf);
@@ -195,6 +198,7 @@ cdm_Slice::Read(cdm_TextParser tpCntl,
   }
   else {
     AveragedStep= ct;
+    avr_mode = false;
   }
 
   //AveragedTime
@@ -204,6 +208,7 @@ cdm_Slice::Read(cdm_TextParser tpCntl,
   }
   else {
     AveragedTime= dt;
+    avr_mode = false;
   }
 
   //VectorMinMax/Min
@@ -450,7 +455,6 @@ cdm_TimeSlice::Write(FILE* fp,
   }
 
   fprintf(fp, "}\n\n");
-  fclose(fp);
 
   return CDM::E_CDM_SUCCESS;
 }

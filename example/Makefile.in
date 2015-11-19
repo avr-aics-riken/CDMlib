@@ -238,6 +238,9 @@ MPI_CFLAGS = @MPI_CFLAGS@
 MPI_DIR = @MPI_DIR@
 MPI_LDFLAGS = @MPI_LDFLAGS@
 MPI_LIBS = @MPI_LIBS@
+NC_CFLAGS = @NC_CFLAGS@
+NC_DIR = @NC_DIR@
+NC_LDFLAGS = @NC_LDFLAGS@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -303,28 +306,31 @@ DISTCLEANFILES = *~ input output output_nuc
 CLEANFILES = 
 EXTRA_DIST = sample_input.C sample_output_NonUni.C sample_output_Uni.C coord.crd coord_Ascii.crd
 input_SOURCES = sample_input.C
-input_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@
+input_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@ @NC_CFLAGS@
 input_LDADD = \
     -L$(top_builddir)/src -lCDM \
     @MPI_LIBS@ \
     @MPI_LDFLAGS@ \
-    @TP_LDFLAGS@
+    @TP_LDFLAGS@ \
+    @NC_LDFLAGS@
 
 output_SOURCES = sample_output_Uni.C
-output_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@
+output_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@ @NC_CFLAGS@
 output_LDADD = \
     -L$(top_builddir)/src -lCDM \
     @MPI_LIBS@ \
     @MPI_LDFLAGS@ \
-    @TP_LDFLAGS@
+    @TP_LDFLAGS@ \
+    @NC_LDFLAGS@
 
 output_nuc_SOURCES = sample_output_NonUni.C
-output_nuc_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@
+output_nuc_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@ @NC_CFLAGS@
 output_nuc_LDADD = \
   -L$(top_builddir)/src -lCDM \
   @MPI_LIBS@ \
   @MPI_LDFLAGS@ \
-  @TP_LDFLAGS@
+  @TP_LDFLAGS@ \
+  @NC_LDFLAGS@
 
 dist_noinst_DATA = 
 all: all-am

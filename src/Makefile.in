@@ -155,7 +155,9 @@ am_libCDM_a_OBJECTS = libCDM_a-cdm_ActiveSubDomain.$(OBJEXT) \
 	libCDM_a-cdm_Process.$(OBJEXT) libCDM_a-cdm_DFI_BOV.$(OBJEXT) \
 	libCDM_a-cdm_DFI_SPH.$(OBJEXT) libCDM_a-cdm_DFI_AVS.$(OBJEXT) \
 	libCDM_a-cdm_DFI_PLOT3D.$(OBJEXT) \
-	libCDM_a-cdm_DFI_VTK.$(OBJEXT) libCDM_a-cdm_DFI_Read.$(OBJEXT) \
+	libCDM_a-cdm_DFI_VTK.$(OBJEXT) \
+	libCDM_a-cdm_DFI_NETCDF.$(OBJEXT) \
+	libCDM_a-cdm_DFI_Read.$(OBJEXT) \
 	libCDM_a-cdm_DFI_Write.$(OBJEXT) \
 	libCDM_a-cdm_TextParser.$(OBJEXT) cdm_interp.$(OBJEXT)
 libCDM_a_OBJECTS = $(am_libCDM_a_OBJECTS)
@@ -296,6 +298,9 @@ MPI_CFLAGS = @MPI_CFLAGS@
 MPI_DIR = @MPI_DIR@
 MPI_LDFLAGS = @MPI_LDFLAGS@
 MPI_LIBS = @MPI_LIBS@
+NC_CFLAGS = @NC_CFLAGS@
+NC_DIR = @NC_DIR@
+NC_LDFLAGS = @NC_LDFLAGS@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -358,7 +363,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LIBRARIES = libCDM.a
-libCDM_a_CXXFLAGS = @MPI_CFLAGS@ @TP_CFLAGS@ -I$(top_srcdir)/include @CDM_BUFFER_TUNING@
+libCDM_a_CXXFLAGS = @MPI_CFLAGS@ @TP_CFLAGS@ @NC_CFLAGS@ -I$(top_srcdir)/include @CDM_BUFFER_TUNING@
 libCDM_a_SOURCES = \
     cdm_ActiveSubDomain.C \
     cdm_DFI.C \
@@ -375,6 +380,7 @@ libCDM_a_SOURCES = \
     cdm_DFI_AVS.C \
     cdm_DFI_PLOT3D.C \
     cdm_DFI_VTK.C \
+    cdm_DFI_NETCDF.C \
     cdm_DFI_Read.C \
     cdm_DFI_Write.C \
     cdm_TextParser.C \
@@ -402,11 +408,13 @@ CDM_include_HEADERS = \
     $(top_srcdir)/include/cdm_DFI_AVS.h \
     $(top_srcdir)/include/cdm_DFI_PLOT3D.h \
     $(top_srcdir)/include/cdm_DFI_VTK.h \
+    $(top_srcdir)/include/cdm_DFI_NETCDF.h \
     $(top_srcdir)/include/cdm_Define.h \
     $(top_srcdir)/include/cdm_Version.h \
     $(top_srcdir)/include/cdm_TextParser.h \
     $(top_srcdir)/include/cdm_PathUtil.h \
-    $(top_srcdir)/include/cdm_endianUtil.h
+    $(top_srcdir)/include/cdm_endianUtil.h \
+    $(top_srcdir)/include/cdm_FILE.h
 
 CDM_inline_includedir = $(includedir)/inline
 CDM_inline_include_HEADERS = \
@@ -495,6 +503,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_DFI.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_DFI_AVS.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_DFI_BOV.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_DFI_NETCDF.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_DFI_PLOT3D.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_DFI_Read.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libCDM_a-cdm_DFI_SPH.Po@am__quote@
@@ -733,6 +742,20 @@ libCDM_a-cdm_DFI_VTK.obj: cdm_DFI_VTK.C
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cdm_DFI_VTK.C' object='libCDM_a-cdm_DFI_VTK.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -c -o libCDM_a-cdm_DFI_VTK.obj `if test -f 'cdm_DFI_VTK.C'; then $(CYGPATH_W) 'cdm_DFI_VTK.C'; else $(CYGPATH_W) '$(srcdir)/cdm_DFI_VTK.C'; fi`
+
+libCDM_a-cdm_DFI_NETCDF.o: cdm_DFI_NETCDF.C
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -MT libCDM_a-cdm_DFI_NETCDF.o -MD -MP -MF $(DEPDIR)/libCDM_a-cdm_DFI_NETCDF.Tpo -c -o libCDM_a-cdm_DFI_NETCDF.o `test -f 'cdm_DFI_NETCDF.C' || echo '$(srcdir)/'`cdm_DFI_NETCDF.C
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libCDM_a-cdm_DFI_NETCDF.Tpo $(DEPDIR)/libCDM_a-cdm_DFI_NETCDF.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cdm_DFI_NETCDF.C' object='libCDM_a-cdm_DFI_NETCDF.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -c -o libCDM_a-cdm_DFI_NETCDF.o `test -f 'cdm_DFI_NETCDF.C' || echo '$(srcdir)/'`cdm_DFI_NETCDF.C
+
+libCDM_a-cdm_DFI_NETCDF.obj: cdm_DFI_NETCDF.C
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -MT libCDM_a-cdm_DFI_NETCDF.obj -MD -MP -MF $(DEPDIR)/libCDM_a-cdm_DFI_NETCDF.Tpo -c -o libCDM_a-cdm_DFI_NETCDF.obj `if test -f 'cdm_DFI_NETCDF.C'; then $(CYGPATH_W) 'cdm_DFI_NETCDF.C'; else $(CYGPATH_W) '$(srcdir)/cdm_DFI_NETCDF.C'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libCDM_a-cdm_DFI_NETCDF.Tpo $(DEPDIR)/libCDM_a-cdm_DFI_NETCDF.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cdm_DFI_NETCDF.C' object='libCDM_a-cdm_DFI_NETCDF.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -c -o libCDM_a-cdm_DFI_NETCDF.obj `if test -f 'cdm_DFI_NETCDF.C'; then $(CYGPATH_W) 'cdm_DFI_NETCDF.C'; else $(CYGPATH_W) '$(srcdir)/cdm_DFI_NETCDF.C'; fi`
 
 libCDM_a-cdm_DFI_Read.o: cdm_DFI_Read.C
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libCDM_a_CXXFLAGS) $(CXXFLAGS) -MT libCDM_a-cdm_DFI_Read.o -MD -MP -MF $(DEPDIR)/libCDM_a-cdm_DFI_Read.Tpo -c -o libCDM_a-cdm_DFI_Read.o `test -f 'cdm_DFI_Read.C' || echo '$(srcdir)/'`cdm_DFI_Read.C

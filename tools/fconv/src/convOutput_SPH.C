@@ -35,13 +35,13 @@ convOutput_SPH::~convOutput_SPH()
 
 // #################################################################
 // 出力ファイルをオープンする。
-FILE* convOutput_SPH::OutputFile_Open(
+cdm_FILE* convOutput_SPH::OutputFile_Open(
                                       const std::string prefix,
                                       const unsigned step,
                                       const int id,
                                       const bool mio)
 {
-  FILE* fp;
+  cdm_FILE* pFile;
 
   //ファイル名の生成
   std::string outfile;
@@ -57,12 +57,12 @@ FILE* convOutput_SPH::OutputFile_Open(
 
 
   //ファイルオープン
-  if( (fp = fopen(outfile.c_str(), "wb")) == NULL ) {
+  if( (pFile = cdm_FILE::OpenWriteBinary(outfile, CDM::E_CDM_FMT_SPH)) == NULL ) {
     printf("\tCan't open file.(%s)\n",outfile.c_str());
     Exit(0);
   }
 
-  return fp;
+  return pFile;
 
 }
 
@@ -79,8 +79,9 @@ bool convOutput_SPH::WriteHeaderRecord(
                                        double* org, 
                                        double* pit, 
                                        std::string prefix,
-                                       FILE *fp)
+                                       cdm_FILE *pFile)
 {
+  FILE *fp = pFile->m_fp;
   if( !fp ) return false;
  
   unsigned int dmy;
@@ -172,8 +173,9 @@ bool convOutput_SPH::WriteHeaderRecord(
 
 // #################################################################
 //
-bool convOutput_SPH::WriteDataMarker(int dmy, FILE* fp, bool out)
+bool convOutput_SPH::WriteDataMarker(int dmy, cdm_FILE* pFile, bool out)
 {
+  FILE *fp = pFile->m_fp;
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
   return true;
 }

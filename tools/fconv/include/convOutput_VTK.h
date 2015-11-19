@@ -40,7 +40,7 @@ public:
    * @param [in] id     ランク番号
    * @param [in] mio    出力時の分割指定　 true = local / false = gather(default)
    */
-  FILE* OutputFile_Open(
+  cdm_FILE* OutputFile_Open(
                         const std::string prefix,
                         const unsigned step,
                         const int id,
@@ -59,7 +59,7 @@ public:
    * @param[in] org     原点座標
    * @param[in] pit     ピッチ
    * @param[in] prefix  ファイル接頭文字
-   * @param[in] fp      出力ファイルポインタ
+   * @param[in] pFile   出力ファイルポインタ
    */
   bool
   WriteHeaderRecord(int step,
@@ -72,7 +72,7 @@ public:
                     double* org,
                     double* pit,
                     const std::string prefix,
-                    FILE *fp); 
+                    cdm_FILE *pFile); 
 
   /**
    * @brief vtkファイルのheaderの書き込み(不等間隔格子対応版)
@@ -85,7 +85,7 @@ public:
    * @param[in] out_process 出力用のprocessインスタンス
    * @param[in] gc          出力ガイドセル数
    * @param[in] prefix      ファイル接頭文字
-   * @param[in] fp          出力ファイルポインタ
+   * @param[in] pFile       出力ファイルポインタ
    */
   bool
   WriteHeaderRecord(int step,
@@ -97,22 +97,22 @@ public:
                     cdm_Process* out_process,
                     int gc,
                     const std::string prefix,
-                    FILE *fp); 
+                    cdm_FILE *pFile); 
 
   /**
    * @brief Field Datat 出力
-   * @param [in] fp     出力ファイルポインタ
+   * @param [in] pFile  出力ファイルポインタ
    * @param [in] src    出力データ配列ポインタ
    * @param [in] dLen   出力データサイズ
    */
   bool
-  WriteFieldData(FILE* fp,
+  WriteFieldData(cdm_FILE* pFile,
                  cdm_Array* src,
                  size_t dLen);
 
   /**
    * @brief Field Datat 出力 (vtk用)
-   * @param [in] fp            出力ファイルポインタ
+   * @param [in] pFile         出力ファイルポインタ
    * @param [in] src           出力データ配列ポインタ
    * @param [in] dLen          出力データサイズ
    * @param [in] d_type        データ型タイプ
@@ -120,7 +120,7 @@ public:
    * @param [in] variname      VTK形式で出力する変数名
    */
   bool
-  WriteFieldData(FILE* fp,
+  WriteFieldData(cdm_FILE* pFile,
                  cdm_Array* src,
                  size_t dLen,
                  CDM::E_CDM_DTYPE d_type,
@@ -129,18 +129,18 @@ public:
 
   /**
    * @brief マーカーの書き込み
-   * @param[in] dmy マーカー
-   * @param[in] fp  出力ファイルポインタ 
-   * @param[in] out 出力フラグ
+   * @param[in] dmy    マーカー
+   * @param[in] pFile  出力ファイルポインタ 
+   * @param[in] out    出力フラグ
    */
   bool
-  WriteDataMarker(int dmy, FILE* fp, bool out);
+  WriteDataMarker(int dmy, cdm_FILE* pFile, bool out);
 
   /**
    * @brief 出力ファイルをクローズする
-   * @param [in] fp ファイルポインタ
+   * @param [in] pFile ファイルポインタ
    */
-  void OutputFile_Close(FILE* fp); 
+  void OutputFile_Close(cdm_FILE* pFile); 
 
 protected:
 

@@ -130,8 +130,11 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
   //HostName
   label = "HostName";
   if ( !(tpCntl.GetValue(label, &str, false )) ) {
-    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
-    return CDM::E_CDM_ERROR_READ_DFI_HOSTNAME;
+//20150918.NetCDF.s
+//    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+//    return CDM::E_CDM_ERROR_READ_DFI_HOSTNAME;
+    str = "unknown";
+//20150918.NetCDF.e
   }
   HostName= str;
 
@@ -174,8 +177,11 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
   //CellID
   label = "CellID";
   if ( !(tpCntl.GetValue(label, &ct, false )) ) {
-    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
-    return CDM::E_CDM_ERROR_READ_DFI_CELLID;
+//20150918.NetCDF.s
+//    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+//    return CDM::E_CDM_ERROR_READ_DFI_CELLID;
+  ct = 0;
+//20150918.NetCDF.e
   }
   else {
     c_id= ct;
@@ -184,8 +190,11 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
   //BCflagID
   label = "BCflagID";
   if ( !(tpCntl.GetValue(label, &ct, false )) ) {
-    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
-    return CDM::E_CDM_ERROR_READ_DFI_BCFLAGID;
+//20150918.NetCDF.s
+//    printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
+//    return CDM::E_CDM_ERROR_READ_DFI_BCFLAGID;
+//20150918.NetCDF.e
+    ct = 0;
   }
   else {
     bc_id= ct;

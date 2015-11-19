@@ -373,6 +373,7 @@ void convMxN::VoxelInit()
     }
 
     //Unitのセット
+#if 0
     std::string unit;
     double ref;
     double diff;
@@ -383,6 +384,19 @@ void convMxN::VoxelInit()
     dfi->AddUnit("Velocity",unit,ref,diff,bdiff);
     m_in_dfi[i]->GetUnit("Pressure",unit,ref,diff,bdiff);
     dfi->AddUnit("Pressure",unit,ref,diff,bdiff);
+#else
+    const cdm_Unit *pUnitIn = m_in_dfi[i]->GetcdmUnit();
+    map<string,cdm_UnitElem>::const_iterator it = pUnitIn->UnitList.begin();
+    for( ;it!=pUnitIn->UnitList.end();it++ )
+    {
+      string Name = (it->second).Name;
+      string Unit = (it->second).Unit;
+      double ref  = (it->second).reference;
+      double diff = (it->second).difference;
+      bool bdiff  = (it->second).BsetDiff;
+      dfi->AddUnit(Name, Unit, ref, diff, bdiff);
+    }
+#endif
 
     //変数名の取り出しとセット
     for(int n=0; n<DFI_FInfo->NumVariables; n++) {
@@ -425,8 +439,8 @@ bool convMxN::exec()
 
   CDM::E_CDM_ERRORCODE ret; 
   double rtime;
-  unsigned idummy;
-  double ddummy;
+  unsigned idummy = 0;
+  double ddummy = 0.0;
   float fminmax[8];
   double dminmax[8];
 
@@ -554,7 +568,6 @@ bool convMxN::exec()
 
     //ステップ数のループ
     for ( int j=0; j<TSlice->SliceList.size(); j++ ) {
-
       //MxNの読込み
       ret = m_in_dfi[i]->ReadData(buf,
                                 (unsigned)TSlice->SliceList[j].step,
@@ -647,7 +660,7 @@ bool convMxN::exec()
       }
   
       m_out_dfi[i]->SetcdmTimeSlice(*TSlice);
- 
+
       ret = m_out_dfi[i]->WriteData(
                                     (unsigned)TSlice->SliceList[j].step,
                                     //0,

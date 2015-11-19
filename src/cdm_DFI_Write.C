@@ -67,11 +67,14 @@ cdm_DFI::WriteIndexDfiFile(const std::string dfi_name)
   }
 
   //FileInfo {} の出力
+  CDM::E_CDM_OUTPUT_FNAME orgFname = DFI_Finfo.FieldFilenameFormat;
+  DFI_Finfo.FieldFilenameFormat = m_output_fname;
   if( DFI_Finfo.Write(fp, 0) != CDM::E_CDM_SUCCESS )
   {
     fclose(fp);
     return CDM::E_CDM_ERROR_WRITE_FILEINFO;
   }
+  DFI_Finfo.FieldFilenameFormat = orgFname;
 
   //FilePath {} の出力
   if( DFI_Fpath.Write(fp, 1) != CDM::E_CDM_SUCCESS )
@@ -101,6 +104,23 @@ cdm_DFI::WriteIndexDfiFile(const std::string dfi_name)
     return CDM::E_CDM_ERROR_WRITE_TIMESLICE;
   }
 
+  //追加情報の出力
+//20150918.NetCDF.s
+#ifdef _WITH_NETCDF4_
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_NETCDF4 )
+  {
+    cdm_DFI_NETCDF *dfi_nc = (cdm_DFI_NETCDF*)this;
+    if( dfi_nc->WriteAdditionalTP(fp, 0) != CDM::E_CDM_SUCCESS )
+    {
+      fclose(fp);
+      return CDM::E_CDM_ERROR_WRITE_DFI_NETCDF;
+    }
+  }
+#endif
+//20150918.NetCDF.e
+
+
+  fclose(fp);
   return CDM::E_CDM_SUCCESS;
 
 }
@@ -267,7 +287,8 @@ cdm_DFI::WriteData(const unsigned step,
 
   std::string outFile,tmp;
 //FCONV 20131128.s
-  if( m_output_fname != CDM::E_CDM_FNAME_RANK_STEP ) {
+//if( m_output_fname != CDM::E_CDM_FNAME_RANK_STEP ) {
+  if( m_output_fname != CDM::E_CDM_FNAME_RANK_STEP && m_output_fname != CDM::E_CDM_FNAME_RANK ) {
     tmp = Generate_FieldFileName(m_RankID,step,mio);
     if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
       outFile = tmp;
@@ -287,13 +308,18 @@ cdm_DFI::WriteData(const unsigned step,
       ext = D_CDM_EXT_VTK;
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
       ext = D_CDM_EXT_FUNC;
+//20150918.NetCDF.s
+    } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_NETCDF4 ) {
+      ext = D_CDM_EXT_NC;
+//20150918.NetCDF.e
     }
     tmp = Generate_FileName(DFI_Finfo.Prefix,
                             m_RankID,
                             step,ext,
                             m_output_fname,
                             mio,
-                            DFI_Finfo.TimeSliceDirFlag);
+                            DFI_Finfo.TimeSliceDirFlag,
+                            DFI_Finfo.RankNoPrefix);
     if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
       outFile = DFI_Finfo.DirectoryPath +"/"+ tmp;
     } else {
@@ -344,8 +370,20 @@ cdm_DFI::WriteData(const unsigned step,
     std::string fname = CDM::cdmPath_ConnectPath( m_directoryPath, dfiname );
 
     //Slice へのセット
-    DFI_TimeSlice.AddSlice(step, time, minmax, DFI_Finfo.NumVariables, DFI_Finfo.FileFormat,
-                           avr_mode, step_avr, time_avr);
+    bool bExist = false;
+    for( int i=0;i<DFI_TimeSlice.SliceList.size();i++ )
+    {
+      if( DFI_TimeSlice.SliceList[i].step == step )
+      {
+        bExist = true;
+        break;
+      }
+    }
+    if( !bExist )
+    {
+      DFI_TimeSlice.AddSlice(step, time, minmax, DFI_Finfo.NumVariables, DFI_Finfo.FileFormat,
+                             avr_mode, step_avr, time_avr);
+    }
 
     //index dfi のファイル出力
     if( m_RankID == 0 ) {
@@ -403,7 +441,8 @@ cdm_DFI::WriteFieldDataFile(const unsigned step,
                             step,ext,
                             m_output_fname,
                             mio,
-                            DFI_Finfo.TimeSliceDirFlag);
+                            DFI_Finfo.TimeSliceDirFlag,
+                            DFI_Finfo.RankNoPrefix);
     if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
       outFile = DFI_Finfo.DirectoryPath +"/"+ tmp;
     } else {
@@ -464,9 +503,14 @@ cdm_DFI::WriteFieldData(std::string fname,
                         const unsigned step_avr,
                         const double time_avr)
 {
+  //追記モードにするかどうかをチェック(NetCDF対応)
+  bool addMode = CheckAddWriteMode();
 
-  FILE* fp;
-  if( (fp = fopen(fname.c_str(),"wb")) == NULL ) {
+  // ファイルオープン
+//FILE* fp;
+//if( (fp = fopen(fname.c_str(),"wb")) == NULL ) {
+  cdm_FILE* fp;
+  if( (fp = cdm_FILE::OpenWriteBinary(fname,DFI_Finfo.FileFormat, addMode)) == NULL ) {
     fprintf(stderr,"Can't open file.(%s)\n",fname.c_str());
     return CDM::E_CDM_ERROR_OPEN_FIELDDATA;
   }
@@ -475,7 +519,8 @@ cdm_DFI::WriteFieldData(std::string fname,
 
   //ヘッダー出力
   if( write_HeaderRecord(fp, step, time, m_RankID) != CDM::E_CDM_SUCCESS ) {
-    fclose(fp);
+//  fclose(fp);
+    cdm_FILE::CloseFile(fp);
     return CDM::E_CDM_ERROR_WRITE_FIELD_HEADER_RECORD;
   }
 
@@ -564,19 +609,22 @@ cdm_DFI::WriteFieldData(std::string fname,
   //データ出力
   //if( write_DataRecord(fp, val, DFI_Finfo.GuideCell, m_RankID) != CDM::E_CDM_SUCCESS) {
   if( write_DataRecord(fp, outArray, DFI_Finfo.GuideCell, m_RankID) != CDM::E_CDM_SUCCESS) {
-    fclose(fp);
+//  fclose(fp);
+    cdm_FILE::CloseFile(fp);
     return CDM::E_CDM_ERROR_WRITE_FIELD_DATA_RECORD;
   }
 
   //average 出力
   if( !avr_mode ) {
     if( write_averaged(fp, step_avr, time_avr) != CDM::E_CDM_SUCCESS ) {
-      fclose(fp);
+//    fclose(fp);
+      cdm_FILE::CloseFile(fp);
       return CDM::E_CDM_ERROR_WRITE_FIELD_AVERAGED_RECORD;
     }
   }
 
-  fclose(fp);
+//fclose(fp);
+  cdm_FILE::CloseFile(fp);
 
   return CDM::E_CDM_SUCCESS;
 

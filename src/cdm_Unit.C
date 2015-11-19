@@ -336,3 +336,19 @@ cdm_Unit::Write(FILE* fp,
 
 }
 
+// #################################################################
+// Unitを追加する
+void cdm_Unit::AddUnit(const std::string Name,
+                       const std::string Unit,
+                       const double reference,
+                       const double difference,
+                       const bool BsetDiff)
+{
+
+  /** UnitElemの生成 */
+  cdm_UnitElem unit =  cdm_UnitElem(Name,Unit,reference,difference,BsetDiff);
+  
+  /** UnilListへのセット */
+  UnitList.insert(map<std::string,cdm_UnitElem>::value_type(Name,unit));
+}
+

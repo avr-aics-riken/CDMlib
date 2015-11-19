@@ -17,33 +17,36 @@ EXTRA_DIST= sample_input.C sample_output_NonUni.C sample_output_Uni.C coord.crd 
 
 
 input_SOURCES  =  sample_input.C
-input_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@
+input_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@ @NC_CFLAGS@
 
 input_LDADD = \
     -L$(top_builddir)/src -lCDM \
     @MPI_LIBS@ \
     @MPI_LDFLAGS@ \
-    @TP_LDFLAGS@
+    @TP_LDFLAGS@ \
+    @NC_LDFLAGS@
 
 
 output_SOURCES  = sample_output_Uni.C
-output_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@
+output_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@ @NC_CFLAGS@
 
 output_LDADD = \
     -L$(top_builddir)/src -lCDM \
     @MPI_LIBS@ \
     @MPI_LDFLAGS@ \
-    @TP_LDFLAGS@
+    @TP_LDFLAGS@ \
+    @NC_LDFLAGS@
 
 
 output_nuc_SOURCES  = sample_output_NonUni.C
-output_nuc_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@
+output_nuc_CXXFLAGS = -I$(top_srcdir)/include @MPI_CFLAGS@ @TP_CFLAGS@ @NC_CFLAGS@
 
 output_nuc_LDADD = \
   -L$(top_builddir)/src -lCDM \
   @MPI_LIBS@ \
   @MPI_LDFLAGS@ \
-  @TP_LDFLAGS@
+  @TP_LDFLAGS@ \
+  @NC_LDFLAGS@
 
 
 dist_noinst_DATA=

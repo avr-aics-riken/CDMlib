@@ -30,6 +30,7 @@ cdm_FileInfo::cdm_FileInfo()
   Endian           =CDM::E_CDM_ENDIANTYPE_UNKNOWN;
   ArrayShape       =CDM::E_CDM_ARRAYSHAPE_UNKNOWN;
   NumVariables     =0;
+  RankNoPrefix     =CDM::C_CDM_RANKNOPREFIX;
 }
 
 // #################################################################
@@ -44,7 +45,8 @@ cdm_FileInfo::cdm_FileInfo(const CDM::E_CDM_DFITYPE _DFIType,
                            const CDM::E_CDM_DTYPE _DataType, 
                            const CDM::E_CDM_ENDIANTYPE _Endian,
                            const CDM::E_CDM_ARRAYSHAPE _ArrayShape, 
-                           const int _NumVariables)
+                           const int _NumVariables,
+                           const std::string _RankNoPrefix)
 {
 //FCONV 20140116.s
   DFIType          =_DFIType;
@@ -59,6 +61,7 @@ cdm_FileInfo::cdm_FileInfo(const CDM::E_CDM_DFITYPE _DFIType,
   Endian           =_Endian;
   ArrayShape       =_ArrayShape;
   NumVariables     =_NumVariables;
+  RankNoPrefix     =_RankNoPrefix;
 }
 
 // デストラクタ
@@ -131,10 +134,21 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
       FieldFilenameFormat = CDM::E_CDM_FNAME_STEP_RANK;
     }else if( !strcasecmp(str.c_str(),"rank_step" ) ) {
       FieldFilenameFormat = CDM::E_CDM_FNAME_RANK_STEP;
+    }else if( !strcasecmp(str.c_str(),"rank" ) ) {
+      FieldFilenameFormat = CDM::E_CDM_FNAME_RANK;
     }else {
       printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
       return CDM::E_CDM_ERROR_READ_DFI_FIELDFILENAMEFORMAT;
     }
+    ncnt++;
+  }
+
+  //RankNoPrefix
+  label = "/FileInfo/RankNoPrefix";
+  if( !(tpCntl.GetValue(label, &str )) ) {
+    RankNoPrefix = CDM::C_CDM_RANKNOPREFIX;
+  } else {
+    RankNoPrefix = str;
     ncnt++;
   }
 
@@ -165,6 +179,10 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
   } else {
     printf("\tCDM Parsing error : fail to get '%s'\n",str.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_TIMESLICEDIRECTORY;
+  }
+  if( FieldFilenameFormat == CDM::E_CDM_FNAME_RANK )
+  {
+    TimeSliceDirFlag=CDM::E_CDM_OFF;
   }
 
   ncnt++;
@@ -209,7 +227,27 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
     FileFormat=CDM::E_CDM_FMT_PLOT3D;
     ArrayShape=CDM::E_CDM_IJKN;
   }
+//20150918.NetCDF.s
+  else if( !strcasecmp(str.c_str(), "netcdf4" ) ) {
+    //Check DFIType
+//    if( DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
+    if( DFIType == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
+      printf("\tCDM warning : Cartesian is not supported in NetCDF4 File Format.\n");
+      printf("\t              Change to Non_Uniform_Cartesian.\n");
+      DFIType = CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN;
+    }
+    FileFormat=CDM::E_CDM_FMT_NETCDF4;
+    ArrayShape=CDM::E_CDM_IJKN;
+  }
+//20150918.NetCDF.e
   else FileFormat=CDM::E_CDM_FMT_UNKNOWN;
+
+  if( FieldFilenameFormat == CDM::E_CDM_FNAME_RANK &&
+      FileFormat != CDM::E_CDM_FMT_NETCDF4 )
+  {
+    printf("\tCDM error : FieldFilenameFormat=rank is supported only NetCDF4 Format.\n");
+    return CDM::E_CDM_ERROR_READ_DFI_FILEFORMAT;
+  }
 
   ncnt++;
 
@@ -251,6 +289,16 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
     return CDM::E_CDM_ERROR_READ_DFI_ENDIAN;
   } 
 
+  // NetCDFの場合、nativeに変更する
+  // ライブラリが吸収するため
+  if( FileFormat == CDM::E_CDM_FMT_NETCDF4 )
+  {
+    int idumy = 1;
+    char* cdumy = (char*)(&idumy);
+    if( cdumy[0] == 0x01 ) Endian = CDM::E_CDM_LITTLE;
+    if( cdumy[0] == 0x00 ) Endian = CDM::E_CDM_BIG;
+  }
+
   ncnt++;
 
   //NumVariables
@@ -282,6 +330,7 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
 
   label_leaf = "/FileInfo";
 
+#if 0
   if( nvari>0 ) {
     for(int i=0; i<nvari; i++) {
       if(!tpCntl.GetNodeStr(label_leaf,ncnt+i,&str))
@@ -303,6 +352,37 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
       }
     }
   }
+#else
+  if( nvari>0 ) {
+    TextParser *tp = tpCntl.getTPPtr();
+    if( !tp )
+    {
+      return CDM::E_CDM_ERROR_TEXTPARSER;
+    }
+
+    // 子ノードのラベルを取得
+    vector<std::string> labels;
+    tp->changeNode(label_leaf);
+    tp->getNodes(labels,1);
+    for( int i=0;i<labels.size();i++ )
+    {
+      str = labels[i];
+      if( strcasecmp(str.substr(8,1).c_str(), "[") ) continue;
+      if( !strcasecmp(str.substr(0,8).c_str(), "variable") ) {
+        label_leaf_leaf = label_leaf+"/"+str;
+
+        label = label_leaf_leaf + "/name";
+        if ( !(tpCntl.GetValue(label, &str )) ) {
+          printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
+          return CDM::E_CDM_ERROR_READ_DFI_MIN;
+        }
+        else {
+          VariableName.push_back(str);
+        }
+      }
+    }
+  }
+#endif
 
 //Check for SPH format 20141022.s
   if( FileFormat == CDM::E_CDM_FMT_SPH ) {
@@ -357,16 +437,29 @@ cdm_FileInfo::Write(FILE* fp,
     fprintf(fp, "FileFormat         = \"plot3d\"\n");
   }  else if( FileFormat == CDM::E_CDM_FMT_VTK ) {
     fprintf(fp, "FileFormat         = \"vtk\"\n");
+//20150918.NetCDF.s
+  }  else if( FileFormat == CDM::E_CDM_FMT_NETCDF4 ) {
+    fprintf(fp, "FileFormat         = \"netcdf4\"\n");
+//20150918.NetCDF.e
   }
 
 //FCONV 20140116.s
   _CDM_WRITE_TAB(fp, tab+1);
   if( FieldFilenameFormat == CDM::E_CDM_FNAME_RANK_STEP ) {
     fprintf(fp, "FieldFilenameFormat= \"rank_step\"\n");
+  } else if( FieldFilenameFormat == CDM::E_CDM_FNAME_RANK ) {
+    fprintf(fp, "FieldFilenameFormat= \"rank\"\n");
   } else {
     fprintf(fp, "FieldFilenameFormat= \"step_rank\"\n");
   }
 //FCONV 20140116.e
+
+  if( RankNoPrefix != CDM::C_CDM_RANKNOPREFIX )
+  {
+    _CDM_WRITE_TAB(fp, tab+1);
+    fprintf(fp, "RankNoPrefix       = \"%s\"\n", RankNoPrefix.c_str());
+  }
+  
 
   _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp, "GuideCell          = %d\n", GuideCell);

@@ -256,6 +256,9 @@ MPI_CFLAGS = @MPI_CFLAGS@
 MPI_DIR = @MPI_DIR@
 MPI_LDFLAGS = @MPI_LDFLAGS@
 MPI_LIBS = @MPI_LIBS@
+NC_CFLAGS = @NC_CFLAGS@
+NC_DIR = @NC_DIR@
+NC_LDFLAGS = @NC_LDFLAGS@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -320,7 +323,9 @@ top_srcdir = @top_srcdir@
 frm_CXXFLAGS = \
   -I$(top_srcdir)/include \
   -I$(top_srcdir)/tools/frm/include \
-  @TP_CFLAGS@ @CDM_BUFFER_TUNING@
+  @TP_CFLAGS@ \
+  @CDM_BUFFER_TUNING@ \
+  @NC_CFLAGS@
 
 frm_SOURCES = \
   Staging.C \
@@ -338,7 +343,8 @@ frm_include_HEADERS = \
 frm_LDADD = \
   -L$(top_builddir)/src \
   @CDM_LIBS@ \
-  @TP_LDFLAGS@
+  @TP_LDFLAGS@ \
+  @NC_LDFLAGS@
 
 EXTRA_DIST = Makefile_hand
 all: all-am

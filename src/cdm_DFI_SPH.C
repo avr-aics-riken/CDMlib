@@ -33,7 +33,8 @@ cdm_DFI_SPH::~cdm_DFI_SPH()
 // #################################################################
 // ファイルのヘッダーレコード読込み
 CDM::E_CDM_ERRORCODE
-cdm_DFI_SPH::read_HeaderRecord(FILE* fp, 
+//cdm_DFI_SPH::read_HeaderRecord(FILE* fp, 
+cdm_DFI_SPH::read_HeaderRecord(cdm_FILE* pFile, 
                                bool matchEndian, 
                                unsigned step,
                                const int head[3],
@@ -44,6 +45,8 @@ cdm_DFI_SPH::read_HeaderRecord(FILE* fp,
 {
 
   unsigned int dmy,type_dmy;
+
+  FILE *fp = pFile->m_fp;
 
 //REC1  
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; }
@@ -205,13 +208,16 @@ cdm_DFI_SPH::read_HeaderRecord(FILE* fp,
 // #################################################################
 // ファイルのデーターレコード読込み
 CDM::E_CDM_ERRORCODE
-cdm_DFI_SPH::read_Datarecord(FILE* fp,
+//cdm_DFI_SPH::read_Datarecord(FILE* fp,
+cdm_DFI_SPH::read_Datarecord(cdm_FILE* pFile,
                              bool matchEndian, 
+                             unsigned step,
                              cdm_Array* buf, 
                              int head[3],
                              int nz,
                              cdm_Array* &src)
 {
+  FILE *fp = pFile->m_fp;
 
   //１層ずつ読み込み
   int hzB = head[2];
@@ -246,14 +252,16 @@ cdm_DFI_SPH::read_Datarecord(FILE* fp,
 // #################################################################
 // Averaged レコードの読込み
 CDM::E_CDM_ERRORCODE
-cdm_DFI_SPH::read_averaged(FILE* fp,
+//cdm_DFI_SPH::read_averaged(FILE* fp,
+cdm_DFI_SPH::read_averaged(cdm_FILE* pFile,
                            bool matchEndian,
                            unsigned dummy,
                            unsigned &step_avr,
                            double &time_avr)
 {
-
   unsigned int dmy,type_dmy;
+
+  FILE *fp = pFile->m_fp;
 
   if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) type_dmy = 8;
   if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) type_dmy = 16;
@@ -292,11 +300,13 @@ cdm_DFI_SPH::read_averaged(FILE* fp,
 // #################################################################
 // SPHヘッダーレコードの出力
 CDM::E_CDM_ERRORCODE 
-cdm_DFI_SPH::write_HeaderRecord(FILE* fp, 
+//cdm_DFI_SPH::write_HeaderRecord(FILE* fp, 
+cdm_DFI_SPH::write_HeaderRecord(cdm_FILE* pFile, 
                                      const unsigned step, 
                                      const double time, 
                                      const int n)
 {
+  FILE *fp = pFile->m_fp;
 
   //REC1
   int svType = 0;
@@ -401,11 +411,13 @@ cdm_DFI_SPH::write_HeaderRecord(FILE* fp,
 // #################################################################
 // SPHデータレコードの出力
 CDM::E_CDM_ERRORCODE
-cdm_DFI_SPH::write_DataRecord(FILE* fp, 
+//cdm_DFI_SPH::write_DataRecord(FILE* fp, 
+cdm_DFI_SPH::write_DataRecord(cdm_FILE* pFile, 
                               cdm_Array* val, 
                               const int gc, 
                               const int n)
 {
+  FILE *fp = pFile->m_fp;
 
   CDM::E_CDM_DTYPE Dtype = (CDM::E_CDM_DTYPE)DFI_Finfo.DataType;
   int Real_size = get_cdm_Datasize(Dtype);
@@ -427,10 +439,13 @@ cdm_DFI_SPH::write_DataRecord(FILE* fp,
 // #################################################################
 // 平均の出力
 CDM::E_CDM_ERRORCODE
-cdm_DFI_SPH::write_averaged(FILE* fp,
+//cdm_DFI_SPH::write_averaged(FILE* fp,
+cdm_DFI_SPH::write_averaged(cdm_FILE* pFile,
                             const unsigned step_avr,
                             const double time_avr)
 {
+  FILE *fp = pFile->m_fp;
+
   int dType = 0;
   if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) dType = 1;
   if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) dType = 2;

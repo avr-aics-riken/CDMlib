@@ -33,23 +33,26 @@ cdm_DFI_AVS::~cdm_DFI_AVS()
 // #################################################################
 // ヘッダーレコードの出力
 CDM::E_CDM_ERRORCODE
-cdm_DFI_AVS::write_HeaderRecord(FILE* fp,
+//cdm_DFI_AVS::write_HeaderRecord(FILE* fp,
+cdm_DFI_AVS::write_HeaderRecord(cdm_FILE* pFile,
                                 const unsigned step,
                                 const double time,
                                 const int n)
 {
-
+  FILE *fp = pFile->m_fp;
   return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // AVSデータレコードの出力
 CDM::E_CDM_ERRORCODE
-cdm_DFI_AVS::write_DataRecord(FILE* fp,
+//cdm_DFI_AVS::write_DataRecord(FILE* fp,
+cdm_DFI_AVS::write_DataRecord(cdm_FILE* pFile,
                               cdm_Array* val,
                               const int gc,
                               const int n)
 {
+  FILE *fp = pFile->m_fp;
 
   CDM::E_CDM_DTYPE Dtype = (CDM::E_CDM_DTYPE)DFI_Finfo.DataType;
   int Real_size = get_cdm_Datasize(Dtype);
@@ -105,7 +108,7 @@ bool cdm_DFI_AVS::write_avs_cord(int dims[3],
   
   std::string fname,tmp;
   tmp = Generate_FileName("cord",m_RankID,-1,"cod",m_output_fname,mio,
-                          DFI_Finfo.TimeSliceDirFlag);
+                          DFI_Finfo.TimeSliceDirFlag,DFI_Finfo.RankNoPrefix);
   if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
     fname = DFI_Finfo.DirectoryPath + "/" + tmp;
   } else {
@@ -262,7 +265,7 @@ bool cdm_DFI_AVS::write_avs_header(int dims[3])
   if( DFI_MPI.NumberOfRank > 1 ) mio = true;
   std::string fname,tmp;
   tmp = Generate_FileName(DFI_Finfo.Prefix,m_RankID,-1,"fld",m_output_fname,mio,
-                          DFI_Finfo.TimeSliceDirFlag);
+                          DFI_Finfo.TimeSliceDirFlag,DFI_Finfo.RankNoPrefix);
   if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
     fname = DFI_Finfo.DirectoryPath +"/"+ tmp;
   } else {
@@ -338,7 +341,8 @@ bool cdm_DFI_AVS::write_avs_header(int dims[3])
                                   "dat",
                                   m_output_fname,
                                   mio,
-                                  DFI_Finfo.TimeSliceDirFlag);
+                                  DFI_Finfo.TimeSliceDirFlag,
+                                  DFI_Finfo.RankNoPrefix);
       //std::string xxx = CDM::cdmPath_FileName(out_fname,"sph");
       fprintf(fp,"variable %d file=%s filetype=binary skip=%d stride=%d\n",
               j,out_fname.c_str(),skip,DFI_Finfo.NumVariables);
@@ -346,7 +350,7 @@ bool cdm_DFI_AVS::write_avs_header(int dims[3])
 
     //coord data file name 出力
     tmp = Generate_FileName("cord",m_RankID,-1,"cod",m_output_fname,mio,
-                            DFI_Finfo.TimeSliceDirFlag);
+                            DFI_Finfo.TimeSliceDirFlag,DFI_Finfo.RankNoPrefix);
     if( DFI_Finfo.DFIType == CDM::E_CDM_DFITYPE_CARTESIAN ) {
       fprintf(fp,"coord 1 file=%s filetype=ascii skip=1\n",tmp.c_str());
       fprintf(fp,"coord 2 file=%s filetype=ascii skip=4\n",tmp.c_str());

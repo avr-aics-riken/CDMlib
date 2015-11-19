@@ -38,6 +38,8 @@ public:
   int                   NumVariables;     ///<変数の個数
   vector<std::string>   VariableName;     ///<変数名
 
+  std::string           RankNoPrefix;     ///<ファイル名のランク番号前の文字列
+
   /** コンストラクタ **/
   cdm_FileInfo();
 
@@ -65,7 +67,8 @@ public:
                const CDM::E_CDM_DTYPE _DataType, 
                const CDM::E_CDM_ENDIANTYPE _Endian, 
                const CDM::E_CDM_ARRAYSHAPE _ArrayShape, 
-               const int _NumVariables);
+               const int _NumVariables,
+               const std::string _RankNoPrefix=std::string(CDM::C_CDM_RANKNOPREFIX));
 
   /** デストラクタ **/
   ~cdm_FileInfo();

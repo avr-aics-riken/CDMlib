@@ -21,7 +21,8 @@ fconv_CXXFLAGS = \
   @MPI_CFLAGS@ \
   @CPM_CFLAGS@ \
   @TP_CFLAGS@ \
-  @CDM_BUFFER_TUNING@
+  @CDM_BUFFER_TUNING@ \
+  @NC_CFLAGS@
   
 fconv_SOURCES = \
   main.C \
@@ -35,7 +36,8 @@ fconv_SOURCES = \
   convOutput_BOV.C \
   convOutput_AVS.C \
   convOutput_VTK.C \
-  convOutput_PLOT3D.C
+  convOutput_PLOT3D.C \
+  convOutput_NETCDF.C
 
 fconv_includedir = $(includedir)
 fconv_include_HEADERS = \
@@ -50,7 +52,8 @@ fconv_include_HEADERS = \
   $(top_srcdir)/tools/fconv/include/convOutput_BOV.h \
   $(top_srcdir)/tools/fconv/include/convOutput_AVS.h \
   $(top_srcdir)/tools/fconv/include/convOutput_VTK.h \
-  $(top_srcdir)/tools/fconv/include/convOutput_PLOT3D.h
+  $(top_srcdir)/tools/fconv/include/convOutput_PLOT3D.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_NETCDF.h
 
 
 fconv_inline_includedir = $(includedir)/inline
@@ -65,7 +68,8 @@ fconv_LDADD = \
   @CDM_LIBS@ \
   @TP_LDFLAGS@ \
   @MPI_LDFLAGS@ \
-  @MPI_LIBS@ 
+  @MPI_LIBS@  \
+  @NC_LDFLAGS@
   
 
 EXTRA_DIST = Makefile_hand depend.inc 

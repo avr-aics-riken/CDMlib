@@ -3,7 +3,7 @@
 #
 # CDMlib - Cartesian Data Management library
 #
-# Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN. 
+# Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
 # All rights reserved.
 #
 #########################################################################
@@ -14,7 +14,7 @@
 
 AC_PREREQ([2.57])
 
-AC_INIT([CDMlib],[0.8.1],[keno@riken.jp],[CDMlib])
+AC_INIT([CDMlib],[0.9.0],[keno@riken.jp],[CDMlib])
 
 echo "----------------------------------------"
 echo "Running CDMlib Configure Script"
@@ -63,7 +63,7 @@ AM_INIT_AUTOMAKE()
 # revision No.
 #
 
-CDM_REVISION="20150610_1300"
+CDM_REVISION="20151119_1500"
 AC_SUBST(CDM_REVISION)
 
 
@@ -120,7 +120,7 @@ AC_SUBST(MPI_LDFLAGS)
 AC_SUBST(MPI_LIBS)
 
 
-# 
+#
 # MPI library
 #
 AC_ARG_WITH(MPI, [AC_HELP_STRING([--with-MPI=(yes|no)],[use MPI library])], , with_MPI=yes)
@@ -193,7 +193,35 @@ else
 fi
 
 
-# 
+
+#
+# NetCDF4 library environment
+#
+AC_ARG_WITH(nc, [AC_HELP_STRING([--with-nc=dir],[Specify NetCDF4 install directory])], , with_nc=none)
+AC_SUBST(NC_DIR)
+AC_SUBST(NC_CFLAGS)
+AC_SUBST(NC_LDFLAGS)
+
+if test "$with_nc" != "none" ; then
+  if test "$with_nc" != "yes" ; then
+    NC_DIR=$with_nc;
+    NC_CFLAGS="-D_WITH_NETCDF4_ `$NC_DIR/bin/nc-config --cflags`"
+    NC_LDFLAGS="`$NC_DIR/bin/nc-config --libs`"
+  else
+    NC_CFLAGS="-D_WITH_NETCDF4_ $CPPFLAGS"
+    NC_LDFLAGS="$LDFLAGS $LIBS"
+  fi
+else
+  echo "************************************************************************"
+  echo "  Warning: NetCDF4 library is not specified."
+  echo "           NetCDF4 interface is not built."
+  echo "           Specify --with-nc option for NetCDF4 interface compilation."
+  echo "************************************************************************"
+fi
+
+
+
+#
 # frm tools
 #
 AC_ARG_WITH(frm, [AC_HELP_STRING([--with-frm=(no|yes)],[install frm tool])], , with_frm=no)
@@ -246,6 +274,12 @@ if test "x$with_MPI" = "xyes" ; then
   fi
 fi
 
+# install netcdf2dfi
+if test "$with_nc" != "none" ; then
+  MAKE_SUB_DIRS="$MAKE_SUB_DIRS"" tools/netcdf2dfi/src"
+fi
+
+# install example
 if test x"$with_example" = x"yes" ; then
 MAKE_SUB_DIRS="$MAKE_SUB_DIRS"" example"
 fi
@@ -308,10 +342,14 @@ if test "x$with_MPI" = "xyes" ; then
   fi
 fi
 
+if test "$with_nc" != "none" ; then
+  AC_CONFIG_FILES([tools/netcdf2dfi/src/Makefile])
+fi
+
 # For non-sparc architecture, i.e., login node on K/FX or Intel clusters
 #if test "$host" != "sparc64-unknown-linux-gnu" ; then
 #  AC_CONFIG_FILES([tools/frm/src/Makefile])
-#  
+#
 # CPM library is specified
 #  if test "$with_cpm" != "none" ; then
 #    AC_CONFIG_FILES([tools/fconv/src/Makefile])

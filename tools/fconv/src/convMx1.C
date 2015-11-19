@@ -50,7 +50,7 @@ bool convMx1::exec()
   }
 
   string prefix,outfile,infile,inPath;
-  FILE *fp;
+  cdm_FILE *pFile;
   int dummy;
   
   int l_rank;
@@ -208,6 +208,11 @@ bool convMx1::exec()
 
     const cdm_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcdmTimeSlice();
 
+    // convOutputに情報をセット(NetCDF4用)
+    ConvOut->m_pTSlice = TSlice;
+    ConvOut->m_pFinfo  = DFI_FInfo;
+    ConvOut->m_pUnit   = m_in_dfi[i]->GetcdmUnit();
+
     div[0]=DFI_Domain->GlobalDivision[0];
     div[1]=DFI_Domain->GlobalDivision[1];
     div[2]=DFI_Domain->GlobalDivision[2];
@@ -242,7 +247,7 @@ bool convMx1::exec()
       STD_OUTV_ printf("\tstep = %d\n", l_step);
       
       //連結出力ファイルオープン
-      fp = ConvOut->OutputFile_Open(prefix, l_step, 0, false);
+      pFile = ConvOut->OutputFile_Open(prefix, l_step, 0, false);
 
       //m_d_typeのセット (float or double)
       if( m_StepRankList[i].dfi->GetDataType() == CDM::E_CDM_FLOAT32 ) {
@@ -276,18 +281,19 @@ bool convMx1::exec()
                                          out_process,
                                          outGc,
                                          prefix,
-                                         fp)) ) {
+                                         pFile)) ) {
           printf("\twrite header error (VTK format)\n");
           return false;
         }
       } else {
         if( !(ConvOut->WriteHeaderRecord(l_step, dim, d_type, 
                                          l_imax_th+2*outGc, l_jmax_th+2*outGc, l_kmax_th+2*outGc,
-                                         l_time, t_org, l_dpit, prefix, fp)) ) {
+                                         l_time, t_org, l_dpit, prefix, pFile)) ) {
           printf("\twrite header error\n");
           return false;
         }
       }
+
       //全体の大きさの計算とデータのヘッダ書き込み
       size_t dLen;
       bool flag_Mark = false;
@@ -305,7 +311,7 @@ bool convMx1::exec()
           m_param->Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D) {
         flag_Mark = true;
       }
-      if( !(ConvOut->WriteDataMarker(dummy, fp, flag_Mark)) ) {
+      if( !(ConvOut->WriteDataMarker(dummy, pFile, flag_Mark)) ) {
         printf("\twrite data header error\n");
         return false;
       }
@@ -364,7 +370,7 @@ bool convMx1::exec()
           (m_param->Get_OutputFormat() != CDM::E_CDM_FMT_VTK) ){  //VTKの出力はijknの方を使う
 
         //output nijk
-        if( !convMx1_out_nijk(fp,
+        if( !convMx1_out_nijk(pFile,
                              inPath,
                              l_step,
                              l_dtime,
@@ -380,8 +386,9 @@ bool convMx1::exec()
                              ) ) return false;
 
       } else {
+
         //output IJKN
-        if( !convMx1_out_ijkn(fp,
+        if( !convMx1_out_ijkn(pFile,
                              inPath,
                              l_step,
                              l_dtime,
@@ -408,13 +415,13 @@ bool convMx1::exec()
       }
 
       //データのフッタ書き込み
-      if( !(ConvOut->WriteDataMarker(dummy, fp, flag_Mark)) ) {
+      if( !(ConvOut->WriteDataMarker(dummy, pFile, flag_Mark)) ) {
         printf("\twrite data error\n");
         return false;
       }
       
       //出力ファイルクローズ
-      ConvOut->OutputFile_Close(fp);
+      ConvOut->OutputFile_Close(pFile);
 
     }
 
@@ -495,18 +502,18 @@ bool convMx1::exec()
 // #################################################################
 // NIJK to NIJK
 bool
-convMx1::convMx1_out_nijk(FILE* fp,
-                           std::string inPath,
-                           int l_step,
-                           double l_dtime,
-                           CDM::E_CDM_DTYPE d_type,
-                           bool mio,
-                           int div[3],
-                           int sz[3],
-                           cdm_DFI* dfi, 
-                           cdm_Process* DFI_Process,
-                           headT mapHeadX, headT mapHeadY, headT mapHeadZ,
-                           double* min, double* max)
+convMx1::convMx1_out_nijk(cdm_FILE* pFile,
+                          std::string inPath,
+                          int l_step,
+                          double l_dtime,
+                          CDM::E_CDM_DTYPE d_type,
+                          bool mio,
+                          int div[3],
+                          int sz[3],
+                          cdm_DFI* dfi, 
+                          cdm_Process* DFI_Process,
+                          headT mapHeadX, headT mapHeadY, headT mapHeadZ,
+                          double* min, double* max)
 {
 
   //cdm_Domain* DFI_Domain = (cdm_Domain *)m_in_dfi[0]->GetcdmDomain();
@@ -748,7 +755,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
       if( outArray ) {
         const int* szOutArray = outArray->getArraySizeInt();
         size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNvari();
-        if( ConvOut->WriteFieldData(fp,
+        if( ConvOut->WriteFieldData(pFile,
                                     outArray,
                                     dLen ) != true ) return false;
 
@@ -773,7 +780,7 @@ convMx1::convMx1_out_nijk(FILE* fp,
     if( outArray ) {
       const int* szOutArray = outArray->getArraySizeInt();
       size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNvari();
-      if( ConvOut->WriteFieldData(fp,
+      if( ConvOut->WriteFieldData(pFile,
                                   outArray,
                                   dLen ) != true ) return false;
 
@@ -796,18 +803,18 @@ convMx1::convMx1_out_nijk(FILE* fp,
 // #################################################################
 // NIJK to IJKN または IJKN to IJKN
 bool
-convMx1::convMx1_out_ijkn(FILE* fp,
-                           std::string inPath,
-                           int l_step,
-                           double l_dtime,
-                           CDM::E_CDM_DTYPE d_type,
-                           bool mio,
-                           int div[3],
-                           int sz[3],
-                           cdm_DFI* dfi,
-                           cdm_Process* DFI_Process,
-                           headT mapHeadX, headT mapHeadY, headT mapHeadZ,
-                           double* min, double* max)
+convMx1::convMx1_out_ijkn(cdm_FILE* pFile,
+                          std::string inPath,
+                          int l_step,
+                          double l_dtime,
+                          CDM::E_CDM_DTYPE d_type,
+                          bool mio,
+                          int div[3],
+                          int sz[3],
+                          cdm_DFI* dfi,
+                          cdm_Process* DFI_Process,
+                          headT mapHeadX, headT mapHeadY, headT mapHeadZ,
+                          double* min, double* max)
 {
 
   //cdm_Domain* DFI_Domain = (cdm_Domain *)m_in_dfi[0]->GetcdmDomain();
@@ -1032,15 +1039,16 @@ convMx1::convMx1_out_ijkn(FILE* fp,
         } else {
           //NIJK レコードをIJKにコピー
           outArray = nijk_to_ijk(src,n);
-           
+          outArray->setHeadIndex((int*)src->getHeadIndex());
         }
 
         //一層分出力
         if( outArray ) {
           const int* szOutArray = outArray->getArraySizeInt();
           size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNvari();
-          if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
-            if( ConvOut->WriteFieldData(fp,
+          if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ||
+              m_param->Get_OutputFormat() == CDM::E_CDM_FMT_NETCDF4 ) {
+            if( ConvOut->WriteFieldData(pFile,
                                         outArray,
                                         dLen,
                                         d_type,
@@ -1048,7 +1056,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
                                         variname) != true ) return false;
             flag_variname = false;
           } else {
-            if( ConvOut->WriteFieldData(fp,
+            if( ConvOut->WriteFieldData(pFile,
                                         outArray,
                                         dLen ) != true ) return false;
           }
@@ -1070,7 +1078,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
         const int* szOutArray = outArray->getArraySizeInt();
         size_t dLen = szOutArray[0]*szOutArray[1]*szOutArray[2]*outArray->getNvari();
         if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
-          if( ConvOut->WriteFieldData(fp,
+          if( ConvOut->WriteFieldData(pFile,
                                       outArray,
                                       dLen,
                                       d_type,
@@ -1078,7 +1086,7 @@ convMx1::convMx1_out_ijkn(FILE* fp,
                                       variname) != true ) return false;
           flag_variname = false;
         } else {
-          if( ConvOut->WriteFieldData(fp,
+          if( ConvOut->WriteFieldData(pFile,
                                       outArray,
                                       dLen ) != true ) return false;
         }

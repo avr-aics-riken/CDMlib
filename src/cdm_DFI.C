@@ -22,6 +22,9 @@
 #include "cdm_DFI_PLOT3D.h"
 #include "cdm_DFI_VTK.h"
 //FCONV 20131122.e
+//20150918.NetCDF.s
+#include "cdm_DFI_NETCDF.h"
+//20150918.NetCDF.e
 #include "cdm_NonUniformDomain.h"
 
 // #################################################################
@@ -29,14 +32,15 @@
 cdm_DFI::cdm_DFI()
 {
 
- m_read_type = CDM::E_CDM_READTYPE_UNKNOWN;
- m_RankID = 0;
+  m_read_type = CDM::E_CDM_READTYPE_UNKNOWN;
+  m_RankID = 0;
 
- m_input_type = CDM::E_CDM_FILE_TYPE_DEFAULT;
- m_output_type = CDM::E_CDM_FILE_TYPE_DEFAULT;
- m_output_type_coord = CDM::E_CDM_FILE_TYPE_BINARY;
- m_output_fname = CDM::E_CDM_FNAME_DEFAULT;
+  m_input_type = CDM::E_CDM_FILE_TYPE_DEFAULT;
+  m_output_type = CDM::E_CDM_FILE_TYPE_DEFAULT;
+  m_output_type_coord = CDM::E_CDM_FILE_TYPE_BINARY;
+  m_output_fname = CDM::E_CDM_FNAME_DEFAULT;
 
+  DFI_Domain = NULL;
 }
 
 
@@ -210,6 +214,25 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   {
     dfi = new cdm_DFI_PLOT3D(F_info, F_path, visit, unit, domain, mpi, TimeSlice, process);
   }
+//20150918.NetCDF.s
+#ifdef _WITH_NETCDF4_
+  else if( F_info.FileFormat == CDM::E_CDM_FMT_NETCDF4 )
+  {
+    tpCntl.readTPfile(DfiName);
+    cdm_DFI_NETCDF *dfi_nc = new cdm_DFI_NETCDF(F_info, F_path, visit, unit, domain, mpi, TimeSlice, process);
+    if( dfi_nc->ReadAdditionalTP(tpCntl) != CDM::E_CDM_SUCCESS )
+    {
+      delete dfi_nc;
+      tpCntl.remove();
+      printf("\tProcess Data Read error %s\n",procfile.c_str());
+      ret = CDM::E_CDM_ERROR_READ_DFI_NETCDF;
+      return NULL;
+    }
+    tpCntl.remove();
+    dfi = dfi_nc;
+  }
+#endif
+//20150918.NetCDF.e
   else
   {
     return NULL;
@@ -316,6 +339,7 @@ cdm_Domain* cdm_DFI::GetcdmDomain()
 void 
 cdm_DFI::SetcdmDomain(cdm_Domain* domain)
 {
+  if( DFI_Domain ) delete DFI_Domain;
   DFI_Domain = domain;
 }
 
@@ -424,6 +448,9 @@ std::string cdm_DFI::GetFileFormatString()
   if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_AVS ) return "avs";
   if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) return "plot3d";
   if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_VTK ) return "vtk";
+//20150918.NetCDF.s
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_NETCDF4 ) return "NetCDF4";
+//20150918.NetCDF.e
   return "";
 }
 
@@ -713,8 +740,13 @@ std::string cdm_DFI::Generate_FieldFileName(int RankID,
   } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_PLOT3D ) {
     fmt=D_CDM_EXT_FUNC;
 //FCONV 20131122.e
+//20150918.NetCDF.s
+  } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_NETCDF4 ) {
+    fmt=D_CDM_EXT_NC;
+//20150918.NetCDF.e
   }
 
+#if 0
   int len = DFI_Finfo.DirectoryPath.size() + DFI_Finfo.Prefix.size() + fmt.size() + 25; 
   // id(6) + step(10) + 1(\0) + "_"(2) + "."(1)+"id"(2)
   if( DFI_Finfo.TimeSliceDirFlag == CDM::E_CDM_ON ) len += 11;
@@ -739,9 +771,25 @@ std::string cdm_DFI::Generate_FieldFileName(int RankID,
             step,fmt.c_str());
     }
   }
+//20150918.NetCDF.s
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_NETCDF4 ) {
+    if( mio ) {
+      sprintf(tmp, "%s/%s_id%06d.%s",DFI_Finfo.DirectoryPath.c_str(),DFI_Finfo.Prefix.c_str(),RankID,fmt.c_str());
+    } else {
+      sprintf(tmp, "%s/%s.%s",DFI_Finfo.DirectoryPath.c_str(),DFI_Finfo.Prefix.c_str(),fmt.c_str());
+    }
+  }
+//20150918.NetCDF.e
   
   std::string fname(tmp);
   if( tmp ) delete [] tmp;
+#else
+  std::string tmp = cdm_DFI::Generate_FileName(DFI_Finfo.Prefix, RankID, step, fmt, DFI_Finfo.FieldFilenameFormat,
+                                               mio, DFI_Finfo.TimeSliceDirFlag, DFI_Finfo.RankNoPrefix);
+  std::string fname = DFI_Finfo.DirectoryPath;
+  fname += "/";
+  fname += tmp;
+#endif
 
   return fname;
 }
@@ -755,10 +803,10 @@ std::string cdm_DFI::Generate_FileName(std::string prefix,
                                        std::string ext,
                                        CDM::E_CDM_OUTPUT_FNAME output_fname,
                                        bool mio,
-                                       CDM::E_CDM_ONOFF TimeSliceDirFlag)
+                                       CDM::E_CDM_ONOFF TimeSliceDirFlag,
+                                       std::string RankNoPrefix)
 {
-
-  int len = prefix.size()+ext.size()+100;
+  int len = prefix.size()+ext.size()+RankNoPrefix.size()+100;
   char* tmp = new char[len];
   memset(tmp, 0, sizeof(char)*len);
 
@@ -766,7 +814,8 @@ std::string cdm_DFI::Generate_FileName(std::string prefix,
   if( step < 0 ) 
   {
     if( mio ) {
-      sprintf(tmp,"%s_id%06d.%s",prefix.c_str(),RankID,ext.c_str());
+//    sprintf(tmp,"%s_id%06d.%s",prefix.c_str(),RankID,ext.c_str());
+      sprintf(tmp,"%s%s%06d.%s",prefix.c_str(),RankNoPrefix.c_str(),RankID,ext.c_str());
     } else {
       sprintf(tmp,"%s.%s",prefix.c_str(),ext.c_str());
     }
@@ -777,36 +826,55 @@ std::string cdm_DFI::Generate_FileName(std::string prefix,
 
   //RankID出力なしのファイル名生成
   if( !mio ) {
-    sprintf(tmp,"%s_%010d.%s",prefix.c_str(),step,ext.c_str());
+    if( output_fname == CDM::E_CDM_FNAME_RANK )
+    {
+      sprintf(tmp,"%s.%s",prefix.c_str(),ext.c_str());
+    }
+    else
+    {
+      sprintf(tmp,"%s_%010d.%s",prefix.c_str(),step,ext.c_str());
+    }
     std::string fname(tmp);
     if( tmp ) delete [] tmp;
     return fname;
   }
 
   //step_rank
-  if( output_fname != CDM::E_CDM_FNAME_RANK_STEP ) 
+//  if( output_fname != CDM::E_CDM_FNAME_RANK_STEP ) 
+  if( output_fname != CDM::E_CDM_FNAME_RANK_STEP && output_fname != CDM::E_CDM_FNAME_RANK ) 
   {
     if( TimeSliceDirFlag == CDM::E_CDM_ON ) {
-      sprintf(tmp,"%010d/%s_%010d_id%06d.%s",step,prefix.c_str(),step,RankID,ext.c_str());
+//    sprintf(tmp,"%010d/%s_%010d_id%06d.%s",step,prefix.c_str(),step,RankID,ext.c_str());
+      sprintf(tmp,"%010d/%s_%010d%s%06d.%s",step,prefix.c_str(),step,RankNoPrefix.c_str(),RankID,ext.c_str());
     } else {
-      sprintf(tmp,"%s_%010d_id%06d.%s",prefix.c_str(),step,RankID,ext.c_str());
+//    sprintf(tmp,"%s_%010d_id%06d.%s",prefix.c_str(),step,RankID,ext.c_str());
+      sprintf(tmp,"%s_%010d%s%06d.%s",prefix.c_str(),step,RankNoPrefix.c_str(),RankID,ext.c_str());
     }
   } else if( output_fname == CDM::E_CDM_FNAME_RANK_STEP ) 
   {
   //rank_step
     if( TimeSliceDirFlag == CDM::E_CDM_ON ) {
-      sprintf(tmp,"%010d/%s_id%06d_%010d.%s",step,prefix.c_str(),RankID,step,ext.c_str());
+//    sprintf(tmp,"%010d/%s_id%06d_%010d.%s",step,prefix.c_str(),RankID,step,ext.c_str());
+      sprintf(tmp,"%010d/%s%s%06d_%010d.%s",step,prefix.c_str(),RankNoPrefix.c_str(),RankID,step,ext.c_str());
     } else {
-      sprintf(tmp,"%s_id%06d_%010d.%s",prefix.c_str(),RankID,step,ext.c_str());
+//    sprintf(tmp,"%s_id%06d_%010d.%s",prefix.c_str(),RankID,step,ext.c_str());
+      sprintf(tmp,"%s%s%06d_%010d.%s",prefix.c_str(),RankNoPrefix.c_str(),RankID,step,ext.c_str());
     }
   }
+//20150918.NetCDF.s
+  else if( output_fname == CDM::E_CDM_FNAME_RANK )
+  {
+    //rank
+    sprintf(tmp,"%s%s%06d.%s",prefix.c_str(),RankNoPrefix.c_str(),RankID,ext.c_str());
+  }
+//20150918.NetCDF.e
 
   std::string fname(tmp);
   if( tmp ) delete [] tmp;
   return fname;
 
 }
-//FCONV 20131128.s
+//FCONV 20131128.e
 
 
 // #################################################################
@@ -967,6 +1035,20 @@ void cdm_DFI::setVariableName(int pvari, std::string variName)
 
   DFI_Finfo.setVariableName(pvari, variName);
 
+}
+
+// #################################################################
+// cdm_FileInfoのRankNoPrefixをセット
+void cdm_DFI::SetcdmRankNoPrefix(std::string prefix)
+{
+  DFI_Finfo.RankNoPrefix = prefix;
+}
+
+// #################################################################
+// cdm_FileInfoのRankNoPrefixを取得
+std::string cdm_DFI::GetcdmRankNoPrefix()
+{
+  return DFI_Finfo.RankNoPrefix;
 }
 
 // #################################################################

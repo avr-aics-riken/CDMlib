@@ -33,7 +33,8 @@ cdm_DFI_PLOT3D::~cdm_DFI_PLOT3D()
 // #################################################################
 // ファイルのヘッダーレコード読込み
 CDM::E_CDM_ERRORCODE
-cdm_DFI_PLOT3D::read_HeaderRecord(FILE* fp,
+//cdm_DFI_PLOT3D::read_HeaderRecord(FILE* fp,
+cdm_DFI_PLOT3D::read_HeaderRecord(cdm_FILE* pFile,
                                bool matchEndian,
                                unsigned step,
                                const int head[3],
@@ -42,6 +43,7 @@ cdm_DFI_PLOT3D::read_HeaderRecord(FILE* fp,
                                int voxsize[3],
                                double &time)
 {
+  FILE *fp = pFile->m_fp;
 
   time=0.0;
   for(int i=0; i<DFI_TimeSlice.SliceList.size(); i++) {
@@ -58,13 +60,17 @@ cdm_DFI_PLOT3D::read_HeaderRecord(FILE* fp,
 // #################################################################
 // データレコード読込み
 CDM::E_CDM_ERRORCODE
-cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
+//cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
+cdm_DFI_PLOT3D::read_Datarecord(cdm_FILE* pFile,
                                 bool matchEndian,
+                                unsigned step,
                                 cdm_Array* buf,
                                 int head[3],
                                 int nz,
                                 cdm_Array* &src)
 {
+  FILE *fp = pFile->m_fp;
+
   //ngrid,nblock読込み
   int ngrid,szVal[3],nvari;
 
@@ -114,12 +120,14 @@ cdm_DFI_PLOT3D::read_Datarecord(FILE* fp,
 // #################################################################
 // Averaged レコードの読込み
 CDM::E_CDM_ERRORCODE
-cdm_DFI_PLOT3D::read_averaged(FILE* fp,
+//cdm_DFI_PLOT3D::read_averaged(FILE* fp,
+cdm_DFI_PLOT3D::read_averaged(cdm_FILE* pFile,
                            bool matchEndian,
                            unsigned step,
                            unsigned &step_avr,
                            double &time_avr)
 {
+  FILE *fp = pFile->m_fp;
 
   step_avr=0;
   time_avr=0.0;
@@ -137,22 +145,26 @@ cdm_DFI_PLOT3D::read_averaged(FILE* fp,
 // #################################################################
 // ヘッダーレコード出力
 CDM::E_CDM_ERRORCODE
-cdm_DFI_PLOT3D::write_HeaderRecord(FILE* fp,
+//cdm_DFI_PLOT3D::write_HeaderRecord(FILE* fp,
+cdm_DFI_PLOT3D::write_HeaderRecord(cdm_FILE* pFile,
                                    const unsigned step,
                                    const double time,
                                    const int n)
 {
+  FILE *fp = pFile->m_fp;
   return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // データレコード出力
 CDM::E_CDM_ERRORCODE
-cdm_DFI_PLOT3D::write_DataRecord(FILE* fp, 
+//cdm_DFI_PLOT3D::write_DataRecord(FILE* fp, 
+cdm_DFI_PLOT3D::write_DataRecord(cdm_FILE* pFile, 
                                  cdm_Array* val, 
                                  const int gc, 
                                  const int n)
 {
+  FILE *fp = pFile->m_fp;
 
   const int *szVal_without_gc = val->getArraySizeInt();
   int szVal[3];
@@ -210,10 +222,12 @@ cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
 // #################################################################
 // 平均の出力PLOT3Dは何も出力しない
 CDM::E_CDM_ERRORCODE
-cdm_DFI_PLOT3D::write_averaged(FILE* fp,
+//cdm_DFI_PLOT3D::write_averaged(FILE* fp,
+cdm_DFI_PLOT3D::write_averaged(cdm_FILE* pFile,
                             const unsigned step_avr,
                             const double time_avr)
 {
+  FILE *fp = pFile->m_fp;
   return CDM::E_CDM_SUCCESS;
 }
 
@@ -229,7 +243,7 @@ cdm_DFI_PLOT3D::write_GridData(const int* iblank)
   //出力ファイル名の生成
   std::string fname,tmp;
   tmp = Generate_FileName(DFI_Finfo.Prefix,m_RankID,-1,"xyz",m_output_fname,mio,
-                          DFI_Finfo.TimeSliceDirFlag);
+                          DFI_Finfo.TimeSliceDirFlag,DFI_Finfo.RankNoPrefix);
   if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
     fname = DFI_Finfo.DirectoryPath + "/" + tmp;
   } else {

@@ -37,7 +37,6 @@ cdm_DFI_PLOT3D::read_Func(FILE* fp,
                           int nz,
                           bool matchEndian)
 {
-
   const int *szB = dataB->getArraySizeInt();
   int nvariS = dataS->getNvari();
 
@@ -122,7 +121,6 @@ CDM_INLINE
 void
 cdm_DFI_PLOT3D::write_XYZ(FILE* fp, int sz[3], int head[3], const int* iblank)
 {
-
   int ngrid=1;
   T xyz;
   int gc = DFI_Finfo.GuideCell;
@@ -269,7 +267,6 @@ void
 cdm_DFI_PLOT3D::write_Func(FILE* fp, cdm_TypeArray<T>* data, const int sz[3],
                            int nvari)
 {
-
   //IJKN
   if( data->getArrayShape() == CDM::E_CDM_IJKN ) {
     //ascii

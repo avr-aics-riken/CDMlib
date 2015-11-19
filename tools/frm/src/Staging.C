@@ -623,14 +623,14 @@ int* Staging::CreateRankMap()
 
   // 領域分割数を取得
   const int* div = GetDivNum();
-  if( !div ) return false;
+  if( !div ) return NULL;
 
   // マップ領域を確保(初期値NULL)
   size_t ndiv = size_t(div[0]) * size_t(div[1]) * size_t(div[2]);
   int *rankMap = new int[ndiv];
   if( !rankMap )
   {
-    return false;
+    return NULL;
   }
   for( size_t i=0;i<ndiv;i++ ) rankMap[i] = -1;
 
@@ -642,7 +642,7 @@ int* Staging::CreateRankMap()
     if( !dom )
     {
       delete [] rankMap;
-      return false;
+      return NULL;
     }
 
     // 位置を取得
@@ -650,7 +650,7 @@ int* Staging::CreateRankMap()
     if( !pos )
     {
       delete [] rankMap;
-      return false;
+      return NULL;
     }
 
     // 0をセット
@@ -1277,23 +1277,26 @@ bool Staging::FileCopy(vector<int>readRankList, int myRank)
 
   for(int i=0; i<readRankList.size(); i++) {
 
+    int ostep = m_step;
+    if( dfi_Finfo->FieldFilenameFormat == CDM::E_CDM_FNAME_RANK ) ostep = 0;
+
     //出力時刻指定あり
-    if( m_step >= 0 ) {
+    if( ostep >= 0 ) {
       string path2;
       if( dfi_Finfo->TimeSliceDirFlag == CDM::E_CDM_ON ) {
-        sprintf(tmp,"%010d",m_step);
+        sprintf(tmp,"%010d",ostep);
         path2 = path+tmp;
         MakeDirectory(path2);
       } else {
         path2 = path;
       }
     
-      fname_dfi = CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(readRankList[i],m_step,mio)); 
+      fname_dfi = CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(readRankList[i],ostep,mio)); 
       memset(cmd, 0, sizeof(char)*512 );
       sprintf(cmd,"cp %s %s\n",fname_dfi.c_str(),path2.c_str());
       system(cmd);
     //出力指定なし
-    }else if( m_step<0 ) {
+    }else if( ostep<0 ) {
       for(int j=0; j<dfi_TSlice->SliceList.size(); j++) {
         int step=dfi_TSlice->SliceList[j].step;
         string path2;
@@ -1478,8 +1481,13 @@ std::string Staging::Generate_FileName(int RankID, int step, const bool mio)
     fmt=D_CDM_EXT_SPH;
   } else if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_BOV ) {
     fmt=D_CDM_EXT_BOV_DATAFILE;
+//20150918.NetCDF.s
+  } else if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_NETCDF4 ) {
+    fmt=D_CDM_EXT_NC;
+//20150918.NetCDF.e
   }
 
+#if 0
   int len = dfi_Finfo->DirectoryPath.size() + dfi_Finfo->Prefix.size() +
             fmt.size() + 25;
 
@@ -1519,6 +1527,13 @@ std::string Staging::Generate_FileName(int RankID, int step, const bool mio)
   }
   std::string fname(tmp);
   if( tmp ) delete [] tmp;
+#else
+  std::string tmp = cdm_DFI::Generate_FileName(dfi_Finfo->Prefix, RankID, step, fmt, dfi_Finfo->FieldFilenameFormat,
+                                               mio, dfi_Finfo->TimeSliceDirFlag, dfi_Finfo->RankNoPrefix);
+  std::string fname = dfi_Finfo->DirectoryPath;
+  fname += "/";
+  fname += tmp;
+#endif
 
   return fname;
 }
@@ -1662,24 +1677,44 @@ Staging::WriteIndexDfiFile(const std::string dfi_name)
   //TimeSlice {} の出力
   cdm_TimeSlice *t_Slice = new cdm_TimeSlice();
   int nsize = dfi_Finfo->NumVariables;
-  if( dfi_Finfo->NumVariables > 1 ) nsize++;
+  if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_SPH && dfi_Finfo->NumVariables > 1 )
+  {
+    nsize++;
+  }
+
   double* minmax = new double[nsize*2];
-  for(int i=0; i<dfi_TSlice->SliceList.size(); i++) {
+  for(int i=0; i<dfi_TSlice->SliceList.size(); i++)
+  {
     int step = dfi_TSlice->SliceList[i].step;
+
     if( m_step >= 0 && m_step != step ) continue;
-    for(int n=0; n<nsize; n++) {
-      minmax[n*2+0] = dfi_TSlice->SliceList[i].Min[n];
-      minmax[n*2+1] = dfi_TSlice->SliceList[i].Max[n];
+
+    double *ominmax = minmax;
+    if( dfi_TSlice->SliceList[i].Min.size()!=nsize ||
+        dfi_TSlice->SliceList[i].Max.size()!=nsize )
+    {
+      ominmax = NULL;
     }
+    else
+    {
+      for(int n=0; n<nsize; n++)
+      {
+        minmax[n*2+0] = dfi_TSlice->SliceList[i].Min[n];
+        minmax[n*2+1] = dfi_TSlice->SliceList[i].Max[n];
+      }
+    }
+
     t_Slice->AddSlice(step,
                       dfi_TSlice->SliceList[i].time,
-                      minmax,
+                      ominmax,
                       dfi_Finfo->NumVariables,
                       dfi_Finfo->FileFormat,
                       dfi_TSlice->SliceList[i].avr_mode,
                       dfi_TSlice->SliceList[i].AveragedStep,
                       dfi_TSlice->SliceList[i].AveragedTime);
   }
+  delete [] minmax;
+
   if ( t_Slice->Write(fp, 1, dfi_Finfo->FileFormat) != CDM::E_CDM_SUCCESS )
   {
     fclose(fp);

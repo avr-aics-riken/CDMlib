@@ -13,12 +13,12 @@ OUTLINE
 This CDMlib provides following functions for the Cartesian and Non-uniform Cartesian data structures.
 
   - Management of distributed files
-  - SUpport file format : SPH, BOV, PLOT3D
+  - Support file format : SPH, BOV, PLOT3D, NetCDF
   - Restart from previous calculated data (standard)
   - Restart from previous calculated data of the number of different process
   - Restart from previous coarse data with interpolation
   - Staging helper
-  - File converter utility {SPH, BOV, PLOT3D} >> {VTK, AVS, SPH, BOV, PLOT3D}
+  - File converter utility {SPH, BOV, PLOT3D, NetCDF} >> {VTK, AVS, SPH, BOV, PLOT3D}
 
 
 INGREDIENTS

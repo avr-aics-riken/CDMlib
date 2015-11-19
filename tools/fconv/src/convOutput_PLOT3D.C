@@ -97,15 +97,17 @@ void convOutput_PLOT3D::WriteGridData(std::string prefix,
 
 // #################################################################
 // グリッド数の 出力
-void convOutput_PLOT3D::WriteNgrid(FILE* fp, int ngrid)
+void convOutput_PLOT3D::WriteNgrid(cdm_FILE* pFile, int ngrid)
 {
+  FILE *fp = pFile->m_fp;
+
   switch (m_InputCntl->Get_OutputFileType()) {
     case CDM::E_CDM_FILE_TYPE_FBINARY:
       unsigned int dmy;
       dmy = sizeof(int);
-      WriteDataMarker(dmy,fp,true);
+      WriteDataMarker(dmy,pFile,true);
       fwrite(&ngrid, sizeof(int), 1, fp);
-      WriteDataMarker(dmy,fp,true);
+      WriteDataMarker(dmy,pFile,true);
       break;
     case CDM::E_CDM_FILE_TYPE_ASCII:
       fprintf(fp,"%5d\n",ngrid);
@@ -120,18 +122,19 @@ void convOutput_PLOT3D::WriteNgrid(FILE* fp, int ngrid)
 
 // #################################################################
 // ブロックデータの 出力
-void convOutput_PLOT3D::WriteBlockData(FILE* fp, int id, int jd, int kd)
+void convOutput_PLOT3D::WriteBlockData(cdm_FILE* pFile, int id, int jd, int kd)
 {
+  FILE *fp = pFile->m_fp;
 
   switch (m_InputCntl->Get_OutputFileType()) {
     case CDM::E_CDM_FILE_TYPE_FBINARY:
       unsigned int dmy;
       dmy = sizeof(int)*3;
-      WriteDataMarker(dmy,fp,true);
+      WriteDataMarker(dmy,pFile,true);
       fwrite(&id, sizeof(int), 1, fp);
       fwrite(&jd, sizeof(int), 1, fp);
       fwrite(&kd, sizeof(int), 1, fp);
-      WriteDataMarker(dmy,fp,true);
+      WriteDataMarker(dmy,pFile,true);
       break;
     case CDM::E_CDM_FILE_TYPE_ASCII:
       fprintf(fp,"%5d%5d%5d\n",id,jd,kd);
@@ -149,13 +152,13 @@ void convOutput_PLOT3D::WriteBlockData(FILE* fp, int id, int jd, int kd)
 
 // #################################################################
 // フィールドデータ出力ファイルオープン
-FILE* convOutput_PLOT3D::OutputFile_Open(
+cdm_FILE* convOutput_PLOT3D::OutputFile_Open(
                          const std::string prefix,
                          const unsigned step,
                          const int id,
                          const bool mio)
 {
-  FILE* fp;
+  cdm_FILE* pFile;
 
   //ファイル名の生成
   std::string outfile;
@@ -172,19 +175,19 @@ FILE* convOutput_PLOT3D::OutputFile_Open(
   //出力ファイルオープン
   // ascii
   if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
-    if( (fp = fopen(outfile.c_str(), "wa")) == NULL ) {
+    if( (pFile = cdm_FILE::OpenWriteAscii(outfile, CDM::E_CDM_FMT_PLOT3D)) == NULL ) {
       printf("\tCan't open file.(%s)\n",outfile.c_str());
       Exit(0);
     }
   } else {
   //binary
-    if( (fp = fopen(outfile.c_str(), "wb")) == NULL ) {
+    if( (pFile = cdm_FILE::OpenWriteBinary(outfile, CDM::E_CDM_FMT_PLOT3D)) == NULL ) {
       printf("\tCan't open file.(%s)\n",outfile.c_str());
       Exit(0);
     }
   }
 
-  return fp;
+  return pFile;
 
 }
 
@@ -201,9 +204,10 @@ bool convOutput_PLOT3D::WriteHeaderRecord(
                                        double* org,
                                        double* pit,
                                        std::string prefix,
-                                       FILE *fp)
+                                       cdm_FILE *pFile)
 {
-  if( !fp ) return false;
+  if( !pFile ) return false;
+  if( !pFile->m_fp ) return false;
 
   //ngirdの初期化
   int ngrid=1;
@@ -213,7 +217,7 @@ bool convOutput_PLOT3D::WriteHeaderRecord(
 
   //block data の出力
   
-  WriteFuncBlockData(fp,imax,jmax,kmax,dim);
+  WriteFuncBlockData(pFile,imax,jmax,kmax,dim);
   //WriteFuncBlockData(fp,imax+1,jmax+1,kmax+1,dim);
   //格子点への補間は行わず、双対セルとして扱うため、+1は不要
 
@@ -225,7 +229,7 @@ bool convOutput_PLOT3D::WriteHeaderRecord(
 
 // #################################################################
 // func 出力
-bool convOutput_PLOT3D::WriteFieldData(FILE* fp, 
+bool convOutput_PLOT3D::WriteFieldData(cdm_FILE* pFile, 
                                        cdm_Array* src, 
                                        size_t dLen)
 {
@@ -241,7 +245,7 @@ bool convOutput_PLOT3D::WriteFieldData(FILE* fp,
 
   int ret = src->copyArray(out);
 
-  WriteFuncData(fp, out);
+  WriteFuncData(pFile, out);
   delete out;
 
   return true;
@@ -250,19 +254,20 @@ bool convOutput_PLOT3D::WriteFieldData(FILE* fp,
 
 // #################################################################
 // func ブロックデータの 出力
-void convOutput_PLOT3D::WriteFuncBlockData(FILE* fp, int id, int jd, int kd, int nvar)
+void convOutput_PLOT3D::WriteFuncBlockData(cdm_FILE* pFile, int id, int jd, int kd, int nvar)
 {
+  FILE *fp = pFile->m_fp;
 
   switch (m_InputCntl->Get_OutputFileType()) {
     case CDM::E_CDM_FILE_TYPE_FBINARY:
       unsigned int dmy;
       dmy = sizeof(int)*4;
-      WriteDataMarker(dmy,fp,true);
+      WriteDataMarker(dmy,pFile,true);
       fwrite(&id, sizeof(int), 1, fp);
       fwrite(&jd, sizeof(int), 1, fp);
       fwrite(&kd, sizeof(int), 1, fp);
       fwrite(&nvar, sizeof(int), 1, fp);
-      WriteDataMarker(dmy,fp,true);
+      WriteDataMarker(dmy,pFile,true);
       break;
     case CDM::E_CDM_FILE_TYPE_ASCII:
       fprintf(fp,"%5d%5d%5d%5d\n",id,jd,kd,nvar);
@@ -280,8 +285,9 @@ void convOutput_PLOT3D::WriteFuncBlockData(FILE* fp, int id, int jd, int kd, int
 }
 
 // #################################################################
-void convOutput_PLOT3D::WriteFuncData(FILE* fp, cdm_Array* p3src)
+void convOutput_PLOT3D::WriteFuncData(cdm_FILE* pFile, cdm_Array* p3src)
 {
+  FILE *fp = pFile->m_fp;
 
   const int* sz = p3src->getArraySizeInt();
   size_t dLen = (size_t)sz[0]*(size_t)sz[1]*(size_t)sz[2]*p3src->getNvari();
@@ -310,8 +316,9 @@ void convOutput_PLOT3D::WriteFuncData(FILE* fp, cdm_Array* p3src)
 
 // #################################################################
 //
-bool convOutput_PLOT3D::WriteDataMarker(int dmy, FILE* fp, bool out)
+bool convOutput_PLOT3D::WriteDataMarker(int dmy, cdm_FILE* pFile, bool out)
 {
+  FILE *fp = pFile->m_fp;
   if( !out ) return true;
   if( m_InputCntl->Get_OutputFileType() != CDM::E_CDM_FILE_TYPE_FBINARY ) return true;
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;

@@ -33,7 +33,8 @@ cdm_DFI_BOV::~cdm_DFI_BOV()
 // #################################################################
 // ファイルのヘッダーレコード読込み
 CDM::E_CDM_ERRORCODE
-cdm_DFI_BOV::read_HeaderRecord(FILE* fp,
+//cdm_DFI_BOV::read_HeaderRecord(FILE* fp,
+cdm_DFI_BOV::read_HeaderRecord(cdm_FILE* pFile,
                                bool matchEndian,
                                unsigned step,
                                const int head[3],
@@ -42,6 +43,7 @@ cdm_DFI_BOV::read_HeaderRecord(FILE* fp,
                                int voxsize[3],
                                double &time)
 {
+  FILE *fp = pFile->m_fp;
 
   time=0.0;
   for(int i=0; i<DFI_TimeSlice.SliceList.size(); i++) {
@@ -58,13 +60,16 @@ cdm_DFI_BOV::read_HeaderRecord(FILE* fp,
 // #################################################################
 // ファイルのデータレコード読込み
 CDM::E_CDM_ERRORCODE
-cdm_DFI_BOV::read_Datarecord(FILE* fp,
+//cdm_DFI_BOV::read_Datarecord(FILE* fp,
+cdm_DFI_BOV::read_Datarecord(cdm_FILE* pFile,
                              bool matchEndian,
+                             unsigned step,
                              cdm_Array* buf,
                              int head[3],
                              int nz,
                              cdm_Array* &src)
 {
+  FILE *fp = pFile->m_fp;
 
   //１層ずつ読み込み
   int hzB = head[2];
@@ -115,12 +120,14 @@ cdm_DFI_BOV::read_Datarecord(FILE* fp,
 // #################################################################
 // Averaged レコードの読込み
 CDM::E_CDM_ERRORCODE
-cdm_DFI_BOV::read_averaged(FILE* fp,
+//cdm_DFI_BOV::read_averaged(FILE* fp,
+cdm_DFI_BOV::read_averaged(cdm_FILE* pFile,
                            bool matchEndian,
                            unsigned step,
                            unsigned &step_avr,
                            double &time_avr)
 {
+  FILE *fp = pFile->m_fp;
 
   step_avr=0;
   time_avr=0.0;
@@ -138,22 +145,26 @@ cdm_DFI_BOV::read_averaged(FILE* fp,
 // #################################################################
 // ヘッダーレコード出力BOVは何も出力しない
 CDM::E_CDM_ERRORCODE
-cdm_DFI_BOV::write_HeaderRecord(FILE* fp,
+//cdm_DFI_BOV::write_HeaderRecord(FILE* fp,
+cdm_DFI_BOV::write_HeaderRecord(cdm_FILE* pFile,
                                 const unsigned step,
                                 const double time,
                                 const int n)
 {
+  FILE *fp = pFile->m_fp;
   return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // BOVデータレコード出力
 CDM::E_CDM_ERRORCODE
-cdm_DFI_BOV::write_DataRecord(FILE* fp, 
+//cdm_DFI_BOV::write_DataRecord(FILE* fp, 
+cdm_DFI_BOV::write_DataRecord(cdm_FILE* pFile, 
                               cdm_Array* val, 
                               const int gc, 
                               const int n)
 {
+  FILE *fp = pFile->m_fp;
 
   CDM::E_CDM_DTYPE Dtype = (CDM::E_CDM_DTYPE)DFI_Finfo.DataType;
   int Real_size = get_cdm_Datasize(Dtype);
@@ -173,10 +184,12 @@ cdm_DFI_BOV::write_DataRecord(FILE* fp,
 // #################################################################
 // 平均の出力BOVは何も出力しない
 CDM::E_CDM_ERRORCODE
-cdm_DFI_BOV::write_averaged(FILE* fp,
+//cdm_DFI_BOV::write_averaged(FILE* fp,
+cdm_DFI_BOV::write_averaged(cdm_FILE* pFile,
                             const unsigned step_avr,
                             const double time_avr)
 {
+  FILE *fp = pFile->m_fp;
   return CDM::E_CDM_SUCCESS;
 }
 
@@ -200,7 +213,8 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
                           D_CDM_EXT_BOV,
                           m_output_fname,
                           mio,
-                          DFI_Finfo.TimeSliceDirFlag);
+                          DFI_Finfo.TimeSliceDirFlag,
+                          DFI_Finfo.RankNoPrefix);
 
   if( CDM::cdmPath_isAbsolute(DFI_Finfo.DirectoryPath) ){
     fname = DFI_Finfo.DirectoryPath + "/" + tmp;
@@ -225,7 +239,8 @@ cdm_DFI_BOV::write_ascii_header(const unsigned step,
                               D_CDM_EXT_BOV_DATAFILE,
                               m_output_fname,
                               mio,
-                              DFI_Finfo.TimeSliceDirFlag);
+                              DFI_Finfo.TimeSliceDirFlag,
+                              DFI_Finfo.RankNoPrefix);
   fprintf(fp,"DATA_FILE: %s\n",o_fname.c_str());
 
   //DATA_SIZE:

@@ -41,6 +41,8 @@
 #include "cdm_MPI.h"
 #include "cdm_Process.h"
 
+#include "cdm_FILE.h"
+
 /** CDM main class */
 class cdm_DFI {
 
@@ -179,6 +181,21 @@ public:
   void SetcdmProcess(cdm_Process Process);
 
   /**
+   * @brief cdm_FileInfoのRankNoPrefixをセット
+   * フィールドファイル名のランク番号前文字列を変更する
+   * @param[in] prefix ランク番号前文字列
+   */
+  void
+  SetcdmRankNoPrefix(std::string prefix);
+
+  /**
+   * @brief cdm_FileInfoのRankNoPrefixを取得
+   * @return ランク番号前文字列
+   */
+  std::string
+  GetcdmRankNoPrefix();
+
+  /**
    * @brief 出力DFIファイル名を作成する
    * @param [in] prefix ファイル接頭文字
    * @return DFIファイル名
@@ -206,6 +223,7 @@ public:
    * @param [in] output_fname step_rank,rank_step指示
    * @param [in] mio    並列判定フラグ
    * @param [in] TimeSliceDirFlag Time Slice 毎の出力指示
+   * @param [in] RankNoPrefix ファイル名内のランク番号前の文字列("_id")
    * @return 生成されたファイル名
    */
   static
@@ -215,7 +233,8 @@ public:
                                 std::string ext,
                                 CDM::E_CDM_OUTPUT_FNAME output_fname,
                                 bool mio,
-                                CDM::E_CDM_ONOFF TimeSliceDirFlag);
+                                CDM::E_CDM_ONOFF TimeSliceDirFlag,
+                                std::string RankNoPrefix=std::string(CDM::C_CDM_RANKNOPREFIX));
 
   /**
    * @brief write インスタンス template function (等間隔格子用)
@@ -384,7 +403,15 @@ public:
    * @param [in] output_fname 出力ファイル命名規約
    */
   void set_output_fname(CDM::E_CDM_OUTPUT_FNAME output_fname)
-  { m_output_fname = output_fname; };
+  {
+    if( DFI_Finfo.FileFormat != CDM::E_CDM_FMT_NETCDF4 &&
+        output_fname == CDM::E_CDM_FNAME_RANK )
+    {
+      printf( "\tCDM error : set_output_fname. E_CDM_FNAME_RANK is supported only NetCDF4 file format\n" );
+      return;
+    }
+    m_output_fname = output_fname;
+  };
 
   /**
    * @brief DFIファイル名の取り出し
@@ -947,7 +974,7 @@ public:
 
   /**
    * @brief フィールドデータファイルのヘッダーレコード読込み
-   * @param[in]  fp          ファイルポインタ
+   * @param[in]  pFile       ファイルポインタ
    * @param[in]  matchEndian true:Endian一致
    * @param[in]  step        ステップ番号
    * @param[in]  head        dfiのHeadIndex
@@ -958,7 +985,8 @@ public:
    * @return true:出力成功 false:出力失敗
    */
   virtual CDM::E_CDM_ERRORCODE 
-  read_HeaderRecord(FILE* fp,
+//read_HeaderRecord(FILE* fp,
+  read_HeaderRecord(cdm_FILE* pFile,
                     bool matchEndian,
                     unsigned step,
                     const int head[3],
@@ -969,31 +997,35 @@ public:
 
   /**
    * @brief フィールドデータファイルのデータレコード読込み
-   * @param[in]  fp          ファイルポインタ
+   * @param[in]  pFile       ファイルポインタ
    * @param[in]  matchEndian true:Endian一致
+   * @param[in]  step        ステップ番号
    * @param[in]  buf         読込み用バッファ
    * @param[in]  head        読込みバッファHeadIndex
    * @param[in]  nz          z方向のボクセルサイズ（実セル＋ガイドセル＊２）
    * @param[out] src         読み込んだデータを格納した配列のポインタ
    */
   virtual CDM::E_CDM_ERRORCODE 
-  read_Datarecord(FILE* fp,
+//read_Datarecord(FILE* fp,
+  read_Datarecord(cdm_FILE* pFile,
                   bool matchEndian,
+                  unsigned step,
                   cdm_Array* buf,
                   int head[3],
                   int nz,
                   cdm_Array* &src)=0;
 
   /**
-   * @brief sphファイルのAverageデータレコードの読込み
-   * @param[in]  fp          ファイルポインタ
+   * @brief フィールドデータのAverageデータレコードの読込み
+   * @param[in]  pFile       ファイルポインタ
    * @param[in]  matchEndian true:Endian一致
    * @param[in]  step        読込みstep番号
    * @param[out] avr_step    平均ステップ
    * @param[out] avr_time    平均タイム
    */
   virtual CDM::E_CDM_ERRORCODE
-  read_averaged(FILE* fp,
+//read_averaged(FILE* fp,
+  read_averaged(cdm_FILE* pFile,
                 bool matchEndian,
                 unsigned step,
                 unsigned &avr_step,
@@ -1022,42 +1054,45 @@ protected :
                  const double time_avr);
 
   /**
-   * @brief SPHヘッダファイルの出力
-   * @param[in] fp     ファイルポインタ
+   * @brief フィールドデータのヘッダレコードの出力(純粋仮想関数)
+   * @param[in] pFile  ファイルポインタ
    * @param[in] step   ステップ番号
    * @param[in] time   時刻
    * @param[in] RankID ランク番号
-   * @return true:出力成功 false:出力失敗
+   * @return error code
    */
   virtual CDM::E_CDM_ERRORCODE
-  write_HeaderRecord(FILE* fp,
+//write_HeaderRecord(FILE* fp,
+  write_HeaderRecord(cdm_FILE* pFile,
                      const unsigned step,
                      const double time,
                      const int RankID)=0;
 
   /**
-   * @brief SPHデータレコードの出力
-   * @param[in]  fp ファイルポインタ
+   * @brief フィールドデータのデータレコードの出力(純粋仮想関数)
+   * @param[in]  pFile ファイルポインタ
    * @param[in]  val データポインタ
    * @param[in]  gc ガイドセル
    * @param[in]  RankID ランク番号
-   * @return true:出力成功 false:出力失敗
+   * @return error code
    */
   virtual CDM::E_CDM_ERRORCODE
-  write_DataRecord(FILE* fp,
+//write_DataRecord(FILE* fp,
+  write_DataRecord(cdm_FILE* pFile,
                    cdm_Array* val,
                    const int gc,
                    const int RankID)=0;
 
   /**
-   * @brief Averageレコードの出力
-   * @param[in] fp       ファイルポインタ
+   * @brief Averageレコードの出力(純粋仮想関数)
+   * @param[in] pFile    ファイルポインタ
    * @param[in] step_avr 平均ステップ番号
    * @param[in] time_avr 平均時刻
-   * @return true:出力成功 false:出力失敗
+   * @return error code
    */
   virtual CDM::E_CDM_ERRORCODE
-  write_averaged(FILE* fp,
+//write_averaged(FILE* fp,
+  write_averaged(cdm_FILE* pFile,
                  const unsigned step_avr,
                  const double time_avr)=0;
 
@@ -1213,6 +1248,16 @@ public:
    * @return バッファサイズ
    */
   int getBufSize(); 
+
+  /**
+   * @brief 出力処理を追記モードにするかどうかをチェック(NetCDF用)
+   * @return モード(true:追記モード、false:新規作成モード)
+   */
+  virtual
+  bool CheckAddWriteMode()
+  {
+    return false;
+  }
 
 };
 

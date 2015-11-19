@@ -35,13 +35,13 @@ convOutput_VTK::~convOutput_VTK()
 
 // #################################################################
 // 出力ファイルをオープンする。
-FILE* convOutput_VTK::OutputFile_Open(
+cdm_FILE* convOutput_VTK::OutputFile_Open(
                                       const std::string prefix,
                                       const unsigned step,
                                       const int id,
                                       const bool mio)
 {
-  FILE* fp;
+  cdm_FILE* pFile;
 
   //ファイル名の生成
   std::string outfile;
@@ -57,18 +57,18 @@ FILE* convOutput_VTK::OutputFile_Open(
 
   //ファイルオープン
   if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_BINARY ) {
-    if( (fp = fopen(outfile.c_str(), "w")) == NULL ) {
+    if( (pFile = cdm_FILE::OpenWriteBinary(outfile, CDM::E_CDM_FMT_VTK)) == NULL ) {
       printf("\tCan't open file.(%s)\n",outfile.c_str());
       Exit(0);
     }
   } else if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
-    if( (fp = fopen(outfile.c_str(), "wa")) == NULL ) {
+    if( (pFile = cdm_FILE::OpenWriteAscii(outfile, CDM::E_CDM_FMT_VTK)) == NULL ) {
       printf("\tCan't open file.(%s)\n",outfile.c_str());
       Exit(0);
     }
   }
 
-  return fp;
+  return pFile;
 
 }
 
@@ -85,8 +85,9 @@ bool convOutput_VTK::WriteHeaderRecord(
                                         double* org, 
                                         double* pit, 
                                         std::string prefix, 
-                                        FILE *fp)
+                                        cdm_FILE *pFile)
 {
+  FILE *fp = pFile->m_fp;
   if( !fp ) return false;
 
   fprintf( fp, "# vtk DataFile Version 2.0\n" );
@@ -156,8 +157,9 @@ bool convOutput_VTK::WriteHeaderRecord(int step,
                                        cdm_Process* out_process,
                                        int gc,
                                        std::string prefix,
-                                       FILE *fp)
+                                       cdm_FILE *pFile)
 {
+  FILE *fp = pFile->m_fp;
   if( !fp ) return false;
 
   fprintf( fp, "# vtk DataFile Version 2.0\n" );
@@ -374,8 +376,9 @@ bool convOutput_VTK::WriteHeaderRecord(int step,
 
 // #################################################################
 //
-bool convOutput_VTK::WriteFieldData(FILE* fp, cdm_Array* src, size_t dLen)
+bool convOutput_VTK::WriteFieldData(cdm_FILE* pFile, cdm_Array* src, size_t dLen)
 {
+  FILE *fp = pFile->m_fp;
 
   const int* sz = src->getArraySizeInt();
   cdm_Array *out = cdm_Array::instanceArray
@@ -473,13 +476,14 @@ bool convOutput_VTK::WriteFieldData(FILE* fp, cdm_Array* src, size_t dLen)
 
 // #################################################################
 //
-bool convOutput_VTK::WriteFieldData(FILE* fp,
+bool convOutput_VTK::WriteFieldData(cdm_FILE* pFile,
                                     cdm_Array* src,
                                     size_t dLen,
                                     CDM::E_CDM_DTYPE d_type,
                                     bool flag_variname,
                                     std::string variname)
 {
+  FILE *fp = pFile->m_fp;
 
   if( flag_variname ) {
     std::string out_d_type;
@@ -595,8 +599,9 @@ bool convOutput_VTK::WriteFieldData(FILE* fp,
 
 // #################################################################
 //
-bool convOutput_VTK::WriteDataMarker(int dmy, FILE* fp, bool out)
+bool convOutput_VTK::WriteDataMarker(int dmy, cdm_FILE* pFile, bool out)
 {
+  FILE *fp = pFile->m_fp;
   if( !out ) return true;
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
   return true;
@@ -604,8 +609,9 @@ bool convOutput_VTK::WriteDataMarker(int dmy, FILE* fp, bool out)
 
 // #################################################################
 //
-void convOutput_VTK::OutputFile_Close(FILE* fp)
+void convOutput_VTK::OutputFile_Close(cdm_FILE* pFile)
 {
+  FILE *fp = pFile->m_fp;
   fprintf( fp, "\n" );
-  fclose(fp);
+  cdm_FILE::CloseFile(pFile);
 }

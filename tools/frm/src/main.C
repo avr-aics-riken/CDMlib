@@ -159,6 +159,11 @@ int main( int argc, char **argv )
 
     //ランクマップの生成
     int* rankMap = STG.CreateRankMap();
+    if( !rankMap )
+    {
+      printf("ERROR CreateRankMap()\n");
+      return 0;
+    }
 
     //STG.m_GRankInfoの生成
     STG.m_HeadTail=NULL;

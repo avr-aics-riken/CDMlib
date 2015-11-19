@@ -11,7 +11,7 @@
 
 lib_LIBRARIES = libCDM.a
 
-libCDM_a_CXXFLAGS = @MPI_CFLAGS@ @TP_CFLAGS@ -I$(top_srcdir)/include @CDM_BUFFER_TUNING@
+libCDM_a_CXXFLAGS = @MPI_CFLAGS@ @TP_CFLAGS@ @NC_CFLAGS@ -I$(top_srcdir)/include @CDM_BUFFER_TUNING@
 
 libCDM_a_SOURCES = \
     cdm_ActiveSubDomain.C \
@@ -29,6 +29,7 @@ libCDM_a_SOURCES = \
     cdm_DFI_AVS.C \
     cdm_DFI_PLOT3D.C \
     cdm_DFI_VTK.C \
+    cdm_DFI_NETCDF.C \
     cdm_DFI_Read.C \
     cdm_DFI_Write.C \
     cdm_TextParser.C \
@@ -56,11 +57,13 @@ CDM_include_HEADERS = \
     $(top_srcdir)/include/cdm_DFI_AVS.h \
     $(top_srcdir)/include/cdm_DFI_PLOT3D.h \
     $(top_srcdir)/include/cdm_DFI_VTK.h \
+    $(top_srcdir)/include/cdm_DFI_NETCDF.h \
     $(top_srcdir)/include/cdm_Define.h \
     $(top_srcdir)/include/cdm_Version.h \
     $(top_srcdir)/include/cdm_TextParser.h \
     $(top_srcdir)/include/cdm_PathUtil.h \
-    $(top_srcdir)/include/cdm_endianUtil.h
+    $(top_srcdir)/include/cdm_endianUtil.h \
+    $(top_srcdir)/include/cdm_FILE.h
 
 CDM_inline_includedir = $(includedir)/inline
 CDM_inline_include_HEADERS = \
@@ -68,5 +71,3 @@ CDM_inline_include_HEADERS = \
     $(top_srcdir)/include/inline/cdm_DFI_inline.h \
     $(top_srcdir)/include/inline/cdm_Plot3d_inline.h \
     $(top_srcdir)/include/inline/cdm_NonUniformDomain_inline.h
-
-

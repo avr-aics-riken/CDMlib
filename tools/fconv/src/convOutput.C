@@ -20,12 +20,15 @@
 #include "convOutput_AVS.h"
 #include "convOutput_VTK.h"
 #include "convOutput_PLOT3D.h"
+#include "convOutput_NETCDF.h"
 
 // #################################################################
 // コンストラクタ
 convOutput::convOutput()
 {
-
+  m_pTSlice = NULL;
+  m_pFinfo = NULL;
+  m_pUnit = NULL;
 }
 
 // #################################################################
@@ -58,6 +61,9 @@ convOutput::OutputInit(const CDM::E_CDM_FORMAT out_format)
   else if( out_format == CDM::E_CDM_FMT_AVS    ) OutConv = new convOutput_AVS();
   else if( out_format == CDM::E_CDM_FMT_VTK    ) OutConv = new convOutput_VTK();
   else if( out_format == CDM::E_CDM_FMT_PLOT3D ) OutConv = new convOutput_PLOT3D();
+#ifdef _WITH_NETCDF4_
+  else if( out_format == CDM::E_CDM_FMT_NETCDF4 ) OutConv = new convOutput_NETCDF();
+#endif
 
   return OutConv;
 
@@ -65,8 +71,10 @@ convOutput::OutputInit(const CDM::E_CDM_FORMAT out_format)
 
 //#################################################################
 //
-bool convOutput::WriteFieldData(FILE* fp, cdm_Array* src, size_t dLen)
+bool convOutput::WriteFieldData(cdm_FILE* pFile, cdm_Array* src, size_t dLen)
 {
+  FILE *fp = pFile->m_fp;
+
   if( src->writeBinary(fp) != dLen ) Exit(0);
   //if( src->writeAscii(fp) != dLen ) Exit(0);
   return true;

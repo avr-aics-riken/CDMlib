@@ -33,11 +33,13 @@ cdm_DFI_VTK::~cdm_DFI_VTK()
 // #################################################################
 // ヘッダーレコード出力
 CDM::E_CDM_ERRORCODE
-cdm_DFI_VTK::write_HeaderRecord(FILE* fp,
+//cdm_DFI_VTK::write_HeaderRecord(FILE* fp,
+cdm_DFI_VTK::write_HeaderRecord(cdm_FILE* pFile,
                                 const unsigned step,
                                 const double time,
                                 const int n)
 {
+  FILE *fp = pFile->m_fp;
 
   if( !fp ) return CDM::E_CDM_ERROR;
 
@@ -258,11 +260,13 @@ cdm_DFI_VTK::write_HeaderRecord(FILE* fp,
 // #################################################################
 // データレコード出力
 CDM::E_CDM_ERRORCODE
-cdm_DFI_VTK::write_DataRecord(FILE* fp, 
+//cdm_DFI_VTK::write_DataRecord(FILE* fp, 
+cdm_DFI_VTK::write_DataRecord(cdm_FILE* pFile, 
                               cdm_Array* val, 
                               const int gc, 
                               const int n)
 {
+  FILE *fp = pFile->m_fp;
 
   const int* sz = val->getArraySizeInt();
   size_t dLen;

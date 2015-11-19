@@ -18,10 +18,11 @@
 #
 # CDMlib - Cartesian Data Management library
 #
-# Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN. 
+# Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
 # All rights reserved.
 #
 #########################################################################
+
 
 VPATH = @srcdir@
 am__is_gnu_make = { \
@@ -100,8 +101,8 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-DIST_COMMON = $(srcdir)/Makefile.am $(doc_include_HEADERS) \
-	$(am__DIST_COMMON)
+DIST_COMMON = $(srcdir)/Makefile.am $(dist_data_DATA) \
+	$(doc_include_HEADERS) $(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
@@ -152,7 +153,8 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(doc_includedir)"
+am__installdirs = "$(DESTDIR)$(datadir)" "$(DESTDIR)$(doc_includedir)"
+DATA = $(dist_data_DATA)
 HEADERS = $(doc_include_HEADERS)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
@@ -226,6 +228,9 @@ MPI_CFLAGS = @MPI_CFLAGS@
 MPI_DIR = @MPI_DIR@
 MPI_LDFLAGS = @MPI_LDFLAGS@
 MPI_LIBS = @MPI_LIBS@
+NC_CFLAGS = @NC_CFLAGS@
+NC_DIR = @NC_DIR@
+NC_LDFLAGS = @NC_LDFLAGS@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -294,6 +299,7 @@ doc_include_HEADERS = \
     $(top_srcdir)/doc/reference.pdf \
     $(top_srcdir)/doc/fconv_reference.pdf
 
+dist_data_DATA = doxygen/Doxyfile
 all: all-am
 
 .SUFFIXES:
@@ -326,6 +332,27 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+install-dist_dataDATA: $(dist_data_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dist_data_DATA)'; test -n "$(datadir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(datadir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(datadir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(datadir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(datadir)" || exit $$?; \
+	done
+
+uninstall-dist_dataDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_data_DATA)'; test -n "$(datadir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(datadir)'; $(am__uninstall_files_from_dir)
 install-doc_includeHEADERS: $(doc_include_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(doc_include_HEADERS)'; test -n "$(doc_includedir)" || list=; \
@@ -432,9 +459,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(HEADERS)
+all-am: Makefile $(DATA) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(doc_includedir)"; do \
+	for dir in "$(DESTDIR)$(datadir)" "$(DESTDIR)$(doc_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -487,7 +514,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-doc_includeHEADERS
+install-data-am: install-dist_dataDATA install-doc_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -531,7 +558,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-doc_includeHEADERS
+uninstall-am: uninstall-dist_dataDATA uninstall-doc_includeHEADERS
 
 .MAKE: install-am install-strip
 
@@ -539,19 +566,18 @@ uninstall-am: uninstall-doc_includeHEADERS
 	cscopelist-am ctags ctags-am distclean distclean-generic \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am \
-	install-doc_includeHEADERS install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
-	pdf-am ps ps-am tags tags-am uninstall uninstall-am \
+	install-dist_dataDATA install-doc_includeHEADERS install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-dist_dataDATA \
 	uninstall-doc_includeHEADERS
 
 .PRECIOUS: Makefile
 
-
-#dist_data_DATA = doxygen/Doxyfile doxygen/makepdf.sh 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

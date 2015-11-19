@@ -50,7 +50,7 @@ public:
 
   /**
    * @brief 並列形状 nijkをnijkでコンバートして出力
-   * @param[in] fp     出力ファイルポインタ
+   * @param[in] pFile  出力ファイルポインタ
    * @param[in] inPath dfiのディレクトリパス
    * @param[in] l_step 出力step番号
    * @param[in] l_dtime 出力時刻
@@ -67,25 +67,25 @@ public:
    * @param[out] max 最大値
    */
   bool
-  convMx1_out_nijk(FILE* fp,
-                    std::string inPath,
-                    int l_step,
-                    double l_dtime,
-                    CDM::E_CDM_DTYPE d_type,
-                    bool mio,
-                    int div[3],
-                    int sz[3],
-                    cdm_DFI* dfi,
-                    cdm_Process* DFI_Process,
-                    headT mapHeadX, 
-                    headT mapHeadY, 
-                    headT mapHeadZ,
-                    double* min,
-                    double* max);
+  convMx1_out_nijk(cdm_FILE* pFile,
+                   std::string inPath,
+                   int l_step,
+                   double l_dtime,
+                   CDM::E_CDM_DTYPE d_type,
+                   bool mio,
+                   int div[3],
+                   int sz[3],
+                   cdm_DFI* dfi,
+                   cdm_Process* DFI_Process,
+                   headT mapHeadX, 
+                   headT mapHeadY, 
+                   headT mapHeadZ,
+                   double* min,
+                   double* max);
 
   /**
    * @brief 並列形状 nijkをijknまたは ijknをijknにコンバートして出力
-   * @param[in] fp     出力ファイルポインタ
+   * @param[in] pFile  出力ファイルポインタ
    * @param[in] inPath dfiのディレクトリパス
    * @param[in] l_step 出力step番号
    * @param[in] l_dtime 出力時刻
@@ -102,21 +102,21 @@ public:
    * @param[out] max 最大値
    */ 
   bool
-  convMx1_out_ijkn(FILE* fp,
-                    std::string inPath,
-                    int l_step,
-                    double l_dtime,
-                    CDM::E_CDM_DTYPE d_type,
-                    bool mio,
-                    int div[3],
-                    int sz[3],
-                    cdm_DFI* dfi,
-                    cdm_Process* DFI_Process,
-                    headT mapHeadX,
-                    headT mapHeadY,
-                    headT mapHeadZ,
-                    double* min,
-                    double* max);
+  convMx1_out_ijkn(cdm_FILE* pFile,
+                   std::string inPath,
+                   int l_step,
+                   double l_dtime,
+                   CDM::E_CDM_DTYPE d_type,
+                   bool mio,
+                   int div[3],
+                   int sz[3],
+                   cdm_DFI* dfi,
+                   cdm_Process* DFI_Process,
+                   headT mapHeadX,
+                   headT mapHeadY,
+                   headT mapHeadZ,
+                   double* min,
+                   double* max);
 
   /**
    * @brief 補間処理

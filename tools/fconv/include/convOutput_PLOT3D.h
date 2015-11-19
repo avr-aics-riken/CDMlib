@@ -117,26 +117,26 @@ public:
 
   /**
    * @brief グリッド数の書き出し
-   * @param [in] fp    出力ファイルポインタ
+   * @param [in] pFile 出力ファイルポインタ
    * @param [in] ngrid グリッド数
    */
-  void WriteNgrid(FILE* fp, int ngrid);
+  void WriteNgrid(cdm_FILE* pFile, int ngrid);
 
   /**
    * @brief ブロックデータの書き出し
-   * @param [in] fp 出力ファイルポインタ
+   * @param [in] pFile 出力ファイルポインタ
    * @param [in] id i方向のサイズ
    * @param [in] jd j方向のサイズ
    * @param [in] kd k方向のサイズ
    */
-  void WriteBlockData(FILE* fp,
+  void WriteBlockData(cdm_FILE* pFile,
                       int id,
                       int jd,
                       int kd); 
 
   /**
    * @brief gridデータ出力
-   * @param [in] fp         出力ファイルポインタ
+   * @param [in] pFile      出力ファイルポインタ
    * @param [in] id         i方向サイズ
    * @param [in] jd         j方向のサイズ
    * @param [in] kd         k方向のサイズ
@@ -147,7 +147,7 @@ public:
    */ 
   template<class T>
   bool
-  WriteXYZData(FILE* fp,
+  WriteXYZData(cdm_FILE* pFile,
                int id, 
                int jd, 
                int kd,
@@ -158,7 +158,7 @@ public:
 
   /**
    * @brief gridデータ出力 (不等間隔格子対応版)
-   * @param [in] fp      出力ファイルポインタ
+   * @param [in] pFile   出力ファイルポインタ
    * @param [in] sz3d    データサイズ
    * @param [in] x       x座標値データポインタ
    * @param [in] y       y座標値データポインタ
@@ -167,7 +167,7 @@ public:
    */ 
   template<class T>
   bool
-  WriteXYZData(FILE* fp,
+  WriteXYZData(cdm_FILE* pFile,
                size_t sz3d,
                T* x,
                T* y,
@@ -176,7 +176,7 @@ public:
 
   /**
    * @brief Formatted 出力
-   * @param [in] fp  出力ファイルポインタ
+   * @param [in] pFile 出力ファイルポインタ
    * @param [in] id  i方向サイズ
    * @param [in] jd  j方向のサイズ
    * @param [in] kd  k方向のサイズ
@@ -184,7 +184,7 @@ public:
    */
   template<class T>
   void
-  WriteXYZ_FORMATTED(FILE *fp,
+  WriteXYZ_FORMATTED(cdm_FILE *pFile,
                      int id,
                      int jd,
                      int kd,
@@ -192,13 +192,13 @@ public:
 
   /**
    * @brief Formatted 出力 (IBLANK対応版)
-   * @param [in] fp   出力ファイルポインタ
+   * @param [in] pFile 出力ファイルポインタ
    * @param [in] sz3d データサイズ
    * @param [in] tmp  出力データポインタ
    */
   template<class T>
   void
-  WriteXYZ_FORMATTED(FILE *fp,
+  WriteXYZ_FORMATTED(cdm_FILE *pFile,
                      size_t sz3d,
                      T* tmp); 
 
@@ -209,7 +209,7 @@ public:
    * @param [in] id     ランク番号
    * @param [in] mio    出力時の分割指定　 true = local / false = gather(default)
    */ 
-  FILE*
+  cdm_FILE*
   OutputFile_Open(
                   const std::string prefix,
                   const unsigned step,
@@ -228,7 +228,7 @@ public:
    * @param[in] org     原点座標
    * @param[in] pit     ピッチ
    * @param[in] prefix  ファイル接頭文字
-   * @param[in] fp      出力ファイルポインタ
+   * @param[in] pFile   出力ファイルポインタ
    */
   bool
   WriteHeaderRecord(int step,
@@ -241,29 +241,29 @@ public:
                     double* org,
                     double* pit,
                     const std::string prefix,
-                    FILE *fp);
+                    cdm_FILE *pFile);
 
   /**
    * @brief Field Datat 出力
-   * @param [in] fp     出力ファイルポインタ
+   * @param [in] pFile  出力ファイルポインタ
    * @param [in] src    出力データ配列ポインタ
    * @param [in] dLen   出力データサイズ
    */
   bool
-  WriteFieldData(FILE* fp, 
+  WriteFieldData(cdm_FILE* pFile, 
                  cdm_Array* src, 
                  size_t dLen);
 
   /**
    * @brief Function ブロックデータの書き出し 
-   * @param [in] fp 出力ファイルポインタ
+   * @param [in] pFile 出力ファイルポインタ
    * @param [in] id i方向のサイズ
    * @param [in] jd j方向のサイズ
    * @param [in] kd k方向のサイズ
    * @param [in] nvar 出力項目数
    */
   void 
-  WriteFuncBlockData(FILE* fp,
+  WriteFuncBlockData(cdm_FILE* pFile,
                      int id,
                      int jd,
                      int kd,
@@ -271,20 +271,20 @@ public:
 
   /**
    * @brief func data の出力
-   * @param [in] fp    出力ファイルポインタ
+   * @param [in] pFile 出力ファイルポインタ
    * @param [in] p3src plot3d func データ配列ポインタ
    */
   void
-  WriteFuncData(FILE* fp, cdm_Array* p3src);
+  WriteFuncData(cdm_FILE* pFile, cdm_Array* p3src);
 
   /**
    * @brief マーカーの書き込み
-   * @param[in] dmy マーカー
-   * @param[in] fp  出力ファイルポインタ 
-   * @param[in] out Fortranマーカー出力フラグ
+   * @param[in] dmy    マーカー
+   * @param[in] pFile  出力ファイルポインタ 
+   * @param[in] out    Fortranマーカー出力フラグ
    */
   bool
-  WriteDataMarker(int dmy, FILE* fp, bool out);
+  WriteDataMarker(int dmy, cdm_FILE* pFile, bool out);
 
 };
 

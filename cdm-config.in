@@ -64,11 +64,11 @@ EOF
       ;;
 
     --cflags)
-      echo @CDM_CFLAGS@ @MPI_CFLAGS@ @TP_CFLAGS@ @CDM_BUFFER_TUNING@
+      echo @CDM_CFLAGS@ @MPI_CFLAGS@ @TP_CFLAGS@ @NC_CFLAGS@ @CDM_BUFFER_TUNING@
       ;;
 
     --libs)
-      echo @CDM_LDFLAGS@ @CDM_LIBS@ @MPI_LDFLAGS@ @MPI_LIBS@ @TP_LDFLAGS@
+      echo @CDM_LDFLAGS@ @CDM_LIBS@ @MPI_LDFLAGS@ @MPI_LIBS@ @TP_LDFLAGS@ @NC_LDFLAGS@
       ;;
 
     *)

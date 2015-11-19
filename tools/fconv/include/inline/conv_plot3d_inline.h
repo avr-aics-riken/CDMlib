@@ -106,14 +106,14 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
                                    CDM::E_CDM_OFF);
     
   //open file
-  FILE*fp;
+  cdm_FILE*pFile;
   if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
-    if( (fp = fopen(tmp.c_str(), "wa")) == NULL ) {
+    if( (pFile = cdm_FILE::OpenWriteAscii(tmp, CDM::E_CDM_FMT_PLOT3D)) == NULL ) {
       printf("\tCan't open file.(%s)\n",tmp.c_str());
       Exit(0);
     }
   } else {
-    if( (fp = fopen(tmp.c_str(), "wb")) == NULL ) {
+    if( (pFile = cdm_FILE::OpenWriteBinary(tmp, CDM::E_CDM_FMT_PLOT3D)) == NULL ) {
       printf("\tCan't open file.(%s)\n",tmp.c_str());
       Exit(0);
     }
@@ -121,7 +121,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
     
   //write block data
   //WriteNgrid(fp,ngrid);//if multi grid
-  WriteBlockData(fp,id,jd,kd);
+  WriteBlockData(pFile,id,jd,kd);
     
   for(int k=0;k<kd;k++){
   for(int j=0;j<jd;j++){
@@ -170,16 +170,16 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
   }
   
   //write
-  if(!WriteXYZData(fp, id, jd, kd, ngrid, x, y, z)) printf("\terror WriteXYZData\n");
+  if(!WriteXYZData(pFile, id, jd, kd, ngrid, x, y, z)) printf("\terror WriteXYZData\n");
   
   //close file
-  fclose(fp);
+  cdm_FILE::CloseFile(pFile);
     
 }
 
 /**
  * @brief gridデータ出力
- * @param [in] fp         出力ファイルポインタ
+ * @param [in] pFile      出力ファイルポインタ
  * @param [in] id         i方向サイズ
  * @param [in] jd         j方向のサイズ
  * @param [in] kd         k方向のサイズ
@@ -191,7 +191,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
 template<class T>
 CONV_INLINE
 bool
-convOutput_PLOT3D::WriteXYZData(FILE* fp,
+convOutput_PLOT3D::WriteXYZData(cdm_FILE* pFile,
                                 int id,
                                 int jd,
                                 int kd,
@@ -200,6 +200,7 @@ convOutput_PLOT3D::WriteXYZData(FILE* fp,
                                 T*  y,
                                 T*  z)
 {
+  FILE *fp = pFile->m_fp;
 
   size_t sz = (size_t)id*(size_t)jd*(size_t)kd;
   unsigned int dmy;
@@ -212,18 +213,18 @@ convOutput_PLOT3D::WriteXYZData(FILE* fp,
     //Fortran Binary 出力
     case CDM::E_CDM_FILE_TYPE_FBINARY:
       dmy = sizeof(T)*sz*3;
-      WriteDataMarker(dmy,fp,true);
+      WriteDataMarker(dmy,pFile,true);
       fwrite(x, sizeof(T), sz, fp);
       fwrite(y, sizeof(T), sz, fp);
       fwrite(z, sizeof(T), sz, fp);
-      WriteDataMarker(dmy,fp,true);
+      WriteDataMarker(dmy,pFile,true);
       break;
 
     //ascii 出力
     case CDM::E_CDM_FILE_TYPE_ASCII:
-      WriteXYZ_FORMATTED(fp, id, jd, kd, x);
-      WriteXYZ_FORMATTED(fp, id, jd, kd, y);
-      WriteXYZ_FORMATTED(fp, id, jd, kd, z);
+      WriteXYZ_FORMATTED(pFile, id, jd, kd, x);
+      WriteXYZ_FORMATTED(pFile, id, jd, kd, y);
+      WriteXYZ_FORMATTED(pFile, id, jd, kd, z);
       break;
 
     //C Binary 出力
@@ -241,7 +242,7 @@ convOutput_PLOT3D::WriteXYZData(FILE* fp,
 
 /**
  * @brief Formatted 出力
- * @param [in] fp 出力ファイルポインタ
+ * @param [in] pFile 出力ファイルポインタ
  * @param [in] id i方向サイズ
  * @param [in] jd j方向サイズ
  * @param [in] kd k方向サイズ
@@ -250,12 +251,13 @@ convOutput_PLOT3D::WriteXYZData(FILE* fp,
 template<class T>
 CONV_INLINE
 void
-convOutput_PLOT3D::WriteXYZ_FORMATTED(FILE* fp,
+convOutput_PLOT3D::WriteXYZ_FORMATTED(cdm_FILE* pFile,
                                       int id,
                                       int jd,
                                       int kd,
                                       T* x)
 {
+  FILE *fp = pFile->m_fp;
 
   int s12 =(size_t)id*(size_t)jd;
   int ns12=s12/10;
@@ -309,14 +311,14 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
                                    CDM::E_CDM_OFF);
 
   //open file
-  FILE*fp;
+  cdm_FILE*pFile;
   if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
-    if( (fp = fopen(tmp.c_str(), "wa")) == NULL ) {
+    if( (pFile = cdm_FILE::OpenWriteAscii(tmp, CDM::E_CDM_FMT_PLOT3D)) == NULL ) {
       printf("\tCan't open file.(%s)\n",tmp.c_str());
       Exit(0);
     }
   } else {
-    if( (fp = fopen(tmp.c_str(), "wb")) == NULL ) {
+    if( (pFile = cdm_FILE::OpenWriteBinary(tmp, CDM::E_CDM_FMT_PLOT3D)) == NULL ) {
       printf("\tCan't open file.(%s)\n",tmp.c_str());
       Exit(0);
     }
@@ -337,7 +339,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
 
   //write block data
   //WriteNgrid(fp,ngrid);//if multi grid
-  WriteBlockData(fp,id,jd,kd);
+  WriteBlockData(pFile,id,jd,kd);
 
   size_t sz3d = (size_t)id*(size_t)jd*(size_t)kd;
 
@@ -359,7 +361,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
   for(int i=0; i<sz3d; i++) iblank[i] = 1;
 
   //write
-  if(!WriteXYZData(fp, sz3d, x, y, z, iblank)) printf("\terror WriteXYZData\n");
+  if(!WriteXYZData(pFile, sz3d, x, y, z, iblank)) printf("\terror WriteXYZData\n");
 
   delete [] x;
   delete [] y;
@@ -367,7 +369,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
   delete [] iblank;
 
   //close file
-  fclose(fp);
+  cdm_FILE::CloseFile(pFile);
     
 }
 
@@ -376,13 +378,14 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
 template<class T>
 CONV_INLINE
 bool
-convOutput_PLOT3D::WriteXYZData(FILE* fp,
+convOutput_PLOT3D::WriteXYZData(cdm_FILE* pFile,
                                 size_t sz3d,
                                 T* x,
                                 T* y,
                                 T* z,
                                 int* iblank)
 {
+  FILE *fp = pFile->m_fp;
 
   unsigned int dmy;
 
@@ -391,20 +394,20 @@ convOutput_PLOT3D::WriteXYZData(FILE* fp,
     //Fortran Binary 出力
     case CDM::E_CDM_FILE_TYPE_FBINARY:
       dmy = sizeof(T)*sz3d*3 + sizeof(int)*sz3d;
-      WriteDataMarker(dmy,fp,true);
+      WriteDataMarker(dmy,pFile,true);
       fwrite(x, sizeof(T), sz3d, fp);
       fwrite(y, sizeof(T), sz3d, fp);
       fwrite(z, sizeof(T), sz3d, fp);
       fwrite(iblank, sizeof(int), sz3d, fp);
-      WriteDataMarker(dmy,fp,true);
+      WriteDataMarker(dmy,pFile,true);
       break;
 
     //ascii 出力
     case CDM::E_CDM_FILE_TYPE_ASCII:
-      WriteXYZ_FORMATTED(fp, sz3d, x);
-      WriteXYZ_FORMATTED(fp, sz3d, y);
-      WriteXYZ_FORMATTED(fp, sz3d, z);
-      WriteXYZ_FORMATTED(fp, sz3d, iblank);
+      WriteXYZ_FORMATTED(pFile, sz3d, x);
+      WriteXYZ_FORMATTED(pFile, sz3d, y);
+      WriteXYZ_FORMATTED(pFile, sz3d, z);
+      WriteXYZ_FORMATTED(pFile, sz3d, iblank);
       break;
 
     //C Binary 出力
@@ -427,10 +430,12 @@ convOutput_PLOT3D::WriteXYZData(FILE* fp,
 template<class T>
 CONV_INLINE
 void
-convOutput_PLOT3D::WriteXYZ_FORMATTED(FILE* fp,
+convOutput_PLOT3D::WriteXYZ_FORMATTED(cdm_FILE* pFile,
                                       size_t sz3d,
                                       T* tmp)
 {
+  FILE *fp = pFile->m_fp;
+
   if( typeid(T) == typeid(int) ){
     for(int i=0; i<sz3d; i++) {
       fprintf(fp,"%2d\n", tmp[i]);

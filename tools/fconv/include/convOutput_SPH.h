@@ -40,7 +40,7 @@ public:
    * @param [in] id   ランク番号
    * @param [in] mio    出力時の分割指定　 true = local / false = gather(default)
    */
-  FILE* OutputFile_Open(
+  cdm_FILE* OutputFile_Open(
                         const std::string prefix,
                         const unsigned step,
                         const int id,
@@ -59,7 +59,7 @@ public:
    * @param[in] org     原点座標
    * @param[in] pit     ピッチ
    * @param[in] prefix  ファイル接頭文字
-   * @param[in] fp      出力ファイルポインタ
+   * @param[in] pFile   出力ファイルポインタ
    */
   bool
   WriteHeaderRecord(int step,
@@ -72,16 +72,16 @@ public:
                     double* org,
                     double* pit,
                     const std::string prefix,
-                    FILE *fp); 
+                    cdm_FILE *pFile); 
 
   /**
    * @brief マーカーの書き込み
-   * @param[in] dmy マーカー
-   * @param[in] fp  出力ファイルポインタ 
-   * @param[in] out plot3d用
+   * @param[in] dmy   マーカー
+   * @param[in] pFile 出力ファイルポインタ 
+   * @param[in] out   plot3d用
    */
   bool
-  WriteDataMarker(int dmy, FILE* fp, bool out);
+  WriteDataMarker(int dmy, cdm_FILE* pFile, bool out);
 
 protected:
 

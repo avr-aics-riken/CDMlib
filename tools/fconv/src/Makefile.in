@@ -124,7 +124,8 @@ am_fconv_OBJECTS = fconv-main.$(OBJEXT) fconv-InputParam.$(OBJEXT) \
 	fconv-convOutput.$(OBJEXT) fconv-convOutput_SPH.$(OBJEXT) \
 	fconv-convOutput_BOV.$(OBJEXT) fconv-convOutput_AVS.$(OBJEXT) \
 	fconv-convOutput_VTK.$(OBJEXT) \
-	fconv-convOutput_PLOT3D.$(OBJEXT)
+	fconv-convOutput_PLOT3D.$(OBJEXT) \
+	fconv-convOutput_NETCDF.$(OBJEXT)
 fconv_OBJECTS = $(am_fconv_OBJECTS)
 fconv_DEPENDENCIES =
 fconv_LINK = $(CXXLD) $(fconv_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
@@ -269,6 +270,9 @@ MPI_CFLAGS = @MPI_CFLAGS@
 MPI_DIR = @MPI_DIR@
 MPI_LDFLAGS = @MPI_LDFLAGS@
 MPI_LIBS = @MPI_LIBS@
+NC_CFLAGS = @NC_CFLAGS@
+NC_DIR = @NC_DIR@
+NC_LDFLAGS = @NC_LDFLAGS@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -336,7 +340,8 @@ fconv_CXXFLAGS = \
   @MPI_CFLAGS@ \
   @CPM_CFLAGS@ \
   @TP_CFLAGS@ \
-  @CDM_BUFFER_TUNING@
+  @CDM_BUFFER_TUNING@ \
+  @NC_CFLAGS@
 
 fconv_SOURCES = \
   main.C \
@@ -350,7 +355,8 @@ fconv_SOURCES = \
   convOutput_BOV.C \
   convOutput_AVS.C \
   convOutput_VTK.C \
-  convOutput_PLOT3D.C
+  convOutput_PLOT3D.C \
+  convOutput_NETCDF.C
 
 fconv_includedir = $(includedir)
 fconv_include_HEADERS = \
@@ -365,7 +371,8 @@ fconv_include_HEADERS = \
   $(top_srcdir)/tools/fconv/include/convOutput_BOV.h \
   $(top_srcdir)/tools/fconv/include/convOutput_AVS.h \
   $(top_srcdir)/tools/fconv/include/convOutput_VTK.h \
-  $(top_srcdir)/tools/fconv/include/convOutput_PLOT3D.h
+  $(top_srcdir)/tools/fconv/include/convOutput_PLOT3D.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_NETCDF.h
 
 fconv_inline_includedir = $(includedir)/inline
 fconv_inline_include_HEADERS = \
@@ -379,7 +386,8 @@ fconv_LDADD = \
   @CDM_LIBS@ \
   @TP_LDFLAGS@ \
   @MPI_LDFLAGS@ \
-  @MPI_LIBS@ 
+  @MPI_LIBS@  \
+  @NC_LDFLAGS@
 
 EXTRA_DIST = Makefile_hand depend.inc 
 all: all-am
@@ -476,6 +484,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fconv-convOutput.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fconv-convOutput_AVS.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fconv-convOutput_BOV.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fconv-convOutput_NETCDF.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fconv-convOutput_PLOT3D.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fconv-convOutput_SPH.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fconv-convOutput_VTK.Po@am__quote@
@@ -662,6 +671,20 @@ fconv-convOutput_PLOT3D.obj: convOutput_PLOT3D.C
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='convOutput_PLOT3D.C' object='fconv-convOutput_PLOT3D.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fconv_CXXFLAGS) $(CXXFLAGS) -c -o fconv-convOutput_PLOT3D.obj `if test -f 'convOutput_PLOT3D.C'; then $(CYGPATH_W) 'convOutput_PLOT3D.C'; else $(CYGPATH_W) '$(srcdir)/convOutput_PLOT3D.C'; fi`
+
+fconv-convOutput_NETCDF.o: convOutput_NETCDF.C
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fconv_CXXFLAGS) $(CXXFLAGS) -MT fconv-convOutput_NETCDF.o -MD -MP -MF $(DEPDIR)/fconv-convOutput_NETCDF.Tpo -c -o fconv-convOutput_NETCDF.o `test -f 'convOutput_NETCDF.C' || echo '$(srcdir)/'`convOutput_NETCDF.C
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fconv-convOutput_NETCDF.Tpo $(DEPDIR)/fconv-convOutput_NETCDF.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='convOutput_NETCDF.C' object='fconv-convOutput_NETCDF.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fconv_CXXFLAGS) $(CXXFLAGS) -c -o fconv-convOutput_NETCDF.o `test -f 'convOutput_NETCDF.C' || echo '$(srcdir)/'`convOutput_NETCDF.C
+
+fconv-convOutput_NETCDF.obj: convOutput_NETCDF.C
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fconv_CXXFLAGS) $(CXXFLAGS) -MT fconv-convOutput_NETCDF.obj -MD -MP -MF $(DEPDIR)/fconv-convOutput_NETCDF.Tpo -c -o fconv-convOutput_NETCDF.obj `if test -f 'convOutput_NETCDF.C'; then $(CYGPATH_W) 'convOutput_NETCDF.C'; else $(CYGPATH_W) '$(srcdir)/convOutput_NETCDF.C'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fconv-convOutput_NETCDF.Tpo $(DEPDIR)/fconv-convOutput_NETCDF.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='convOutput_NETCDF.C' object='fconv-convOutput_NETCDF.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fconv_CXXFLAGS) $(CXXFLAGS) -c -o fconv-convOutput_NETCDF.obj `if test -f 'convOutput_NETCDF.C'; then $(CYGPATH_W) 'convOutput_NETCDF.C'; else $(CYGPATH_W) '$(srcdir)/convOutput_NETCDF.C'; fi`
 install-fconv_includeHEADERS: $(fconv_include_HEADERS)
 	@$(NORMAL_INSTALL)
 	@list='$(fconv_include_HEADERS)'; test -n "$(fconv_includedir)" || list=; \

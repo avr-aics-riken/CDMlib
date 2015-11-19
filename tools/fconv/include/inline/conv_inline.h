@@ -205,7 +205,6 @@ bool CONV::calcMinMax(cdm_TypeArray<T> *src,
   //変数の個数の取得
   int nVari = src->getNvari();
 
-
   if( nVari > 1 ) {
     //nijkの処理
     if( shape == CDM::E_CDM_NIJK ) {
