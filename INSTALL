@@ -100,7 +100,7 @@ Here is examples.
 ## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
    This options installs parallel CDMlib, file converter and frm.
 
- $ ../configure --with-ompi=/usr/local/opt/openmpi \
+ $ ../configure --prefix=${FFV_HOME}/CDMlib \
                 --with-parser=${FFV_HOME}/TextParser \
                 --with-cpm=${FFV_HOME}/CPMlib \
                 --with-frm=yes \

@@ -187,12 +187,12 @@ ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/config/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/wrk/config/missing aclocal-1.15
+ACLOCAL = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.0/config/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/wrk/config/missing autoconf
-AUTOHEADER = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/wrk/config/missing autoheader
-AUTOMAKE = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/wrk/config/missing automake-1.15
+AUTOCONF = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.0/config/missing autoconf
+AUTOHEADER = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.0/config/missing autoheader
+AUTOMAKE = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.0/config/missing automake-1.15
 AWK = awk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -201,11 +201,11 @@ CDM_CFLAGS = -I/usr/local/FFV/CDMlib/include
 CDM_CXX = mpicxx
 CDM_LDFLAGS = -L/usr/local/FFV/CDMlib/lib
 CDM_LIBS = -lCDM
-CDM_REVISION = 20151119_1500
+CDM_REVISION = 20151125_0100
 CFLAGS = -g -O2
 CPM_CFLAGS = -I/usr/local/FFV/CPMlib/include
 CPM_DIR = /usr/local/FFV/CPMlib
-CPM_LDFLAGS = -L/usr/local/FFV/CPMlib/lib -lCPM -lstdc++ -lifport -lifcore
+CPM_LDFLAGS = -L/usr/local/FFV/CPMlib/lib -lCPM -lstdc++
 CPP = gcc -E
 CPPFLAGS = 
 CXX = mpicxx
@@ -231,24 +231,24 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/wrk/config/missing makeinfo
-MAKE_SUB_DIRS = src doc tools/frm/src tools/fconv/src tools/netcdf2dfi/src example
+MAKEINFO = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.0/config/missing makeinfo
+MAKE_SUB_DIRS = src doc tools/frm/src tools/fconv/src example
 MKDIR_P = /usr/local/bin/gmkdir -p
 MPI_CFLAGS = 
 MPI_DIR = 
 MPI_LDFLAGS = 
 MPI_LIBS = 
-NC_CFLAGS = -D_WITH_NETCDF4_ -I/usr/local/netcdf/include -I/usr/local/hdf5/include
-NC_DIR = /usr/local/netcdf
-NC_LDFLAGS = -L/usr/local/netcdf/lib -lnetcdf
+NC_CFLAGS = 
+NC_DIR = 
+NC_LDFLAGS = 
 OBJEXT = o
 PACKAGE = CDMlib
 PACKAGE_BUGREPORT = keno@riken.jp
 PACKAGE_NAME = CDMlib
-PACKAGE_STRING = CDMlib 0.9.0
+PACKAGE_STRING = CDMlib 0.9.1
 PACKAGE_TARNAME = CDMlib
 PACKAGE_URL = 
-PACKAGE_VERSION = 0.9.0
+PACKAGE_VERSION = 0.9.1
 PATH_SEPARATOR = :
 RANLIB = ranlib
 SET_MAKE = 
@@ -257,11 +257,11 @@ STRIP =
 TP_CFLAGS = -I/usr/local/FFV/TextParser/include
 TP_DIR = /usr/local/FFV/TextParser
 TP_LDFLAGS = -L/usr/local/FFV/TextParser/lib -lTPmpi
-VERSION = 0.9.0
-abs_builddir = /Daily/Development/SphDev/Module/CDMlib/wrk/BUILD_DIR/example
-abs_srcdir = /Daily/Development/SphDev/Module/CDMlib/wrk/BUILD_DIR/../example
-abs_top_builddir = /Daily/Development/SphDev/Module/CDMlib/wrk/BUILD_DIR
-abs_top_srcdir = /Daily/Development/SphDev/Module/CDMlib/wrk/BUILD_DIR/..
+VERSION = 0.9.1
+abs_builddir = /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.0/BUILD_DIR/example
+abs_srcdir = /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.0/BUILD_DIR/../example
+abs_top_builddir = /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.0/BUILD_DIR
+abs_top_srcdir = /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.0/BUILD_DIR/..
 ac_ct_CC = gcc
 ac_ct_CXX = 
 ac_ct_FC = 
@@ -282,7 +282,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/wrk/config/install-sh
+install_sh = ${SHELL} /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.0/config/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -306,31 +306,31 @@ DISTCLEANFILES = *~ input output output_nuc
 CLEANFILES = 
 EXTRA_DIST = sample_input.C sample_output_NonUni.C sample_output_Uni.C coord.crd coord_Ascii.crd
 input_SOURCES = sample_input.C
-input_CXXFLAGS = -I$(top_srcdir)/include  -I/usr/local/FFV/TextParser/include -D_WITH_NETCDF4_ -I/usr/local/netcdf/include -I/usr/local/hdf5/include
+input_CXXFLAGS = -I$(top_srcdir)/include  -I/usr/local/FFV/TextParser/include 
 input_LDADD = \
     -L$(top_builddir)/src -lCDM \
      \
      \
     -L/usr/local/FFV/TextParser/lib -lTPmpi \
-    -L/usr/local/netcdf/lib -lnetcdf
+    
 
 output_SOURCES = sample_output_Uni.C
-output_CXXFLAGS = -I$(top_srcdir)/include  -I/usr/local/FFV/TextParser/include -D_WITH_NETCDF4_ -I/usr/local/netcdf/include -I/usr/local/hdf5/include
+output_CXXFLAGS = -I$(top_srcdir)/include  -I/usr/local/FFV/TextParser/include 
 output_LDADD = \
     -L$(top_builddir)/src -lCDM \
      \
      \
     -L/usr/local/FFV/TextParser/lib -lTPmpi \
-    -L/usr/local/netcdf/lib -lnetcdf
+    
 
 output_nuc_SOURCES = sample_output_NonUni.C
-output_nuc_CXXFLAGS = -I$(top_srcdir)/include  -I/usr/local/FFV/TextParser/include -D_WITH_NETCDF4_ -I/usr/local/netcdf/include -I/usr/local/hdf5/include
+output_nuc_CXXFLAGS = -I$(top_srcdir)/include  -I/usr/local/FFV/TextParser/include 
 output_nuc_LDADD = \
   -L$(top_builddir)/src -lCDM \
    \
    \
   -L/usr/local/FFV/TextParser/lib -lTPmpi \
-  -L/usr/local/netcdf/lib -lnetcdf
+  
 
 dist_noinst_DATA = 
 all: all-am
