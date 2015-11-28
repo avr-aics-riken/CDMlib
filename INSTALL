@@ -115,13 +115,12 @@ $ ../configure --prefix=${FFV_HOME}/CDMlib \
                --with-parser=${FFV_HOME}/TextParser \
                --with-cpm=${FFV_HOME}/CPMlib \
                --with-frm=yes \
-               --with-nc=/usr/local/NetCDF \
                CXX=mpicxx \
                CXXFLAGS=-O3 \
                F90=mpif90 \
                F90FLAGS=-O3 \
-               --with-example=yes
-
+               --with-example=yes \
+               --with-nc=/hoge/NetCDF
 
 
 # GNU compiler
@@ -142,12 +141,12 @@ $ ../configure --prefix=${FFV_HOME}/CDMlib \
                --with-parser=${FFV_HOME}/TextParser \
                --with-cpm=${FFV_HOME}/CPMlib \
                --with-frm=yes \
-               --with-nc=/usr/local/NetCDF \
                CXX=mpicxx \
                CXXFLAGS=-O3 \
                F90=mpif90 \
                F90FLAGS=-O3 \
-               --with-example=yes
+               --with-example=yes \
+               --with-nc=/hoge/NetCDF
 
 
 
@@ -204,7 +203,7 @@ export CFLAGS=-O3
 ./configure --prefix=$1
 
 $ cd szip-x.x
-$ config_szip.sh /usr/local/SZIP
+$ config_szip.sh ${FFV_HOME}/SZIP
 $ make
 $ sudo make install
 
@@ -212,15 +211,15 @@ $ sudo make install
 HDF5:
 $ cat config_hdf5.sh
 #!/bin/sh
-export CC=gcc-5
+export CC=gcc
 export CFLAGS=-O3
 export FC=gfortran
 export FCFLAGS=-O3
 #
-./configure --prefix=$1 --enable-fortran --enable-cxx --with-zlib=/usr/bin --with-szip=/usr/local/SZIP
+./configure --prefix=$1 --enable-fortran --enable-cxx --with-zlib=/usr/bin --with-szip=${FFV_HOME}/SZIP
 
 $ cd hdf5-x.x.x
-$ config_hdf5.sh /usr/local/HDF5
+$ config_hdf5.sh ${FFV_HOME}/HDF5
 $ make
 $ sudo make install
 
@@ -228,19 +227,19 @@ $ sudo make install
 NetCDF:
 $ cat config_netcdf.sh
 #!/bin/sh
-export CC=gcc-5
+export CC=gcc
 export CFLAGS=-O3
-export CXX=g++-5
+export CXX=g++
 export CXXFLAGS=-O3
 export FC=gfortran
 export FCFLAGS=-O3
-export CPPFLAGS=-I/usr/local/HDF5/include
-export LDFLAGS=-L/usr/local/HDF5/lib
+export CPPFLAGS=-I${FFV_HOME}/include
+export LDFLAGS=-L${FFV_HOME}/lib
 #
 ./configure --prefix=$1
 
 $ cd netcdf-x.x.x
-$ config_netcdf.sh /usr/local/NetCDF
+$ config_netcdf.sh ${FFV_HOME}/NetCDF
 $ make
 $ sudo make install
 

@@ -197,15 +197,15 @@ AWK = awk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CDM_BUFFER_TUNING = 
-CDM_CFLAGS = -I/usr/local/FFV/CDMlib/include
+CDM_CFLAGS = -I/Users/keno/FFV/CDMlib/include
 CDM_CXX = mpicxx
-CDM_LDFLAGS = -L/usr/local/FFV/CDMlib/lib
+CDM_LDFLAGS = -L/Users/keno/FFV/CDMlib/lib
 CDM_LIBS = -lCDM
-CDM_REVISION = 20151127_1400
+CDM_REVISION = 20151128_1730
 CFLAGS = -g -O2
-CPM_CFLAGS = -I/usr/local/FFV/CPMlib/include
-CPM_DIR = /usr/local/FFV/CPMlib
-CPM_LDFLAGS = -L/usr/local/FFV/CPMlib/lib -lCPM -lstdc++
+CPM_CFLAGS = -I/Users/keno/FFV/CPMlib/include
+CPM_DIR = /Users/keno/FFV/CPMlib
+CPM_LDFLAGS = -L/Users/keno/FFV/CPMlib/lib -lCPM -lstdc++
 CPP = gcc -E
 CPPFLAGS = 
 CXX = mpicxx
@@ -238,26 +238,26 @@ MPI_CFLAGS =
 MPI_DIR = 
 MPI_LDFLAGS = 
 MPI_LIBS = 
-NC_CFLAGS = -D_WITH_NETCDF4_ -I/usr/local/NetCDF/include -I/usr/local/HDF5/include
-NC_DIR = /usr/local/NetCDF
-NC_LDFLAGS = -L/usr/local/NetCDF/lib -lnetcdf
+NC_CFLAGS = -D_WITH_NETCDF4_ -I/Users/keno/NetCDF/include -I/Users/keno/HDF5/include
+NC_DIR = /Users/keno/NetCDF
+NC_LDFLAGS = -L/Users/keno/NetCDF/lib -lnetcdf
 OBJEXT = o
 PACKAGE = CDMlib
 PACKAGE_BUGREPORT = keno@riken.jp
 PACKAGE_NAME = CDMlib
-PACKAGE_STRING = CDMlib 0.9.2
+PACKAGE_STRING = CDMlib 0.9.3
 PACKAGE_TARNAME = CDMlib
 PACKAGE_URL = 
-PACKAGE_VERSION = 0.9.2
+PACKAGE_VERSION = 0.9.3
 PATH_SEPARATOR = :
 RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = 
-TP_CFLAGS = -I/usr/local/FFV/TextParser/include
-TP_DIR = /usr/local/FFV/TextParser
-TP_LDFLAGS = -L/usr/local/FFV/TextParser/lib -lTPmpi
-VERSION = 0.9.2
+TP_CFLAGS = -I/Users/keno/FFV/TextParser/include
+TP_DIR = /Users/keno/FFV/TextParser
+TP_LDFLAGS = -L/Users/keno/FFV/TextParser/lib -lTPmpi
+VERSION = 0.9.3
 abs_builddir = /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.2/BUILD_DIR/example
 abs_srcdir = /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.2/BUILD_DIR/../example
 abs_top_builddir = /Daily/Development/SphDev/Module/CDMlib/CDMlib-0.9.2/BUILD_DIR
@@ -291,7 +291,7 @@ mandir = ${datarootdir}/man
 mkdir_p = $(MKDIR_P)
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr/local/FFV/CDMlib
+prefix = /Users/keno/FFV/CDMlib
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
@@ -306,31 +306,31 @@ DISTCLEANFILES = *~ input output output_nuc
 CLEANFILES = 
 EXTRA_DIST = sample_input.C sample_output_NonUni.C sample_output_Uni.C coord.crd coord_Ascii.crd
 input_SOURCES = sample_input.C
-input_CXXFLAGS = -I$(top_srcdir)/include  -I/usr/local/FFV/TextParser/include -D_WITH_NETCDF4_ -I/usr/local/NetCDF/include -I/usr/local/HDF5/include
+input_CXXFLAGS = -I$(top_srcdir)/include  -I/Users/keno/FFV/TextParser/include -D_WITH_NETCDF4_ -I/Users/keno/NetCDF/include -I/Users/keno/HDF5/include
 input_LDADD = \
     -L$(top_builddir)/src -lCDM \
      \
      \
-    -L/usr/local/FFV/TextParser/lib -lTPmpi \
-    -L/usr/local/NetCDF/lib -lnetcdf
+    -L/Users/keno/FFV/TextParser/lib -lTPmpi \
+    -L/Users/keno/NetCDF/lib -lnetcdf
 
 output_SOURCES = sample_output_Uni.C
-output_CXXFLAGS = -I$(top_srcdir)/include  -I/usr/local/FFV/TextParser/include -D_WITH_NETCDF4_ -I/usr/local/NetCDF/include -I/usr/local/HDF5/include
+output_CXXFLAGS = -I$(top_srcdir)/include  -I/Users/keno/FFV/TextParser/include -D_WITH_NETCDF4_ -I/Users/keno/NetCDF/include -I/Users/keno/HDF5/include
 output_LDADD = \
     -L$(top_builddir)/src -lCDM \
      \
      \
-    -L/usr/local/FFV/TextParser/lib -lTPmpi \
-    -L/usr/local/NetCDF/lib -lnetcdf
+    -L/Users/keno/FFV/TextParser/lib -lTPmpi \
+    -L/Users/keno/NetCDF/lib -lnetcdf
 
 output_nuc_SOURCES = sample_output_NonUni.C
-output_nuc_CXXFLAGS = -I$(top_srcdir)/include  -I/usr/local/FFV/TextParser/include -D_WITH_NETCDF4_ -I/usr/local/NetCDF/include -I/usr/local/HDF5/include
+output_nuc_CXXFLAGS = -I$(top_srcdir)/include  -I/Users/keno/FFV/TextParser/include -D_WITH_NETCDF4_ -I/Users/keno/NetCDF/include -I/Users/keno/HDF5/include
 output_nuc_LDADD = \
   -L$(top_builddir)/src -lCDM \
    \
    \
-  -L/usr/local/FFV/TextParser/lib -lTPmpi \
-  -L/usr/local/NetCDF/lib -lnetcdf
+  -L/Users/keno/FFV/TextParser/lib -lTPmpi \
+  -L/Users/keno/NetCDF/lib -lnetcdf
 
 dist_noinst_DATA = 
 all: all-am

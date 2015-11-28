@@ -12,6 +12,8 @@ REVISION HISTORY
 
 --------------------------
 2015-11-28
+modify assumed install directory from /usr/local/FFV to ~/FFV
+
 option --with-comp need to be essential
 - change configure.ac, INSTALL, and NEWS
 
