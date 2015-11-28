@@ -14,7 +14,7 @@
 
 AC_PREREQ([2.57])
 
-AC_INIT([CDMlib],[0.9.1],[keno@riken.jp],[CDMlib])
+AC_INIT([CDMlib],[0.9.2],[keno@riken.jp],[CDMlib])
 
 echo "----------------------------------------"
 echo "Running CDMlib Configure Script"
@@ -36,8 +36,8 @@ AC_CONFIG_AUX_DIR(config)
 #
 
 if test -e configure.ac ; then
-echo "Please run configure from a separate build directory. It is not allowd to run configure in the source directory."
-echo "Pleaes try ..."
+echo "Please run configure from a separate build directory. It is not allowed to run configure in the source directory."
+echo "Please try ..."
 echo " "
 echo "$ cd BUILD_DIR"
 echo "$ ../configure [options]"
@@ -63,7 +63,7 @@ AM_INIT_AUTOMAKE()
 # revision No.
 #
 
-CDM_REVISION="20151125_0100"
+CDM_REVISION="20151127_1400"
 AC_SUBST(CDM_REVISION)
 
 

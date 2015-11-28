@@ -9,6 +9,16 @@
 
 REVISION HISTORY
 ================
+
+--------------------------
+2015-11-28
+option --with-comp need to be essential
+- change configure.ac, INSTALL, and NEWS
+
+--------------------------
+2015-11-27
+fix the issue that tools/netcdf2dfi is not included in 0.9.1
+
 --------------------------
 2015-11-25
 modify INSTALL

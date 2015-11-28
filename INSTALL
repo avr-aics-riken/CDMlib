@@ -20,7 +20,7 @@ SOFTWARE REQUIREMENT
 HOW TO COMPILE
 ==============
 
-1. with configure
+1) with configure
 
 $ export FFV_HOME=hogehoge
 $ cd BUILD_DIR
@@ -84,70 +84,95 @@ Configure options:
     Specify fortran90 compiler options.
 
 
-Here is examples.
-
-## for the combination of Intel compiler and OpenMPI.
-
- $ ../configure --with-ompi=/usr/local/opt/openmpi \
-                --with-parser=${FFV_HOME}/TextParser \
-                --with-cpm=${FFV_HOME}/CPMlib \
-                CXX=icpc \
-                CXXFLAGS="-O3 -Wall" \
-                F90=ifort \
-                F90FLAGS=-O3
 
 
-## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
-   This options installs parallel CDMlib, file converter and frm.
+2) Configure Examples
 
- $ ../configure --prefix=${FFV_HOME}/CDMlib \
-                --with-parser=${FFV_HOME}/TextParser \
-                --with-cpm=${FFV_HOME}/CPMlib \
-                --with-frm=yes \
-                CXX=mpicxx \
-                CXXFLAGS=-O3 \
-                F90=mpif90 \
-                F90FLAGS=-O3 \
-                --with-example=yes
+# INTEL compiler
 
+## Combination of Intel compiler and OpenMPI.
+$ ../configure --with-ompi=/usr/local/opt/openmpi \
+               --with-parser=${FFV_HOME}/TextParser \
+               --with-cpm=${FFV_HOME}/CPMlib \
+               CXX=icpc \
+               CXXFLAGS="-O3 -Wall" \
+               F90=ifort \
+               F90FLAGS=-O3
 
+## MPI by a wrapper, /w frm and examples
+$ ../configure --prefix=${FFV_HOME}/CDMlib \
+               --with-parser=${FFV_HOME}/TextParser \
+               --with-cpm=${FFV_HOME}/CPMlib \
+               --with-frm=yes \
+               CXX=mpicxx \
+               CXXFLAGS=-O3 \
+               F90=mpif90 \
+               F90FLAGS=-O3 \
+               --with-example=yes
 
-## OpenMPI with wrapper compiler, assume that mpicxx is a wrapper compiler for OpenMPI.
-   This options installs parallel CDMlib with netCFD support, file converter and frm.
-
- $ ../configure --prefix=${FFV_HOME}/CDMlib \
-                --with-parser=${FFV_HOME}/TextParser \
-                --with-cpm=${FFV_HOME}/CPMlib \
-                --with-frm=yes \
-                --with-nc=/usr/local/netcdf \
-                CXX=mpicxx \
-                CXXFLAGS=-O3 \
-                F90=mpif90 \
-                F90FLAGS=-O3 \
-                --with-example=yes
-
-
-## K-computer
-
- $ ../configure --prefix=${FFV_HOME}/CDMlib \
-                --with-parser=${FFV_HOME}/TextParser \
-                --with-cpm=${FFV_HOME}/CPMlib \
-                --host=sparc64-unknown-linux-gnu \
-                CXX=mpiFCCpx \
-                CXXFLAGS=-Kfast \
-                F90=mpifrtpx \
-                F90FLAGS=-Kfast
+## /w NetCFD support, file converter and frm
+$ ../configure --prefix=${FFV_HOME}/CDMlib \
+               --with-parser=${FFV_HOME}/TextParser \
+               --with-cpm=${FFV_HOME}/CPMlib \
+               --with-frm=yes \
+               --with-nc=/usr/local/NetCDF \
+               CXX=mpicxx \
+               CXXFLAGS=-O3 \
+               F90=mpif90 \
+               F90FLAGS=-O3 \
+               --with-example=yes
 
 
 
-2. Hand compile
+# GNU compiler
+
+## /w file converter and frm
+$ ../configure --prefix=${FFV_HOME}/CDMlib \
+               --with-parser=${FFV_HOME}/TextParser \
+               --with-cpm=${FFV_HOME}/CPMlib \
+               --with-frm=yes \
+               CXX=mpicxx \
+               CXXFLAGS=-O3 \
+               F90=mpif90 \
+               F90FLAGS=-O3 \
+               --with-example=yes
+
+## /w NetCFD support, file converter and frm
+$ ../configure --prefix=${FFV_HOME}/CDMlib \
+               --with-parser=${FFV_HOME}/TextParser \
+               --with-cpm=${FFV_HOME}/CPMlib \
+               --with-frm=yes \
+               --with-nc=/usr/local/NetCDF \
+               CXX=mpicxx \
+               CXXFLAGS=-O3 \
+               F90=mpif90 \
+               F90FLAGS=-O3 \
+               --with-example=yes
+
+
+
+# FUJITSU compiler / FX, K computer
+$ ../configure --prefix=${FFV_HOME}/CDMlib \
+               --with-parser=${FFV_HOME}/TextParser \
+               --with-cpm=${FFV_HOME}/CPMlib \
+               --host=sparc64-unknown-linux-gnu \
+               CXX=mpiFCCpx \
+               CXXFLAGS=-Kfast \
+               F90=mpifrtpx \
+               F90FLAGS=-Kfast
+
+
+
+
+3) Hand compile
 
 If a provided configure does not work, use Makefile_hand to build this library. At first,
 edit MACRO to tell your machine environment.
 
 
 
-3. Compilation of staging tool
+
+4) Compilation of staging tool
 
 When you install staging tool onto a login node with cross-compiling environment, the tool
 must be compiled by native compiler on the login node. If the front-end login node does not
@@ -162,3 +187,63 @@ have MPI library, specify —with-MPI=no option. Here is an example for the K-co
                 FC=gfortran
 
 Note that TextParser library to be liked also must be compiled for native environment.
+
+
+
+5) NetCDF support
+Before compiling NetCDF, we must build HDF5.
+HDF5 allows to use the options of several compression, zip, szip, etc.
+Since CDMlib manage multiple files, NetCDF and HDF5 may compile in serial version.
+
+SZIP:
+$ cat config_szip.sh
+#!/bin/sh
+export CC=gcc
+export CFLAGS=-O3
+#
+./configure --prefix=$1
+
+$ cd szip-x.x
+$ config_szip.sh /usr/local/SZIP
+$ make
+$ sudo make install
+
+
+HDF5:
+$ cat config_hdf5.sh
+#!/bin/sh
+export CC=gcc-5
+export CFLAGS=-O3
+export FC=gfortran
+export FCFLAGS=-O3
+#
+./configure --prefix=$1 --enable-fortran --enable-cxx --with-zlib=/usr/bin --with-szip=/usr/local/SZIP
+
+$ cd hdf5-x.x.x
+$ config_hdf5.sh /usr/local/HDF5
+$ make
+$ sudo make install
+
+
+NetCDF:
+$ cat config_netcdf.sh
+#!/bin/sh
+export CC=gcc-5
+export CFLAGS=-O3
+export CXX=g++-5
+export CXXFLAGS=-O3
+export FC=gfortran
+export FCFLAGS=-O3
+export CPPFLAGS=-I/usr/local/HDF5/include
+export LDFLAGS=-L/usr/local/HDF5/lib
+#
+./configure --prefix=$1
+
+$ cd netcdf-x.x.x
+$ config_netcdf.sh /usr/local/NetCDF
+$ make
+$ sudo make install
+
+
+
+
