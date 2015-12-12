@@ -24,15 +24,20 @@ This CDMlib provides following functions for the Cartesian and Non-uniform Carte
 INGREDIENTS
 ===========
 
-AUTHORS     Contributors
-ChangeLog   History of development
-COPYING     Copyright
-INSTALL     Description of how to install
-LICENSE     License of CDM library
-NEWS        Release note
-README.md   This document
-doc/        Documents
-include/    header files
-src/        Source files
-tools/frm   File Rank Mapper
-tools/fconv File Converter
+AUTHORS          Contributors
+ChangeLog        History of development
+COPYING          Copyright
+INSTALL          Description of how to install
+LICENSE          License of CDM library
+NEWS             Release note
+README           This document
+README.md        Readme file
+BUILD_DIR/       Working directory
+config/          configuration files
+doc/             Documents
+example/         Example of usage
+include/         Header files
+src/             Source files
+tools/frm        File Rank Mapper
+tools/fconv      File Converter
+tools/netcdf2dfi DFI generator

@@ -11,6 +11,10 @@ REVISION HISTORY
 ================
 
 --------------------------
+2015-12-12
+modify a bug int tools/fconv/src/convMx1.C
+
+--------------------------
 2015-11-28
 modify assumed install directory from /usr/local/FFV to ~/FFV
 

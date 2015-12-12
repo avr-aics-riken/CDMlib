@@ -367,7 +367,8 @@ bool convMx1::exec()
       CDM::E_CDM_ARRAYSHAPE output_AShape = m_param->Get_OutputArrayShape();
 
       if( (output_AShape == CDM::E_CDM_NIJK || DFI_FInfo->NumVariables == 1) &&
-          (m_param->Get_OutputFormat() != CDM::E_CDM_FMT_VTK) ){  //VTKの出力はijknの方を使う
+          (m_param->Get_OutputFormat() != CDM::E_CDM_FMT_VTK) &&      //VTKの出力はijknの方を使う
+          (m_param->Get_OutputFormat() != CDM::E_CDM_FMT_NETCDF4) ){  //NetCDF4の出力はijknの方を使う
 
         //output nijk
         if( !convMx1_out_nijk(pFile,
