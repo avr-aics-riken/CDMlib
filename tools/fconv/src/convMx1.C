@@ -108,6 +108,10 @@ bool convMx1::exec()
   //dfi*stepのループ 
   for (int i=0;i<m_StepRankList.size();i++) {
 
+//20160422.fub.s
+    SetPrefixFileInfo(m_StepRankList[i].dfi,i);
+//20160422.fub.e
+
     const cdm_Domain* DFI_Domain = m_StepRankList[i].dfi->GetcdmDomain();
     cdm_Process* DFI_Process = (cdm_Process *)m_StepRankList[i].dfi->GetcdmProcess();
     //全体サイズのキープ
@@ -165,11 +169,19 @@ bool convMx1::exec()
     }
 
     //GRID データ 出力
-    const cdm_FileInfo* DFI_FInfo = m_StepRankList[i].dfi->GetcdmFileInfo();
+//20160422.fub.s
+  //const cdm_FileInfo* DFI_FInfo = m_StepRankList[i].dfi->GetcdmFileInfo();
+    cdm_FileInfo* DFI_FInfo = (cdm_FileInfo *)m_StepRankList[i].dfi->GetcdmFileInfo();
+//20160422.fub.e
     int sz[3];
     sz[0]=l_imax;
     sz[1]=l_jmax;
     sz[2]=l_kmax;
+
+//20160422.fub.s
+    cdm_FieldFileNameFormat * Ffformat =
+       (cdm_FieldFileNameFormat *)m_StepRankList[i].dfi->GetcdmFieldFileNameFormat();
+//20160422.fub.e
 
     //出力ガイドセルの設定
     int outGc=0;
@@ -208,6 +220,12 @@ bool convMx1::exec()
 
     const cdm_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcdmTimeSlice();
 
+//20160427.fub.s
+    CDM::E_CDM_FORMAT t_fmt=DFI_FInfo->FileFormat;
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_FUB ) {
+      DFI_FInfo->FileFormat = CDM::E_CDM_FMT_FUB;
+    }
+//20160427.fub.e
     // convOutputに情報をセット(NetCDF4用)
     ConvOut->m_pTSlice = TSlice;
     ConvOut->m_pFinfo  = DFI_FInfo;
@@ -245,7 +263,7 @@ bool convMx1::exec()
       
       LOG_OUTV_ fprintf(m_fplog,"\tstep = %d\n", l_step);
       STD_OUTV_ printf("\tstep = %d\n", l_step);
-      
+
       //連結出力ファイルオープン
       pFile = ConvOut->OutputFile_Open(prefix, l_step, 0, false);
 
@@ -406,6 +424,59 @@ bool convMx1::exec()
 
       } 
 
+//20160422.fub.s
+      cdm_DFI_FUB *dfi_fub = dynamic_cast<cdm_DFI_FUB*>(m_StepRankList[i].dfi);
+      FILE* xyz_fp = NULL;
+
+      //if( dfi_fub || m_param->Get_OutputFormat() == CDM::E_CDM_FMT_FUB )
+      if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_FUB )
+      {
+
+        //フィールドデータの変数の数等を退避しておく
+        int t_nval = DFI_FInfo->NumVariables;
+        CDM::E_CDM_FORMAT t_format = DFI_FInfo->FileFormat;
+        //変数を数を座標値データの数3にセットしなおす
+        DFI_FInfo->NumVariables = 3;
+        DFI_FInfo->FileFormat  = CDM::E_CDM_FMT_FUB_COD;
+        ConvOut->m_pFinfo = DFI_FInfo;
+        std::string cFname;
+        if( !Ffformat ) {
+          cFname = dfi_fub->getCoordinateFileName(infile);
+        } else {
+          cFname = Ffformat->GenerateFileName("CoordinateFile",DFI_FInfo->DirectoryPath,
+                                              l_step, DFI_Process->RankList[0].RankID);
+        }
+
+        //座標値データあるとき
+        if(  (xyz_fp=fopen(cFname.c_str(),"rb")) ){
+          fclose(xyz_fp);
+        }
+        if( xyz_fp || (xyz_fp == NULL && l_step == TSlice->SliceList[0].step )) {
+          //連結出力ファイルオープン
+          cdm_FILE *cFile = ConvOut->OutputFile_Open(prefix, l_step, 0, false);
+          //output IJKN
+          if( !convMx1_out_ijkn(cFile,
+                             inPath,
+                             l_step,
+                             l_dtime,
+                             d_type,
+                             mio,
+                             div,
+                             szS,
+                             //m_stepList[i].dfi,
+                             m_StepRankList[i].dfi,
+                             DFI_Process,
+                             mapHeadX,mapHeadY,mapHeadZ,
+                             min,max
+                             ) ) return false;
+        }
+        DFI_FInfo->NumVariables = t_nval;
+        DFI_FInfo->FileFormat  = t_format;
+        ConvOut->m_pFinfo = DFI_FInfo;
+      }
+
+//20160422.fub.e
+
       //dfiごとにminmaxを登録
       for(int ndfi = 0; ndfi<minmaxList.size(); ndfi++) {
         if( minmaxList[ndfi]->dfi != m_StepRankList[i].dfi ) continue;
@@ -426,6 +497,9 @@ bool convMx1::exec()
 
     }
 
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_FUB ) {
+      DFI_FInfo->FileFormat = t_fmt;
+    }
     //avsのヘッダーファイル出力
     if( i==0 ){
       ConvOut->output_avs(m_myRank,
@@ -990,20 +1064,67 @@ convMx1::convMx1_out_ijkn(cdm_FILE* pFile,
             l_rank=DFI_Process->RankList[RankID].RankID;
             //連結対象ファイル名の生成
             infile = CDM::cdmPath_ConnectPath(inPath,dfi->Generate_FieldFileName(l_rank,l_step,mio));
-            unsigned int avr_step;
-            double avr_time;
-            CDM::E_CDM_ERRORCODE ret;
-            //連結対象ファイルの読込み
-            cdm_Array* buf = dfi->ReadFieldData(infile, l_step, l_dtime,
-                                                read_sta, read_end,
-                                                DFI_Process->RankList[RankID].HeadIndex,
-                                                DFI_Process->RankList[RankID].TailIndex,
-                                                true, avr_step, avr_time, ret);
 
-            if( ret != CDM::E_CDM_SUCCESS ) {
-              printf("\tCan't Read Field Data Record %s\n",infile.c_str());
-              return false;
-            } 
+//20160425.fub.s
+            cdm_Array* buf=NULL;
+            FILE *xyz_fp;
+            if( (xyz_fp=fopen(infile.c_str(),"rb")) ) {
+              fclose(xyz_fp);
+//20160425.fub.e
+              unsigned int avr_step;
+              double avr_time;
+              CDM::E_CDM_ERRORCODE ret;
+              //連結対象ファイルの読込み
+              //cdm_Array* buf = dfi->ReadFieldData(infile, l_step, l_dtime,
+              buf = dfi->ReadFieldData(infile, l_step, l_dtime,
+                                       read_sta, read_end,
+                                       DFI_Process->RankList[RankID].HeadIndex,
+                                       DFI_Process->RankList[RankID].TailIndex,
+                                       true, avr_step, avr_time, ret);
+
+              if( ret != CDM::E_CDM_SUCCESS ) {
+                printf("\tCan't Read Field Data Record %s\n",infile.c_str());
+                return false;
+              } 
+//20160425.fub.s
+            } else {
+              int sz_xyz[3];
+              sz_xyz[0] = read_end[0]-read_sta[0]+1-2*outGc;
+              sz_xyz[1] = read_end[1]-read_sta[1]+1-2*outGc;
+              sz_xyz[2] = read_end[2]-read_sta[2]+1-2*outGc;
+
+              buf = cdm_Array::instanceArray
+               ( d_type
+               , m_param->Get_OutputArrayShape()
+               , sz_xyz
+               , outGc
+               , 3     );
+
+              if( d_type == CDM::E_CDM_FLOAT64 ) {
+                double *buf_p = (double *)buf->getData();
+
+                //座標値の生成
+                for(int k=0-outGc, kk=read_sta[2]; kk<=read_end[2]; k++, kk++ ) {
+                for(int j=0-outGc, jj=read_sta[1]; jj<=read_end[1]; j++, jj++ ) {
+                for(int i=0-outGc, ii=read_sta[0]; ii<=read_end[0]; i++, ii++ ) {
+                  buf_p[_CDM_IDX_IJKN(i,j,k,0,sz_xyz[0],sz_xyz[1],sz_xyz[2],outGc)] = DFI_Domain->CellX(ii-1);
+                  buf_p[_CDM_IDX_IJKN(i,j,k,1,sz_xyz[0],sz_xyz[1],sz_xyz[2],outGc)] = DFI_Domain->CellY(jj-1);
+                  buf_p[_CDM_IDX_IJKN(i,j,k,2,sz_xyz[0],sz_xyz[1],sz_xyz[2],outGc)] = DFI_Domain->CellZ(kk-1);
+                }}}
+              } else if( d_type == CDM::E_CDM_FLOAT32 ) {
+                float *buf_p = (float *)buf->getData();
+
+                //座標値の生成
+                for(int k=0-outGc, kk=read_sta[2]; kk<=read_end[2]; k++, kk++ ) {
+                for(int j=0-outGc, jj=read_sta[1]; jj<=read_end[1]; j++, jj++ ) {
+                for(int i=0-outGc, ii=read_sta[0]; ii<=read_end[0]; i++, ii++ ) {
+                  buf_p[_CDM_IDX_IJKN(i,j,k,0,sz_xyz[0],sz_xyz[1],sz_xyz[2],outGc)] = DFI_Domain->CellX(ii-1);
+                  buf_p[_CDM_IDX_IJKN(i,j,k,1,sz_xyz[0],sz_xyz[1],sz_xyz[2],outGc)] = DFI_Domain->CellY(jj-1);
+                  buf_p[_CDM_IDX_IJKN(i,j,k,2,sz_xyz[0],sz_xyz[1],sz_xyz[2],outGc)] = DFI_Domain->CellZ(kk-1);
+                }}}
+              }
+            }
+//20160425.fub.e
             //headIndexを０スタートにしてセット
             int headB[3];
             headB[0]=read_sta[0]-1;

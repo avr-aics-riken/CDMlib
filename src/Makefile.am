@@ -24,12 +24,15 @@ libCDM_a_SOURCES = \
     cdm_Domain.C \
     cdm_MPI.C \
     cdm_Process.C \
+    cdm_FieldFileNameFormatElem.C \
+    cdm_FieldFileNameFormat.C \
     cdm_DFI_BOV.C \
     cdm_DFI_SPH.C \
     cdm_DFI_AVS.C \
     cdm_DFI_PLOT3D.C \
     cdm_DFI_VTK.C \
     cdm_DFI_NETCDF.C \
+    cdm_DFI_FUB.C \
     cdm_DFI_Read.C \
     cdm_DFI_Write.C \
     cdm_TextParser.C \
@@ -52,12 +55,15 @@ CDM_include_HEADERS = \
     $(top_srcdir)/include/cdm_NonUniformDomain.h \
     $(top_srcdir)/include/cdm_MPI.h \
     $(top_srcdir)/include/cdm_Process.h \
+    $(top_srcdir)/include/cdm_FieldFileNameFormatElem.h \
+    $(top_srcdir)/include/cdm_FieldFileNameFormat.h \
     $(top_srcdir)/include/cdm_DFI_BOV.h \
     $(top_srcdir)/include/cdm_DFI_SPH.h \
     $(top_srcdir)/include/cdm_DFI_AVS.h \
     $(top_srcdir)/include/cdm_DFI_PLOT3D.h \
     $(top_srcdir)/include/cdm_DFI_VTK.h \
     $(top_srcdir)/include/cdm_DFI_NETCDF.h \
+    $(top_srcdir)/include/cdm_DFI_FUB.h \
     $(top_srcdir)/include/cdm_Define.h \
     $(top_srcdir)/include/cdm_Version.h \
     $(top_srcdir)/include/cdm_TextParser.h \

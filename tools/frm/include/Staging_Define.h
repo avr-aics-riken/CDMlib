@@ -42,6 +42,9 @@
 enum stg_ErrorCode
 {
   STG_SUCCESS                      = 0    ///<正常終了
+//20160407.fub.s
+, STG_ERROR_ILLEGAL_OPTION_C       = 10   ///< 無効な引数 -c　が指示された 
+//20160407.fub.e
 , STG_ERROR                        = 1000 ///< その他のエラー
 , STG_ERROR_MISMATCH_NP_SUBDOMAIN  = 3003 ///< 並列数とサブドメイン数が一致していない
 , STG_ERROR_OPEN_SBDM              = 3012 ///< ActiveSubdomainファイルのオープンに失敗

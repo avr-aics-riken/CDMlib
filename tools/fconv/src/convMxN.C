@@ -59,9 +59,16 @@ void convMxN::VoxelInit()
 
   //リージョンのセット
   double region[3];
+//20160512.fub.s
+/*
   for(int i=0; i<3; i++) {
     region[i] = DFI_Domain->NodeX(IndexEnd[i]) - DFI_Domain->NodeX(IndexStart[i]-1);
   }
+*/
+  region[0] = DFI_Domain->NodeX(IndexEnd[0]) - DFI_Domain->NodeX(IndexStart[0]-1);
+  region[1] = DFI_Domain->NodeY(IndexEnd[1]) - DFI_Domain->NodeY(IndexStart[1]-1);
+  region[2] = DFI_Domain->NodeZ(IndexEnd[2]) - DFI_Domain->NodeZ(IndexStart[2]-1);
+//20160512.fub.e
 
   //出力領域の分割数の取得
   int* Gdiv = m_param->Get_OutputDivision();
@@ -173,6 +180,9 @@ void convMxN::VoxelInit()
 
   //出力DFIの初期化
   for(int i=0; i<m_in_dfi.size(); i++) {
+//20160425.fub.s
+    SetPrefixFileInfo(m_in_dfi[i],i);
+//20160425.fub.e
     const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
 
     std::string outdfifname="";
@@ -539,6 +549,22 @@ bool convMxN::exec()
       //m_in_dfi[i]->GetNumVariables());
       nVari);
 
+//20160425.fub.s
+    //fubファイルのとき読み込み座標値バッファのインスタンス
+    cdm_FieldFileNameFormat * Ffformat =
+       (cdm_FieldFileNameFormat *)m_in_dfi[i]->GetcdmFieldFileNameFormat();
+    cdm_DFI_FUB *dfi_fub = dynamic_cast<cdm_DFI_FUB*>(m_in_dfi[i]);
+    cdm_Array * buf_xyz = NULL;
+    if( dfi_fub || m_param->Get_OutputFormat() == CDM::E_CDM_FMT_FUB ) {
+      buf_xyz = cdm_Array::instanceArray
+      ( m_in_dfi[i]->GetDataType(),
+        m_in_dfi[i]->GetArrayShape(),
+        sz,
+        outGc,
+        3);
+    }
+//20160425.fub.e
+
     //出力タイプのセット
     if( m_param->Get_OutputDataType() == CDM::E_CDM_DTYPE_UNKNOWN )
     {
@@ -557,14 +583,21 @@ bool convMxN::exec()
       outGc,
       //m_in_dfi[i]->GetNumVariables());
       nVari);
+
+//20160425.fub.s
+    cdm_Array* src_xyz = NULL;
+//20160425.fub.e
    
     //DFI_FInfoクラスの取得
-    const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
+//20160425.fub.s
+  //const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
+    cdm_FileInfo* DFI_FInfo = (cdm_FileInfo *)m_in_dfi[i]->GetcdmFileInfo();
+    const cdm_Domain* DFI_Domain = m_in_dfi[i]->GetcdmDomain();
+//20160425.fub.e
     prefix=DFI_FInfo->Prefix; 
 
     //TimeSliceクラスの取得
     const cdm_TimeSlice* TSlice = m_in_dfi[i]->GetcdmTimeSlice();
-
 
     //ステップ数のループ
     for ( int j=0; j<TSlice->SliceList.size(); j++ ) {
@@ -585,6 +618,80 @@ bool convMxN::exec()
         printf("ReadData Error\n");
         return false;
       }
+
+//20160425.fub.s
+      if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_FUB )
+      {
+
+        if( dfi_fub ) {
+          CDM::E_CDM_FORMAT t_fmt = DFI_FInfo->FileFormat;
+          DFI_FInfo->FileFormat = CDM::E_CDM_FMT_FUB_COD;
+          int t_val = DFI_FInfo->NumVariables;
+          DFI_FInfo->NumVariables = 3;
+
+          ret = m_in_dfi[i]->ReadData(buf_xyz,
+                                (unsigned)TSlice->SliceList[j].step,
+                                //0,
+                                outGc,
+                                m_Gvoxel,
+                                m_Gdiv,
+                                m_Head,
+                                m_Tail,
+                                rtime,
+                                true,
+                                idummy,
+                                ddummy);
+
+          DFI_FInfo->FileFormat = t_fmt;
+          DFI_FInfo->NumVariables = t_val;
+
+          src_xyz = NULL;
+
+          if( ret == CDM::E_CDM_SUCCESS ) {
+            //座標値出力バッファのインスタンス
+            src_xyz = cdm_Array::instanceArray
+            ( d_type,
+            m_param->Get_OutputArrayShape(),
+            szS,
+            outGc,
+            3);
+
+          }
+        }
+ 
+        if( src_xyz == NULL && j==0 ) {
+          //座標値出力バッファのインスタンス
+          src_xyz = cdm_Array::instanceArray
+          ( d_type,
+          m_param->Get_OutputArrayShape(),
+          szS,
+          outGc,
+          3);
+
+          if( d_type == CDM::E_CDM_FLOAT64 ) {
+            double *buf_p = (double *)buf_xyz->getData();
+            //座標値を計算する
+            for(int k=0-outGc, kk=m_Head[2]; kk<=m_Tail[2]; k++, kk++ ) {
+            for(int j=0-outGc, jj=m_Head[1]; jj<=m_Tail[1]; j++, jj++ ) {
+            for(int i=0-outGc, ii=m_Head[0]; ii<=m_Tail[0]; i++, ii++ ) {
+              buf_p[_CDM_IDX_IJKN(i,j,k,0,sz[0],sz[1],sz[2],outGc)] = DFI_Domain->CellX(ii-1);
+              buf_p[_CDM_IDX_IJKN(i,j,k,1,sz[0],sz[1],sz[2],outGc)] = DFI_Domain->CellY(jj-1);
+              buf_p[_CDM_IDX_IJKN(i,j,k,2,sz[0],sz[1],sz[2],outGc)] = DFI_Domain->CellZ(kk-1);
+            }}}
+          } else if( d_type == CDM::E_CDM_FLOAT32 ) {
+            float *buf_p = (float *)buf_xyz->getData();
+            //座標値を計算する
+            for(int k=0-outGc, kk=m_Head[2]; kk<=m_Tail[2]; k++, kk++ ) {
+            for(int j=0-outGc, jj=m_Head[1]; jj<=m_Tail[1]; j++, jj++ ) {
+            for(int i=0-outGc, ii=m_Head[0]; ii<=m_Tail[0]; i++, ii++ ) {
+              buf_p[_CDM_IDX_IJKN(i,j,k,0,sz[0],sz[1],sz[2],outGc)] = DFI_Domain->CellX(ii-1);
+              buf_p[_CDM_IDX_IJKN(i,j,k,1,sz[0],sz[1],sz[2],outGc)] = DFI_Domain->CellY(jj-1);
+              buf_p[_CDM_IDX_IJKN(i,j,k,2,sz[0],sz[1],sz[2],outGc)] = DFI_Domain->CellZ(kk-1);
+            }}}
+          }
+        }
+      }
+//20160425.fub.e
 
       //読込みバッファのheadIndexのセット
       int headB[3];
@@ -619,6 +726,11 @@ bool convMxN::exec()
         src->setHeadIndex( headS0 );
 
         for(int n=0; n<nVari; n++) convertXY(buf,src,headS,tailS,n);
+//20160425.s
+        if( src_xyz ) {
+          for(int n=0; n<3; n++) convertXY(buf_xyz,src_xyz,headS,tailS,n);
+        }
+//20160425.e
       }
 
       CDM::E_CDM_OUTPUT_FNAME output_fname = m_param->Get_OutputFilenameFormat();
@@ -673,8 +785,37 @@ bool convMxN::exec()
                                     ddummy);
 
 
+//20160425.fub.s
+      if( src_xyz ) {
+      //out DFI_FInfoクラスの取得
+//20160425.fub.s
+        cdm_FileInfo* out_DFI_FInfo = (cdm_FileInfo *)m_out_dfi[i]->GetcdmFileInfo();
+//20160425.fub.e
+        CDM::E_CDM_FORMAT t_fmt = out_DFI_FInfo->FileFormat;
+        out_DFI_FInfo->FileFormat = CDM::E_CDM_FMT_FUB_COD;
+        int t_val = out_DFI_FInfo->NumVariables;
+        out_DFI_FInfo->NumVariables = 3;
+
+        ret = m_out_dfi[i]->WriteData(
+                                      (unsigned)TSlice->SliceList[j].step,
+                                      outGc,
+                                      rtime,
+                                      src_xyz,
+                                      tmp_minmax,
+                                      true,
+                                      idummy,
+                                      ddummy);
+
+        out_DFI_FInfo->FileFormat = t_fmt;
+        out_DFI_FInfo->NumVariables = t_val;
+      }
+//20160425.fub.e
+
     } 
     delete src;
+//20160425.fub.s
+    if( src_xyz ) delete src_xyz;
+//20160425.fub.e
   }
 
   return true;

@@ -191,6 +191,9 @@ bool InputParam::Read(std::string input_file_name)
 #ifdef _WITH_NETCDF4_
       else if( !strcasecmp(str.c_str(), "netcdf4" ) )    m_out_format = CDM::E_CDM_FMT_NETCDF4;
 #endif
+//20160408.fub.s
+      else if( !strcasecmp(str.c_str(), "fub" ) )    m_out_format = CDM::E_CDM_FMT_FUB;
+//20160408.fub.e
       else
       {
         Hostonly_ stamped_printf("\tInvalid keyword is described for  '%s'\n", label.c_str());
@@ -531,6 +534,10 @@ bool InputParam::InputParamCheck()
   else if( m_out_format == CDM::E_CDM_FMT_PLOT3D ) m_outputArrayShape = CDM::E_CDM_IJKN;
   else if( m_out_format == CDM::E_CDM_FMT_BOV ) m_outputArrayShape = CDM::E_CDM_IJKN;
   else if( m_out_format == CDM::E_CDM_FMT_NETCDF4 ) m_outputArrayShape = CDM::E_CDM_IJKN;
+//20160411.fub.s
+  else if( m_out_format == CDM::E_CDM_FMT_FUB ) m_outputArrayShape = CDM::E_CDM_IJKN;
+  else if( m_out_format == CDM::E_CDM_FMT_FUB_COD ) m_outputArrayShape = CDM::E_CDM_IJKN;
+//20160411.fub.e
 
   //未対応のデータ型への変換チェック
   if( m_output_data_type != CDM::E_CDM_DTYPE_UNKNOWN ) {
@@ -564,7 +571,11 @@ bool InputParam::InputParamCheck()
     if( m_out_format != CDM::E_CDM_FMT_SPH     &&
         m_out_format != CDM::E_CDM_FMT_BOV     &&
         m_out_format != CDM::E_CDM_FMT_PLOT3D  &&
-        m_out_format != CDM::E_CDM_FMT_NETCDF4 ) {
+//20160411.fub.s
+//      m_out_format != CDM::E_CDM_FMT_NETCDF4 ) {
+        m_out_format != CDM::E_CDM_FMT_NETCDF4 && 
+        m_out_format != CDM::E_CDM_FMT_FUB     && 
+        m_out_format != CDM::E_CDM_FMT_FUB_COD ) {
       printf("\tCan't output dfi OutputFormat. %s\n",Get_OutputFormat_string().c_str());
       ierr=false;
     }
@@ -666,6 +677,12 @@ void InputParam::PrintParam(FILE* fp)
      fprintf(fp,"\tOutputFormat         : \"vtk\"\n");
    }else if( m_out_format == CDM::E_CDM_FMT_NETCDF4 ) {
      fprintf(fp,"\tOutputFormat         : \"NetCDF4\"\n");
+//20160411.fub.s
+   }else if( m_out_format == CDM::E_CDM_FMT_FUB     ) {
+     fprintf(fp,"\tOutputFormat         : \"fub\"\n");
+   }else if( m_out_format == CDM::E_CDM_FMT_FUB_COD ) {
+     fprintf(fp,"\tOutputFormat         : \"fub\"\n");
+//20160411.fub.e
    }else {
      Exit(0);
    }

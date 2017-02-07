@@ -140,7 +140,12 @@ bool convOutput_NETCDF::WriteHeaderRecord(
   // 出力用の情報
   int VoxelSize[3] ={imax, jmax, kmax};
   int GuideCell = 0;
-  CDM::E_CDM_DTYPE DataType = m_InputCntl->Get_OutputDataType();
+
+//20160509,fub.s
+//CDM::E_CDM_DTYPE DataType = m_InputCntl->Get_OutputDataType();
+  CDM::E_CDM_DTYPE DataType = out_type;
+//20160509.fub.e
+
   vector<string> VariableName;
   for( int i=0;i<m_pFinfo->VariableName.size();i++ )
   {

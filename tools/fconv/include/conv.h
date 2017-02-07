@@ -231,6 +231,14 @@ public:
   virtual
   bool exec()=0;  
 
+//20160422.fub.s
+  /**
+   * @brief Prefixが空白のとき、Prefixをセット（fubファイル用)
+   * @param[in] dfi  dfiのポインター
+   * @param[in] ndfi dfiのカウンター
+   */ 
+  void SetPrefixFileInfo(cdm_DFI* dfi, int ndfi);
+//20160422.fub.e
   /**
    * @brief step番号からtimeを取得
    * @param[in] dfi dfiのポインター

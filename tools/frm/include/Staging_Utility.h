@@ -62,6 +62,9 @@ public:
 
   /** コンストラクタ **/
   Staging(){
+//20160407.fub.s
+    m_CoordinateStep=-1;
+//20160407.fub.e
     m_infofile="";
     m_fconvfile="";
     m_fconv_numproc=1;
@@ -86,7 +89,10 @@ public:
   //cdm_DFI *DFI;
   vector<cdm_DFI *> DFI;
 
-  const cdm_FileInfo  *dfi_Finfo;   ///< DFI cdm_FileInfoのポインタ
+//20160408.fub.s
+//const cdm_FileInfo  *dfi_Finfo;   ///< DFI cdm_FileInfoのポインタ
+        cdm_FileInfo  *dfi_Finfo;   ///< DFI cdm_FileInfoのポインタ
+//20160408.fub.e
   const cdm_FilePath  *dfi_Fpath;   ///< DFI cdm_FilePathのポインタ
   const cdm_VisIt     *dfi_Visit;   ///< DFI cdm_VisItのポインタ
   const cdm_Unit      *dfi_Unit;    ///< DFI cdm_Unitのポインタ
@@ -97,6 +103,9 @@ public:
         cdm_Process   *dfi_Process; ///< DFI cdm_Processのポインタ
 
   int m_step;                   ///< Restart step番号
+//20160407.fub.s
+  int m_CoordinateStep;         ///< コピーする座標値ファイルのステップ番号
+//20160407.fub.e
   string m_inPath;              ///< DFIディレクトリ
   string m_outPath;             ///< 出力ディレクトリ
   string m_infofile;            ///< Staging用procファイル名
@@ -134,6 +143,18 @@ public:
 
 public:
 
+//20160407.fub.s
+  /** 引数にエラーチェック
+   * @ retval 終了コード(STG_SUCCESS=正常終了)
+   */ 
+  stg_ErrorCode ArgErrorCheck();
+
+  /** fubフィルコピー（フィールドデータファイルと座標値データファイルコピー
+   *
+   */
+  void FubFileCopy(int readRankID, int step, const bool mio,
+                   std::string path2, cdm_DFI *dfi, char *cmd); 
+//20160407.fub.e
   /** 初期化、ファイルの読込み
    * @param[in] infofname ステージング用procファイル名 
    * @retval    true  ファイル読込み成功
@@ -317,31 +338,49 @@ public:
   /** ファイルをステージング用のディレクトリにコピー
    * @param [in] readRankList 読込みランクリスト
    * @param [in] myRank 処理するランク番号 
+   * @param [in] 処理するindex.dfiのポインタ(fub用追加)
    * @retval true  正常終了
    * @retval false エラー
    */
-  bool FileCopy(vector<int> readRankList, int myRank);
+// 20160407.fub.s
+//bool FileCopy(vector<int> readRankList, int myRank);
+  bool FileCopy(vector<int> readRankList, int myRank, cdm_DFI *dfi);
+// 20160407.fub.e
 
   /** ファイルをステージング用のディレクトリにコピー(FCONV用)
-   * @param [in] myRank 処理するランク番号 
    * @param [in] info 処理リスト
+   * @param [in] myRank 処理するランク番号 
+   * @param [in] ndfi 処理するDFI通番
    * @retval true  正常終了
    * @retval false エラー
    */
-  bool FileCopy(step_rank_info info, int myRank);
+//20160509.fub.s
+//bool FileCopy(step_rank_info info, int myRank);
+  bool FileCopy(step_rank_info info, int myRanki, int ndfi);
+//20160509.fub.e
 
   /** dfi ファイル出力
-   * @param [in] DFIファイル名
+   * @param [in] fname DFIファイル名
+   * @param [in] rankMap ランクマップ
+   * @param [in] dfi 処理しているdfiポインター
    * @retval true  正常終了
    * @retval false エラー
    */
-  bool OutputDFI(string fname, int* rankMap);
+//20160408.fub.s
+//bool OutputDFI(string fname, int* rankMap);
+  bool OutputDFI(string fname, int* rankMap, cdm_DFI* dfi);
+//20160408.fub.e
 
   /** index.dfiファイルの生成、出力
    * @param [in] dfi_name index dfi ファイル名
+   * @param [in] dfi 処理しているdfiポインター
    */ 
+//20160408.fub.s
+//CDM::E_CDM_ERRORCODE
+//WriteIndexDfiFile(const std::string dfi_name);
   CDM::E_CDM_ERRORCODE
-  WriteIndexDfiFile(const std::string dfi_name);
+  WriteIndexDfiFile(const std::string dfi_name, cdm_DFI *dfi);
+//20160408.fub.e
  
   /** index.dfiファイルの生成、出力（FCONV用）
    * @param [in] dfi_name index dfi ファイル名

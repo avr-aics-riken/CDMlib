@@ -25,6 +25,9 @@
 //20150918.NetCDF.s
 #include "cdm_DFI_NETCDF.h"
 //20150918.NetCDF.e
+//20160328.fub.s
+#include "cdm_DFI_FUB.h"
+//20160328.fub.e
 #include "cdm_NonUniformDomain.h"
 
 // #################################################################
@@ -233,6 +236,40 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   }
 #endif
 //20150918.NetCDF.e
+//20160328.fub.s
+  else if( F_info.FileFormat == CDM::E_CDM_FMT_FUB )
+  {
+    tpCntl.readTPfile(DfiName);
+    cdm_DFI_FUB *dfi_fub = new cdm_DFI_FUB(F_info, F_path, visit, unit, domain, mpi, TimeSlice, process);
+
+    cdm_FieldFileNameFormat FFFormat;
+    if( FFFormat.Read(tpCntl) != CDM::E_CDM_SUCCESS ) {
+      if( F_info.Prefix.empty() ) {
+        delete dfi_fub;
+        tpCntl.remove();
+        printf("\tFileList Data Read error %s\n",DfiName.c_str());
+        ret = CDM::E_CDM_ERROR_READ_DFI_FILELIST;
+        return NULL;
+      }
+    }
+    dfi_fub->DFI_FieldFileNameFormat = FFFormat; 
+
+/*
+    if( dfi_fub->readFileListTP(tpCntl) != CDM::E_CDM_SUCCESS )
+    {
+      if( F_info.Prefix.empty() ) {
+        delete dfi_fub;
+        tpCntl.remove();
+        printf("\tFileList Data Read error %s\n",DfiName.c_str());
+        ret = CDM::E_CDM_ERROR_READ_DFI_FILELIST;
+        return NULL;
+      }
+    }
+*/
+    tpCntl.remove();
+    dfi = dfi_fub;
+  }
+//20160228.fub.e
   else
   {
     return NULL;
@@ -271,6 +308,13 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
 
   return dfi;
 
+}
+
+// #################################################################
+void
+cdm_DFI::SetcdmFileInfo(cdm_FileInfo FInfo)
+{
+  DFI_Finfo = FInfo;
 }
 
 // #################################################################
@@ -451,6 +495,10 @@ std::string cdm_DFI::GetFileFormatString()
 //20150918.NetCDF.s
   if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_NETCDF4 ) return "NetCDF4";
 //20150918.NetCDF.e
+//20160401.fub.s
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_FUB ) return "fub";
+  if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_FUB_COD ) return "fub_cod";
+//20160401.fub.e
   return "";
 }
 
@@ -723,8 +771,10 @@ std::string cdm_DFI::Generate_FieldFileName(int RankID,
                                        const bool mio)
 {
 
-  if( DFI_Finfo.DirectoryPath.empty() ) return NULL;
-  if( DFI_Finfo.Prefix.empty() ) return NULL;
+//20160329.fub.s
+  //if( DFI_Finfo.DirectoryPath.empty() ) return NULL;
+  //if( DFI_Finfo.Prefix.empty() ) return NULL;
+//20160329.fub.e
 
   std::string fmt;
   if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_SPH ) {
@@ -744,7 +794,40 @@ std::string cdm_DFI::Generate_FieldFileName(int RankID,
   } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_NETCDF4 ) {
     fmt=D_CDM_EXT_NC;
 //20150918.NetCDF.e
+//20160329.fub.s
+  } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_FUB ) {
+    fmt=D_CDM_EXT_FUB;
+    //FieldFileNameFormatのポインタ取得
+    cdm_FieldFileNameFormat* Ffformat = (cdm_FieldFileNameFormat *)GetcdmFieldFileNameFormat();
+    if( Ffformat ) {
+      std::string tmp = Ffformat->GenerateFileName("FieldFile",
+                        DFI_Finfo.DirectoryPath, step, RankID);
+      if( !tmp.empty() ) {
+        return tmp;
+      }
+    }
+  } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_FUB_COD ) {
+    fmt=D_CDM_EXT_XYZ;
+    //FieldFileNameFormatのポインタ取得
+    cdm_FieldFileNameFormat* Ffformat = (cdm_FieldFileNameFormat *)GetcdmFieldFileNameFormat();
+    if( Ffformat ) {
+      std::string tmp = Ffformat->GenerateFileName("CoordinateFile",
+                        DFI_Finfo.DirectoryPath, step, RankID);;
+      if( !tmp.empty() ) {
+        return tmp;
+      }
+    }
+//20160329.fub.e
   }
+
+//20160329.fub.s
+  if( fmt != D_CDM_EXT_FUB ) {
+    if( DFI_Finfo.DirectoryPath.empty() ) return "";
+    if( DFI_Finfo.Prefix.empty() ) return "";
+//  } else {
+//    if( DFI_Finfo.Prefix.empty() ) return getFieldDataFileName(RankID);  
+  }
+//20160329.fub.e
 
 #if 0
   int len = DFI_Finfo.DirectoryPath.size() + DFI_Finfo.Prefix.size() + fmt.size() + 25; 

@@ -17,6 +17,120 @@
 #include <stdlib.h>
 #include "Staging_Utility.h"
 
+//20160407.fub.s
+//////////////////////////////////////////////////////////////////
+//引数のエラーチェック
+stg_ErrorCode
+Staging::ArgErrorCheck()
+{
+
+  if( m_step < 0 && m_CoordinateStep >= 0 ) {
+    printf("ERROR input option -c : %d\n",m_CoordinateStep);
+    return STG_ERROR_ILLEGAL_OPTION_C;
+  }
+
+  return STG_SUCCESS;
+}
+
+//////////////////////////////////////////////////////////////////
+// fubフィルコピー（フィールドデータファイルと座標値データファイルコピー
+void Staging::FubFileCopy(int readRankID, int step, const bool mio,
+                          std::string path2, cdm_DFI *dfi, char *cmd)
+{
+
+  cdm_DFI_FUB *dfi_fub = dynamic_cast<cdm_DFI_FUB*>(dfi);
+  
+/*
+  //FileListからのファイル名取得
+  std::string fname = dfi_fub->getFileNameFromFileList(readRankID);
+*/
+  cdm_FieldFileNameFormat* 
+  Ffformat = (cdm_FieldFileNameFormat *)dfi->GetcdmFieldFileNameFormat();
+
+  std::string fname = "";
+  if( Ffformat ) {
+     fname = Ffformat->GenerateFileName("FieldFile","",step,readRankID);
+  }
+
+  //FileListから取得したファイル名がディレクトリ付のとき、ディレクトリ名取得
+  std::string fname_Path="";
+  if( !fname.empty() ) {
+    fname_Path = CDM::cdmPath_DirName(fname);
+    if( !fname_Path.empty() ) {
+      std::string::size_type pos = fname_Path.find("/");
+      if( pos < 2 ) fname_Path.erase(0,pos+1); 
+      pos = fname_Path.find("/");
+      if( (int)pos < 0 || pos < fname_Path.size()-1 ) fname_Path += "/";
+      MakeDirectory(path2+fname_Path);
+    }
+  }
+
+  std::string Ffname;
+  //FileListがないときはファイル名を生成
+  if( fname.empty() ) {
+    Ffname = CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(readRankID,step,mio));
+  } else {
+    if( dfi_Finfo->DirectoryPath.empty() ) {
+      Ffname = fname;
+    } else {
+      Ffname = dfi_Finfo->DirectoryPath + "/" + fname;
+    }
+  }
+   
+  //フィールドデータファイルのコピーコマンド生成と実行
+  memset(cmd, 0, sizeof(char)*512 );
+  sprintf(cmd,"cp %s %s%s\n",Ffname.c_str(),path2.c_str(),fname_Path.c_str());
+  system(cmd); 
+
+  //Coordenate data file名の取得
+  std::string Cfname, OutCfname;
+  OutCfname="";
+  //if( m_step < 0 || dfi_Finfo->FieldFilenameFormat == CDM::E_CDM_FNAME_CUSTOM ) {
+  if( m_step < 0 ) {
+    if( fname.empty() ) {
+      Cfname = dfi_fub->getCoordinateFileName(Ffname);
+    } else {
+      Cfname = Ffformat->GenerateFileName("CoordinateFile",dfi_Finfo->DirectoryPath,
+                                          step,readRankID);
+    }
+  } else if( m_CoordinateStep >= 0 && fname.empty() ) {
+    Ffname = CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(readRankID,m_CoordinateStep,mio));
+    Cfname = dfi_fub->getCoordinateFileName(Ffname);
+    Ffname = CDM::cdmPath_FileName(Generate_FileName(readRankID,step,mio));
+    OutCfname = dfi_fub->getCoordinateFileName(Ffname);
+  } else {
+    if( fname.empty() ) {
+      Cfname = CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(readRankID,step,mio));
+    } else {
+      if( m_CoordinateStep < 0 ) {
+        Cfname = Ffformat->GenerateFileName("CoordinateFile",dfi_Finfo->DirectoryPath,
+                                            step,readRankID);
+      } else {
+        Cfname = Ffformat->GenerateFileName("CoordinateFile",dfi_Finfo->DirectoryPath,
+                                            m_CoordinateStep,readRankID);
+        OutCfname = Ffformat->GenerateFileName("CoordinateFile","",
+                                            step,readRankID);
+      }
+    }
+  }
+
+  //座標値データファイルのコピーコマンド生成と実行
+  FILE *tmp_fp;
+  if( (tmp_fp=fopen(Cfname.c_str(), "rb")) ) {
+    fclose(tmp_fp);
+    memset(cmd, 0, sizeof(char)*512 );
+    sprintf(cmd,"cp %s %s%s%s\n",Cfname.c_str(),path2.c_str(), fname_Path.c_str()
+           ,OutCfname.c_str());
+    system(cmd);
+  } else if( m_step>=0 ) {
+    printf("Error undefined Coordinate data file : %s\n",Cfname.c_str());
+  }
+
+  return;
+
+}  
+//20160407.fub.e
+
 ///////////////////////////////////////////////////////////////////
 // 初期化、ファイルの読込み
 //bool Staging::Initial( string infofile, string dfiname )
@@ -473,6 +587,9 @@ void Staging::makeStepList(int myID)
     info.stepStart = -1;
     const cdm_TimeSlice* TSlice = DFI[i]->GetcdmTimeSlice();
     for(int j=0; j<TSlice->SliceList.size(); j++) {
+//20160510.fub.s
+      if( m_step >= 0 && TSlice->SliceList[j].step != m_step ) continue;
+//20160510.fub.e
       if( sta > cnt ) { cnt++; continue; }
       if( info.stepStart == -1 ) {
         info.dfi = DFI[i];
@@ -551,7 +668,6 @@ void Staging::makeRankList(int myID)
     const cdm_TimeSlice* TSlice = m_StepRankList[i].dfi->GetcdmTimeSlice();
     m_StepRankList[i].stepStart=0;
     m_StepRankList[i].stepEnd=TSlice->SliceList.size()-1;
-
   }
   //printf("myID : %d nRank : %d sta : %d end : %d m_StepRankList.size : %d\n",
   //        myID,nRank,sta,end,(int)m_StepRankList.size());
@@ -1255,7 +1371,7 @@ stg_EGlobalVoxel Staging::CheckGlobalVoxel(int Gvoxel[3], int DFI_Gvoxel[3])
 
 ///////////////////////////////////////////////////////////////////
 // ファイルコピー
-bool Staging::FileCopy(vector<int>readRankList, int myRank)
+bool Staging::FileCopy(vector<int>readRankList, int myRank, cdm_DFI *dfi)
 {
 
   bool mio;
@@ -1290,11 +1406,22 @@ bool Staging::FileCopy(vector<int>readRankList, int myRank)
       } else {
         path2 = path;
       }
-    
-      fname_dfi = CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(readRankList[i],ostep,mio)); 
-      memset(cmd, 0, sizeof(char)*512 );
-      sprintf(cmd,"cp %s %s\n",fname_dfi.c_str(),path2.c_str());
-      system(cmd);
+
+//20160407.fub.s
+      if( dfi_Finfo->FileFormat != CDM::E_CDM_FMT_FUB ) {
+//20160407.fub.e    
+        fname_dfi = CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(readRankList[i],ostep,mio)); 
+        memset(cmd, 0, sizeof(char)*512 );
+        sprintf(cmd,"cp %s %s\n",fname_dfi.c_str(),path2.c_str());
+        system(cmd);
+//20160406.fub.s
+      } else if ( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_FUB ) {
+      //FubFileCopy(readRankList[i],ostep,mio,path2,dfi,cmd);
+        FubFileCopy(dfi_Process->RankList[readRankList[i]].RankID,
+                    ostep,mio,path2,dfi,cmd);
+      }
+//20160406.fub.e
+
     //出力指定なし
     }else if( ostep<0 ) {
       for(int j=0; j<dfi_TSlice->SliceList.size(); j++) {
@@ -1307,10 +1434,21 @@ bool Staging::FileCopy(vector<int>readRankList, int myRank)
         } else {
           path2 = path;
         }
-        fname_dfi = CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(readRankList[i],step,mio)); 
-        memset(cmd, 0, sizeof(char)*512 );
-        sprintf(cmd,"cp %s %s\n",fname_dfi.c_str(),path2.c_str());
-        system(cmd);
+
+//20160407.fub.s
+        if( dfi_Finfo->FileFormat != CDM::E_CDM_FMT_FUB ) {
+//20160407.fub.e
+          fname_dfi = CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(readRankList[i],step,mio)); 
+          memset(cmd, 0, sizeof(char)*512 );
+          sprintf(cmd,"cp %s %s\n",fname_dfi.c_str(),path2.c_str());
+          system(cmd);
+//20160406.fub.s
+        } else if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_FUB ) {
+        //FubFileCopy(readRankList[i],step,mio,path2,dfi,cmd);
+          FubFileCopy(dfi_Process->RankList[readRankList[i]].RankID,
+                      step,mio,path2,dfi,cmd);
+        }
+//20160406.fub.e
       }
     }
   }
@@ -1327,11 +1465,17 @@ bool Staging::FileCopy(vector<int>readRankList, int myRank)
 
 ///////////////////////////////////////////////////////////////////
 // ファイルコピー(FCONV用)
-bool Staging::FileCopy(step_rank_info info, int myRank)
+//20160509.fub.s
+//bool Staging::FileCopy(step_rank_info info, int myRank)
+bool Staging::FileCopy(step_rank_info info, int myRank, int ndfi)
+//20160509.fub.e
 {
 
   dfi_Process = (cdm_Process *)info.dfi->GetcdmProcess();
-  dfi_Finfo   = info.dfi->GetcdmFileInfo();
+//20160408.fub.s
+//dfi_Finfo   = info.dfi->GetcdmFileInfo();
+  dfi_Finfo   = (cdm_FileInfo *)info.dfi->GetcdmFileInfo();
+//20160408.fub.e
   dfi_TSlice  = info.dfi->GetcdmTimeSlice();
   dfi_Fpath   = info.dfi->GetcdmFilePath();
   dfi_Visit   = info.dfi->GetcdmVisIt();
@@ -1411,14 +1555,30 @@ bool Staging::FileCopy(step_rank_info info, int myRank)
       if( CropStart[2] > dfi_Process->RankList[j].TailIndex[2] ||
           CropEnd[2]   < dfi_Process->RankList[j].HeadIndex[2] ) continue;
 
-      fname=CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(j,step,mio));
-      memset(cmd, 0, sizeof(char)*512 );
-      sprintf(cmd,"cp %s %s\n",fname.c_str(),path2.c_str());
-      system(cmd);
+//20160509.fub.s
+      if( dfi_Finfo->FileFormat != CDM::E_CDM_FMT_FUB ) {
+//20160509.fub.e
+        fname=CDM::cdmPath_ConnectPath(m_inPath,Generate_FileName(j,step,mio));
+        memset(cmd, 0, sizeof(char)*512 );
+        sprintf(cmd,"cp %s %s\n",fname.c_str(),path2.c_str());
+        system(cmd);
+//20160509.fub.s
+      } else {
+        FubFileCopy(dfi_Process->RankList[j].RankID,step,mio,path2,info.dfi,
+                    cmd); 
+      }
+//20160509.fub.e
     }
   }
 
   //proc.dfiのコピー
+//20160509.fub.s
+  if( dfi_Finfo->Prefix.empty() ) {
+    char prefix[128];
+    sprintf(prefix,"dfi%d",ndfi);
+    dfi_Finfo->Prefix = prefix;
+  }
+//20160509.fub.e
   memset(cmd, 0, sizeof(char)*512 );
   string procfname = CDM::cdmPath_ConnectPath(m_inPath,dfi_Fpath->ProcDFIFile);
   sprintf(cmd,"cp %s %s/%s_proc.dfi\n",procfname.c_str(),path.c_str(),
@@ -1436,7 +1596,7 @@ bool Staging::FileCopy(step_rank_info info, int myRank)
 
 ///////////////////////////////////////////////////////////////////
 // dfiファイル出力
-bool Staging::OutputDFI(string fname, int* rankMap)
+bool Staging::OutputDFI(string fname, int* rankMap, cdm_DFI *dfi)
 {
   if( m_outPath == "" ) m_outPath="./";
   int len = m_outPath.size()+7;
@@ -1462,7 +1622,7 @@ bool Staging::OutputDFI(string fname, int* rankMap)
 
     string DfiName = path+CDM::cdmPath_FileName(fname,".dfi");
 
-    WriteIndexDfiFile(DfiName);
+    WriteIndexDfiFile(DfiName, dfi);
 
   }}}
 
@@ -1485,6 +1645,10 @@ std::string Staging::Generate_FileName(int RankID, int step, const bool mio)
   } else if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_NETCDF4 ) {
     fmt=D_CDM_EXT_NC;
 //20150918.NetCDF.e
+//20160406.fub.s
+  } else if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_FUB ) {
+    fmt=D_CDM_EXT_FUB;
+//20160406.fub.e
   }
 
 #if 0
@@ -1617,7 +1781,7 @@ std::string Staging::Generate_Directory_Path()
 // #################################################################
 // Index DFIファイルの出力
 CDM::E_CDM_ERRORCODE
-Staging::WriteIndexDfiFile(const std::string dfi_name)
+Staging::WriteIndexDfiFile(const std::string dfi_name, cdm_DFI *dfi)
 {
   if ( dfi_name.empty() ) return CDM::E_CDM_ERROR_WRITE_INDEXFILENAME_EMPTY;
   if ( dfi_Finfo->Prefix.empty() ) return CDM::E_CDM_ERROR_WRITE_PREFIX_EMPTY;
@@ -1721,6 +1885,20 @@ Staging::WriteIndexDfiFile(const std::string dfi_name)
     return CDM::E_CDM_ERROR_WRITE_TIMESLICE;
   }
 
+/*
+  //FileListの出力
+  if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_FUB ) {
+    cdm_DFI_FUB *dfi_fub = dynamic_cast<cdm_DFI_FUB*>(dfi);
+    return dfi_fub->WriteFileList(fp, 1);
+  }
+*/
+  //FieldFileNameFormatの出力
+  if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_FUB ) { 
+    cdm_FieldFileNameFormat* Ffformat = 
+        (cdm_FieldFileNameFormat *)dfi->GetcdmFieldFileNameFormat();
+    if( Ffformat ) Ffformat->Write(fp, 1);
+  }
+
   return CDM::E_CDM_SUCCESS;
 
 }
@@ -1789,16 +1967,45 @@ Staging::WriteIndexDfiFile(const std::string dfi_name, const step_rank_info info
   //TimeSlice {} の出力
   cdm_TimeSlice *t_Slice = new cdm_TimeSlice();
   int nsize = dfi_Finfo->NumVariables;
+
+//20160510.fub.s
+/*
+  if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_SPH && dfi_Finfo->NumVariables > 1 )
+  {
+    nsize++;
+  }
+*/
+//20160510.fub.e
+
   double* minmax = new double[nsize*2];
   for(int i=info.stepStart; i<=info.stepEnd; i++) {
     int step = dfi_TSlice->SliceList[i].step;
-    for(int n=0; n<nsize; n++) {
-      minmax[n*2+0] = dfi_TSlice->SliceList[i].Min[n];
-      minmax[n*2+1] = dfi_TSlice->SliceList[i].Max[n];
+
+//20160510.fub.s
+    //if( m_step >= 0 && m_step != step ) continue;
+
+    double* ominmax = minmax;
+    if( dfi_TSlice->SliceList[i].Min.size() != nsize ||
+        dfi_TSlice->SliceList[i].Max.size() != nsize ) {
+      ominmax = NULL;  
+    } else {
+//20160510.fub.e
+
+      for(int n=0; n<nsize; n++) {
+        minmax[n*2+0] = dfi_TSlice->SliceList[i].Min[n];
+        minmax[n*2+1] = dfi_TSlice->SliceList[i].Max[n];
+      }
+
+//20160510.fub.s
     }
+//20160510.fub.e
+
     t_Slice->AddSlice(step,
                       dfi_TSlice->SliceList[i].time,
-                      minmax,
+//20160510.fub.s
+                    //minmax,
+                      ominmax,
+//20160510.fub.e
                       dfi_Finfo->NumVariables,
                       dfi_Finfo->FileFormat,
                       dfi_TSlice->SliceList[i].avr_mode,
@@ -1810,6 +2017,17 @@ Staging::WriteIndexDfiFile(const std::string dfi_name, const step_rank_info info
     fclose(fp);
     return CDM::E_CDM_ERROR_WRITE_TIMESLICE;
   }
+
+//20160510.fub.s
+//FieldFileNameFormatの出力
+  if( dfi_Finfo->FileFormat == CDM::E_CDM_FMT_FUB )
+  {
+    cdm_FieldFileNameFormat* Ffformat =
+       (cdm_FieldFileNameFormat *)info.dfi->GetcdmFieldFileNameFormat();
+    if( Ffformat ) Ffformat->Write(fp,1);
+  }
+//20160510.fub.e
+
   return CDM::E_CDM_SUCCESS;
 }
 

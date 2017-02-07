@@ -31,6 +31,11 @@
 //20150918.NetCDF.s
 #define D_CDM_EXT_NC  "nc"
 //20150918.NetCDF.e
+//20160329.fub.s
+#define D_CDM_EXT_FUB "fub"
+#define D_CDM_EXT_XYZ "xyz"
+//20160329.fub.e
+
 
 #define D_CDM_EXT_BOV_DATAFILE "dat"
 
@@ -88,6 +93,10 @@ namespace CDM
 //20150918.NetCDF.s
     E_CDM_FMT_NETCDF4,       ///< NetCDF4(/w HDF5) format
 //20150918.NetCDF.e
+//20160328.fub.s
+    E_CDM_FMT_FUB,           ///< upacs fub field data format
+    E_CDM_FMT_FUB_COD,       ///< upacs fub coordinate data format
+//20160328.fub.e
   };
 
 /** スイッチ on or off */
@@ -154,7 +163,11 @@ namespace CDM
     E_CDM_FNAME_DEFAULT=-1,  ///<出力ファイル命名規約デフォルト(step_rank)
     E_CDM_FNAME_STEP_RANK=0, ///<step_rank
     E_CDM_FNAME_RANK_STEP,   ///<rank_step
-    E_CDM_FNAME_RANK         ///<rank(NetCDFのみ)
+//20160418.fub.s
+  //E_CDM_FNAME_RANK         ///<rank(NetCDFのみ)
+    E_CDM_FNAME_RANK,        ///<rank(NetCDF,fubのみ)
+    E_CDM_FNAME_CUSTOM       ///<FieldFileNameFormatに指示あり
+//20160418.fub.e
   };
 
 /** CDMのエラーコード */
@@ -211,6 +224,13 @@ namespace CDM
 ,   E_CDM_ERROR_READ_DFI_NETCDF                  = 1060 ///< NetCDF読込みエラー
 ,   E_CDM_ERROR_READ_NETCDF_MISMATCH_TYPE        = 1061 ///< DFIとNetCDFのデータ型の不一致エラー
 //20150918.NetCDF.e
+//20160329.fub.s
+,   E_CDM_ERROR_READ_FILELIST_ID                 = 1062 ///< FileListのID読み込みエラー
+,   E_CDM_ERROR_READ_FILELIST_CCORDINATEFILENAME = 1063 ///< FileListのCoordinateFileName読み込みエラー
+,   E_CDM_ERROR_READ_FILELIST_FIELDDATAFILENAME  = 1064 ///< FileListのFieldDataFileName読み込みエラー
+//20160329.fub.e
+//20160419.fub.s
+,   E_CDM_ERROR_UNDEFINED_FIELDFILENAMEFORMAT    = 1065 ///< FieldFileNameFormatがない
 ,   E_CDM_ERROR_READ_FIELDDATA_FILE              = 1900 ///< フィールドデータファイル読込みエラー
 ,   E_CDM_ERROR_READ_SPH_FILE                    = 2000 ///< SPHファイル読込みエラー
 ,   E_CDM_ERROR_READ_SPH_REC1                    = 2001 ///< SPHファイルレコード1読込みエラー
@@ -228,11 +248,16 @@ namespace CDM
 ,   E_CDM_ERROR_READ_FIELD_HEADER_RECORD         = 2102 ///< フィールドヘッダーレコード読込み失敗
 ,   E_CDM_ERROR_READ_FIELD_DATA_RECORD           = 2103 ///< フィールドデータレコード読込み失敗
 ,   E_CDM_ERROR_READ_FIELD_AVERAGED_RECORD       = 2104 ///< フィールドAverage読込み失敗
+,   E_CDM_ERROR_READ_DFI_FILELIST                = 2105 ///< FileList読み込み失敗
 //,   E_CDM_ERROR_DATATYPE                         = 2500 ///< DataType error
 //20150918.NetCDF.s
 ,   E_CDM_ERROR_READ_NETCDF_FUNC                 = 2200 ///< NetCDFのnc関数でエラー
 ,   E_CDM_ERROR_READ_NETCDF_VAR_1D               = 2201 ///< NetCDFの1次元配列として読み込むvariableが1次元で無い
 //20150918.NetCDF.e
+//20160329.fub.s
+,   E_CDM_ERROR_READ_FUB_REC1                    = 2210 ///< fubの第1レコード読み込みエラー
+,   E_CDM_ERROR_READ_FUB_REC2                    = 2211 ///< fubの第2レコード読み込みエラー
+//20160329.fub.e
 ,   E_CDM_ERROR_MISMATCH_NP_SUBDOMAIN            = 3003 ///< 並列数とサブドメイン数が一致していない
 ,   E_CDM_ERROR_INVALID_DIVNUM                   = 3011 ///< 領域分割数が不正
 ,   E_CDM_ERROR_OPEN_SBDM                        = 3012 ///< ActiveSubdomainファイルのオープンに失敗

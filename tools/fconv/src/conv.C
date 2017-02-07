@@ -604,6 +604,31 @@ void CONV::MemoryRequirement(const double TotalMemory, const double sphMemory, c
   
   fflush(fp);
 }
+//20160422.fub.s
+// #################################################################
+// Prefixが空白のとき、Prefixをセット（fubファイル用)
+void CONV::SetPrefixFileInfo(cdm_DFI* dfi, int ndfi)
+{
+  cdm_FileInfo *F_Info = (cdm_FileInfo *)dfi->GetcdmFileInfo();
+
+  //Prefixが空白でないとき return
+  if( !F_Info->Prefix.empty() ) return;
+
+  std::string dfiname;
+  //出力DFIがあるときdfinameをセット  
+  if( m_param->Get_Outputdfi_on() ) {
+    dfiname = m_param->m_dfiList[ndfi].out_dfi_name;
+  } else {
+  //出力DFIがないとき、入力DFIのdfinameをセット
+    dfiname = dfi->get_dfi_fname();
+  }
+  
+  //dfinameからディレクトリ、拡張子を除いてPrefixにする
+  F_Info->Prefix = CDM::ExtractPathWithoutExt(CDM::cdmPath_FileName(dfiname));
+  dfi->SetcdmFileInfo(*F_Info);
+
+}
+//20160422.fub.e
 
 // #################################################################
 // step番号からtimeを取得
@@ -710,6 +735,10 @@ std::string CONV::GetFilenameExt(int file_format_type)
   else if( file_format_type == CDM::E_CDM_FMT_AVS ) return D_CDM_EXT_SPH;
   else if( file_format_type == CDM::E_CDM_FMT_PLOT3D ) return D_CDM_EXT_FUNC;
   else if( file_format_type == CDM::E_CDM_FMT_VTK ) return D_CDM_EXT_VTK;
+//20160611.fub.s
+  else if( file_format_type == CDM::E_CDM_FMT_FUB ) return D_CDM_EXT_FUB;
+  else if( file_format_type == CDM::E_CDM_FMT_FUB_COD ) return D_CDM_EXT_XYZ;
+//20160411.fub.e
 
   return "";
 }
@@ -922,6 +951,15 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
     CDM::E_CDM_OUTPUT_FNAME FieldFilenameFormat;
     FieldFilenameFormat=m_param->Get_OutputFilenameFormat();
 
+//20160427.fub.s
+    //Endian セット
+    int idumy = 1;
+    char* cdumy = (char*)(&idumy);
+    CDM::E_CDM_ENDIANTYPE Endian=CDM::E_CDM_ENDIANTYPE_UNKNOWN;
+    if( cdumy[0] == 0x01 ) Endian = CDM::E_CDM_LITTLE;
+    if( cdumy[0] == 0x00 ) Endian = CDM::E_CDM_BIG;    
+//20160427.fub.e
+
     //FileInfoの出力
     cdm_FileInfo *Finfo = new cdm_FileInfo(dfi_Finfo->DFIType,
                               FieldFilenameFormat,
@@ -932,7 +970,10 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
                               outGc,
                               //(CDM::E_CDM_DTYPE)m_InputCntl->Get_OutputDataType(),
                               out_d_type,
-                              dfi_Finfo->Endian,
+//20160427.fub.s
+//                            dfi_Finfo->Endian,
+                              Endian,
+//20160427.fub.e
                               //(CDM::E_CDM_ARRAYSHAPE)m_InputCntl->Get_OutputArrayShape(),
                               shape,
                               nVari);
@@ -1063,9 +1104,16 @@ bool CONV::makeProcInfo(cdm_DFI* dfi,
   }
 
   //Gregionの更新
+//20160512.fubs.s
+  /*
   for(int i=0; i<3; i++) {
     Gregion[i] = dfi_domain->NodeX(IndexEnd[i]) - dfi_domain->NodeX(IndexStart[i]-1);
   }
+  */
+  Gregion[0] = dfi_domain->NodeX(IndexEnd[0]) - dfi_domain->NodeX(IndexStart[0]-1);
+  Gregion[1] = dfi_domain->NodeY(IndexEnd[1]) - dfi_domain->NodeY(IndexStart[1]-1);
+  Gregion[2] = dfi_domain->NodeZ(IndexEnd[2]) - dfi_domain->NodeZ(IndexStart[2]-1);
+//20160512.fub.e
 
   //間引きありのときボクセルサイズを更新
   if( thin_count > 1 ) {
@@ -1093,7 +1141,10 @@ stmpd_printf("**** voxel = %d %d %d\n", Gvoxel[0], Gvoxel[1], Gvoxel[2]);
   if( numProc == dfi_Process->RankList.size() ) {
 #if 1 //こちらだとhead/tailが被るケースがある気が...
     for(int i=0; i<numProc; i++) {
-      rank.RankID = dfi_Process->RankList[i].RankID;
+//20160512.fub.s
+//    rank.RankID = dfi_Process->RankList[i].RankID;
+      rank.RankID = i;
+//20160512.fub.e
       for(int j=0; j<3; j++) {
         rank.VoxelSize[j]=dfi_Process->RankList[i].VoxelSize[j];
         rank.HeadIndex[j]=dfi_Process->RankList[i].HeadIndex[j];

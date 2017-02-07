@@ -14,7 +14,7 @@
 
 AC_PREREQ([2.57])
 
-AC_INIT([CDMlib],[0.9.4],[keno@riken.jp],[CDMlib])
+AC_INIT([CDMlib],[0.9.5],[keno@riken.jp],[CDMlib])
 
 echo "----------------------------------------"
 echo "Running CDMlib Configure Script"
@@ -63,7 +63,7 @@ AM_INIT_AUTOMAKE()
 # revision No.
 #
 
-CDM_REVISION="20151212_2030"
+CDM_REVISION="20160520_1300"
 AC_SUBST(CDM_REVISION)
 
 
@@ -279,6 +279,11 @@ if test "$with_nc" != "none" ; then
   MAKE_SUB_DIRS="$MAKE_SUB_DIRS"" tools/netcdf2dfi/src"
 fi
 
+# install upacs2dfi 
+if test "x$with_MPI" = "xyes" ; then
+  MAKE_SUB_DIRS="$MAKE_SUB_DIRS"" tools/upacs2dfi/src"
+fi
+
 # install example
 if test x"$with_example" = x"yes" ; then
 MAKE_SUB_DIRS="$MAKE_SUB_DIRS"" example"
@@ -344,6 +349,10 @@ fi
 
 if test "$with_nc" != "none" ; then
   AC_CONFIG_FILES([tools/netcdf2dfi/src/Makefile])
+fi
+
+if test "x$with_MPI" = "xyes" ; then
+  AC_CONFIG_FILES([tools/upacs2dfi/src/Makefile])
 fi
 
 # For non-sparc architecture, i.e., login node on K/FX or Intel clusters

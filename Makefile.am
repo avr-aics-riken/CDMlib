@@ -13,7 +13,8 @@ SUBDIRS = @MAKE_SUB_DIRS@
 
 bin_SCRIPTS = cdm-config
 CLEANFILES = $(bin_SCRIPTS)
-EXTRA_DIST = cdm-config.in LICENSE include/mpi_stubs.h BUILD_DIR/.gitkeep example
+EXTRA_DIST = cdm-config.in LICENSE include/mpi_stubs.h BUILD_DIR/.gitkeep example \
+             doc/doxygen/Doxyfile doc/doxygen/makepdf.sh
 dist_data_DATA = AUTHORS COPYING ChangeLog README.md LICENSE
 dist_include_HEADERS = include/mpi_stubs.h
 

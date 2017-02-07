@@ -85,12 +85,25 @@ cdm_DFI::ReadData(cdm_Array *dst,
     /** 読込み方法の取得 */
 
     /** フィールドデータの読込み */
+
+/*
+#if 1
+    printf("ID[%d] read_sta : %d %d %d read_end : %d %d %d\n",
+           m_RankID,read_sta[0],read_sta[1],read_sta[2],
+           read_end[0],read_end[1],read_end[2]);
+#endif
+*/
+
+//20160427.fub.s
+    FILE *t_fp;
+    if( !fopen(fname.c_str(),"rb") ) return CDM::E_CDM_ERROR_OPEN_FIELDDATA;
+//20160427.fub.e
     cdm_Array* src = ReadFieldData(fname, step, time, read_sta, read_end,
                                    DFI_Process.RankList[n].HeadIndex, 
                                    DFI_Process.RankList[n].TailIndex, 
                                    avr_mode, avr_step, avr_time, ret);
     if( ret != CDM::E_CDM_SUCCESS ) {
-      delete src;
+      if( src != NULL ) delete src;
       return ret;
     }
 
@@ -111,6 +124,7 @@ cdm_DFI::ReadData(cdm_Array *dst,
     }
 
     src->copyArray(copy_sta,copy_end,dst);
+
     delete src;
   }
 
@@ -168,9 +182,8 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
   if( ret != CDM::E_CDM_SUCCESS )
   {
     ret = CDM::E_CDM_ERROR_READ_FIELD_HEADER_RECORD;
-    printf("**** read error\n");
-//  fclose(fp);
-    cdm_FILE::CloseFile(fp);
+//    printf("**** read error\n");
+//    cdm_FILE::CloseFile(fp);
     return NULL;
   }
 

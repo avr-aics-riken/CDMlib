@@ -50,6 +50,13 @@ int main( int argc, char **argv )
     STG.m_dfi_fname.clear();
   }
 
+//20160407.fub.s
+  //引数のエラーチェック
+  if( STG.ArgErrorCheck() != STG_SUCCESS ) {
+    return 0;
+  }
+//20160407.fub.e
+
   //初期化、ファイルの読込み、DFIのインスタンス 
   if( !STG.Initial(STG.m_infofile) ) {
     printf("ERROR Initial()\n");
@@ -64,7 +71,10 @@ int main( int argc, char **argv )
 
       //処理するdfiのループ
       for(int i=0; i<STG.m_StepRankList.size(); i++) {
-        STG.FileCopy(STG.m_StepRankList[i],myID);
+//20160905.fub.s
+      //STG.FileCopy(STG.m_StepRankList[i],myID);
+        STG.FileCopy(STG.m_StepRankList[i],myID,i);
+//20160509.fub.e
       }
 
     }
@@ -94,7 +104,10 @@ int main( int argc, char **argv )
 
     if( STG.m_NumberOfRank == 0 ) STG.m_GRankInfo.clear();
 
-    STG.dfi_Finfo = STG.DFI[i]->GetcdmFileInfo();
+//20160408.fub.s
+//  STG.dfi_Finfo = STG.DFI[i]->GetcdmFileInfo();
+    STG.dfi_Finfo = (cdm_FileInfo *)STG.DFI[i]->GetcdmFileInfo();
+//20160408.fub.e
     STG.dfi_Fpath = STG.DFI[i]->GetcdmFilePath();
     STG.dfi_Visit = STG.DFI[i]->GetcdmVisIt();
     STG.dfi_Unit  = STG.DFI[i]->GetcdmUnit();
@@ -102,6 +115,14 @@ int main( int argc, char **argv )
     STG.dfi_MPI   = STG.DFI[i]->GetcdmMPI();
     STG.dfi_TSlice= STG.DFI[i]->GetcdmTimeSlice();
     STG.dfi_Process=(cdm_Process *)STG.DFI[i]->GetcdmProcess();
+
+//20160408.fub.s
+    if( STG.dfi_Finfo->Prefix.empty() ) {
+      char prefix[128];
+      sprintf(prefix,"dfi%d",i);
+      STG.dfi_Finfo->Prefix = prefix;
+    }
+//20160408.fub.e
 
     //DFIのdirectory path get
     STG.m_inPath = CDM::cdmPath_DirName(STG.m_dfi_fname[i]);
@@ -226,12 +247,15 @@ int main( int argc, char **argv )
        if( ret != CDM::E_CDM_SUCCESS ) return 0;
 
        //ファイルのコピー
-       STG.FileCopy(readRankList,STG.m_GRankInfo[j].RankID);
+//20160407.fub.s
+     //STG.FileCopy(readRankList,STG.m_GRankInfo[j].RankID);
+       STG.FileCopy(readRankList,STG.m_GRankInfo[j].RankID,STG.DFI[i]);
+//20160407.fub.e
 
     }
 
     //dfiファイル出力
-    if( !STG.OutputDFI(STG.m_dfi_fname[i], rankMap) ) {
+    if( !STG.OutputDFI(STG.m_dfi_fname[i], rankMap, STG.DFI[i]) ) {
       printf("EEROR OutputDFI()\n");
       return 0;
     }
@@ -258,6 +282,11 @@ void set_arg(Staging &STG, int argc, char **argv)
         case 's' :
          STG.m_step = atoi(argv[i++]);
          break;
+//20160407.fub.s
+        case 'c' :
+         STG.m_CoordinateStep = atoi(argv[i++]);
+         break;
+//20160407.fub.e
         case 'o' :
          STG.m_outPath = argv[i++];
          break;

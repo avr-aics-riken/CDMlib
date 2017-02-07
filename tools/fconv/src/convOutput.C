@@ -21,6 +21,7 @@
 #include "convOutput_VTK.h"
 #include "convOutput_PLOT3D.h"
 #include "convOutput_NETCDF.h"
+#include "convOutput_FUB.h"
 
 // #################################################################
 // コンストラクタ
@@ -64,6 +65,9 @@ convOutput::OutputInit(const CDM::E_CDM_FORMAT out_format)
 #ifdef _WITH_NETCDF4_
   else if( out_format == CDM::E_CDM_FMT_NETCDF4 ) OutConv = new convOutput_NETCDF();
 #endif
+//20160411.fub.s
+  else if( out_format == CDM::E_CDM_FMT_FUB ) OutConv = new convOutput_FUB();
+//20160411.fub.e
 
   return OutConv;
 

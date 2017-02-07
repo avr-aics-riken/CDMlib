@@ -23,6 +23,9 @@
 //20150918.NetCDF.s
 #include "cdm_DFI_NETCDF.h"
 //20150918.NetCDF.e
+//20160328.fub.s
+#include "cdm_DFI_FUB.h"
+//20160328.fub.e
 #include "cdm_NonUniformDomain.h"
 #include <typeinfo>
 
@@ -133,6 +136,98 @@ CDM::E_CDM_ERRORCODE cdm_DFI::ReadData(T *val,
 }
 
 // #################################################################
+// 座標値データの読込み(読み込んだデータのポインタを戻り値として
+// 返す）
+//template<class T, class TimeT, class TimeAvrT> 
+//CDM_INLINE T*
+template<class TimeT, class TimeAvrT> 
+CDM_INLINE void*
+cdm_DFI::ReadCoordinateData(CDM::E_CDM_ERRORCODE &ret,
+                  const unsigned step, 
+                  const int gc, 
+                  const int Gvoxel[3], 
+                  const int Gdivision[3], 
+                  const int head[3], 
+                  const int tail[3],
+                  TimeT &time,
+                  const bool mode, 
+                  unsigned &step_avr, 
+                  TimeAvrT &time_avr)
+{
+
+   int sz[3];
+   for(int i=0; i<3; i++) sz[i]=tail[i]-head[i]+1;
+   cdm_Array *data = cdm_Array::instanceArray
+                     ( DFI_Finfo.DataType
+                     , DFI_Finfo.ArrayShape
+                     , sz
+                     , gc
+                     , DFI_Finfo.NumVariables);
+
+   double d_time = (double)time;
+   double d_time_avr = (double)time_avr;
+
+   ret = ReadCoordinateData(data, step, gc, Gvoxel, Gdivision, head, tail,
+                       d_time, mode, step_avr, d_time_avr);
+
+   if( ret != CDM::E_CDM_SUCCESS ) {
+     delete data;
+     return NULL;
+   }
+
+   void* ptr = data->getData(true);
+   delete data;
+   time = d_time;
+   time_avr = d_time_avr;
+
+   return ptr;
+}
+
+// #################################################################
+// 座標値データの読込み(引数で渡された配列にデータを読込む）
+template<class T, class TimeT, class TimeAvrT> 
+CDM_INLINE
+CDM::E_CDM_ERRORCODE cdm_DFI::ReadCoordinateData(T *val,
+                                       const unsigned step,
+                                       const int gc,
+                                       const int Gvoxel[3],
+                                       const int Gdivision[3],
+                                       const int head[3],
+                                       const int tail[3],
+                                       TimeT &time,
+                                       const bool mode,
+                                       unsigned &step_avr,
+                                       TimeAvrT &time_avr)
+{
+
+   int sz[3];
+   for(int i=0; i<3; i++) sz[i]=tail[i]-head[i]+1;
+
+   cdm_Array *data = cdm_Array::instanceArray
+                     ( val
+                     , DFI_Finfo.ArrayShape
+                     , sz
+                     , gc
+                     , DFI_Finfo.NumVariables);
+
+   double d_time = (double)time;
+   double d_time_avr = (double)time_avr;
+
+   CDM::E_CDM_ERRORCODE ret;
+   ret = ReadCoordinateData(data, step, gc, Gvoxel, Gdivision, head, tail,
+                  d_time, mode, step_avr, d_time_avr);
+
+   if( ret == CDM::E_CDM_SUCCESS ) {
+     time = d_time;
+     time_avr = d_time_avr;
+   }
+
+   delete data;
+
+   return ret; 
+}
+
+// #################################################################
 // フィールドデータの出力
 template<class T, class TimeT, class TimeAvrT> 
 CDM_INLINE
@@ -233,6 +328,39 @@ cdm_DFI:: WriteFieldDataFile(const unsigned step,
 
 }
 
+// #################################################################
+// fubの座標値データ出力
+template<class T, class TimeT>
+CDM_INLINE
+CDM::E_CDM_ERRORCODE
+cdm_DFI::WriteCoordinateData(const unsigned step,
+                             TimeT time,
+                             const int sz[3],
+                             const int nVari,
+                             const int gc,
+                             T* val)
+{
+  int tnval = DFI_Finfo.NumVariables;
+  DFI_Finfo.NumVariables = nVari;
+
+  cdm_Array *data = cdm_Array::instanceArray
+                    ( val
+                    , DFI_Finfo.ArrayShape
+                    , DFI_Process.RankList[m_RankID].VoxelSize[0]
+                    , DFI_Process.RankList[m_RankID].VoxelSize[1]
+                    , DFI_Process.RankList[m_RankID].VoxelSize[2]
+                    , gc
+                    , DFI_Finfo.NumVariables);
+
+  CDM::E_CDM_ERRORCODE ret;
+  ret = WriteCoordinateData(step, gc, time, data);
+
+  DFI_Finfo.NumVariables = tnval;
+  
+  delete data;
+  return ret;
+
+}
 // #################################################################
 // TimeSliceをセット
 template<class T, class TimeT, class TimeAvrT> 
@@ -612,7 +740,11 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
   out_F_info.DataType         = DataType;
 //20150918.NetCDF.s
 //if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D ) {
-  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D || format == CDM::E_CDM_FMT_NETCDF4 ) {
+//20160401.fub.s
+//  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D || format == CDM::E_CDM_FMT_NETCDF4 ) {
+  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D || format == CDM::E_CDM_FMT_NETCDF4 || 
+      format == CDM::E_CDM_FMT_FUB || format == CDM::E_CDM_FMT_FUB_COD ) {
+//20160401.fub.e
 //20150918.NetCDF.e
     out_F_info.ArrayShape = CDM::E_CDM_IJKN;
   }
@@ -683,6 +815,12 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
                              out_TSlice, out_Process);
 #endif
 //20150918.NetCDF.e
+//20160328.fub.s
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_FUB || 
+             out_F_info.FileFormat == CDM::E_CDM_FMT_FUB_COD ) {
+    dfi = new cdm_DFI_FUB(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
+                             out_TSlice, out_Process);
+//20160328.fub.e
   } else return NULL;
 
 

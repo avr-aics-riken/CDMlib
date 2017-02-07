@@ -41,6 +41,10 @@
 #include "cdm_MPI.h"
 #include "cdm_Process.h"
 
+//20160418.fub.s
+#include "cdm_FieldFileNameFormat.h"
+//20160418.fub.e
+
 #include "cdm_FILE.h"
 
 /** CDM main class */
@@ -64,6 +68,10 @@ protected :
   cdm_MPI           DFI_MPI;         ///< MPI class
   cdm_TimeSlice     DFI_TimeSlice;   ///< TimeSlice class
   cdm_Process       DFI_Process;     ///< Process class
+
+//20160418.fub.s  cdm_DFI_FUBに移動
+//  cdm_FieldFileNameFormat DFI_FieldFileNameFormat; ///< FieldFileNameFormat class
+//20160418.fub.e
 
   vector<int>m_readRankList;         ///< 読込みランクリスト
 
@@ -101,6 +109,13 @@ public:
    * @return cdm_FileInfoクラスポインタ
    */
   const cdm_FileInfo* GetcdmFileInfo();
+
+//20160421.fub.s
+  /**
+  * @brief cdm_FileInfoクラスのセット
+  */ 
+  void SetcdmFileInfo(cdm_FileInfo FInfo); 
+//20160421.fub.e
 
   /**
    * @brief cdm_FilePathクラスのポインタを取得
@@ -179,6 +194,25 @@ public:
    * @brief cdm_Processクラスセット
    */
   void SetcdmProcess(cdm_Process Process);
+
+//20160418.fub.s
+
+  /**
+   * @brief cdm_FieldFileNameFormatクラスのポインタ取得
+   * @return cdm_FieldFileNameFormatクラスのポインタ
+   */
+  virtual
+  const cdm_FieldFileNameFormat* GetcdmFieldFileNameFormat()
+  { return NULL; };
+
+  /**
+   * @brief cdm_FieldFileNameFormatクラスセット
+   */
+  virtual 
+  void SetcdmFieldFileNameFormat(cdm_FieldFileNameFormat FieldFileNameFormat)
+  { };
+
+//20160418.fub.e
 
   /**
    * @brief cdm_FileInfoのRankNoPrefixをセット
@@ -451,6 +485,7 @@ public:
            const bool mode, 
            unsigned &step_avr, 
            TimeAvrT &time_avr);
+
   /**
    * @brief read field data record (template function)
    * @details 引数で渡された配列ポインタにデータを読込む
@@ -513,6 +548,99 @@ public:
            double &time_avr);
 
   /**
+   * @brief read xyz(fub) data record (template function)
+   * @details 読み込んだデータのポインタを戻り値として返す
+   * @param [out] ret       終了コード 1:正常、1以外：エラー  
+   * @param [in] step       入力ステップ番号
+   * @param [in] gc         仮想セル数　　　
+   * @param [in] Gvoxel     グローバルボクセルサイズ　
+   * @param [in] Gdivision  領域分割数　　　　　　　　
+   * @param [in] head       計算領域の開始位置　　　　
+   * @param [in] tail       計算領域の終了位置　　　　
+   * @param [out] time      読み込んだ時間
+   * @param [in]  mode      平均ステップ＆時間読込みフラグ　false : 読込み
+   *                                                           true  : 読み込まない
+   * @param [out] step_avr  平均ステップ
+   * @param [out] time_avr  平均時間
+   * @return 読みんだフィールドデータのポンタ
+   */
+  template<class TimeT, class TimeAvrT> void*
+  ReadCoordinateData(CDM::E_CDM_ERRORCODE &ret,
+                     const unsigned step, 
+                     const int gc, 
+                     const int Gvoxel[3], 
+                     const int Gdivision[3], 
+                     const int head[3], 
+                     const int tail[3],
+                     TimeT &time,
+                     const bool mode, 
+                     unsigned &step_avr, 
+                     TimeAvrT &time_avr);
+
+  /**
+   * @brief read xyz(fub) data record (template function)
+   * @details 引数で渡された配列ポインタにデータを読込む
+   * @param [out] val        読み込んだデータポインタ　
+   * @param [in]  step       入力ステップ番号
+   * @param [in]  gc         仮想セル数　　　
+   * @param [in]  Gvoxel     グローバルボクセルサイズ　
+   * @param [in]  Gdivision  領域分割数　　　　　　　　
+   * @param [in]  head       計算領域の開始位置　　　　
+   * @param [in]  tail       計算領域の終了位置　　　　
+   * @param [out] time       読み込んだ時間
+   * @param [in]  mode       平均ステップ＆時間読込みフラグ　false : 読込み
+   *                                                           true  : 読み込まない
+   * @param [out] step_avr      平均ステップ
+   * @param [out] time_avr      平均時間
+   * @return 終了コード 1:正常 1以外:エラー
+   */
+  template<class T, class TimeT, class TimeAvrT>
+  CDM::E_CDM_ERRORCODE 
+  ReadCoordinateData(T *val,
+           const unsigned step,
+           const int gc,
+           const int Gvoxel[3],
+           const int Gdivision[3],
+           const int head[3],
+           const int tail[3],
+           TimeT &time,
+           const bool mode,
+           unsigned &step_avr,
+           TimeAvrT &time_avr);
+
+  /**
+   * @brief read xyz(fub) data record 
+   * @details template ReadData関数で型に応じた配列を確保した後、呼び出される
+   * @param [out] val        読み込み先の配列をポインタで渡す　
+   * @param [in]  step       読み込むステップ番号
+   * @param [in]  gc         仮想セル数　　　
+   * @param [in]  Gvoxel     グローバルボクセルサイズ　
+   * @param [in]  Gdivision  領域分割数　　　　　　　　
+   * @param [in]  head       計算領域の開始位置　　　　
+   * @param [in]  tail       計算領域の終了位置　　　　
+   * @param [out] time       読み込んだ時間
+   * @param [in]  mode       平均ステップ＆時間読込みフラグ　false : 読込み
+   *                                                           true  : 読み込まない
+   * @param [out] step_avr      平均ステップ
+   * @param [out] time_avr      平均時間
+   * @return 終了コード 1:正常 1以外:エラー
+   */
+  virtual
+  CDM::E_CDM_ERRORCODE 
+  ReadCoordinateData(cdm_Array *val,
+           const unsigned step,
+           const int gc,
+           const int Gvoxel[3],
+           const int Gdivision[3],
+           const int head[3],
+           const int tail[3],
+           double &time,
+           const bool mode,
+           unsigned &step_avr,
+           double &time_avr)
+  { return CDM::E_CDM_ERROR; };
+
+  /**
    * @brief write field data record (template function)
    * @details                minmax[0]   =変数1のminX
    *                          minmax[1]   =変数1のmaxX
@@ -571,6 +699,25 @@ public:
                      TimeAvrT time_avr=0.0);
 
   /**
+   * @brief write coordinate data record (template function)
+   * @details fubの座標値データファイル出力
+   * @param [in] step     出力ステップ番号
+   * @param [in] time     出力時刻　
+   * @param [in] sz       valの実ボクセルサイズ
+   * @param [in] nVari    valの変数の個数
+   * @param [in] gc       valの仮想セル数
+   * @param [in] val      出力データポインタ
+   */
+  template<class T, class TimeT>
+  CDM::E_CDM_ERRORCODE
+  WriteCoordinateData(const unsigned step, 
+                      TimeT time,
+                      const int sz[3], 
+                      const int nVari,
+                      const int gc, 
+                      T* val); 
+ 
+  /**
    * @brief write field data record
    * @details template WriteData関数で方に応じた配列を確保した後、呼び出される 
    * @param [in] step     出力ステップ番号
@@ -614,6 +761,21 @@ public:
                      const unsigned step_avr, 
                      double time_avr);
 
+  /**
+   * @brief write coordinate data record 
+   * @param [in] step     出力ステップ番号
+   * @param [in] gc       仮想セル数
+   * @param [in] time     出力時刻
+   * @param [in] val      出力データポインタ
+   */
+  virtual
+  CDM::E_CDM_ERRORCODE
+  WriteCoordinateData(const unsigned step, 
+                      const int gc, 
+                      double time, 
+                      cdm_Array* val)
+  { return CDM::E_CDM_ERROR; };
+ 
   /**
    * @brief proc DFIファイル出力コントロール (float)
    * @param [in] comm      MPIコミュニケータ
@@ -940,7 +1102,22 @@ public:
    */
   void normalizeDelteT(const double scale);
 
-
+//20160329.fub.s
+  /**
+   * @brief field data file nameの取得
+   * @details index dfiファイルの/FileList/RankのIDと読み込み指示されたランクのID
+   * と一致したIDのRankで定義されたFieldDataFileNameで指示されたファイル名もしくは
+   * CoordinateFileNameで指示されたファイル名を取得（E_CDM_FMT_FUBのちきは
+   * FieldDataFileName、E_CDM_FMT_FUB_CODのときはCoordinateFileName)
+   * index dfiファイルにFileListがないファイルは空白が戻る.
+   * @param [in] ID RankID
+   * @return field data file name
+   */ 
+  virtual
+  std::string
+  getFileNameFromFileList( const int ID )
+  { return ""; };
+//20160329.fub.e
 
   /**
    * @brief read field data record

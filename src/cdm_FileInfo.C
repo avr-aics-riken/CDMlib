@@ -136,6 +136,10 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
       FieldFilenameFormat = CDM::E_CDM_FNAME_RANK_STEP;
     }else if( !strcasecmp(str.c_str(),"rank" ) ) {
       FieldFilenameFormat = CDM::E_CDM_FNAME_RANK;
+//20160418.fub.s
+    }else if( !strcasecmp(str.c_str(),"custom" ) ) {
+      FieldFilenameFormat = CDM::E_CDM_FNAME_CUSTOM;
+//20160418.fub.e
     }else {
       printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
       return CDM::E_CDM_ERROR_READ_DFI_FIELDFILENAMEFORMAT;
@@ -240,6 +244,12 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
     ArrayShape=CDM::E_CDM_IJKN;
   }
 //20150918.NetCDF.e
+//20160328.fub.s
+  else if( !strcasecmp(str.c_str(), "fub" ) ) {
+    FileFormat=CDM::E_CDM_FMT_FUB;
+    ArrayShape=CDM::E_CDM_IJKN;
+  }
+//20160328.fub.e
   else FileFormat=CDM::E_CDM_FMT_UNKNOWN;
 
   if( FieldFilenameFormat == CDM::E_CDM_FNAME_RANK &&
@@ -441,6 +451,12 @@ cdm_FileInfo::Write(FILE* fp,
   }  else if( FileFormat == CDM::E_CDM_FMT_NETCDF4 ) {
     fprintf(fp, "FileFormat         = \"netcdf4\"\n");
 //20150918.NetCDF.e
+//20160401.fub.s
+  }  else if( FileFormat == CDM::E_CDM_FMT_FUB ) {
+    fprintf(fp, "FileFormat         = \"fub\"\n");
+  }  else if( FileFormat == CDM::E_CDM_FMT_FUB_COD ) {
+    fprintf(fp, "FileFormat         = \"xyz\"\n");
+//20160401.fub.e
   }
 
 //FCONV 20140116.s

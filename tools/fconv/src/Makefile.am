@@ -37,7 +37,8 @@ fconv_SOURCES = \
   convOutput_AVS.C \
   convOutput_VTK.C \
   convOutput_PLOT3D.C \
-  convOutput_NETCDF.C
+  convOutput_NETCDF.C \
+  convOutput_FUB.C
 
 fconv_includedir = $(includedir)
 fconv_include_HEADERS = \
@@ -53,7 +54,8 @@ fconv_include_HEADERS = \
   $(top_srcdir)/tools/fconv/include/convOutput_AVS.h \
   $(top_srcdir)/tools/fconv/include/convOutput_VTK.h \
   $(top_srcdir)/tools/fconv/include/convOutput_PLOT3D.h \
-  $(top_srcdir)/tools/fconv/include/convOutput_NETCDF.h
+  $(top_srcdir)/tools/fconv/include/convOutput_NETCDF.h \
+  $(top_srcdir)/tools/fconv/include/convOutput_FUB.h
 
 
 fconv_inline_includedir = $(includedir)/inline

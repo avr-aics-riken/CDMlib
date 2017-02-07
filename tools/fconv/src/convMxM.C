@@ -92,6 +92,10 @@ bool convMxM::exec()
          max[n]=-DBL_MAX;
       }
 
+//20160421.fub.s
+      SetPrefixFileInfo(m_StepRankList[i].dfi,i);
+//20160421.fub.e
+
       //rankのループ
       for(int k=m_StepRankList[i].rankStart; k<=m_StepRankList[i].rankEnd; k++) {
         //MxMの読込みコンバート出力
@@ -183,8 +187,16 @@ bool convMxM::mxmsolv(std::string dfiname,
   const cdm_Process* DFI_Process = dfi->GetcdmProcess();
   cdm_Domain* DFI_Domain = (cdm_Domain *)dfi->GetcdmDomain();
   const cdm_MPI* DFI_MPI = dfi->GetcdmMPI();
-  const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
+//20160411.fub.s
+//const cdm_FileInfo* DFI_FInfo = dfi->GetcdmFileInfo();
+  cdm_FileInfo* DFI_FInfo = (cdm_FileInfo *)dfi->GetcdmFileInfo();
+//20160411.fub.e
   const cdm_TimeSlice* TSlice = dfi->GetcdmTimeSlice();
+
+//20160420.fub.s
+  cdm_FieldFileNameFormat * Ffformat = 
+       (cdm_FieldFileNameFormat *)dfi->GetcdmFieldFileNameFormat();
+//20160420.fub.e
 
   bool mio = false;
   if( DFI_MPI->NumberOfRank > 1) mio=true;
@@ -268,8 +280,12 @@ bool convMxM::mxmsolv(std::string dfiname,
 
   //読込みファイル名の生成
   std::string inPath = CDM::cdmPath_DirName(dfiname);
+
+//20160420.fub.s
   std::string infile =  CDM::cdmPath_ConnectPath(inPath,dfi->Generate_FieldFileName(
-                        RankID,l_step,mio));
+//                      RankID,l_step,mio));
+                        DFI_Process->RankList[RankID].RankID,l_step,mio));
+//20160420.fub.s
 
   //ファイルの読込み
   unsigned int avr_step;
@@ -281,31 +297,109 @@ bool convMxM::mxmsolv(std::string dfiname,
     read_end[i]=DFI_Process->RankList[RankID].TailIndex[i]+outGc;
   }
 
-  cdm_Array* buf = dfi->ReadFieldData(infile, l_step, l_dtime,
-                                      read_sta,
-                                      read_end,
-                                      DFI_Process->RankList[RankID].HeadIndex,
-                                      DFI_Process->RankList[RankID].TailIndex,
-                                      true, avr_step, avr_time, ret);
-  if( ret != CDM::E_CDM_SUCCESS ) return false;
+//20160426.fub.s
+  FILE *t_fp;
+  cdm_Array* buf;
+  if( (t_fp = fopen(infile.c_str(),"rb")) ) {
+    fclose(t_fp);
+//20160426.fub.e
+    buf = dfi->ReadFieldData(infile, l_step, l_dtime,
+                             read_sta,
+                             read_end,
+                             DFI_Process->RankList[RankID].HeadIndex,
+                             DFI_Process->RankList[RankID].TailIndex,
+                             true, avr_step, avr_time, ret);
+    if( ret != CDM::E_CDM_SUCCESS ) return false;
 
-  //間引き及び型変換がない場合
-  if( thin_count == 1 && buf->getDataType() == src->getDataType() && 
-      buf->getArrayShape() == src->getArrayShape() ) {
-    src = buf;
-  } else {
-  //間引きまたは型変換がある場合
-    int headS[3],tailS[3];
-    for(int i=0; i<3; i++) {
-      headS[i]=DFI_Process->RankList[RankID].HeadIndex[i]-1-outGc;
-      tailS[i]=DFI_Process->RankList[RankID].TailIndex[i]-1+outGc;
+
+    //間引き及び型変換がない場合
+    if( thin_count == 1 && buf->getDataType() == src->getDataType() && 
+        buf->getArrayShape() == src->getArrayShape() ) {
+        src = buf;
+    } else {
+    //間引きまたは型変換がある場合
+      int headS[3],tailS[3];
+      for(int i=0; i<3; i++) {
+        headS[i]=DFI_Process->RankList[RankID].HeadIndex[i]-1-outGc;
+        tailS[i]=DFI_Process->RankList[RankID].TailIndex[i]-1+outGc;
+      }
+      buf->setHeadIndex( headS );
+      src->setHeadIndex( head );
+
+      for(int n=0; n<dfi->GetNumVariables(); n++) convertXY(buf,src,headS,tailS,n);
+      //delete buf;
     }
-    buf->setHeadIndex( headS );
-    src->setHeadIndex( head );
-
-    for(int n=0; n<dfi->GetNumVariables(); n++) convertXY(buf,src,headS,tailS,n);
-    //delete buf;
+//20160426.fub.s
+  } else {
+    printf("\tCan't open file.(%s)\n",infile.c_str());
+    if( src ) delete src;
+    return true;
   }
+//20160426.fub/e
+//20160411.fub.s
+//fubの独自の処理
+  cdm_Array *xyz_fub = NULL;
+  cdm_DFI_FUB *dfi_fub = dynamic_cast<cdm_DFI_FUB*>(dfi);
+  if( dfi_fub )
+  {
+     //フィールドデータの変数の数を退避しておく
+     int t_nval = DFI_FInfo->NumVariables;
+
+     //変数を数を座標値データの数3にセットしなおす
+     DFI_FInfo->NumVariables = 3;
+     std::string cFname;
+     if( !Ffformat ) {
+       cFname = dfi_fub->getCoordinateFileName(infile);
+     } else {
+       cFname = Ffformat->GenerateFileName("CoordinateFile",DFI_FInfo->DirectoryPath,
+                                           l_step, DFI_Process->RankList[RankID].RankID);
+     }
+
+     FILE *xyz_fp;
+     //座標値データあるとき
+     if( (xyz_fp=fopen(cFname.c_str(),"rb")) ) {
+       fclose(xyz_fp);
+
+       xyz_fub = cdm_Array::instanceArray
+               ( d_type
+               , m_param->Get_OutputArrayShape()
+               , szS
+               , outGc
+               , dfi->GetNumVariables() );
+
+       //座標値ファイル読込
+       cdm_Array* buf_xyz = dfi->ReadFieldData(cFname, l_step, l_dtime,
+                                               read_sta,
+                                               read_end,
+                                               DFI_Process->RankList[RankID].HeadIndex,
+                                               DFI_Process->RankList[RankID].TailIndex,
+                                               true, avr_step, avr_time, ret);
+       if( ret != CDM::E_CDM_SUCCESS ) {
+         DFI_FInfo->NumVariables = t_nval;
+         return false;
+       }
+
+       //間引き及び型変換がない場合
+       if( thin_count == 1 && buf_xyz->getDataType() == xyz_fub->getDataType() && 
+          buf_xyz->getArrayShape() == xyz_fub->getArrayShape() ) {
+          xyz_fub = buf_xyz;
+       } else {
+       //間引きまたは型変換がある場合
+          int headS[3],tailS[3];
+          for(int i=0; i<3; i++) {
+            headS[i]=DFI_Process->RankList[RankID].HeadIndex[i]-1-outGc;
+            tailS[i]=DFI_Process->RankList[RankID].TailIndex[i]-1+outGc;
+          }
+          buf_xyz->setHeadIndex( headS );
+          xyz_fub->setHeadIndex( head );
+
+          for(int n=0; n<dfi->GetNumVariables(); n++) convertXY(buf_xyz,xyz_fub,headS,tailS,n);
+       }
+     }
+     //変数の数を元に戻す．
+     DFI_FInfo->NumVariables = t_nval;
+  }
+//20160411.fub.e
 
   //出力DFIのインスタンス
   int tail[3];
@@ -532,6 +626,93 @@ bool convMxM::mxmsolv(std::string dfiname,
     delete [] iblank;
   }
 
+//20160411.fub.s
+
+  CDM::E_CDM_OUTPUT_FNAME output_fname = m_param->Get_OutputFilenameFormat();
+  out_dfi->set_output_fname(output_fname);
+
+  //fubの座標値データ出力
+  if (m_param->Get_OutputFormat() == CDM::E_CDM_FMT_FUB ) 
+  {
+    if ( xyz_fub ) {
+      out_dfi->WriteCoordinateData((unsigned)l_step,
+                                   outGc,
+                                   l_time,
+                                   xyz_fub);
+    } else if( l_step == TSlice->SliceList[0].step ) {
+ 
+      int b_sz[3];
+      b_sz[0]=DFI_Process->RankList[RankID].VoxelSize[0];  
+      b_sz[1]=DFI_Process->RankList[RankID].VoxelSize[1];  
+      b_sz[2]=DFI_Process->RankList[RankID].VoxelSize[2];  
+
+      cdm_Array *buf_xyz = cdm_Array::instanceArray
+               ( d_type
+               , m_param->Get_OutputArrayShape()
+               , b_sz
+               , outGc
+               , 3 );
+
+      if( d_type == CDM::E_CDM_FLOAT64 ) {
+       
+        double *buf_xyz_p = (double *)buf_xyz->getData();
+
+        //座標値の生成
+        for(int k=0-outGc, kk=read_sta[2]; kk<=read_end[2]; k++, kk++ ) {
+        for(int j=0-outGc, jj=read_sta[1]; jj<=read_end[1]; j++, jj++ ) {
+        for(int i=0-outGc, ii=read_sta[0]; ii<=read_end[0]; i++, ii++ ) {
+          buf_xyz_p[_CDM_IDX_IJKN(i,j,k,0,b_sz[0],b_sz[1],b_sz[2],outGc)] = DFI_Domain->CellX(ii-1);
+          buf_xyz_p[_CDM_IDX_IJKN(i,j,k,1,b_sz[0],b_sz[1],b_sz[2],outGc)] = DFI_Domain->CellY(jj-1);
+          buf_xyz_p[_CDM_IDX_IJKN(i,j,k,2,b_sz[0],b_sz[1],b_sz[2],outGc)] = DFI_Domain->CellZ(kk-1);
+        }}} 
+
+      } else if( d_type == CDM::E_CDM_FLOAT32 ) {
+
+         float *buf_xyz_p = (float *)buf_xyz->getData();
+
+        //座標値の生成
+        for(int k=0-outGc, kk=read_sta[2]; kk<read_end[2]; k++, kk++ ) {
+        for(int j=0-outGc, jj=read_sta[1]; jj<read_end[1]; j++, jj++ ) {
+        for(int i=0-outGc, ii=read_sta[0]; ii<read_end[0]; i++, ii++ ) {
+          buf_xyz_p[_CDM_IDX_IJKN(i,j,k,0,b_sz[0],b_sz[1],b_sz[2],outGc)] = (float)DFI_Domain->CellX(i-1);
+          buf_xyz_p[_CDM_IDX_IJKN(i,j,k,1,b_sz[0],b_sz[1],b_sz[2],outGc)] = (float)DFI_Domain->CellY(j-1);
+          buf_xyz_p[_CDM_IDX_IJKN(i,j,k,2,b_sz[0],b_sz[1],b_sz[2],outGc)] = (float)DFI_Domain->CellZ(k-1);
+        }}} 
+
+      }
+
+      xyz_fub = cdm_Array::instanceArray
+               ( d_type
+               , m_param->Get_OutputArrayShape()
+               , szS
+               , outGc
+               , 3 );
+
+      //間引き及び型変換がない場合
+      if( thin_count == 1 && buf_xyz->getDataType() == xyz_fub->getDataType() && 
+         buf_xyz->getArrayShape() == xyz_fub->getArrayShape() ) {
+         xyz_fub = buf_xyz;
+      } else {
+      //間引きまたは型変換がある場合
+         int headS[3],tailS[3];
+         for(int i=0; i<3; i++) {
+           headS[i]=DFI_Process->RankList[RankID].HeadIndex[i]-1-outGc;
+           tailS[i]=DFI_Process->RankList[RankID].TailIndex[i]-1+outGc;
+         }
+         buf_xyz->setHeadIndex( headS );
+         xyz_fub->setHeadIndex( head );
+
+         for(int n=0; n<dfi->GetNumVariables(); n++) convertXY(buf_xyz,xyz_fub,headS,tailS,n);
+      }
+
+      out_dfi->WriteCoordinateData((unsigned)l_step,
+                                   outGc,
+                                   l_time,
+                                   xyz_fub);
+    }
+  }
+//20160411.fub.e
+
   //netcdfのとき、書き込み済みかどうかをセットする
 #ifdef _WITH_NETCDF4_
   if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_NETCDF4 )
@@ -555,8 +736,6 @@ bool convMxM::mxmsolv(std::string dfiname,
   
 
   //フィールドデータ出力
-  CDM::E_CDM_OUTPUT_FNAME output_fname = m_param->Get_OutputFilenameFormat();
-  out_dfi->set_output_fname(output_fname);
   double tmp_minmax[8];
   unsigned idummy=0;
   double ddummy=0.0;
@@ -572,7 +751,7 @@ bool convMxM::mxmsolv(std::string dfiname,
                            ddummy);
 
   if( ret != CDM::E_CDM_SUCCESS ) return false;
- 
+
   //minmaxを求める
   if( !DtypeMinMax(src,min,max) ) return false;
 

@@ -312,6 +312,12 @@ cdm_DFI::WriteData(const unsigned step,
     } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_NETCDF4 ) {
       ext = D_CDM_EXT_NC;
 //20150918.NetCDF.e
+//20160331.fub.s
+    } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_FUB ) {
+      ext = D_CDM_EXT_FUB;
+    } else if( DFI_Finfo.FileFormat == CDM::E_CDM_FMT_FUB_COD ) {
+      ext = D_CDM_EXT_XYZ;
+//20160331.fub.e
     }
     tmp = Generate_FileName(DFI_Finfo.Prefix,
                             m_RankID,

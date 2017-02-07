@@ -506,6 +506,7 @@ template<class T>
 CDM_MEMFUN(int)
 cdm_TypeArray<T>::copyArrayNvari( int _sta[3], int _end[3], cdm_Array *dstptr, int vari )
 {
+
   cdm_TypeArray<T> *src = this;
 
   cdm_TypeArray<T> *dst = dynamic_cast<cdm_TypeArray<T>*>(dstptr);
