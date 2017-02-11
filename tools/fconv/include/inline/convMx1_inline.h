@@ -2,13 +2,17 @@
 #define _CONV_EXEC_INLINE_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -61,7 +65,7 @@ void convMx1::zeroClearArray(cdm_TypeArray<T>* data, int ivar_out)
  */
 template<class T>
 CONV_INLINE
-bool convMx1::setGridData_XY( 
+bool convMx1::setGridData_XY(
                              cdm_TypeArray<T>* O,
                              cdm_TypeArray<T>* S,
                              int ivar_out,
@@ -192,4 +196,4 @@ convMx1::copyArray_nijk_ijk(cdm_TypeArray<T> *S, cdm_TypeArray<T> *O, int ivar)
   }
 };
 
-#endif // _CONV_EXEC_INLINE_H_ 
+#endif // _CONV_EXEC_INLINE_H_

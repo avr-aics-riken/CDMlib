@@ -1,11 +1,15 @@
 /*
- * netcdf2dfi
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -128,7 +132,7 @@ NetCDF2DFI::ReadParam( const char *ifname )
   std::string leaf = "/NetCDF2DFI";
   std::string label, sdmy;
   int idmy;
- 
+
   // ファイルの存在チェック
   FILE*fp = NULL;
   if( !(fp=fopen(ifname,"rb")) ) {
@@ -161,7 +165,7 @@ NetCDF2DFI::ReadParam( const char *ifname )
   }
   m_num_ncfiles = idmy;
 
-  // DirectoryPath 
+  // DirectoryPath
   label = leaf + "/DirectoryPath";
   if( !(tpCntl.GetValue(label, &sdmy)) )
   {
@@ -331,12 +335,12 @@ NetCDF2DFI::PrintInputParam()
   std::string leaf = "  /NetCDF2DFI";
   std::string label, sdmy;
   int idmy;
- 
+
   // num_ncfiles
   label = leaf + "/num_ncfiles";
   printf( "%s = %d\n", label.c_str(), m_num_ncfiles);
 
-  // DirectoryPath 
+  // DirectoryPath
   label = leaf + "/DirectoryPath";
   printf( "%s = %s\n", label.c_str(), m_DirectoryPath.c_str());
 
@@ -695,7 +699,7 @@ NetCDF2DFI::ReadData()
       {
         time = varInfoT.data[0];
       }
-     
+
       // Slice情報を取得
       cdm_Slice slice = GetSliceInfo(step, time, pArray);
       FileTimeSlice.SliceList.push_back(slice);
@@ -1211,4 +1215,3 @@ NetCDF2DFI::WriteFieldData(int ID, int step, double time, int VoxelSize[3],
 
   return 0;
 }
-

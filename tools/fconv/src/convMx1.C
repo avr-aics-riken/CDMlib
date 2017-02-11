@@ -1,15 +1,19 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
- * @file   convMx1.C 
+ * @file   convMx1.C
  * @brief  convMx1 Class
  * @author aics
  */
@@ -39,7 +43,7 @@ bool convMx1::exec()
 
   if( m_myRank == 0 ) {
     printf("Convert M x 1\n");
-  } 
+  }
 
   // 出力ファイル形式クラスのインスタンス
   ConvOut = convOutput::OutputInit(m_param->Get_OutputFormat());
@@ -52,7 +56,7 @@ bool convMx1::exec()
   string prefix,outfile,infile,inPath;
   cdm_FILE *pFile;
   int dummy;
-  
+
   int l_rank;
   int l_d_type;
   CDM::E_CDM_DTYPE d_type;
@@ -62,13 +66,13 @@ bool convMx1::exec()
   double l_dtime;
   int xsize,ysize,zsize,asize,vsize;
   int dim;
-  
+
   int div[3];
   int l_imax_th, l_jmax_th, l_kmax_th;
 
   //間引き数のセット
   int thin_count = m_param->Get_ThinOut();
- 
+
   // 入力モード
   bool mio = false;
   //const cdm_MPI* DFI_MPI = m_in_dfi[0]->GetcdmMPI();
@@ -105,7 +109,7 @@ bool convMx1::exec()
     IndexStart[i]=cropIndexStart[i];
     IndexEnd[i]=cropIndexEnd[i];
   }
-  //dfi*stepのループ 
+  //dfi*stepのループ
   for (int i=0;i<m_StepRankList.size();i++) {
 
 //20160422.fub.s
@@ -143,7 +147,7 @@ bool convMx1::exec()
     region[0]=l_imax*o_pit[0];
     region[1]=l_jmax*o_pit[1];
     region[2]=l_kmax*o_pit[2];
-      
+
     //間引きを考慮
     l_imax_th=l_imax/thin_count;//間引き後のxサイズ
     l_jmax_th=l_jmax/thin_count;//間引き後のyサイズ
@@ -161,7 +165,7 @@ bool convMx1::exec()
     l_dorg[2]=DFI_Domain->GlobalOrigin[2];
     //格子点の原点からセル中心の原点へのシフト
     //(SPH,BOV形式のみ。他の形式については、各形式の出力時に実施。)
-    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH || 
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH ||
         m_param->Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) {
       l_dorg[0] += 0.5*l_dpit[0];
       l_dorg[1] += 0.5*l_dpit[1];
@@ -214,7 +218,7 @@ bool convMx1::exec()
     prefix=DFI_FInfo->Prefix;
     LOG_OUTV_ fprintf(m_fplog,"  COMBINE SPH START : %s\n", prefix.c_str());
     STD_OUTV_ printf("  COMBINE SPH START : %s\n", prefix.c_str());
-    
+
     //Number of Variables
     dim=m_StepRankList[i].dfi->GetNumVariables();
 
@@ -256,11 +260,11 @@ bool convMx1::exec()
       for(int n=0; n<nsize; n++) {
          min[n]=DBL_MAX;
          max[n]=-DBL_MAX;
-      } 
+      }
 
       l_step=TSlice->SliceList[j].step;
       l_time=(float)TSlice->SliceList[j].time;
-      
+
       LOG_OUTV_ fprintf(m_fplog,"\tstep = %d\n", l_step);
       STD_OUTV_ printf("\tstep = %d\n", l_step);
 
@@ -273,7 +277,7 @@ bool convMx1::exec()
       } else if( m_StepRankList[i].dfi->GetDataType() == CDM::E_CDM_FLOAT64 ) {
         l_d_type = SPH_DOUBLE;
       }
-      
+
       if( m_param->Get_OutputDataType() == CDM::E_CDM_DTYPE_UNKNOWN )
       {
         d_type = m_StepRankList[i].dfi->GetDataType();
@@ -304,7 +308,7 @@ bool convMx1::exec()
           return false;
         }
       } else {
-        if( !(ConvOut->WriteHeaderRecord(l_step, dim, d_type, 
+        if( !(ConvOut->WriteHeaderRecord(l_step, dim, d_type,
                                          l_imax_th+2*outGc, l_jmax_th+2*outGc, l_kmax_th+2*outGc,
                                          l_time, t_org, l_dpit, prefix, pFile)) ) {
           printf("\twrite header error\n");
@@ -333,7 +337,7 @@ bool convMx1::exec()
         printf("\twrite data header error\n");
         return false;
       }
-      
+
       //書き込みworkareaのサイズ決め
       xsize=l_imax_th;
       ysize=l_jmax_th;
@@ -362,7 +366,7 @@ bool convMx1::exec()
         printf("\tsize error : mc2>INT_MAX\n");
         return false;
       }
-      double TotalMemory=0.0; // = mc * (double)sizeof(REAL_TYPE);
+      double TotalMemory=0.0;
       if( m_param->Get_OutputDataType() == CDM::E_CDM_FLOAT32 ) {
         TotalMemory = TotalMemory + mc1 * (double)sizeof(float);
       } else {
@@ -376,12 +380,12 @@ bool convMx1::exec()
       }
       LOG_OUT_ MemoryRequirement(TotalMemory,m_fplog);
       STD_OUT_ MemoryRequirement(TotalMemory,stdout);
-      
+
       int szS[3];
       szS[0]=l_imax_th;
       szS[1]=l_jmax_th;
       szS[2]=1;
-     
+
       CDM::E_CDM_ARRAYSHAPE output_AShape = m_param->Get_OutputArrayShape();
 
       if( (output_AShape == CDM::E_CDM_NIJK || DFI_FInfo->NumVariables == 1) &&
@@ -422,7 +426,7 @@ bool convMx1::exec()
                              min,max
                              ) ) return false;
 
-      } 
+      }
 
 //20160422.fub.s
       cdm_DFI_FUB *dfi_fub = dynamic_cast<cdm_DFI_FUB*>(m_StepRankList[i].dfi);
@@ -491,7 +495,7 @@ bool convMx1::exec()
         printf("\twrite data error\n");
         return false;
       }
-      
+
       //出力ファイルクローズ
       ConvOut->OutputFile_Close(pFile);
 
@@ -569,7 +573,7 @@ bool convMx1::exec()
                        out_domain,out_mpi,out_process);
      }
   }
-  
+
   return true;
 
 }
@@ -585,7 +589,7 @@ convMx1::convMx1_out_nijk(cdm_FILE* pFile,
                           bool mio,
                           int div[3],
                           int sz[3],
-                          cdm_DFI* dfi, 
+                          cdm_DFI* dfi,
                           cdm_Process* DFI_Process,
                           headT mapHeadX, headT mapHeadY, headT mapHeadZ,
                           double* min, double* max)
@@ -635,7 +639,7 @@ convMx1::convMx1_out_nijk(cdm_FILE* pFile,
     IndexEnd[1]=DFI_Domain->GlobalVoxel[1]+outGc;
     IndexEnd[2]=DFI_Domain->GlobalVoxel[2]+outGc;
   }
-  
+
   headS[0]=IndexStart[0]-1;
   headS[1]=IndexStart[1]-1;
   tailS[0]=IndexEnd[0]-1;
@@ -710,7 +714,7 @@ convMx1::convMx1_out_nijk(cdm_FILE* pFile,
     for(int kp=kp_sta; kp< kp_end; kp++) {
 
       //入力領域外のときスキップ
-      if( kp < IndexStart[2] || kp > IndexEnd[2] ) continue; 
+      if( kp < IndexStart[2] || kp > IndexEnd[2] ) continue;
 
       int kk = kp-1;
       //間引きの層のときスキップ
@@ -777,7 +781,7 @@ convMx1::convMx1_out_nijk(cdm_FILE* pFile,
           if( ret != CDM::E_CDM_SUCCESS ) {
             printf("\tCan't Read Field Data Record %s\n",infile.c_str());
             return false;
-          } 
+          }
           //headIndexを０スタートにしてセット
           int headB[3];
           headB[0]=read_sta[0]-1;
@@ -837,7 +841,7 @@ convMx1::convMx1_out_nijk(cdm_FILE* pFile,
       }
 
       //minmaxを求める
-      if( !DtypeMinMax(outArray,min,max) ) return false;  
+      if( !DtypeMinMax(outArray,min,max) ) return false;
 
       //補間ありのとき、読込んだ層の配列ポインタをsrc_oldにコピー
       if( m_param->Get_Interp_flag() ) {
@@ -1085,7 +1089,7 @@ convMx1::convMx1_out_ijkn(cdm_FILE* pFile,
               if( ret != CDM::E_CDM_SUCCESS ) {
                 printf("\tCan't Read Field Data Record %s\n",infile.c_str());
                 return false;
-              } 
+              }
 //20160425.fub.s
             } else {
               int sz_xyz[3];
@@ -1150,7 +1154,7 @@ convMx1::convMx1_out_ijkn(cdm_FILE* pFile,
             delete buf;
 
           } /// Loop itx
-        } /// Loop ity 
+        } /// Loop ity
         //補間処理
         if( m_param->Get_Interp_flag() ) {
           if( kp == kp_sta ) {
@@ -1335,7 +1339,7 @@ convMx1::nijk_to_ijk(cdm_Array* src, int ivar)
                        ( d_type
                        , CDM::E_CDM_IJKN
                        , (int *)sz
-                       , 0 
+                       , 0
                        , 1 );
   //unsigned char
   if( d_type == CDM::E_CDM_UINT8 ) {
@@ -1349,7 +1353,7 @@ convMx1::nijk_to_ijk(cdm_Array* src, int ivar)
     cdm_TypeArray<char> *O = dynamic_cast<cdm_TypeArray<char>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
-  //unsigned short 
+  //unsigned short
   else if( d_type == CDM::E_CDM_UINT16 ) {
     cdm_TypeArray<unsigned short> *S = dynamic_cast<cdm_TypeArray<unsigned short>*>(src);
     cdm_TypeArray<unsigned short> *O = dynamic_cast<cdm_TypeArray<unsigned short>*>(outArray);
@@ -1361,7 +1365,7 @@ convMx1::nijk_to_ijk(cdm_Array* src, int ivar)
     cdm_TypeArray<short> *O = dynamic_cast<cdm_TypeArray<short>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
-  //unsigned int 
+  //unsigned int
   else if( d_type == CDM::E_CDM_UINT32 ) {
     cdm_TypeArray<unsigned int> *S = dynamic_cast<cdm_TypeArray<unsigned int>*>(src);
     cdm_TypeArray<unsigned int> *O = dynamic_cast<cdm_TypeArray<unsigned int>*>(outArray);
@@ -1373,7 +1377,7 @@ convMx1::nijk_to_ijk(cdm_Array* src, int ivar)
     cdm_TypeArray<int> *O = dynamic_cast<cdm_TypeArray<int>*>(outArray);
     copyArray_nijk_ijk(S,O,ivar);
   }
-  //unsigned long 
+  //unsigned long
   else if( d_type == CDM::E_CDM_UINT64 ) {
     cdm_TypeArray<unsigned long long> *S = dynamic_cast<cdm_TypeArray<unsigned long long>*>(src);
     cdm_TypeArray<unsigned long long> *O = dynamic_cast<cdm_TypeArray<unsigned long long>*>(outArray);
@@ -1400,4 +1404,3 @@ convMx1::nijk_to_ijk(cdm_Array* src, int ivar)
 
   return outArray;
 }
-

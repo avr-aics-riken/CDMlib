@@ -1,11 +1,15 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -75,16 +79,16 @@ cdm_FILE* convOutput_VTK::OutputFile_Open(
 // #################################################################
 //
 bool convOutput_VTK::WriteHeaderRecord(
-                                        int step, 
-                                        int dim, 
-                                        CDM::E_CDM_DTYPE d_type, 
-                                        int imax, 
-                                        int jmax, 
+                                        int step,
+                                        int dim,
+                                        CDM::E_CDM_DTYPE d_type,
+                                        int imax,
+                                        int jmax,
                                         int kmax,
-                                        double time, 
-                                        double* org, 
-                                        double* pit, 
-                                        std::string prefix, 
+                                        double time,
+                                        double* org,
+                                        double* pit,
+                                        std::string prefix,
                                         cdm_FILE *pFile)
 {
   FILE *fp = pFile->m_fp;
@@ -127,7 +131,7 @@ bool convOutput_VTK::WriteHeaderRecord(
   else if( d_type == CDM::E_CDM_INT64  ) out_d_type="long";
   else if( d_type == CDM::E_CDM_FLOAT32) out_d_type="float";
   else if( d_type == CDM::E_CDM_FLOAT64) out_d_type="double";
-  
+
   if( dim == 1 )
   {
     fprintf( fp, "SCALARS %s %s\n", prefix.c_str(), out_d_type.c_str() );
@@ -150,8 +154,8 @@ bool convOutput_VTK::WriteHeaderRecord(
 //
 bool convOutput_VTK::WriteHeaderRecord(int step,
                                        double time,
-                                       int dim, 
-                                       CDM::E_CDM_DTYPE d_type, 
+                                       int dim,
+                                       CDM::E_CDM_DTYPE d_type,
                                        CDM::E_CDM_DFITYPE dfi_type,
                                        cdm_Domain* out_domain,
                                        cdm_Process* out_process,
@@ -184,7 +188,7 @@ bool convOutput_VTK::WriteHeaderRecord(int step,
     head[i] = out_process->RankList[0].HeadIndex[i];
   }
 
-  int imax,jmax,kmax; 
+  int imax,jmax,kmax;
   if( m_InputCntl->Get_Interp_flag() ) {
     //格子点補間処理ありの場合は、配列サイズを+1。(ガイドセル出力はなし)
     imax = sz[0]+1;

@@ -2,11 +2,17 @@
 #define _CDM_DFI_FUB_H_
 
 /*
- *  CDMlib - Cartesian Data Management kibrary
- *
- *  Copyright (c) 2013-2016 Advanced Institute for Computational Science, RIKEN.
- *  All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #include "cdm_DFI.h"
@@ -31,9 +37,9 @@ protected:
     int    id; ///<read file rank ID
     string cFname; ///< Coordinate data fub file name
     string fFname; ///< Field data fub file name
-  }; 
+  };
 
-  vector<fubFname> fubFlist; 
+  vector<fubFname> fubFlist;
 */
 
 public:
@@ -41,7 +47,7 @@ public:
   /** コンストラクタ */
   cdm_DFI_FUB();
 
-  /** コンストラクタ 
+  /** コンストラクタ
    * @brief コンストラクタ
    * @param [in] F_Info  FileInfo
    * @param [in] F_Path  FilePath
@@ -50,7 +56,7 @@ public:
    * @param [in] domain  Domain
    * @param [in] mpi     MPI
    * @param [in] process Process
-   */ 
+   */
   cdm_DFI_FUB(const cdm_FileInfo F_Info,
               const cdm_FilePath F_Path,
               const cdm_VisIt visit,
@@ -109,7 +115,7 @@ protected:
    * @param[in]  nz          z方向のボクセルサイズ（実セル＋ガイドセル＊２）
    * @param[out] src         読み込んだデータを格納した配列のポインタ
    * @return error code
-   */ 
+   */
   CDM::E_CDM_ERRORCODE
   read_Datarecord(cdm_FILE* pFile,
                   bool matchEndian,
@@ -127,7 +133,7 @@ protected:
   * @param[out] avr_step    平均ステップ
   * @param[out] avr_time    平均タイム
   * @return error code
-  */ 
+  */
   CDM::E_CDM_ERRORCODE
   read_averaged(cdm_FILE* pFile,
                 bool matchEndian,
@@ -142,7 +148,7 @@ protected:
    * @param[in] time   時刻
    * @param[in] RankID ランク番号
    * @return error code
-   */ 
+   */
   CDM::E_CDM_ERRORCODE
   write_HeaderRecord(cdm_FILE* pFile,
                      const unsigned step,
@@ -156,7 +162,7 @@ protected:
    * @param[in]  gc ガイドセル
    * @param[in]  RankID ランク番号
    * @return error code
-   */ 
+   */
   CDM::E_CDM_ERRORCODE
   write_DataRecord(cdm_FILE* pFile,
                    cdm_Array* val,
@@ -166,7 +172,7 @@ protected:
   /**
    * @brief Averageレコードの出力
    *
-   */ 
+   */
   CDM::E_CDM_ERRORCODE
   write_averaged(cdm_FILE* pFile,
                  const unsigned step_avr,
@@ -178,7 +184,7 @@ public:
    * @brief fub特有のFileList要素を読み込む
    * @param [in] tpCntl cdm_TextParserクラス
    * @return error code
-   */ 
+   */
 
 /*
   CDM::E_CDM_ERRORCODE
@@ -194,7 +200,7 @@ public:
    *
    * @param [in] ID RankID
    * @return field data file name
-   */ 
+   */
 /*
   std::string
   getFileNameFromFileList( const int ID );
@@ -204,12 +210,12 @@ public:
    * @details index dfi のFileListに定義してある、フィールドファイルとペアになって
    * いる座標値ファイル名をフィールドファイル名で検索して取得、index dfiにFileList
    * がないときはフィールドファイル名の拡張子をxyzにしたファイル名が戻る．
-   * 
+   *
    * @param [in] FieldFileName field data file name
    * @return coordinate data file name
    */
   std::string
-  getCoordinateFileName(std::string FieldFileName); 
+  getCoordinateFileName(std::string FieldFileName);
 
   /**
   * @brief read xyz(fub) data record
@@ -239,7 +245,7 @@ public:
            double &time,
            const bool mode,
            unsigned &step_avr,
-           double &time_avr);                                                        
+           double &time_avr);
   /**
    * @brief write coordinate data record
    * @param [in] step     出力ステップ番号
@@ -251,7 +257,7 @@ public:
   WriteCoordinateData(const unsigned step,
                       const int gc,
                       double time,
-                      cdm_Array* val); 
+                      cdm_Array* val);
 
   /**
    * @brief index.dfiにFileListがあるとき、FileListを出力
@@ -268,14 +274,14 @@ public:
    * @brief cdm_FieldFileNameFormatクラスのポインタ取得
    * @return cdm_FieldFileNameFormatクラスのポインタ
    */
-  const cdm_FieldFileNameFormat* GetcdmFieldFileNameFormat(); 
+  const cdm_FieldFileNameFormat* GetcdmFieldFileNameFormat();
 
   /**
    *
    *
    */
   void SetcdmFieldFileNameFormat(cdm_FieldFileNameFormat _FieldFileNameFormat)
-  { DFI_FieldFileNameFormat = _FieldFileNameFormat; }; 
+  { DFI_FieldFileNameFormat = _FieldFileNameFormat; };
 
 };
 

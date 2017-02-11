@@ -2,13 +2,17 @@
 #define _CONVOUTPUT_VTK_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -45,7 +49,7 @@ public:
                         const unsigned step,
                         const int id,
                         const bool mio);
-                  
+
 
   /**
    * @brief vtkファイルのheaderの書き込み
@@ -72,7 +76,7 @@ public:
                     double* org,
                     double* pit,
                     const std::string prefix,
-                    cdm_FILE *pFile); 
+                    cdm_FILE *pFile);
 
   /**
    * @brief vtkファイルのheaderの書き込み(不等間隔格子対応版)
@@ -97,7 +101,7 @@ public:
                     cdm_Process* out_process,
                     int gc,
                     const std::string prefix,
-                    cdm_FILE *pFile); 
+                    cdm_FILE *pFile);
 
   /**
    * @brief Field Datat 出力
@@ -130,7 +134,7 @@ public:
   /**
    * @brief マーカーの書き込み
    * @param[in] dmy    マーカー
-   * @param[in] pFile  出力ファイルポインタ 
+   * @param[in] pFile  出力ファイルポインタ
    * @param[in] out    出力フラグ
    */
   bool
@@ -140,10 +144,10 @@ public:
    * @brief 出力ファイルをクローズする
    * @param [in] pFile ファイルポインタ
    */
-  void OutputFile_Close(cdm_FILE* pFile); 
+  void OutputFile_Close(cdm_FILE* pFile);
 
 protected:
 
 };
 
-#endif // _CONVOUTPUT_VTK_H_ 
+#endif // _CONVOUTPUT_VTK_H_

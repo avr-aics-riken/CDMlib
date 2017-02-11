@@ -2,13 +2,17 @@
 #define _INPUTPARAM_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -58,7 +62,7 @@ public:
   cpm_ParaManager* m_paraMngr;
 
 protected:
-  
+
   bool m_output_dfi_on;      ///<dfi出力指示フラグ
   bool m_bgrid_interp_flag;  ///<節点への補間フラグ
   bool m_out_ftype_crd_on;   ///<座標データの出力形式指示フラグ
@@ -79,19 +83,19 @@ protected:
   CDM::E_CDM_ARRAYSHAPE         m_outputArrayShape;     ///<出力配列形状
   CDM::E_CDM_OUTPUT_FNAME       m_outputFilenameFormat; ///<出力ファイル名命名順
   E_CONV_OUTPUT_MULTI_FILE_CAST m_multiFileCasting;     ///<並列処理時のファイル割振り方法
-  
+
 public:
   /** コンストラクタ */
   InputParam(cpm_ParaManager* paraMngr);
-  
+
   /**　デストラクタ */
   ~InputParam();
-  
+
 public:
 
   /**
    * @brief CPMのポインタをコピー
-   * @param [in] paraMngr  cpm_ParaManagerクラス 
+   * @param [in] paraMngr  cpm_ParaManagerクラス
    * @return  エラーコード
    */
   //bool importCPM(cpm_ParaManager* paraMngr);
@@ -100,30 +104,30 @@ public:
    * @brief 入力ファイルの読み込み
    * @param [in] input_file_name 入力TPファイル名
    */
-  bool Read(std::string input_file_name); 
+  bool Read(std::string input_file_name);
 
   /**
    * @brief 入力パラメータのエラーチェック
    * @return error code
    */
-  bool InputParamCheck(); 
+  bool InputParamCheck();
 
   /**
    * @brief 入力パラメータのログ出力
    * @param[in] fp 出力ファイルポインタ
    */
-  void PrintParam(FILE* fp); 
+  void PrintParam(FILE* fp);
 
   /**
    * @brief dfiListの取り出し
    */
-  vector<dfi_info> Get_dfiList() { return m_dfiList; }; 
+  vector<dfi_info> Get_dfiList() { return m_dfiList; };
 
   /**
    * @brief dfi出力指示フラグの取り出し
    */
   bool Get_Outputdfi_on() { return m_output_dfi_on; };
- 
+
   /**
    * @brief 節点への補間フラグの取り出し
    */
@@ -183,7 +187,7 @@ public:
     if( Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) return "vtk";
     if( Get_OutputFormat() == CDM::E_CDM_FMT_PLOT3D ) return "plot3d";
     return "";
-  }; 
+  };
 
 
   /**
@@ -242,14 +246,14 @@ public:
   /**
    * @brief 出力配列形状のセット
    */
-  void Set_OutputArrayShape( CDM::E_CDM_ARRAYSHAPE outputArrayShape ) 
-       { m_outputArrayShape = outputArrayShape; }; 
+  void Set_OutputArrayShape( CDM::E_CDM_ARRAYSHAPE outputArrayShape )
+       { m_outputArrayShape = outputArrayShape; };
 
   /**
    * @brief 出力ファイル名命名順の取り出し
    */
   CDM::E_CDM_OUTPUT_FNAME
-  Get_OutputFilenameFormat() { return m_outputFilenameFormat; }; 
+  Get_OutputFilenameFormat() { return m_outputFilenameFormat; };
 
   /**
    * @brief 出力ガイドセル数の取り出し
@@ -260,33 +264,33 @@ public:
    * @brief 出力ガイドセル数の更新
    * @param[in] outgc 出力ガイドセル数
    */
-  void Set_OutputGuideCell(int outgc) { m_outputGuideCell = outgc; }; 
+  void Set_OutputGuideCell(int outgc) { m_outputGuideCell = outgc; };
 
   /**
    * @brief 並列処理時のファイル割振り方法の取り出し
    */
   E_CONV_OUTPUT_MULTI_FILE_CAST
-  Get_MultiFileCasting() { return m_multiFileCasting; }; 
+  Get_MultiFileCasting() { return m_multiFileCasting; };
 
   /**
    * @brief 入力領域のスタート指示フラグの取り出し
    */
-  bool Get_CropIndexStart_on() { return m_cropIndexStart_on; } 
+  bool Get_CropIndexStart_on() { return m_cropIndexStart_on; }
 
   /**
    * @brief 入力領域のエンド指示フラグの取り出し
    */
-  bool Get_CropIndexEnd_on() { return m_cropIndexEnd_on; } 
+  bool Get_CropIndexEnd_on() { return m_cropIndexEnd_on; }
 
   /**
    * @brief 入力領域のスタート位置取り出し
    */
-  int* Get_CropIndexStart() { return m_cropIndexStart; };  
+  int* Get_CropIndexStart() { return m_cropIndexStart; };
 
   /**
    * @brief 入力領域のエンド位置取り出し
    */
-  int* Get_CropIndexEnd() { return m_cropIndexEnd; }; 
+  int* Get_CropIndexEnd() { return m_cropIndexEnd; };
 
   /**
    * @brief 入力領域のスタート位置の更新
@@ -304,8 +308,8 @@ public:
   void Set_CropIndexEnd(int end[3])
   {
     for(int i=0; i<3; i++) m_cropIndexEnd[i]=end[i];
-  }; 
- 
+  };
+
 };
 
 #endif // _INPUTPARAM_H_

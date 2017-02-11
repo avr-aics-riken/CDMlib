@@ -1,6 +1,15 @@
 /*
- *
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #include "cdm_DFI.h"
@@ -11,7 +20,7 @@
 cdm_FieldFileNameFormat::cdm_FieldFileNameFormat()
 {
 
-  LabelList.clear(); 
+  LabelList.clear();
 
 }
 
@@ -34,7 +43,7 @@ cdm_FieldFileNameFormat::Read(cdm_TextParser tpCntl)
   if( !tp )
   {
     return CDM::E_CDM_ERROR_TEXTPARSER;
-  }  
+  }
 
   vector<string> top_label;  ///< カレントの子ノードのラベル格納
   tp->getNodes(top_label);
@@ -62,7 +71,7 @@ cdm_FieldFileNameFormat::Read(cdm_TextParser tpCntl)
     cdm_FieldFileNameFormatElem elem(label[i]);
 
     //FieldFileNameFormatElemのパース
-    if( elem.Read(tp) ) 
+    if( elem.Read(tp) )
     {
       //FieldFileNameFormatElemをmapに追加
       AddFieldFileNameFormatElem(elem);
@@ -90,7 +99,7 @@ cdm_FieldFileNameFormat::Print()
 
 // #################################################################
 // FieldFileNameFormatElemクラスの取得
-cdm_FieldFileNameFormatElem* 
+cdm_FieldFileNameFormatElem*
 cdm_FieldFileNameFormat::GetFieldFileNameFormatElem( const string label )
 {
 
@@ -121,7 +130,7 @@ cdm_FieldFileNameFormat::AddFieldFileNameFormatElem(cdm_FieldFileNameFormatElem 
 
 // #################################################################
 // label list の取得
-vector<string> 
+vector<string>
 cdm_FieldFileNameFormat::GetLabelList()
 {
 
@@ -140,7 +149,7 @@ cdm_FieldFileNameFormat::FileExist(string label, string DirPath, int nStep, int 
 // #################################################################
 // ファイル名の生成
 string
-cdm_FieldFileNameFormat::GenerateFileName(string label, string DirPath, 
+cdm_FieldFileNameFormat::GenerateFileName(string label, string DirPath,
                                       int nStep, int nId)
 {
    cdm_FieldFileNameFormatElem* elm = GetFieldFileNameFormatElem(label);

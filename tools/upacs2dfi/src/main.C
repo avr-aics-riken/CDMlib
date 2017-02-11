@@ -1,8 +1,15 @@
 /*
- *
- *
- *
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #define MPI_COMPILE
@@ -23,10 +30,10 @@ bool getParameter(TextParser *tp, int &vc, DataType &Dtype, double &tol,
                   int &StartStepNo, int &EndStepNo,
                   string &DirPath);
 
-void printParameter(int vc, DataType Dtype, double tol, 
+void printParameter(int vc, DataType Dtype, double tol,
                     int StartFileNo, int NumberOfBlock,
                     int StartStepNo, int EndStepNo,
-                    string DirPath); 
+                    string DirPath);
 
 void WriteDFI(FILE *fp, int vc, vector<string> valname,string endian,
               string dftype, string DirPath, set<int>StepNoList,
@@ -37,19 +44,19 @@ void WriteDFI(FILE *fp, int vc, vector<string> valname,string endian,
 
 int main( int argc, char *argv[] ) {
 
-#ifdef MPI_COMPILE 
+#ifdef MPI_COMPILE
   int nprocs,myRank;
-  MPI_Init(&argc, &argv); 
+  MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
   MPI_Comm_size(MPI_COMM_WORLD, &nprocs);
-  if( nprocs > 1 ) 
+  if( nprocs > 1 )
   {
     if( myRank == 0 ) {
       printf("Error Number of Proccess is Greater Than 1 : %d\n",nprocs);
     }
-    MPI_Finalize();  
+    MPI_Finalize();
     return 0;
-  }  
+  }
 #endif
   int ret=0;
   double tol = 0.0;
@@ -67,7 +74,7 @@ int main( int argc, char *argv[] ) {
 
     //file open check
     FILE *fp;
-    if( !(fp = fopen(input_file.c_str(),"r")) ) 
+    if( !(fp = fopen(input_file.c_str(),"r")) )
     {
       printf("Error at file open : %s file\n",input_file.c_str());
       return 0;
@@ -103,7 +110,7 @@ int main( int argc, char *argv[] ) {
                     StartFileNo, NumberOfBlock,
                     StartStepNo, EndStepNo,
                      DirPath) ) {
-    return CDM::E_CDM_ERROR_TEXTPARSER; 
+    return CDM::E_CDM_ERROR_TEXTPARSER;
   }
 
   vc=GuideCell;
@@ -176,10 +183,10 @@ int main( int argc, char *argv[] ) {
   set<int>::iterator its;
 
   itr = FRankList.begin();
-  while( itr != FRankList.end() ) 
+  while( itr != FRankList.end() )
   {
     its = CStepList.begin();
-    while( its != CStepList.end() ) 
+    while( its != CStepList.end() )
     {
       fubCname = FFF.GenerateFileName("CoordinateFile", DirPath, *its, *itr);
       fubFname = FFF.GenerateFileName("FieldFile", DirPath, *its, *itr);
@@ -225,7 +232,7 @@ int main( int argc, char *argv[] ) {
 //分割数の獲得(idiv)
   fub_DATA *checkNode=firstNode;
   int idiv=1;
-  while( checkNode->nID[X_PLUS] ) 
+  while( checkNode->nID[X_PLUS] )
   {
     idiv++;
     checkNode = checkNode->nID[X_PLUS];
@@ -234,7 +241,7 @@ int main( int argc, char *argv[] ) {
 //分割数の獲得(jdiv)
   checkNode=firstNode;
   int jdiv=1;
-  while( checkNode->nID[Y_PLUS] ) 
+  while( checkNode->nID[Y_PLUS] )
   {
     jdiv++;
     checkNode = checkNode->nID[Y_PLUS];
@@ -243,7 +250,7 @@ int main( int argc, char *argv[] ) {
 //分割数の獲得(kdiv)
   checkNode=firstNode;
   int kdiv=1;
-  while( checkNode->nID[Z_PLUS] ) 
+  while( checkNode->nID[Z_PLUS] )
   {
     kdiv++;
     checkNode = checkNode->nID[Z_PLUS];
@@ -336,12 +343,12 @@ int main( int argc, char *argv[] ) {
   printf("created field.dfi file\n");
 
 
-  delete [] fubDataMap; 
+  delete [] fubDataMap;
 
 #ifdef MPI_COMPILE
-  MPI_Finalize(); 
-#endif 
- 
+  MPI_Finalize();
+#endif
+
   return 0;
 
 }
@@ -448,7 +455,7 @@ bool getParameter(TextParser *tp, int &vc, DataType &Dtype, double &tol,
 
 void printParameter(int vc, DataType Dtype, double tol, int StartFileNo,
                     int NumberOfBlock, int StartStepNo, int EndStepNo,
-                    string DirPath) 
+                    string DirPath)
 {
 
   printf("\n");
@@ -513,7 +520,7 @@ void WriteDFI(FILE *fp, int vc, vector<string> valname,string endian,
     _FUB_WRITE_TAB(fp,tab);
     fprintf(fp,"Variable[@]{ name  = \"%s\" }\n",valname[i].c_str());
   }
-  
+
   fprintf(fp,"\n");
   fprintf(fp,"}\n");
   fprintf(fp,"\n");
@@ -537,7 +544,7 @@ void WriteDFI(FILE *fp, int vc, vector<string> valname,string endian,
   _FUB_WRITE_TAB(fp,tab);
   fprintf(fp,"ResultFormat  = \"FBinary\"\n");
   fprintf(fp,"\n");
-  fprintf(fp,"}\n");  
+  fprintf(fp,"}\n");
   fprintf(fp,"\n");
 
 //UnitList
@@ -550,7 +557,7 @@ void WriteDFI(FILE *fp, int vc, vector<string> valname,string endian,
 //TimeSlice
   fprintf(fp,"TimeSlice {\n");
   fprintf(fp,"\n");
-  
+
   set<int>::iterator it = StepNoList.begin();
   while( it != StepNoList.end() )
   {

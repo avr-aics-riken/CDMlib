@@ -2,13 +2,17 @@
 #define _CONVOUTPUT_BOV_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -71,11 +75,11 @@ public:
                     double* org,
                     double* pit,
                     const std::string prefix,
-                    cdm_FILE *pFile); 
+                    cdm_FILE *pFile);
 
 
 protected:
 
 };
 
-#endif // _CONVOUTPUT_BOV_H_ 
+#endif // _CONVOUTPUT_BOV_H_

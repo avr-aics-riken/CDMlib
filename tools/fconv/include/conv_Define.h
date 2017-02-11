@@ -2,13 +2,17 @@
 #define _CONV_DEFINE_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -35,8 +39,8 @@
 
 #define LOG_OUT_   if(m_lflag)
 #define LOG_OUTV_  if(m_lflagv)
-#define STD_OUT_   if(m_pflag) 
-#define STD_OUTV_  if(m_pflagv) 
+#define STD_OUT_   if(m_pflag)
+#define STD_OUTV_  if(m_pflagv)
 
 
 /** コンバート形式 */

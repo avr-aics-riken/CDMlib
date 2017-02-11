@@ -1,4 +1,18 @@
 /*
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
+*/
+
+/*
  *サンプルコードsample_output_Uni.Cおよびsample_output_NonUni.Cで出力されるフィールドデータを、読込み用配列d_vに読み込む。
  *sample_output_NonUni.Cで出力される不等間隔格子のデータを読込む際は、座標ファイルcoord.crdも合わせて読込む。
  */

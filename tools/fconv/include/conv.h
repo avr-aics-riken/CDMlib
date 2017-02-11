@@ -2,13 +2,17 @@
 #define _CONV_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -74,13 +78,13 @@ public:
      if( Min ) delete [] Min;
      if( Max ) delete [] Max;
    };
- };   
+ };
 
 public:
   cpm_ParaManager* m_paraMngr; ///< Cartesian Partition Manager
 
   InputParam* m_param;     ///< InputParam Class
-  
+
 public:
   int m_procGrp;           ///< プロセスグループ番号
   int m_myRank;            ///< 自ノードのランク番号
@@ -88,12 +92,12 @@ public:
   std::string m_HostName;  ///< ホスト名
 
 private:
-  
+
   //並列実行時のSTAGINGのON/OFF
   unsigned m_staging;
-  
+
 public:
- 
+
   int m_pflag;
   int m_pflagv;
   int m_lflag;
@@ -104,20 +108,20 @@ public:
 public:
   /** コンストラクタ */
   CONV();
-  
+
   /**　デストラクタ */
   ~CONV();
-  
+
 protected:
-  
+
   FILE* m_fplog;
-  
+
 public:
 
   /**
    * @brief conv インスタンス
    * @param [in] InputCntl InputParamクラスポインタ
-   */ 
+   */
   static CONV*
   ConvInit(InputParam* param);
 
@@ -133,7 +137,7 @@ public:
     setRankInfo();
     return true;
   }
-  
+
   /**
    * @brief ランク情報をセットする
    */
@@ -144,7 +148,7 @@ public:
     m_numProc = m_paraMngr->GetNumRank();
     m_HostName= m_paraMngr->GetHostName();
   }
- 
+
   /**
    * @brief InputParamのポインタをコピー
    * @param [in] InputCntl InputParamクラスポインタ
@@ -163,48 +167,48 @@ public:
    * @brief dfiファイルの読み込みとDfiInfoクラスデータの作成
    */
   CDM::E_CDM_ERRORCODE ReadDfiFiles();
- 
+
   /**
    * @brief dfi毎の変数の個数、出力ガイドセルのチェックと更新
    * @return エラーコード
    */
   bool CheckDFIdata();
- 
+
   /**
    * @brief 出力指定ディレクトリのチェック
    * @param [in] dirstr 出力ディレクトリ
    */
   void CheckDir(string dirstr);
-  
+
   /**
    * @brief ログファイルのオープン
    */
   void OpenLogFile();
-  
+
   /**
    * @brief ログファイルのクローズ
    */
   //void CloseLogFile();
- 
+
   /**
    * @brief dfiのログ出力
    */
-  void PrintDFI(FILE* fp); 
+  void PrintDFI(FILE* fp);
 
- 
+
   /**
    * @brief 所要時間の記述
    * @param [in] tt 所要時間
    */
   void WriteTime(double* tt);
-  
+
   /**
    * @brief メモリ使用量を表示する
    * @param [in] Memory メモリ量
    * @param [in] fp     ファイルポインタ
    */
   void MemoryRequirement(const double Memory, FILE* fp);
-  
+
   /**
    * @brief メモリ使用量を表示する
    * @param [in] TotalMemory トータルメモリ使用量最大値
@@ -213,10 +217,10 @@ public:
    * @param [in] thinMemory 間引きオプションのためのメモリ使用量最大値
    * @param [in] fp     ファイルポインタ
    */
-  void MemoryRequirement(const double TotalMemory, 
-                         const double sphMemory, 
-                         const double plot3dMemory, 
-                         const double thinMemory, 
+  void MemoryRequirement(const double TotalMemory,
+                         const double sphMemory,
+                         const double plot3dMemory,
+                         const double thinMemory,
                          FILE* fp);
 
   /**
@@ -229,14 +233,14 @@ public:
    * @brief コーンバート処理
    */
   virtual
-  bool exec()=0;  
+  bool exec()=0;
 
 //20160422.fub.s
   /**
    * @brief Prefixが空白のとき、Prefixをセット（fubファイル用)
    * @param[in] dfi  dfiのポインター
    * @param[in] ndfi dfiのカウンター
-   */ 
+   */
   void SetPrefixFileInfo(cdm_DFI* dfi, int ndfi);
 //20160422.fub.e
   /**
@@ -245,7 +249,7 @@ public:
    * @param[in] step step番号
    * @return time
    */
-  double GetSliceTime(cdm_DFI* dfi, int step); 
+  double GetSliceTime(cdm_DFI* dfi, int step);
 
   /**
    * @brief 配列のコンバート
@@ -261,7 +265,7 @@ public:
                  int headS[3],
                  int tailS[3],
                  int n);
- 
+
   /**
    * @brief 配列のコピー
    * @param [in]  B          コピー元の配列
@@ -269,14 +273,14 @@ public:
    * @param [in]  sta        コピーのスタート位置
    * @param [in]  end        コピーのエンド位置
    * @param [in]  n          変数位置
-   */ 
+   */
   template<class T>
   bool copyArray(cdm_TypeArray<T> *B,
                  cdm_Array *&src,
                  int sta[3],
                  int end[3],
                  int n);
- 
+
   /**
    * @brief 配列のコピー (template 関数)
    * @param [in]  buf        コピー元の配列
@@ -320,7 +324,7 @@ public:
    * @return 拡張子
    */
   static
-  std::string GetFilenameExt(int file_format_type); 
+  std::string GetFilenameExt(int file_format_type);
 
   /**
    * @brief step基準のリスト生成
@@ -346,10 +350,10 @@ public:
   bool WriteProcDfiFile(std::string proc_name,
                         cdm_Domain* out_domain,
                         cdm_MPI* out_mpi,
-                        cdm_Process* out_process); 
+                        cdm_Process* out_process);
 
   /**
-   * @brief Proc情報の生成 
+   * @brief Proc情報の生成
    */
   bool makeProcInfo(cdm_DFI* dfi,
                     cdm_Domain* &out_domain,

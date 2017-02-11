@@ -2,11 +2,17 @@
 #define _CDM_FIELDFILENAMEFORMAT_H_
 
 /*
- * DMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2016 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #include<map>
@@ -55,8 +61,8 @@ public:
   string GenerateFileName(string label, string DirPath, int nStep, int nId);
 
   /** index.dfi FieldFileNameFormat{} 出力 */
-  void Write(FILE *fp, const unsigned tab); 
+  void Write(FILE *fp, const unsigned tab);
 
 };
 
-#endif 
+#endif

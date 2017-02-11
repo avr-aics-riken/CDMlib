@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_Process.C
  * @brief  cdm_Rank & cdm_Process Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -74,7 +80,7 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
   //VoxelSize
   label = label_leaf + "/VoxelSize";
   for (int n=0; n<3; n++) iv[n]=0.0;
-  if ( !(tpCntl.GetVector(label, iv, 3 )) ) 
+  if ( !(tpCntl.GetVector(label, iv, 3 )) )
   {
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_VOXELSIZE;
@@ -86,7 +92,7 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
   //HeadIndex
   label = label_leaf + "/HeadIndex";
   for (int n=0; n<3; n++) iv[n]=0.0;
-  if ( !(tpCntl.GetVector(label, iv, 3 )) ) 
+  if ( !(tpCntl.GetVector(label, iv, 3 )) )
   {
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_HEADINDEX;
@@ -98,7 +104,7 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
   //TailIndex
   label = label_leaf + "/TailIndex";
   for (int n=0; n<3; n++) iv[n]=0.0;
-  if ( !(tpCntl.GetVector(label, iv, 3 )) ) 
+  if ( !(tpCntl.GetVector(label, iv, 3 )) )
   {
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_TAILINDEX;
@@ -141,7 +147,7 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
   //VoxelSize
   label = "VoxelSize";
   for (int n=0; n<3; n++) iv[n]=0.0;
-  if ( !(tpCntl.GetVector(label, iv, 3, false )) ) 
+  if ( !(tpCntl.GetVector(label, iv, 3, false )) )
   {
     printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_VOXELSIZE;
@@ -153,7 +159,7 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
   //HeadIndex
   label = "HeadIndex";
   for (int n=0; n<3; n++) iv[n]=0.0;
-  if ( !(tpCntl.GetVector(label, iv, 3, false )) ) 
+  if ( !(tpCntl.GetVector(label, iv, 3, false )) )
   {
     printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_HEADINDEX;
@@ -165,7 +171,7 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
   //TailIndex
   label = "TailIndex";
   for (int n=0; n<3; n++) iv[n]=0.0;
-  if ( !(tpCntl.GetVector(label, iv, 3, false )) ) 
+  if ( !(tpCntl.GetVector(label, iv, 3, false )) )
   {
     printf("\tCDM Parsing error : fail to get '%s/%s'\n",label_leaf.c_str(),label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_TAILINDEX;
@@ -207,8 +213,8 @@ cdm_Rank::Read(cdm_TextParser tpCntl,
 // #################################################################
 // DFIファイル:Rank要素を出力する
 CDM::E_CDM_ERRORCODE
-cdm_Rank::Write(FILE* fp, 
-                const unsigned tab) 
+cdm_Rank::Write(FILE* fp,
+                const unsigned tab)
 {
 
     _CDM_WRITE_TAB(fp, tab);
@@ -273,7 +279,7 @@ cdm_Process::Read(cdm_TextParser tpCntl)
 
   cdm_Rank rank;
 
-  //Process 
+  //Process
   nnode=0;
   label_base = "/Process";
   if ( tpCntl.chkNode(label_base) )  //nodeがあれば
@@ -294,7 +300,7 @@ cdm_Process::Read(cdm_TextParser tpCntl)
     /** Rankの読込み */
     iret = rank.Read(tpCntl, label_leaf);
     if( iret == CDM::E_CDM_SUCCESS ) {
-      RankList.push_back(rank); 
+      RankList.push_back(rank);
     } else  return iret;
 
   }
@@ -349,8 +355,8 @@ cdm_Process::Read(cdm_TextParser tpCntl)
 
 // #################################################################
 // 読込みランクリストの作成
-CDM::E_CDM_ERRORCODE 
-cdm_Process::CheckReadRank(const cdm_Domain* dfi_domain, 
+CDM::E_CDM_ERRORCODE
+cdm_Process::CheckReadRank(const cdm_Domain* dfi_domain,
                            const int head[3],
                            const int tail[3],
                            CDM::E_CDM_READTYPE readflag,
@@ -361,13 +367,13 @@ cdm_Process::CheckReadRank(const cdm_Domain* dfi_domain,
 
   //DFIにProcess/Rank[@]がない処理
   if( RankList.empty() ) {
-    CDM::E_CDM_ERRORCODE ret = CreateRankList(dfi_domain, mapHeadX, mapHeadY, mapHeadZ);   
+    CDM::E_CDM_ERRORCODE ret = CreateRankList(dfi_domain, mapHeadX, mapHeadY, mapHeadZ);
     if( ret != CDM::E_CDM_SUCCESS ) return ret;
   }
 
   //rankMapが未定義（DFIにProcess/Rank[@]がある場合）
   if( m_rankMap == NULL ) {
-    m_rankMap = CreateRankMap(dfi_domain->GlobalDivision, mapHeadX, mapHeadY, mapHeadZ); 
+    m_rankMap = CreateRankMap(dfi_domain->GlobalDivision, mapHeadX, mapHeadY, mapHeadZ);
   }
 
   //mapHeadX,mapHeadY,mapHeadZが未定義
@@ -382,14 +388,14 @@ cdm_Process::CheckReadRank(const cdm_Domain* dfi_domain,
     CreateHeadMap(heady,mapHeadY);
     CreateHeadMap(headz,mapHeadZ);
   }
-  
+
   return CheckStartEnd(dfi_domain, head, tail, readflag, mapHeadX, mapHeadY, mapHeadZ, ReadRankList);
 
 }
 
 // #################################################################
 // DFIのProcessにHeadIndex,TailIndex指定が無い場合RankListを生成
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_Process::CreateRankList(const cdm_Domain* dfi_domain,
                             map<int,int> &mapHeadX,
                             map<int,int> &mapHeadY,
@@ -399,10 +405,10 @@ cdm_Process::CreateRankList(const cdm_Domain* dfi_domain,
   vector<cdm_ActiveSubDomain> subDomainInfo;
 
   CDM::E_CDM_ERRORCODE ret;
- 
+
   ret = CreateSubDomainInfo(dfi_domain,subDomainInfo);
   if( ret != CDM::E_CDM_SUCCESS ) return ret;
-  
+
   m_rankMap = CreateRankMap(dfi_domain->GlobalDivision,subDomainInfo);
 
   ret = CreateRankList(dfi_domain->GlobalDivision, dfi_domain->GlobalVoxel,
@@ -414,7 +420,7 @@ cdm_Process::CreateRankList(const cdm_Domain* dfi_domain,
 
 // #################################################################
 // ActiveSubDomain情報を作成
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_Process::CreateSubDomainInfo(const cdm_Domain* domain,
                                  vector<cdm_ActiveSubDomain> &subDomainInfo)
 {
@@ -439,7 +445,7 @@ cdm_Process::CreateSubDomainInfo(const cdm_Domain* domain,
 }
 // #################################################################
 // subDomainをもとにCPM同様の分割方法でRankListを生成する
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_Process::CreateRankList(const int div[3],
                             const int gvox[3],
                             map<int,int> &mapHeadX,
@@ -526,7 +532,7 @@ cdm_Process::CreateRankList(const int div[3],
 
 // #################################################################
 // ActiveSubdomainファイルの読み込み(static関数)
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_Process::ReadActiveSubdomainFile(
                      std::string subDomainFile,
                      std::vector<cdm_ActiveSubDomain>& subDomainInfo,
@@ -695,7 +701,7 @@ void cdm_Process::CreateHeadMap(int* head,
                                 int ndiv,
                                 headT &map)
 {
-  
+
   map.clear();
 
   for(int i=0; i<ndiv; i++)
@@ -754,7 +760,7 @@ int* cdm_Process::CreateRankMap(const int div[3],
 
 // #################################################################
 //  読込みランクファイルリストの作成
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_Process::CheckStartEnd(const cdm_Domain* dfi_domain,
                            const int head[3],
                            const int tail[3],
@@ -829,8 +835,8 @@ cdm_Process::CheckStartEnd(const cdm_Domain* dfi_domain,
 // #################################################################
 // DFIファイル:Process要素を出力する
 CDM::E_CDM_ERRORCODE
-cdm_Process::Write(FILE* fp, 
-                   const unsigned tab) 
+cdm_Process::Write(FILE* fp,
+                   const unsigned tab)
 {
 
   fprintf(fp, "Process {\n");
@@ -858,5 +864,3 @@ cdm_Process::Write(FILE* fp,
 
   return CDM::E_CDM_SUCCESS;
 }
-
-

@@ -1,15 +1,19 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 
-/** 
+/**
  * @file main.C
  * @brief convのmain関数
  * @author aics
@@ -109,8 +113,8 @@ int main( int argc, char **argv )
   }
 
   // 画面出力、ログ出力の整理
-  if(pflagv==1) pflag =1; 
-  if(pflag ==0) pflagv=0; 
+  if(pflagv==1) pflag =1;
+  if(pflag ==0) pflagv=0;
   lflag=0;
   lflagv=0;
   if(out_log){
@@ -164,7 +168,7 @@ int main( int argc, char **argv )
   cout << "ReadDfiFiles" << endl;
   t1 = cpm_Base::GetWTime();
   if( conv->ReadDfiFiles() != CDM::E_CDM_SUCCESS ) return 0;
- 
+
   t2 = cpm_Base::GetWTime();
   // ##################################################################
   // VoxelInit
@@ -202,4 +206,3 @@ int main( int argc, char **argv )
 
   return 0;
 }
-

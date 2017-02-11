@@ -1,16 +1,22 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 #ifdef _WITH_NETCDF4_
 
-/** 
+/**
  * @file   cdm_DFI_NETCDF.C
  * @brief  cdm_DFI_NETCDF Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -242,7 +248,7 @@ stmpd_printf( "error nc_inq_var_endian\n" );
   {
     stDimInfo dimInfo;
     dimInfo.id = dimids[i];
-    
+
     // name , size
     char name[NC_MAX_NAME];
     if( nc_inq_dim(ncid, dimInfo.id, name, &dimInfo.len) != NC_NOERR )
@@ -517,13 +523,13 @@ cdm_DFI_NETCDF::write_AttUnits( int ncid, int varid, string var_name, cdm_Unit &
 CDM::E_CDM_ERRORCODE
 //cdm_DFI_NETCDF::read_HeaderRecord(int ncid,
 cdm_DFI_NETCDF::read_HeaderRecord(cdm_FILE *pFile,
-                                  bool matchEndian, 
+                                  bool matchEndian,
                                   unsigned step,
                                   const int head[3],
                                   const int tail[3],
-                                  int gc, 
-                                  int voxsize[3],  
-                                  double &time) 
+                                  int gc,
+                                  int voxsize[3],
+                                  double &time)
 {
 //stmpd_printf( "***** function start *****\n" );
   CDM::E_CDM_ERRORCODE ret = CDM::E_CDM_SUCCESS;
@@ -609,9 +615,9 @@ cdm_DFI_NETCDF::read_HeaderRecord(int ncid,
 CDM::E_CDM_ERRORCODE
 //cdm_DFI_NETCDF::read_Datarecord(int ncid,
 cdm_DFI_NETCDF::read_Datarecord(cdm_FILE *pFile,
-                                bool matchEndian, 
+                                bool matchEndian,
                                 unsigned step,
-                                cdm_Array* buf, 
+                                cdm_Array* buf,
                                 int head[3],
                                 int nz,
                                 cdm_Array* &src)
@@ -670,7 +676,7 @@ cdm_DFI_NETCDF::read_Datarecord(cdm_FILE *pFile,
     // start & count for read nc
     size_t start[4];
     size_t count[4];
-    
+
     // data array
     if( varInfo.dims.size() == 3 )
     {
@@ -860,7 +866,7 @@ cdm_DFI_NETCDF::read_Datarecord(int ncid,
     // start & count for read nc
     size_t start[4];
     size_t count[4];
-    
+
     // data array size
     int nx, ny, nz;
     if( varInfo.dims.size() == 3 )
@@ -910,7 +916,7 @@ cdm_DFI_NETCDF::read_Datarecord(int ncid,
                    , 0
                    , (int)VariableName.size() );
       pArray->setHeadIndex(head);
-      
+
     }
     else
     {
@@ -1052,10 +1058,10 @@ cdm_DFI_NETCDF::read_averaged(cdm_FILE *pFile,
 
 // #################################################################
 // NETCDFヘッダーレコードの出力
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_DFI_NETCDF::write_HeaderRecord(cdm_FILE *pFile,
-                                   const unsigned step, 
-                                   const double time, 
+                                   const unsigned step,
+                                   const double time,
                                    const int n)
 {
   // 変数名
@@ -1112,10 +1118,10 @@ cdm_DFI_NETCDF::write_HeaderRecord(cdm_FILE *pFile,
 
 // #################################################################
 // NETCDFヘッダーレコードの出力(static関数)
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_DFI_NETCDF::write_HeaderRecord(cdm_FILE *pFile,
-                                   const unsigned step, 
-                                   const double time, 
+                                   const unsigned step,
+                                   const double time,
                                    int VoxelSize[3],
                                    int GuideCell,
                                    CDM::E_CDM_DTYPE DataType,
@@ -1242,8 +1248,8 @@ cdm_DFI_NETCDF::write_HeaderRecord(cdm_FILE *pFile,
 // NETCDFデータレコードの出力
 CDM::E_CDM_ERRORCODE
 cdm_DFI_NETCDF::write_DataRecord(cdm_FILE *pFile,
-                                 cdm_Array* val, 
-                                 const int gc, 
+                                 cdm_Array* val,
+                                 const int gc,
                                  const int n)
 {
   // 出力
@@ -1259,8 +1265,8 @@ cdm_DFI_NETCDF::write_DataRecord(cdm_FILE *pFile,
 // NETCDFデータレコードの出力(static関数)
 CDM::E_CDM_ERRORCODE
 cdm_DFI_NETCDF::write_DataRecord(cdm_FILE *pFile,
-                                 cdm_Array* val, 
-                                 const int gc, 
+                                 cdm_Array* val,
+                                 const int gc,
                                  int VoxelSize[3],
                                  stVarInfo &varInfoT,
                                  vector<stVarInfo> &vecVarInfo)

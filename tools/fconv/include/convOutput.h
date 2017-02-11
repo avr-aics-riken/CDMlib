@@ -2,13 +2,17 @@
 #define _CONVOUTPUT_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -61,7 +65,7 @@ public:
    * @brief 出力クラスのインスタンス
    * @param[in] out_format 出力ファイルフォーマット
    * @return convOutputクラスポインタ
-   */  
+   */
   static convOutput*
   OutputInit(const CDM::E_CDM_FORMAT out_format);
 
@@ -78,7 +82,7 @@ public:
                   const unsigned step,
                   const int id,
                   const bool mio=false)
-  { return NULL; }; 
+  { return NULL; };
 
   /**
    * @brief 出力ファイルをクローズする
@@ -100,7 +104,7 @@ public:
    * @param [in] sz     ボクセルサイズ
    */
   virtual void
-  WriteGridData(std::string prefix, 
+  WriteGridData(std::string prefix,
                 int step,
                 int myRank,
                 int dType,
@@ -120,7 +124,7 @@ public:
    * @param [in] out_process 出力用のprocessインスタンス
    */
   virtual void
-  WriteGridData(std::string prefix, 
+  WriteGridData(std::string prefix,
                 int step,
                 int myRank,
                 int dType,
@@ -153,7 +157,7 @@ public:
                     double* org,
                     double* pit,
                     std::string prefix,
-                    cdm_FILE *pFile) 
+                    cdm_FILE *pFile)
   { return true; };
 
   /**
@@ -189,8 +193,8 @@ public:
    * @param [in] dLen   出力データサイズ
    */
   virtual bool
-  WriteFieldData(cdm_FILE* pFile, 
-                 cdm_Array* src, 
+  WriteFieldData(cdm_FILE* pFile,
+                 cdm_Array* src,
                  size_t dLen);
 
   /**
@@ -203,8 +207,8 @@ public:
    * @param [in] variname      VTK形式で出力する変数名
    */
   virtual bool
-  WriteFieldData(cdm_FILE* pFile, 
-                 cdm_Array* src, 
+  WriteFieldData(cdm_FILE* pFile,
+                 cdm_Array* src,
                  size_t dLen,
                  CDM::E_CDM_DTYPE d_type,
                  bool flag_variname,
@@ -218,7 +222,7 @@ public:
    * @param[in] out   plot3d用Fortran出力フラグ　通常はfalse
    */
   virtual bool
-  WriteDataMarker(int dmy, cdm_FILE* pFile, bool out=false) { return true; }; 
+  WriteDataMarker(int dmy, cdm_FILE* pFile, bool out=false) { return true; };
 
 
   /**
@@ -227,7 +231,7 @@ public:
    * @param[in] in_dfi    dfiのポインタ配列
    */
   virtual void
-  output_avs( 
+  output_avs(
              int myRank,
              vector<cdm_DFI *>in_dfi){};
 

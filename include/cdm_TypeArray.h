@@ -2,11 +2,17 @@
 #define _CDM_TYPEARRAY_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #include "cdm_Array.h"
@@ -91,7 +97,7 @@ public:
    *  実セルの最小インデクスを(0,0,0)とする
    *  IJKNのときval(i,j,k,n)
    *  NIJKのときval(n,i,j,k)
-   */   
+   */
   const T&  val(int i, int j, int k, int l=0) const;
         T&  val(int i, int j, int k, int l=0);
 
@@ -99,7 +105,7 @@ public:
    *  実セルの最小インデクスを(head[0],head[1],head[2])とする
    *  IJKNのときval(i,j,k,n)
    *  NIJKのときval(n,i,j,k)
-   */   
+   */
   const T& hval(int i, int j, int k, int l=0) const;
         T& hval(int i, int j, int k, int l=0);
 
@@ -107,7 +113,7 @@ public:
    *  ガイドセルを含む配列全体の最小インデクスを(0,0,0)とする
    *  IJKNのときval(i,j,k,n)
    *  NIJKのときval(n,i,j,k)
-   */   
+   */
   const T& _val(size_t i, size_t j, size_t k, size_t l=0) const;
         T& _val(size_t i, size_t j, size_t k, size_t l=0);
 
@@ -177,10 +183,9 @@ protected:
 #endif
 
 #define CDM_MEMFUN(rettype) \
-        CDM_INLINE rettype 
+        CDM_INLINE rettype
 #endif
 
 #include "inline/cdm_Array_inline.h"
 
 #endif /* _CDM_TYPEARRAY_H_ */
-

@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_MPI.C
  * @brief  cdm_MPI Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -42,8 +48,8 @@ cdm_MPI::~cdm_MPI()
 // #################################################################
 // DFIファイル：MPI要素の読込み
 CDM::E_CDM_ERRORCODE
-cdm_MPI::Read(cdm_TextParser tpCntl, 
-              const cdm_Domain* domain) 
+cdm_MPI::Read(cdm_TextParser tpCntl,
+              const cdm_Domain* domain)
 {
 
   std::string str;
@@ -85,7 +91,7 @@ cdm_MPI::Write(FILE* fp, const unsigned tab)
   fprintf(fp, "NumberOfRank   = %d\n", NumberOfRank);
 
   _CDM_WRITE_TAB(fp, tab+1);
-  fprintf(fp, "NumberOfGroup  = %d\n", 1);  
+  fprintf(fp, "NumberOfGroup  = %d\n", 1);
 
   fprintf(fp, "\n");
   fprintf(fp, "}\n");
@@ -94,4 +100,3 @@ cdm_MPI::Write(FILE* fp, const unsigned tab)
   return CDM::E_CDM_SUCCESS;
 
 }
-

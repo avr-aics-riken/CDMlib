@@ -2,13 +2,17 @@
 #define _CONV_INLINE_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -40,12 +44,12 @@ bool CONV::copyArray(cdm_TypeArray<T> *B,
   if( src_dtype == CDM::E_CDM_UINT8 ) {
     cdm_TypeArray<unsigned char> *S = dynamic_cast<cdm_TypeArray<unsigned char>*>(src);
     return copyArray(B,S,sta,end,n);
-  } 
+  }
   //int8
   else if( src_dtype== CDM::E_CDM_INT8 ) {
     cdm_TypeArray<char> *S = dynamic_cast<cdm_TypeArray<char>*>(src);
     return copyArray(B,S,sta,end,n);
-  } 
+  }
   //uint16
   else if( src_dtype== CDM::E_CDM_UINT16 ) {
     cdm_TypeArray<unsigned short> *S = dynamic_cast<cdm_TypeArray<unsigned short>*>(src);
@@ -60,9 +64,9 @@ bool CONV::copyArray(cdm_TypeArray<T> *B,
   else if( src_dtype== CDM::E_CDM_UINT32 ) {
     cdm_TypeArray<unsigned int> *S = dynamic_cast<cdm_TypeArray<unsigned int>*>(src);
     return copyArray(B,S,sta,end,n);
-  } 
+  }
   //int32
-  else if( src_dtype== CDM::E_CDM_INT32 ) { 
+  else if( src_dtype== CDM::E_CDM_INT32 ) {
     cdm_TypeArray<int> *S = dynamic_cast<cdm_TypeArray<int>*>(src);
     return copyArray(B,S,sta,end,n);
   }
@@ -81,7 +85,7 @@ bool CONV::copyArray(cdm_TypeArray<T> *B,
     cdm_TypeArray<float> *S = dynamic_cast<cdm_TypeArray<float>*>(src);
     return copyArray(B,S,sta,end,n);
   }
-  else if( src_dtype== CDM::E_CDM_FLOAT64 ) { 
+  else if( src_dtype== CDM::E_CDM_FLOAT64 ) {
     cdm_TypeArray<double> *S = dynamic_cast<cdm_TypeArray<double>*>(src);
     return copyArray(B,S,sta,end,n);
   }
@@ -179,7 +183,7 @@ bool CONV::copyArray(cdm_TypeArray<T1> *buf,
       if( (i-(IndexStart[0]-1))%thin_count != 0 ) continue;
 
       src->hval(i/thin_count,j/thin_count,k/thin_count,n) = buf->hval(n,i,j,k);
-    }}}  
+    }}}
   }
 
   return true;
@@ -215,17 +219,17 @@ bool CONV::calcMinMax(cdm_TypeArray<T> *src,
         for(int n=0; n<nVari; n++) {
           if( min[n] > (double)src->val(n,i,j,k) ) min[n] = (double)src->val(n,i,j,k);
           if( max[n] < (double)src->val(n,i,j,k) ) max[n] = (double)src->val(n,i,j,k);
-          VariVal = VariVal + (double)src->val(n,i,j,k)*(double)src->val(n,i,j,k); 
+          VariVal = VariVal + (double)src->val(n,i,j,k)*(double)src->val(n,i,j,k);
         }
         VariVal = sqrt(VariVal);
         if( min[nVari] > VariVal ) min[nVari]=VariVal;
         if( max[nVari] < VariVal ) max[nVari]=VariVal;
       }}}
-    
-    } 
-    else if( shape == CDM::E_CDM_IJKN ) 
+
+    }
+    else if( shape == CDM::E_CDM_IJKN )
     //ijknの処理
-    {  
+    {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {
@@ -233,7 +237,7 @@ bool CONV::calcMinMax(cdm_TypeArray<T> *src,
         for(int n=0; n<nVari; n++) {
           if( min[n] > (double)src->val(i,j,k,n) ) min[n] = (double)src->val(i,j,k,n);
           if( max[n] < (double)src->val(i,j,k,n) ) max[n] = (double)src->val(i,j,k,n);
-          VariVal = VariVal + (double)src->val(i,j,k,n)*(double)src->val(i,j,k,n); 
+          VariVal = VariVal + (double)src->val(i,j,k,n)*(double)src->val(i,j,k,n);
         }
         VariVal = sqrt(VariVal);
         if( min[nVari] > VariVal ) min[nVari]=VariVal;
@@ -250,10 +254,10 @@ bool CONV::calcMinMax(cdm_TypeArray<T> *src,
         if( min[0] > (double)src->val(0,i,j,k) ) min[0] = (double)src->val(0,i,j,k);
         if( max[0] < (double)src->val(0,i,j,k) ) max[0] = (double)src->val(0,i,j,k);
       }}}
-    } 
-    else if( shape == CDM::E_CDM_IJKN ) 
+    }
+    else if( shape == CDM::E_CDM_IJKN )
     //ijknの処理
-    {  
+    {
       for(int k=0; k<sz[2]; k++) {
       for(int j=0; j<sz[1]; j++) {
       for(int i=0; i<sz[0]; i++) {

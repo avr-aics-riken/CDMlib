@@ -1,11 +1,15 @@
 /*
- * frm (File Rank Mapper)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -57,7 +61,7 @@ int main( int argc, char **argv )
   }
 //20160407.fub.e
 
-  //初期化、ファイルの読込み、DFIのインスタンス 
+  //初期化、ファイルの読込み、DFIのインスタンス
   if( !STG.Initial(STG.m_infofile) ) {
     printf("ERROR Initial()\n");
     return 0;
@@ -94,8 +98,8 @@ int main( int argc, char **argv )
   //読込みDFIファイルのループ
   for( int i=0; i<STG.m_dfi_fname.size(); i++ ) {
 
-    //初期化、ファイルの読込み、DFIのインスタンス 
-    /* 
+    //初期化、ファイルの読込み、DFIのインスタンス
+    /*
     if( !STG.Initial(STG.m_infofile, STG.m_dfi_fname[i]) ) {
       printf("ERROR Initial()\n");
       return 0;
@@ -133,17 +137,17 @@ int main( int argc, char **argv )
 
     // 分割数フラグの設定
     for(int j=0; j<3; j++ ) {
-      if( STG.m_Gdiv[j] != STG.dfi_Domain->GlobalDivision[j] ) 
+      if( STG.m_Gdiv[j] != STG.dfi_Domain->GlobalDivision[j] )
       {
         isSameDiv = false;
       }
     }
 
     // 粗密フラグの設定
-    if( STG.CheckGlobalVoxel(STG.m_GVoxel,(int *)STG.dfi_Domain->GlobalVoxel) == STG_E_GV_SAME ) 
+    if( STG.CheckGlobalVoxel(STG.m_GVoxel,(int *)STG.dfi_Domain->GlobalVoxel) == STG_E_GV_SAME )
     {
       isSame = true;
-    } 
+    }
     else if( STG.CheckGlobalVoxel(STG.m_GVoxel,(int *)STG.dfi_Domain->GlobalVoxel) == STG_E_GVX2_SAME )
     {
       isSame = false;
@@ -155,16 +159,16 @@ int main( int argc, char **argv )
     //読込み判定フラグの設定
     if( isSameDiv == true )
     {
-      if( isSame == true ) 
+      if( isSame == true )
       {
         readflag = CDM::E_CDM_SAMEDIV_SAMERES;
-      } 
-      else 
+      }
+      else
       {
         readflag = CDM::E_CDM_SAMEDIV_REFINEMENT;
       }
-    } 
-    else 
+    }
+    else
     {
       if( isSame == true )
       {
@@ -314,4 +318,3 @@ void set_arg(Staging &STG, int argc, char **argv)
   for(int i=0;i<STG.m_dfi_fname.size();i++ ) printf("dfi_fname       : %s\n",STG.m_dfi_fname[i].c_str());
 
 }
-

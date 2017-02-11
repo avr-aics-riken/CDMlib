@@ -1,11 +1,15 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -69,21 +73,21 @@ cdm_FILE* convOutput_SPH::OutputFile_Open(
 // #################################################################
 //
 bool convOutput_SPH::WriteHeaderRecord(
-                                       int step, 
-                                       int dim, 
-                                       CDM::E_CDM_DTYPE out_type, 
-                                       int imax, 
-                                       int jmax, 
+                                       int step,
+                                       int dim,
+                                       CDM::E_CDM_DTYPE out_type,
+                                       int imax,
+                                       int jmax,
                                        int kmax,
-                                       double time, 
-                                       double* org, 
-                                       double* pit, 
+                                       double time,
+                                       double* org,
+                                       double* pit,
                                        std::string prefix,
                                        cdm_FILE *pFile)
 {
   FILE *fp = pFile->m_fp;
   if( !fp ) return false;
- 
+
   unsigned int dmy;
 
   //出力データ種別フラグの設定
@@ -101,13 +105,13 @@ bool convOutput_SPH::WriteHeaderRecord(
   if( fwrite(&sv_type, sizeof(int), 1, fp) != 1 ) return false;
   if( fwrite(&d_type, sizeof(int), 1, fp) != 1 ) return false;
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
-  
+
   if( d_type == SPH_FLOAT ) {
     dmy = 3 * sizeof(int);
   } else if( d_type == SPH_DOUBLE ) {
     dmy = 3 * sizeof(long long);
   }
-  
+
   //dmy = 3 * sizeof(long long);
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
   if( d_type == SPH_FLOAT ) {
@@ -120,7 +124,7 @@ bool convOutput_SPH::WriteHeaderRecord(
     if( fwrite(&kmax, sizeof(long long), 1, fp) != 1 ) return false;
   }
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
-  
+
   if( d_type == SPH_FLOAT ) {
     dmy = 3 * sizeof(float);
   } else {
@@ -138,7 +142,7 @@ bool convOutput_SPH::WriteHeaderRecord(
     if( fwrite(org, sizeof(double), 3, fp) != 3 ) return false;
   }
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
-  
+
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
   if( d_type == SPH_FLOAT ) {
     float tmp[3];
@@ -150,7 +154,7 @@ bool convOutput_SPH::WriteHeaderRecord(
     if( fwrite(pit, sizeof(double), 3, fp) != 3 ) return false;
   }
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
-  
+
   if( d_type == SPH_FLOAT ) {
     dmy = sizeof(int) + sizeof(float);
   } else {
@@ -167,7 +171,7 @@ bool convOutput_SPH::WriteHeaderRecord(
     if( fwrite(&time, sizeof(double), 1, fp) != 1 ) return false;
   }
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
- 
+
   return true;
 }
 

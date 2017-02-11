@@ -1,11 +1,15 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -84,15 +88,15 @@ convOutput_NETCDF::CheckAddMode(const unsigned step)
 // #################################################################
 //
 bool convOutput_NETCDF::WriteHeaderRecord(
-                                       int step, 
-                                       int dim, 
-                                       CDM::E_CDM_DTYPE out_type, 
-                                       int imax, 
-                                       int jmax, 
+                                       int step,
+                                       int dim,
+                                       CDM::E_CDM_DTYPE out_type,
+                                       int imax,
+                                       int jmax,
                                        int kmax,
-                                       double time, 
-                                       double* org, 
-                                       double* pit, 
+                                       double time,
+                                       double* org,
+                                       double* pit,
                                        std::string prefix,
                                        cdm_FILE *pFile)
 {
@@ -171,8 +175,8 @@ bool convOutput_NETCDF::WriteHeaderRecord(
 
 // #################################################################
 // data出力(成分ごと)
-bool convOutput_NETCDF::WriteFieldData(cdm_FILE* pFile, 
-                                       cdm_Array* src, 
+bool convOutput_NETCDF::WriteFieldData(cdm_FILE* pFile,
+                                       cdm_Array* src,
                                        size_t dLen,
                                        CDM::E_CDM_DTYPE d_type,
                                        bool flag_variname,

@@ -2,17 +2,23 @@
 #define _CDM_NONUNIFORMDOMAIN_INLINE_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_NonUniformDomain_inline.h
  * @brief  cdm_NonUniformDomain template Header
- * @author aics    
+ * @author aics
  */
 
 #ifdef CDM_INLINE
@@ -41,7 +47,7 @@ cdm_NonUniformDomain<T>::Read(cdm_TextParser tpCntl,
   //GlobalOrigin
   label = "/Domain/GlobalOrigin";
   for (int n=0; n<3; n++) v[n]=0.0;
-  if ( !(tpCntl.GetVector(label, v, 3 )) ) 
+  if ( !(tpCntl.GetVector(label, v, 3 )) )
   {
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_GLOBALORIGIN;
@@ -53,7 +59,7 @@ cdm_NonUniformDomain<T>::Read(cdm_TextParser tpCntl,
   //GlobalRegion
   label = "/Domain/GlobalRegion";
   for (int n=0; n<3; n++) v[n]=0.0;
-  if ( !(tpCntl.GetVector(label, v, 3 )) ) 
+  if ( !(tpCntl.GetVector(label, v, 3 )) )
   {
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_GLOBALREGION;
@@ -65,7 +71,7 @@ cdm_NonUniformDomain<T>::Read(cdm_TextParser tpCntl,
   //Global_Voxel
   label = "/Domain/GlobalVoxel";
   for (int n=0; n<3; n++) iv[n]=0;
-  if ( !(tpCntl.GetVector(label, iv, 3 )) ) 
+  if ( !(tpCntl.GetVector(label, iv, 3 )) )
   {
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_GLOBALVOXEL;
@@ -77,7 +83,7 @@ cdm_NonUniformDomain<T>::Read(cdm_TextParser tpCntl,
   //Global_Division
   label = "/Domain/GlobalDivision";
   for (int n=0; n<3; n++) iv[n]=0;
-  if ( !(tpCntl.GetVector(label, iv, 3 )) ) 
+  if ( !(tpCntl.GetVector(label, iv, 3 )) )
   {
     printf("\tCDM Parsing error : fail to get '%s'\n",label.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_GLOBALDIVISION;
@@ -354,7 +360,7 @@ cdm_NonUniformDomain<T>::Read_CoordinateFile(FILE* fp)
 // CoordinateFileの各方向の座標データ数を読込む関数
 template<typename T>
 CDM_INLINE
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_NonUniformDomain<T>::readCoordDataCount(FILE* fp,
                                             bool matchEndian,
                                             int globalVoxel,
@@ -419,12 +425,12 @@ cdm_NonUniformDomain<T>::readCoordData(FILE* fp,
 // DFIファイル:Domain要素を出力する
 template<typename T>
 CDM::E_CDM_ERRORCODE
-cdm_NonUniformDomain<T>::Write(FILE* fp, 
+cdm_NonUniformDomain<T>::Write(FILE* fp,
                                const unsigned tab) const
 {
 
   fprintf(fp, "Domain {\n");
-  fprintf(fp, "\n");  
+  fprintf(fp, "\n");
 
   _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp, "GlobalOrigin        = (%e, %e, %e)\n",
@@ -442,7 +448,7 @@ cdm_NonUniformDomain<T>::Write(FILE* fp,
   fprintf(fp, "GlobalVoxel         = (%d, %d, %d)\n",
           GlobalVoxel[0],
           GlobalVoxel[1],
-          GlobalVoxel[2]);  
+          GlobalVoxel[2]);
 
   _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp, "GlobalDivision      = (%d, %d, %d)\n",

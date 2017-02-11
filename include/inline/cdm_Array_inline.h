@@ -1,9 +1,15 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #ifndef _CDM_ARRAY_INLINE_H_
@@ -23,7 +29,7 @@
 #endif
 
 #define CDM_MEMFUN(rettype) \
-        CDM_INLINE rettype 
+        CDM_INLINE rettype
 
 // インスタンス
 CDM_MEMFUN(cdm_Array*)
@@ -135,7 +141,7 @@ cdm_Array::instanceArray( T *data
                         , size_t nvari )
 {
   cdm_Array *ptr = NULL;
-  CDM::E_CDM_DTYPE dtype = CDM::E_CDM_DTYPE_UNKNOWN; 
+  CDM::E_CDM_DTYPE dtype = CDM::E_CDM_DTYPE_UNKNOWN;
 
   if( typeid(data) == typeid(char*) )
   {
@@ -402,7 +408,7 @@ cdm_TypeArray<T>::copyArray( int _sta[3], int _end[3], cdm_Array *dstptr )
 {
   cdm_TypeArray<T> *src = this;
 
-  //mod.s 
+  //mod.s
   cdm_TypeArray<T> *dst = dynamic_cast<cdm_TypeArray<T>*>(dstptr);
   if( !dst )
   {

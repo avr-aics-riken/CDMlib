@@ -2,11 +2,17 @@
 #define _CDM_FIELDFILENAMEFORMATELEM_H_
 
 /*
- * DMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2016 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #include <stdio.h>
@@ -61,7 +67,7 @@ public:
 protected:
 
   /** FileNameFormatをセットする */
-  void SetFnameFormat(); 
+  void SetFnameFormat();
 
   /** 桁数を考慮した出力形式をセットする */
   string SetDisitNoFormat(const int DisitNo);
@@ -82,7 +88,7 @@ public:
 
   /** ファイル名の生成 */
   string GenerateFileName(const string DirPath,
-                          const int nStep, 
+                          const int nStep,
                           const int nId);
 
   /** ファイル有無判定 */

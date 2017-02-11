@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_DFI_SPH.C
  * @brief  cdm_DFI_SPH Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -33,29 +39,29 @@ cdm_DFI_SPH::~cdm_DFI_SPH()
 // #################################################################
 // ファイルのヘッダーレコード読込み
 CDM::E_CDM_ERRORCODE
-//cdm_DFI_SPH::read_HeaderRecord(FILE* fp, 
-cdm_DFI_SPH::read_HeaderRecord(cdm_FILE* pFile, 
-                               bool matchEndian, 
+//cdm_DFI_SPH::read_HeaderRecord(FILE* fp,
+cdm_DFI_SPH::read_HeaderRecord(cdm_FILE* pFile,
+                               bool matchEndian,
                                unsigned step,
                                const int head[3],
                                const int tail[3],
-                               int gc, 
-                               int voxsize[3],  
-                               double &time) 
+                               int gc,
+                               int voxsize[3],
+                               double &time)
 {
 
   unsigned int dmy,type_dmy;
 
   FILE *fp = pFile->m_fp;
 
-//REC1  
+//REC1
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; }
-  if( !matchEndian ) BSWAP32(dmy); 
+  if( !matchEndian ) BSWAP32(dmy);
   if( dmy != 8 ) {
     BSWAP32(dmy);
-    if( dmy != 8 ) { 
-      fclose(fp); 
-      return CDM::E_CDM_ERROR_READ_SPH_REC1; 
+    if( dmy != 8 ) {
+      fclose(fp);
+      return CDM::E_CDM_ERROR_READ_SPH_REC1;
     } else {
       fclose(fp);
       return CDM::E_CDM_ERROR_NOMATCH_ENDIAN;
@@ -64,16 +70,16 @@ cdm_DFI_SPH::read_HeaderRecord(cdm_FILE* pFile,
 
   DataDims data_dims;
   if( fread(&data_dims, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; }
-  if( !matchEndian ) BSWAP32(data_dims); 
-  if( data_dims == _SCALAR && DFI_Finfo.NumVariables != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; } 
-  if( data_dims == _VECTOR && DFI_Finfo.NumVariables <= 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; } 
+  if( !matchEndian ) BSWAP32(data_dims);
+  if( data_dims == _SCALAR && DFI_Finfo.NumVariables != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; }
+  if( data_dims == _VECTOR && DFI_Finfo.NumVariables <= 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; }
 
   int real_type;
 
   if( fread(&real_type, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; }
-  if( !matchEndian ) BSWAP32(real_type); 
+  if( !matchEndian ) BSWAP32(real_type);
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; }
-  if( !matchEndian ) BSWAP32(dmy); 
+  if( !matchEndian ) BSWAP32(dmy);
   if( dmy != 8 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC1; }
 
   if( real_type == _FLOAT ) {
@@ -87,81 +93,81 @@ cdm_DFI_SPH::read_HeaderRecord(cdm_FILE* pFile,
 //REC2
 //ボクセルサイズ
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC2; }
-  if( !matchEndian ) BSWAP32(dmy); 
+  if( !matchEndian ) BSWAP32(dmy);
   if( dmy != type_dmy ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC2; }
   if( real_type == _FLOAT ) {
     if( fread(voxsize, sizeof(int), 3, fp) != 3 ){fclose(fp);return CDM::E_CDM_ERROR_READ_SPH_REC2;}
     if( !matchEndian ) {
-      BSWAP32(voxsize[0]); 
-      BSWAP32(voxsize[1]); 
+      BSWAP32(voxsize[0]);
+      BSWAP32(voxsize[1]);
       BSWAP32(voxsize[2]);
     }
   } else if( real_type == _DOUBLE ) {
     long long tmp[3];
     if( fread(tmp, sizeof(long long), 3, fp) != 3 ){fclose(fp);return CDM::E_CDM_ERROR_READ_SPH_REC2;}
     if( !matchEndian ) {
-      BSWAP64(tmp[0]); 
-      BSWAP64(tmp[1]); 
+      BSWAP64(tmp[0]);
+      BSWAP64(tmp[1]);
       BSWAP64(tmp[2]);
     }
     voxsize[0]=(int)tmp[0];
     voxsize[1]=(int)tmp[1];
     voxsize[2]=(int)tmp[2];
-  } 
+  }
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC2; }
-  if( !matchEndian ) BSWAP32(dmy); 
+  if( !matchEndian ) BSWAP32(dmy);
   if( dmy != type_dmy ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_FILE; }
 
 //REC3
 //原点座標
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC3; }
-  if( !matchEndian ) BSWAP32(dmy); 
+  if( !matchEndian ) BSWAP32(dmy);
   if( dmy != type_dmy ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC3; }
   if( real_type == _FLOAT ) {
     float voxorg[3];
     if( fread(voxorg, sizeof(float), 3, fp) != 3 ){fclose(fp);return CDM::E_CDM_ERROR_READ_SPH_REC3;}
     if( !matchEndian ) {
-      BSWAP32(voxorg[0]); 
-      BSWAP32(voxorg[1]); 
-      BSWAP32(voxorg[2]); 
+      BSWAP32(voxorg[0]);
+      BSWAP32(voxorg[1]);
+      BSWAP32(voxorg[2]);
     }
   } else if( real_type == _DOUBLE ) {
     double voxorg[3];
     if( fread(voxorg, sizeof(double), 3, fp) != 3 ){fclose(fp);return CDM::E_CDM_ERROR_READ_SPH_REC3;}
     if( !matchEndian ) {
-      BSWAP64(voxorg[0]); 
-      BSWAP64(voxorg[1]); 
-      BSWAP64(voxorg[2]); 
+      BSWAP64(voxorg[0]);
+      BSWAP64(voxorg[1]);
+      BSWAP64(voxorg[2]);
     }
   }
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC3; }
-  if( !matchEndian ) BSWAP32(dmy); 
+  if( !matchEndian ) BSWAP32(dmy);
   if( dmy != type_dmy ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC3; }
 
-//REC4  
+//REC4
 //pit
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC4; }
-  if( !matchEndian ) BSWAP32(dmy); 
+  if( !matchEndian ) BSWAP32(dmy);
   if( dmy != type_dmy ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC4; }
   if( real_type == _FLOAT ) {
     float voxpit[3];
     if( fread(voxpit, sizeof(float), 3, fp) != 3 ){fclose(fp);return CDM::E_CDM_ERROR_READ_SPH_REC4;}
     if( !matchEndian ) {
-      BSWAP32(voxpit[0]); 
-      BSWAP32(voxpit[1]); 
-      BSWAP32(voxpit[2]); 
+      BSWAP32(voxpit[0]);
+      BSWAP32(voxpit[1]);
+      BSWAP32(voxpit[2]);
     }
   } else if( real_type == _DOUBLE ) {
     double voxpit[3];
     if( fread(voxpit, sizeof(double), 3, fp) != 3 ){fclose(fp);return CDM::E_CDM_ERROR_READ_SPH_REC4;}
     if( !matchEndian ) {
-      BSWAP64(voxpit[0]); 
-      BSWAP64(voxpit[1]); 
-      BSWAP64(voxpit[2]); 
+      BSWAP64(voxpit[0]);
+      BSWAP64(voxpit[1]);
+      BSWAP64(voxpit[2]);
     }
   }
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC4; }
-  if( !matchEndian ) BSWAP32(dmy); 
+  if( !matchEndian ) BSWAP32(dmy);
   if( dmy != type_dmy ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_FILE; }
 
 //REC5
@@ -169,9 +175,9 @@ cdm_DFI_SPH::read_HeaderRecord(cdm_FILE* pFile,
   if( real_type == _FLOAT ) type_dmy = 8;
   if( real_type == _DOUBLE) type_dmy = 16;
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC5; }
-  if( !matchEndian ) BSWAP32(dmy); 
+  if( !matchEndian ) BSWAP32(dmy);
   if( dmy != type_dmy ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC5; }
-  if( real_type == _FLOAT ) { 
+  if( real_type == _FLOAT ) {
     int r_step;
     if( fread(&r_step, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC5; }
     if( !matchEndian ) BSWAP32(r_step);
@@ -185,16 +191,16 @@ cdm_DFI_SPH::read_HeaderRecord(cdm_FILE* pFile,
   if( real_type == _FLOAT ) {
     float r_time;
     if( fread(&r_time, sizeof(float), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC5; }
-    if( !matchEndian ) BSWAP32(r_time); 
+    if( !matchEndian ) BSWAP32(r_time);
     time = r_time;
   } else if( real_type == _DOUBLE ) {
     double r_time;
     if( fread(&r_time, sizeof(double), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC5; }
-    if( !matchEndian ) BSWAP64(r_time); 
+    if( !matchEndian ) BSWAP64(r_time);
     time = r_time;
   }
   if( fread(&dmy, sizeof(int), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC5; }
-  if( !matchEndian ) BSWAP32(dmy); 
+  if( !matchEndian ) BSWAP32(dmy);
   if( dmy != type_dmy ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC5; }
 
   for(int i=0; i<3; i++) {
@@ -210,9 +216,9 @@ cdm_DFI_SPH::read_HeaderRecord(cdm_FILE* pFile,
 CDM::E_CDM_ERRORCODE
 //cdm_DFI_SPH::read_Datarecord(FILE* fp,
 cdm_DFI_SPH::read_Datarecord(cdm_FILE* pFile,
-                             bool matchEndian, 
+                             bool matchEndian,
                              unsigned step,
-                             cdm_Array* buf, 
+                             cdm_Array* buf,
                              int head[3],
                              int nz,
                              cdm_Array* &src)
@@ -225,7 +231,7 @@ cdm_DFI_SPH::read_Datarecord(cdm_FILE* pFile,
   // fortran record の読込み
   int idmy;
   if( fread(&idmy,sizeof(int),1,fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC6; }
-  if( !matchEndian ) BSWAP32(idmy); 
+  if( !matchEndian ) BSWAP32(idmy);
 
   for( int k=0; k<nz; k++ ) {
     //headインデクスをずらす
@@ -242,7 +248,7 @@ cdm_DFI_SPH::read_Datarecord(cdm_FILE* pFile,
 
   // fortran record の読込み
   if( fread(&idmy,sizeof(int),1,fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC6; }
-  if( !matchEndian ) BSWAP32(idmy); 
+  if( !matchEndian ) BSWAP32(idmy);
 
   return CDM::E_CDM_SUCCESS;
 
@@ -279,7 +285,7 @@ cdm_DFI_SPH::read_averaged(cdm_FILE* pFile,
     if( !matchEndian ) BSWAP64(r_step);
     step_avr=(unsigned)r_step;
   }
-  if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) { 
+  if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) {
     float r_time;
     if( fread(&r_time, sizeof(float), 1, fp) != 1 ) { fclose(fp); return CDM::E_CDM_ERROR_READ_SPH_REC7; }
     if( !matchEndian ) BSWAP32(r_time);
@@ -299,11 +305,11 @@ cdm_DFI_SPH::read_averaged(cdm_FILE* pFile,
 
 // #################################################################
 // SPHヘッダーレコードの出力
-CDM::E_CDM_ERRORCODE 
-//cdm_DFI_SPH::write_HeaderRecord(FILE* fp, 
-cdm_DFI_SPH::write_HeaderRecord(cdm_FILE* pFile, 
-                                     const unsigned step, 
-                                     const double time, 
+CDM::E_CDM_ERRORCODE
+//cdm_DFI_SPH::write_HeaderRecord(FILE* fp,
+cdm_DFI_SPH::write_HeaderRecord(cdm_FILE* pFile,
+                                     const unsigned step,
+                                     const double time,
                                      const int n)
 {
   FILE *fp = pFile->m_fp;
@@ -315,8 +321,8 @@ cdm_DFI_SPH::write_HeaderRecord(cdm_FILE* pFile,
   if( svType == 0 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC1;
 
   int dType = 0;
-  if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) dType = 1; 
-  if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) dType = 2; 
+  if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT32 ) dType = 1;
+  if( DFI_Finfo.DataType == CDM::E_CDM_FLOAT64 ) dType = 2;
   if( dType == 0 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC1;
 
   unsigned int dmy;
@@ -404,17 +410,17 @@ cdm_DFI_SPH::write_HeaderRecord(cdm_FILE* pFile,
     if( fwrite(&ttime, Real_size, 1, fp) != 1 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC5;
   }
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return CDM::E_CDM_ERROR_WRITE_SPH_REC5;
-  
+
   return CDM::E_CDM_SUCCESS;
 }
 
 // #################################################################
 // SPHデータレコードの出力
 CDM::E_CDM_ERRORCODE
-//cdm_DFI_SPH::write_DataRecord(FILE* fp, 
-cdm_DFI_SPH::write_DataRecord(cdm_FILE* pFile, 
-                              cdm_Array* val, 
-                              const int gc, 
+//cdm_DFI_SPH::write_DataRecord(FILE* fp,
+cdm_DFI_SPH::write_DataRecord(cdm_FILE* pFile,
+                              cdm_Array* val,
+                              const int gc,
                               const int n)
 {
   FILE *fp = pFile->m_fp;
@@ -426,7 +432,7 @@ cdm_DFI_SPH::write_DataRecord(cdm_FILE* pFile,
   for(int i=0; i<3; i++ ) size[i] = (int)DFI_Process.RankList[n].VoxelSize[i]+(int)(2*gc);
 
   size_t dLen = (size_t)(size[0] * size[1] * size[2]);
-  if( DFI_Finfo.NumVariables > 1 ) dLen *= 3;  
+  if( DFI_Finfo.NumVariables > 1 ) dLen *= 3;
 
   unsigned int dmy = dLen * Real_size;
 
@@ -501,5 +507,3 @@ cdm_DFI_SPH::write_averaged(cdm_FILE* pFile,
   return CDM::E_CDM_SUCCESS;
 
 }
-
-

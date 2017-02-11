@@ -1,9 +1,15 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -38,9 +44,9 @@ cdm_ActiveSubDomain::~cdm_ActiveSubDomain()
 // 情報のクリア
 void cdm_ActiveSubDomain::clear()
 {
-  m_pos[0]=0; 
-  m_pos[1]=0; 
-  m_pos[2]=0; 
+  m_pos[0]=0;
+  m_pos[1]=0;
+  m_pos[2]=0;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -78,6 +84,3 @@ bool cdm_ActiveSubDomain::operator!=(cdm_ActiveSubDomain dom)
   if( m_pos[2] == dom.m_pos[2] ) return false;
   return true;
 }
-
-
-

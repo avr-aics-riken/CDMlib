@@ -2,17 +2,23 @@
 #define _CDM_DFI_AVS_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_DFI_AVS.h
  * @brief  cdm_DFI_AVS Class Header
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -26,8 +32,8 @@ public:
   /** コンストラクタ */
   cdm_DFI_AVS();
 
-  /** 
-   * @brief コンストラクタ 
+  /**
+   * @brief コンストラクタ
    * @param [in] F_Info  FileInfo
    * @param [in] F_Path  FilePath
    * @param [in] visit   VisIt option
@@ -37,16 +43,16 @@ public:
    * @param [in] TSlice  TimeSlice
    * @param [in] process Process
    */
-  cdm_DFI_AVS(const cdm_FileInfo F_Info, 
+  cdm_DFI_AVS(const cdm_FileInfo F_Info,
               const cdm_FilePath F_Path,
               const cdm_VisIt visit,
-              const cdm_Unit unit, 
-              const cdm_Domain* domain, 
+              const cdm_Unit unit,
+              const cdm_Domain* domain,
               const cdm_MPI mpi,
-              const cdm_TimeSlice TSlice, 
+              const cdm_TimeSlice TSlice,
               const cdm_Process process)
   {
-    DFI_Finfo      = F_Info; 
+    DFI_Finfo      = F_Info;
     DFI_Fpath      = F_Path;
     DFI_VisIt      = visit;
     DFI_Unit       = unit;
@@ -56,7 +62,7 @@ public:
     DFI_Process    = process;
     m_bgrid_interp_flag = false;
   };
-  
+
   /**　デストラクタ */
   ~cdm_DFI_AVS();
 
@@ -174,7 +180,7 @@ protected:
 
 
   /**
-   * @brief avsの座標値データ、ヘッダーの出力コントロール 
+   * @brief avsの座標値データ、ヘッダーの出力コントロール
    * @param [in] step step番号
    * @param [in] time time
    */
@@ -196,7 +202,7 @@ protected:
    * @param[in] dims 計算領域のボクセル数
    */
   bool
-  write_avs_header(int dims[3]); 
+  write_avs_header(int dims[3]);
 
 };
 

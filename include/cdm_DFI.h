@@ -2,14 +2,20 @@
 #define _CDM_DFI_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_DFI.h
  * @brief  cdm_DFI Class Header
  * @author aics
@@ -79,12 +85,12 @@ protected :
   CDM::E_CDM_FILE_TYPE  m_input_type;        ///< 入力形式(ascii,binary,FortarnBinary)
   CDM::E_CDM_FILE_TYPE  m_output_type;       ///< 出力形式(ascii,binary,FortarnBinary)
   CDM::E_CDM_FILE_TYPE  m_output_type_coord; ///< 座標データの出力形式(ascii,binary)
-  CDM::E_CDM_OUTPUT_FNAME m_output_fname;    ///< 出力ファイル命名規約(step_rank,rank_step)   
+  CDM::E_CDM_OUTPUT_FNAME m_output_fname;    ///< 出力ファイル命名規約(step_rank,rank_step)
 
 public:
   /** コンストラクタ */
   cdm_DFI();
-  
+
   /**　デストラクタ */
   virtual ~cdm_DFI();
 
@@ -98,11 +104,11 @@ public:
    * @return インスタンスされたクラスのポインタ
    */
   static cdm_DFI*
-  ReadInit(const MPI_Comm comm, 
+  ReadInit(const MPI_Comm comm,
            const std::string dfifile,
            const int G_Voxel[3],
            const int G_Div[3],
-           CDM::E_CDM_ERRORCODE &ret); 
+           CDM::E_CDM_ERRORCODE &ret);
 
   /**
    * @brief cdmFileInfoクラスのポインタを取得
@@ -113,58 +119,58 @@ public:
 //20160421.fub.s
   /**
   * @brief cdm_FileInfoクラスのセット
-  */ 
-  void SetcdmFileInfo(cdm_FileInfo FInfo); 
+  */
+  void SetcdmFileInfo(cdm_FileInfo FInfo);
 //20160421.fub.e
 
   /**
    * @brief cdm_FilePathクラスのポインタを取得
    * @return cdm_FilePathクラスポインタ
    */
-  const cdm_FilePath* GetcdmFilePath();  
+  const cdm_FilePath* GetcdmFilePath();
 
   /**
    * @brief cdm_FilePathクラスのセット
    */
-  void SetcdmFilePath(cdm_FilePath FPath); 
+  void SetcdmFilePath(cdm_FilePath FPath);
 
   /**
    * @brief cdm_VisItクラスのポインタを取得
    * @return cdm_VisItクラスポインタ
    */
   const cdm_VisIt* GetcdmVisIt();
-  
+
   /**
    * @brief cdm_VisItクラスのセット
    */
   void SetcdmVisIt(cdm_VisIt Visit);
-  
+
   /**
    * @brief cdm_Unitクラスのポインタを取得
    * @return cdm_Unitクラスポインタ
    */
-  const cdm_Unit* GetcdmUnit(); 
+  const cdm_Unit* GetcdmUnit();
 
   /**
    * @brief cdm_Unitクラスのセット
    */
-  void SetcdmUnit(cdm_Unit unit); 
+  void SetcdmUnit(cdm_Unit unit);
 
 
   /**
    * @brief cdm_Domainクラスのポインタ取得
    * @return cdm_Domainクラスポインタ
    */
-  const cdm_Domain* GetcdmDomain(); 
+  const cdm_Domain* GetcdmDomain();
 
   /**
    * @brief cdm_Domainクラスのセット
    */
-  void SetcdmDomain(cdm_Domain* domain); 
+  void SetcdmDomain(cdm_Domain* domain);
 
   /**
    * @brief cdm_MPIクラスのポインタ取得
-   * @return cdm_MPIクラスポインタ 
+   * @return cdm_MPIクラスポインタ
    */
   const cdm_MPI* GetcdmMPI();
 
@@ -177,18 +183,18 @@ public:
    * @brief cdm_TimeSliceクラスのポインタ取得
    * @return cdm_TimeSliceクラスポインタ
    */
-  const cdm_TimeSlice* GetcdmTimeSlice(); 
+  const cdm_TimeSlice* GetcdmTimeSlice();
 
   /**
    * @brief cdm_TimeSlice クラスセット
    */
   void SetcdmTimeSlice(cdm_TimeSlice TSlice);
- 
+
   /**
    * @brief cdm_Processクラスのポインタ取得
    * @return cdm_Processクラスポインタ
    */
-  const cdm_Process* GetcdmProcess(); 
+  const cdm_Process* GetcdmProcess();
 
   /**
    * @brief cdm_Processクラスセット
@@ -208,7 +214,7 @@ public:
   /**
    * @brief cdm_FieldFileNameFormatクラスセット
    */
-  virtual 
+  virtual
   void SetcdmFieldFileNameFormat(cdm_FieldFileNameFormat FieldFileNameFormat)
   { };
 
@@ -233,7 +239,7 @@ public:
    * @brief 出力DFIファイル名を作成する
    * @param [in] prefix ファイル接頭文字
    * @return DFIファイル名
-   */ 
+   */
   static std::string
   Generate_DFI_Name(const std::string prefix);
 
@@ -245,13 +251,13 @@ public:
    * @return 生成されたファイル名　　　　　　　
    */
   std::string Generate_FieldFileName(int RankID,
-                                int step, 
+                                int step,
                                 const bool mio);
 
   /**
    * @brief ファイル名生成
    * @param [in] prefix ベースファイル名
-   * @param [in] RankID ランク番号  
+   * @param [in] RankID ランク番号
    * @param [in] step   出力ステップ番号（負のとき、ステップ番号が付加されない）
    * @param [in] ext    拡張子
    * @param [in] output_fname step_rank,rank_step指示
@@ -450,7 +456,7 @@ public:
   /**
    * @brief DFIファイル名の取り出し
    * @return dfiファイル名
-   */ 
+   */
   std::string get_dfi_fname()
   { return m_indexDfiName; };
 
@@ -458,7 +464,7 @@ public:
   /**
    * @brief read field data record (template function)
    * @details 読み込んだデータのポインタを戻り値として返す
-   * @param [out] ret       終了コード 1:正常、1以外：エラー  
+   * @param [out] ret       終了コード 1:正常、1以外：エラー
    * @param [in] step       入力ステップ番号
    * @param [in] gc         仮想セル数　　　
    * @param [in] Gvoxel     グローバルボクセルサイズ　
@@ -475,15 +481,15 @@ public:
 //  template<class T, class TimeT, class TimeAvrT> T*
   template<class TimeT, class TimeAvrT> void*
   ReadData(CDM::E_CDM_ERRORCODE &ret,
-           const unsigned step, 
-           const int gc, 
-           const int Gvoxel[3], 
-           const int Gdivision[3], 
-           const int head[3], 
+           const unsigned step,
+           const int gc,
+           const int Gvoxel[3],
+           const int Gdivision[3],
+           const int head[3],
            const int tail[3],
            TimeT &time,
-           const bool mode, 
-           unsigned &step_avr, 
+           const bool mode,
+           unsigned &step_avr,
            TimeAvrT &time_avr);
 
   /**
@@ -504,7 +510,7 @@ public:
    * @return 終了コード 1:正常 1以外:エラー
    */
   template<class T, class TimeT, class TimeAvrT>
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   ReadData(T *val,
            const unsigned step,
            const int gc,
@@ -518,7 +524,7 @@ public:
            TimeAvrT &time_avr);
 
   /**
-   * @brief read field data record 
+   * @brief read field data record
    * @details template ReadData関数で型に応じた配列を確保した後、呼び出される
    * @param [out] val        読み込み先の配列をポインタで渡す　
    * @param [in]  step       読み込むステップ番号
@@ -534,7 +540,7 @@ public:
    * @param [out] time_avr      平均時間
    * @return 終了コード 1:正常 1以外:エラー
    */
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   ReadData(cdm_Array *val,
            const unsigned step,
            const int gc,
@@ -550,7 +556,7 @@ public:
   /**
    * @brief read xyz(fub) data record (template function)
    * @details 読み込んだデータのポインタを戻り値として返す
-   * @param [out] ret       終了コード 1:正常、1以外：エラー  
+   * @param [out] ret       終了コード 1:正常、1以外：エラー
    * @param [in] step       入力ステップ番号
    * @param [in] gc         仮想セル数　　　
    * @param [in] Gvoxel     グローバルボクセルサイズ　
@@ -566,15 +572,15 @@ public:
    */
   template<class TimeT, class TimeAvrT> void*
   ReadCoordinateData(CDM::E_CDM_ERRORCODE &ret,
-                     const unsigned step, 
-                     const int gc, 
-                     const int Gvoxel[3], 
-                     const int Gdivision[3], 
-                     const int head[3], 
+                     const unsigned step,
+                     const int gc,
+                     const int Gvoxel[3],
+                     const int Gdivision[3],
+                     const int head[3],
                      const int tail[3],
                      TimeT &time,
-                     const bool mode, 
-                     unsigned &step_avr, 
+                     const bool mode,
+                     unsigned &step_avr,
                      TimeAvrT &time_avr);
 
   /**
@@ -595,7 +601,7 @@ public:
    * @return 終了コード 1:正常 1以外:エラー
    */
   template<class T, class TimeT, class TimeAvrT>
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   ReadCoordinateData(T *val,
            const unsigned step,
            const int gc,
@@ -609,7 +615,7 @@ public:
            TimeAvrT &time_avr);
 
   /**
-   * @brief read xyz(fub) data record 
+   * @brief read xyz(fub) data record
    * @details template ReadData関数で型に応じた配列を確保した後、呼び出される
    * @param [out] val        読み込み先の配列をポインタで渡す　
    * @param [in]  step       読み込むステップ番号
@@ -626,7 +632,7 @@ public:
    * @return 終了コード 1:正常 1以外:エラー
    */
   virtual
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   ReadCoordinateData(cdm_Array *val,
            const unsigned step,
            const int gc,
@@ -659,18 +665,18 @@ public:
    * @param [in] avr_mode 平均ステップ＆時間出力　false : 出力 true  : 出力しない
    * @param [in] step_avr 平均ステップ
    * @param [in] time_avr 平均時間
-   */ 
+   */
   template<class T, class TimeT, class TimeAvrT>
   CDM::E_CDM_ERRORCODE
-  WriteData(const unsigned step, 
+  WriteData(const unsigned step,
             TimeT time,
-            const int sz[3], 
+            const int sz[3],
             const int nVari,
-            const int gc, 
-            T* val, 
-            T* minmax=NULL, 
-            bool avr_mode=true, 
-            unsigned step_avr=0, 
+            const int gc,
+            T* val,
+            T* minmax=NULL,
+            bool avr_mode=true,
+            unsigned step_avr=0,
             TimeAvrT time_avr=0.0);
 
   /**
@@ -685,17 +691,17 @@ public:
    * @param [in] avr_mode 平均ステップ＆時間出力　false : 出力 true  : 出力しない
    * @param [in] step_avr 平均ステップ
    * @param [in] time_avr 平均時間
-   */ 
+   */
   template<class T, class TimeT, class TimeAvrT>
   CDM::E_CDM_ERRORCODE
   WriteFieldDataFile(const unsigned step,
                      TimeT time,
-                     const int sz[3], 
+                     const int sz[3],
                      const int nVari,
-                     const int gc, 
-                     T* val, 
-                     bool avr_mode=true, 
-                     unsigned step_avr=0, 
+                     const int gc,
+                     T* val,
+                     bool avr_mode=true,
+                     unsigned step_avr=0,
                      TimeAvrT time_avr=0.0);
 
   /**
@@ -710,16 +716,16 @@ public:
    */
   template<class T, class TimeT>
   CDM::E_CDM_ERRORCODE
-  WriteCoordinateData(const unsigned step, 
+  WriteCoordinateData(const unsigned step,
                       TimeT time,
-                      const int sz[3], 
+                      const int sz[3],
                       const int nVari,
-                      const int gc, 
-                      T* val); 
- 
+                      const int gc,
+                      T* val);
+
   /**
    * @brief write field data record
-   * @details template WriteData関数で方に応じた配列を確保した後、呼び出される 
+   * @details template WriteData関数で方に応じた配列を確保した後、呼び出される
    * @param [in] step     出力ステップ番号
    * @param [in] gc       仮想セル数　　　
    * @param [in] time     出力時刻　　　　
@@ -729,20 +735,20 @@ public:
    *                                              true  : 出力しない
    * @param [in] step_avr 平均ステップ
    * @param [in] time_avr 平均時間
-   */ 
+   */
   CDM::E_CDM_ERRORCODE
-  WriteData(const unsigned step, 
-            const int gc, 
-            double time, 
-            cdm_Array* val, 
-            double* minmax, 
-            const bool avr_mode, 
-            const unsigned step_avr, 
+  WriteData(const unsigned step,
+            const int gc,
+            double time,
+            cdm_Array* val,
+            double* minmax,
+            const bool avr_mode,
+            const unsigned step_avr,
             double time_avr);
 
   /**
    * @brief write field data record (not output dfi file)
-   * @details template WriteFieldDataFile関数で方に応じた配列を確保した後、呼び出される 
+   * @details template WriteFieldDataFile関数で方に応じた配列を確保した後、呼び出される
    * @param [in] step     出力ステップ番号
    * @param [in] gc       仮想セル数　　　
    * @param [in] time     出力時刻　　　　
@@ -751,18 +757,18 @@ public:
    *                                              true  : 出力しない
    * @param [in] step_avr 平均ステップ
    * @param [in] time_avr 平均時間
-   */ 
+   */
   CDM::E_CDM_ERRORCODE
-  WriteFieldDataFile(const unsigned step, 
-                     const int gc, 
-                     double time, 
-                     cdm_Array* val, 
-                     const bool avr_mode, 
-                     const unsigned step_avr, 
+  WriteFieldDataFile(const unsigned step,
+                     const int gc,
+                     double time,
+                     cdm_Array* val,
+                     const bool avr_mode,
+                     const unsigned step_avr,
                      double time_avr);
 
   /**
-   * @brief write coordinate data record 
+   * @brief write coordinate data record
    * @param [in] step     出力ステップ番号
    * @param [in] gc       仮想セル数
    * @param [in] time     出力時刻
@@ -770,12 +776,12 @@ public:
    */
   virtual
   CDM::E_CDM_ERRORCODE
-  WriteCoordinateData(const unsigned step, 
-                      const int gc, 
-                      double time, 
+  WriteCoordinateData(const unsigned step,
+                      const int gc,
+                      double time,
                       cdm_Array* val)
   { return CDM::E_CDM_ERROR; };
- 
+
   /**
    * @brief proc DFIファイル出力コントロール (float)
    * @param [in] comm      MPIコミュニケータ
@@ -784,7 +790,7 @@ public:
    */
 /*
   CDM::E_CDM_ERRORCODE
-  WriteProcDfiFile(const MPI_Comm comm, 
+  WriteProcDfiFile(const MPI_Comm comm,
                    bool out_host=false);
                    float* org=NULL);
 */
@@ -797,7 +803,7 @@ public:
    * @return 終了コード 1:正常 1以外:エラー
    */
   CDM::E_CDM_ERRORCODE
-  WriteProcDfiFile(const MPI_Comm comm, 
+  WriteProcDfiFile(const MPI_Comm comm,
                    const bool out_host,
                    const int cell_id,
                    const int bcf_id);
@@ -820,46 +826,46 @@ public:
    * @brief 配列形状を文字列で返す
    * @return 配列形状（文字列)
    */
-  std::string 
+  std::string
   GetArrayShapeString();
 
   /**
    * @brief 配列形状を返す
    * @return 配列形状（e_num番号)
    */
-  CDM::E_CDM_ARRAYSHAPE 
+  CDM::E_CDM_ARRAYSHAPE
   GetArrayShape();
 
   /**
    * @brief get DataType （データタイプの取り出し関数）
    * @return データタイプ（文字列)
    */
-  std::string 
+  std::string
   GetDataTypeString();
 
   /**
    * @brief get DataType （データタイプの取り出し関数）
    * @return データタイプ(e_num番号)
    */
-  CDM::E_CDM_DTYPE 
+  CDM::E_CDM_DTYPE
   GetDataType();
 
   /**
    * @brief get DFIType （dfi種別の取り出し関数）
    * @return dfi種別（文字列)
    */
-  std::string 
+  std::string
   GetDFITypeString();
 
   /**
    * @brief get DFIType （dfi種別の取り出し関数）
    * @return dfi種別(e_num番号)
    */
-  CDM::E_CDM_DFITYPE 
+  CDM::E_CDM_DFITYPE
   GetDFIType();
 
-  /** 
-   * @brief get FileFormat （FileFormatの取り出し関数） 
+  /**
+   * @brief get FileFormat （FileFormatの取り出し関数）
    * @return FileFormat(文字列)
    */
   std::string
@@ -875,7 +881,7 @@ public:
    * @brief get Number of Variables （変数の個数の取り出し関数）
    * @return 変数の個数
    */
-  int 
+  int
   GetNumVariables();
 
   /*
@@ -886,34 +892,34 @@ public:
   GetNumGuideCell();
 
   /**
-   * @brief データタイプを文字列からe_num番号に変換 
+   * @brief データタイプを文字列からe_num番号に変換
    * @param [in] datatype dfiから取得したデータタイプ
    * @return データタイプ(E_CDM_DTYPE)
    */
-  static CDM::E_CDM_DTYPE 
-  ConvDatatypeS2E(const std::string datatype); 
+  static CDM::E_CDM_DTYPE
+  ConvDatatypeS2E(const std::string datatype);
 
   /**
-   * @brief データタイプをe_num番号から文字列に変換 
+   * @brief データタイプをe_num番号から文字列に変換
    * @param [in] Dtype データタイプ
    * @return データタイプ(string)
    */
-  static std::string 
-  ConvDatatypeE2S(const CDM::E_CDM_DTYPE Dtype); 
+  static std::string
+  ConvDatatypeE2S(const CDM::E_CDM_DTYPE Dtype);
 
   /**
    * @brief DFI DomainのGlobalVoxelの取り出し
    * @return GlobalVoxelのポインタ
    */
-  const int* 
-  GetDFIGlobalVoxel(); 
+  const int*
+  GetDFIGlobalVoxel();
 
   /**
    * @brief DFI DomainのGlobalDivisionの取り出し
    * @return GlobalDivisionのポインタ
    */
-  const int* 
-  GetDFIGlobalDivision(); 
+  const int*
+  GetDFIGlobalDivision();
 
   /**
    * @brief Uuitをセットする
@@ -923,7 +929,7 @@ public:
    * @param [in] difference 差の値
    * @param [in] BsetDiff   differenceの有無
    */
-  void 
+  void
   AddUnit(const std::string Name,
           const std::string Unit,
           const double reference,
@@ -940,12 +946,12 @@ public:
    * @param [in] time_avr 平均時間
    */
   template<class T, class TimeT, class TimeAvrT>
-  void 
+  void
   AddTimeSlice(const unsigned step,
                TimeT time,
-               T* minmax=NULL, 
-               bool avr_mode=true, 
-               unsigned step_avr=0, 
+               T* minmax=NULL,
+               bool avr_mode=true,
+               unsigned step_avr=0,
                TimeAvrT time_avr=0.0);
 
   /**
@@ -955,7 +961,7 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE GetUnitElem(const std::string Name,
-                                   cdm_UnitElem &unit); 
+                                   cdm_UnitElem &unit);
 
   /**
    * @brief UnitElemのメンバ変数毎に取得する
@@ -970,21 +976,21 @@ public:
                                std::string &unit,
                                double &ref,
                                double &diff,
-                               bool &bSetDiff); 
- 
+                               bool &bSetDiff);
+
   /**
    * @brief TimeSlice OnOff フラグをセットする
    * @param [in] ONOFF
    */
-  void 
-  SetTimeSliceFlag(const CDM::E_CDM_ONOFF ONOFF); 
+  void
+  SetTimeSliceFlag(const CDM::E_CDM_ONOFF ONOFF);
 
   /**
    * @brief FileInfoの変数名を登録する
    * @param [in] pvari    変数位置 0:u, 1:v, 2:w
    * @param [in] variName 変数名 "u","v","w",,,
    */
-  void setVariableName(int pvari, std::string variName); 
+  void setVariableName(int pvari, std::string variName);
 
   /**
    * @brief FileInfoの変数名を取得する
@@ -1046,9 +1052,9 @@ public:
    * @param [in] last_step     セッション最終ステップ（デフォルト、-1：最終ステップで出力しない）
    */
   void setIntervalStep(int interval_step,
-                       int base_step =0, 
+                       int base_step =0,
                        int start_step=0,
-                       int last_step =-1); 
+                       int last_step =-1);
 
   /**
    * @brief インターバルタイムの登録
@@ -1060,9 +1066,9 @@ public:
    */
   void setIntervalTime(double interval_time,
                        double dt,
-                       double base_time =0.0, 
+                       double base_time =0.0,
                        double start_time=0.0,
-                       double last_time =-1.0); 
+                       double last_time =-1.0);
 
   /**
    * @brief インターバルの計算に使われる全ての時間をスケールで無次元化する
@@ -1077,13 +1083,13 @@ public:
    * @param [in] scale スケール
    */
   void normalizeBaseTime(const double scale);
- 
+
   /**
    * @brief インターバルのintervalをスケールで無次元化する
    * @param [in] scale スケール
    */
   void normalizeIntervalTime(const double scale);
- 
+
   /**
    * @brief インターバルのstart_timeをスケールで無次元化する
    * @param [in] scale スケール
@@ -1112,7 +1118,7 @@ public:
    * index dfiファイルにFileListがないファイルは空白が戻る.
    * @param [in] ID RankID
    * @return field data file name
-   */ 
+   */
   virtual
   std::string
   getFileNameFromFileList( const int ID )
@@ -1136,7 +1142,7 @@ public:
    * @return 読み込んだ配列のポインタ
    */
   virtual
-  cdm_Array* 
+  cdm_Array*
   ReadFieldData(std::string fname,
                 const unsigned step,
                 double &time,
@@ -1161,7 +1167,7 @@ public:
    * @param[out] time        時刻
    * @return true:出力成功 false:出力失敗
    */
-  virtual CDM::E_CDM_ERRORCODE 
+  virtual CDM::E_CDM_ERRORCODE
 //read_HeaderRecord(FILE* fp,
   read_HeaderRecord(cdm_FILE* pFile,
                     bool matchEndian,
@@ -1182,7 +1188,7 @@ public:
    * @param[in]  nz          z方向のボクセルサイズ（実セル＋ガイドセル＊２）
    * @param[out] src         読み込んだデータを格納した配列のポインタ
    */
-  virtual CDM::E_CDM_ERRORCODE 
+  virtual CDM::E_CDM_ERRORCODE
 //read_Datarecord(FILE* fp,
   read_Datarecord(cdm_FILE* pFile,
                   bool matchEndian,
@@ -1206,7 +1212,7 @@ public:
                 bool matchEndian,
                 unsigned step,
                 unsigned &avr_step,
-                double &avr_time)=0;   
+                double &avr_time)=0;
 
 protected :
   /**
@@ -1221,13 +1227,13 @@ protected :
    * @return error code
    */
   virtual
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   WriteFieldData(std::string fname,
-                 const unsigned step, 
-                 double time, 
-                 cdm_Array* val, 
-                 const bool mode, 
-                 const unsigned step_avr, 
+                 const unsigned step,
+                 double time,
+                 cdm_Array* val,
+                 const bool mode,
+                 const unsigned step_avr,
                  const double time_avr);
 
   /**
@@ -1278,7 +1284,7 @@ protected :
    * @param [in] iblank  iblankデータポインタ(PLOT3Dのxyzファイル用)
    */
   virtual bool
-  write_GridData(const int* iblank) {}; 
+  write_GridData(const int* iblank) {};
 
 //FEAST 20131125.s
   /**
@@ -1287,10 +1293,10 @@ protected :
    * @param [in] time time
    */
   virtual
-  bool 
+  bool
   write_ascii_header(const unsigned step,
                      const double time)
-  { return true; }; 
+  { return true; };
 
   /**
    * @brief データタイプ毎のサイズを取得
@@ -1298,15 +1304,15 @@ protected :
    * @return データサイズ
    * @return 0 エラー
    */
-  static int 
-  get_cdm_Datasize(CDM::E_CDM_DTYPE Dtype); 
+  static int
+  get_cdm_Datasize(CDM::E_CDM_DTYPE Dtype);
 
   /**
-   * @brief Create Process 
+   * @brief Create Process
    * @param [in] comm           MPIコミュニケータ
    * @param [out] G_Process     Process class　　　
    */
-  void 
+  void
   cdm_Create_dfiProcessInfo(const MPI_Comm comm,
                             cdm_Process &G_Process);
 
@@ -1319,12 +1325,12 @@ protected :
    * @param [in] DFI_GlobalDivision 分割数（DFI）
    * @return 読込みタイプコード
    */
-  //cdm_EGlobalVoxel CheckGlobalVoxel(const int Gvoxel[3], 
-  CDM::E_CDM_READTYPE 
-  CheckReadType(const int G_voxel[3], 
+  //cdm_EGlobalVoxel CheckGlobalVoxel(const int Gvoxel[3],
+  CDM::E_CDM_READTYPE
+  CheckReadType(const int G_voxel[3],
                 const int DFI_GlobalVoxel[3],
                 const int G_Div[3],
-                const int DFI_GlobalDivision[3]); 
+                const int DFI_GlobalDivision[3]);
 
   /**
    * @brief フィールドデータの読込み範囲を求める
@@ -1341,16 +1347,16 @@ protected :
    * @param [out] read_sta 読込み開始位置
    * @param [out] read_end 読込み終了位置　　
    */
-  void 
+  void
   CreateReadStartEnd(bool isSame,
-                     const int head[3], 
-                     const int tail[3], 
-                     const int gc, 
-                     const int DFI_head[3], 
+                     const int head[3],
+                     const int tail[3],
+                     const int gc,
+                     const int DFI_head[3],
                      const int DFI_tail[3],
-                     const int DFI_gc, 
-                     const CDM::E_CDM_READTYPE readflag, 
-                     int copy_sta[3], 
+                     const int DFI_gc,
+                     const CDM::E_CDM_READTYPE readflag,
+                     int copy_sta[3],
                      int copy_end[3],
                      int read_sta[3],
                      int read_end[3]);
@@ -1390,27 +1396,27 @@ public:
    * @brief ディレクトリパスの作成(MakeDirectorySubを呼出して作成)
    * @param [in] path パス
    * @return error code　　　　　　　
-   */ 
+   */
   int MakeDirectory(const std::string path);
 
   /**
    * @brief ディレクトリパスの作成(MakeDirectory関数を呼出して作成)
    * @return error code　　　　　　　
-   */ 
+   */
   int MakeDirectoryPath();
 
   /**
    * @brief ディレクトリパスの作成(system関数mkdirで作成)
    * @param [in] path パス
    * @return error code　　　　　　　
-   */ 
+   */
   static int MakeDirectorySub( std::string path );
 
   /**
    * @brief dfiのパスとDirectoryPathを連結する関数
    * @return パス名
    */
-  std::string Generate_Directory_Path(); 
+  std::string Generate_Directory_Path();
 
   /** バージョンを出力する
    */
@@ -1424,7 +1430,7 @@ public:
    * @brief  コンパイルオプションで与えたバッファサイズを取得
    * @return バッファサイズ
    */
-  int getBufSize(); 
+  int getBufSize();
 
   /**
    * @brief 出力処理を追記モードにするかどうかをチェック(NetCDF用)

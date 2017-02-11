@@ -2,17 +2,23 @@
 #define _CDM_PROCESS_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_Process.h
  * @brief  cdm_RANK & cdm_Process Class Header
- * @author aics    
+ * @author aics
  */
 
 /** proc.dfi ファイルの Rank */
@@ -22,7 +28,7 @@ public:
 
 
   int RankID;                           ///<ランク番号
-  std::string HostName;                 ///<ホスト名 
+  std::string HostName;                 ///<ホスト名
   int VoxelSize[3];                     ///<ボクセルサイズ
   int HeadIndex[3];                     ///<始点インデックス
   int TailIndex[3];                     ///<終点インデックス
@@ -38,7 +44,7 @@ public:
   /**
    * @brief read Rank(proc.dfi)
    * @param [in]   tpCntl  cdm_TextParserクラス
-   * @param [in]   label_leaf ベースとなる名前（"/Process/Rank") 
+   * @param [in]   label_leaf ベースとなる名前（"/Process/Rank")
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
@@ -52,7 +58,7 @@ public:
    * @return true:出力成功 false:出力失敗
    */
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, 
+  Write(FILE* fp,
         const unsigned tab);
 
 };
@@ -76,11 +82,11 @@ public:
 
   /**
    * @brief read Rank(proc.dfi)
-   * @param [in]   tpCntl  cdm_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  Read(cdm_TextParser tpCntl); 
+  Read(cdm_TextParser tpCntl);
 
   /**
    * @brief 読込みランクリストの作成
@@ -94,12 +100,12 @@ public:
    * @param [out] readRankList 読込みランクリスト
    * @return error code
    */
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   CheckReadRank(const cdm_Domain* dfi_domain,
                 const int head[3],
                 const int tail[3],
                 CDM::E_CDM_READTYPE readflag,
-                vector<int> &readRankList); 
+                vector<int> &readRankList);
 
   /**
    * @brief DFIのProcessにHeadIndex,TailIndex指定が無い場合
@@ -107,12 +113,12 @@ public:
    * subDomainを生成し、CreateRankListに渡す
    * CPMと同じ分割でhead&tail情報を作成してRankListを作成する
    * @param [in]  dfi_domain DFIのdomain情報
-   * @param [out] mapHeadX   headXをキーにした位置情報マップ 
-   * @param [out] mapHeadY   headXをキーにした位置情報マップ 
-   * @param [out] mapHeadZ   headXをキーにした位置情報マップ 
+   * @param [out] mapHeadX   headXをキーにした位置情報マップ
+   * @param [out] mapHeadY   headXをキーにした位置情報マップ
+   * @param [out] mapHeadZ   headXをキーにした位置情報マップ
    * @return error code
    */
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   CreateRankList(const cdm_Domain* dfi_domain,
                  map<int,int> &mapHeadX,
                  map<int,int> &mapHeadY,
@@ -124,12 +130,12 @@ public:
    * を生成する
    * @param [in]  div      分割数
    * @param [in]  gvox     ボクセルサイズ
-   * @param [out] mapHeadX   headXをキーにした位置情報マップ 
-   * @param [out] mapHeadY   headXをキーにした位置情報マップ 
-   * @param [out] mapHeadZ   headXをキーにした位置情報マップ 
-   * @return error code 
+   * @param [out] mapHeadX   headXをキーにした位置情報マップ
+   * @param [out] mapHeadY   headXをキーにした位置情報マップ
+   * @param [out] mapHeadZ   headXをキーにした位置情報マップ
+   * @return error code
    */
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   CreateRankList(const int div[3],
                  const int gvox[3],
                  map<int,int> &mapHeadX,
@@ -141,9 +147,9 @@ public:
    * @param [in]  dfi_domain DFIのdomain情報
    * @param [out] subDomainInfo 活性ドメイン情報
    */
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   CreateSubDomainInfo(const cdm_Domain* dfi_domain,
-                      vector<cdm_ActiveSubDomain> &subDomainInfo); 
+                      vector<cdm_ActiveSubDomain> &subDomainInfo);
 
   /**
    * @brief ActiveSubdomainファイルのエンディアンをチェック
@@ -161,8 +167,8 @@ public:
    * @param [out] div           ActiveSubdiomainファイル中の領域分割数
    * @return   終了コード(CDM_SUCCESS=正常終了)
    */
-  static 
-  CDM::E_CDM_ERRORCODE 
+  static
+  CDM::E_CDM_ERRORCODE
   ReadActiveSubdomainFile(
                           std::string subDomainFile,
                           std::vector<cdm_ActiveSubDomain>& subDomainInfo,
@@ -207,7 +213,7 @@ public:
    */
   void CreateHeadMap(int* head,
                      int ndiv,
-                     headT &map); 
+                     headT &map);
 
 
   /**
@@ -221,7 +227,7 @@ public:
    * @param [in]  mapHeadZ     headZをキーにした位置情報マップ
    * @param [out] readRankList 読込みに必要なランク番号リスト
    */
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   CheckStartEnd(const cdm_Domain* dfi_domain,
                 const int head[3],
                 const int tail[3],
@@ -239,7 +245,7 @@ public:
    * @return true:出力成功 false:出力失敗
    */
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, 
+  Write(FILE* fp,
         const unsigned tab);
 
 

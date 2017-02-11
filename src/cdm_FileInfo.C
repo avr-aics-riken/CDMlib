@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_FileInfo.C
  * @brief  cdm_FileInfo Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -37,14 +43,14 @@ cdm_FileInfo::cdm_FileInfo()
 // コンストラクタ
 cdm_FileInfo::cdm_FileInfo(const CDM::E_CDM_DFITYPE _DFIType,
                            const CDM::E_CDM_OUTPUT_FNAME _FieldFilenameFormat,
-                           const std::string _DirectoryPath, 
-                           const CDM::E_CDM_ONOFF _TimeSliceDirFlag, 
+                           const std::string _DirectoryPath,
+                           const CDM::E_CDM_ONOFF _TimeSliceDirFlag,
                            const std::string _Prefix,
                            const CDM::E_CDM_FORMAT _FileFormat,
-                           const int _GuideCell, 
-                           const CDM::E_CDM_DTYPE _DataType, 
+                           const int _GuideCell,
+                           const CDM::E_CDM_DTYPE _DataType,
                            const CDM::E_CDM_ENDIANTYPE _Endian,
-                           const CDM::E_CDM_ARRAYSHAPE _ArrayShape, 
+                           const CDM::E_CDM_ARRAYSHAPE _ArrayShape,
                            const int _NumVariables,
                            const std::string _RankNoPrefix)
 {
@@ -97,7 +103,7 @@ std::string cdm_FileInfo::getVariableName(int pvari)
 // #################################################################
 // FileInfo 読込み関数
 CDM::E_CDM_ERRORCODE
-cdm_FileInfo::Read(cdm_TextParser tpCntl) 
+cdm_FileInfo::Read(cdm_TextParser tpCntl)
 {
 
   std::string str;
@@ -297,7 +303,7 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
   }else {
     printf("\tCDM Parsing error : fail to get '%s'\n",str.c_str());
     return CDM::E_CDM_ERROR_READ_DFI_ENDIAN;
-  } 
+  }
 
   // NetCDFの場合、nativeに変更する
   // ライブラリが吸収するため
@@ -409,8 +415,8 @@ cdm_FileInfo::Read(cdm_TextParser tpCntl)
 // #################################################################
 // DFIファイル:FileInfo要素を出力する
 CDM::E_CDM_ERRORCODE
-cdm_FileInfo::Write(FILE* fp, 
-                    const unsigned tab) 
+cdm_FileInfo::Write(FILE* fp,
+                    const unsigned tab)
 {
 
   fprintf(fp, "FileInfo {\n");
@@ -475,7 +481,7 @@ cdm_FileInfo::Write(FILE* fp,
     _CDM_WRITE_TAB(fp, tab+1);
     fprintf(fp, "RankNoPrefix       = \"%s\"\n", RankNoPrefix.c_str());
   }
-  
+
 
   _CDM_WRITE_TAB(fp, tab+1);
   fprintf(fp, "GuideCell          = %d\n", GuideCell);
@@ -516,4 +522,3 @@ cdm_FileInfo::Write(FILE* fp,
   return CDM::E_CDM_SUCCESS;
 
 }
-

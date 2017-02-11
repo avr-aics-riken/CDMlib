@@ -1,11 +1,15 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -113,8 +117,8 @@ bool InputParam::Read(std::string input_file_name)
       in_dfi_name.push_back(str);
       ncnt++;
       continue;
-    } else 
-   
+    } else
+
     //出力dfiファイル名の読込み
     if( !strcasecmp(str.substr(0,9).c_str(), "OutputDFI") ) {
       label = label_base+"/"+str;
@@ -373,10 +377,10 @@ bool InputParam::Read(std::string input_file_name)
       }
       ncnt++;
       continue;
-    } else 
+    } else
 
     //入力領域のスタート位置)
-    if( !strcasecmp(str.c_str(),"CropIndexStart") ) { 
+    if( !strcasecmp(str.c_str(),"CropIndexStart") ) {
       int vec[3];
       label = "/ConvData/CropIndexStart";
       if( (tpCntl.getInspectedVector(label, vec, 3)) ) {
@@ -410,7 +414,7 @@ bool InputParam::Read(std::string input_file_name)
     } else {
       printf("\tParsing error : No Elem name : %s\n",str.c_str());
       Exit(0);
-    } 
+    }
   }
 
   // TextParserの破棄
@@ -573,8 +577,8 @@ bool InputParam::InputParamCheck()
         m_out_format != CDM::E_CDM_FMT_PLOT3D  &&
 //20160411.fub.s
 //      m_out_format != CDM::E_CDM_FMT_NETCDF4 ) {
-        m_out_format != CDM::E_CDM_FMT_NETCDF4 && 
-        m_out_format != CDM::E_CDM_FMT_FUB     && 
+        m_out_format != CDM::E_CDM_FMT_NETCDF4 &&
+        m_out_format != CDM::E_CDM_FMT_FUB     &&
         m_out_format != CDM::E_CDM_FMT_FUB_COD ) {
       printf("\tCan't output dfi OutputFormat. %s\n",Get_OutputFormat_string().c_str());
       ierr=false;
@@ -740,11 +744,11 @@ void InputParam::PrintParam(FILE* fp)
    fprintf(fp,"\tOutputdir            : \"%s\"\n",m_outdir_name.c_str());
    fprintf(fp,"\tThinning             : %d\n",m_thin_count);
 
-   if( m_outputFilenameFormat == CDM::E_CDM_FNAME_STEP_RANK ) { 
+   if( m_outputFilenameFormat == CDM::E_CDM_FNAME_STEP_RANK ) {
      fprintf(fp,"\tOutputFilenameFormat : \"step_rank\"\n");
-   }else if( m_outputFilenameFormat == CDM::E_CDM_FNAME_RANK_STEP ) { 
+   }else if( m_outputFilenameFormat == CDM::E_CDM_FNAME_RANK_STEP ) {
      fprintf(fp,"\tOutputFilenameFormat : \"rank_step\"\n");
-   }else if( m_outputFilenameFormat == CDM::E_CDM_FNAME_RANK ) { 
+   }else if( m_outputFilenameFormat == CDM::E_CDM_FNAME_RANK ) {
      fprintf(fp,"\tOutputFilenameFormat : \"rank\"\n");
    }else {
      fprintf(fp,"\tOutputFilenameFormat : \"undefine\"\n");
