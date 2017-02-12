@@ -35,6 +35,6 @@ set(frm_files
 )
 
 
-add_library(frm STATIC ${frm_files})
+add_executable(frm ${frm_files})
 target_link_libraries(frm -lCDMmpi -lTPmpi)
-install(TARGETS frm DESTINATION lib)
+install(TARGETS frm DESTINATION bin)

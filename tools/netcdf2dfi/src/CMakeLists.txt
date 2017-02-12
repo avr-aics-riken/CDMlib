@@ -34,6 +34,6 @@ set(netcdf2dfi_files
 )
 
 
-add_library(netcdf2dfi STATIC ${netcdf2dfi_files})
+add_executable(netcdf2dfi ${netcdf2dfi_files})
 target_link_libraries(netcdf2dfi -lCDMmpi -lTPmpi)
-install(TARGETS netcdf2dfi DESTINATION lib)
+install(TARGETS netcdf2dfi DESTINATION bin)

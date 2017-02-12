@@ -49,6 +49,6 @@ set(fconv_files
 )
 
 
-add_library(fconv STATIC ${fconv_files})
+add_executable(fconv ${fconv_files})
 target_link_libraries(fconv -lCDMmpi -lCPMmpi -lTPmpi)
-install(TARGETS fconv DESTINATION lib)
+install(TARGETS fconv DESTINATION bin)

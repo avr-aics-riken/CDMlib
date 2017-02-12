@@ -65,35 +65,35 @@ endif()
 
 
 install(FILES
-        $(PROJECT_SOURCE_DIR)/include/cdm_ActiveSubDomain.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_Array.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_Define.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_DFI_AVS.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_DFI_BOV.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_DFI_FUB.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_DFI_NETCDF.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_DFI_PLOT3D.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_DFI_SPH.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_DFI_VTK.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_DFI.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_Domain.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_endianUtil.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_FieldFileNameFormat.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_FieldFileNameFormatElem.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_FILE.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_FileInfo.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_FilePath.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_MPI.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_NonUniformDomain.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_PathUtil.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_Process.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_TextParser.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_TimeSlice.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_TypeArray.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_Unit.h
-        $(PROJECT_SOURCE_DIR)/include/cdm_Version.h.in
-        $(PROJECT_SOURCE_DIR)/include/cdm_VisIt.h
-        $(PROJECT_SOURCE_DIR)/include/mpi_stubs.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_ActiveSubDomain.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_Array.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_Define.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_DFI_AVS.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_DFI_BOV.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_DFI_FUB.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_DFI_NETCDF.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_DFI_PLOT3D.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_DFI_SPH.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_DFI_VTK.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_DFI.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_Domain.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_endianUtil.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_FieldFileNameFormat.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_FieldFileNameFormatElem.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_FILE.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_FileInfo.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_FilePath.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_MPI.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_NonUniformDomain.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_PathUtil.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_Process.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_TextParser.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_TimeSlice.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_TypeArray.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_Unit.h
+        ${PROJECT_SOURCE_DIR}/include/cdm_VisIt.h
+        ${PROJECT_SOURCE_DIR}/include/mpi_stubs.h
+        ${PROJECT_BINARY_DIR}/include/cdm_Version.h
         DESTINATION include
 )
 

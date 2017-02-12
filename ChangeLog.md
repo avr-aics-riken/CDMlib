@@ -4,6 +4,9 @@
 ## REVISION HISTORY
 
 ---
+- 2017-2-12 Version 1.0.2
+  - correct install directory of tools. lib >> bin
+
 - 2017-2-12 Version 1.0.1
   - correct FindCDM.cmake
   - enable_BUFFER_SIZE
