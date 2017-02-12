@@ -16,9 +16,9 @@
 
 macro (AddOptimizeOption)
   if(CMAKE_CXX_COMPILER MATCHES ".*FCCpx$")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Kfast, -Nrt_notune -Nfjcex -w -Xg")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Kfast, -Nrt_notune -w -Xg")
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Cpp -Kfast, -Nrt_notune -Knooptmsg")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Kfast,ocl,preex,simd=2,array_private,parallel,optmsg=2 -V -Nsrc -x0 -Xg")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Kfast,ocl,preex,simd=2,array_private,parallel,optmsg=2 -V -Nsrc -x0 -Xg")
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Cpp -Kfast,ocl,preex,simd=2,array_private,parallel,optmsg=2 -V -Nsrc")
     # -Xg   : gcc compatible flag to suppress -rdynamic
 
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

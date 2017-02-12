@@ -4,6 +4,9 @@
 ## REVISION HISTORY
 
 ---
+- 2017-2-12 Version 1.0.3
+  - update fx10 compile options
+
 - 2017-2-12 Version 1.0.2
   - correct install directory of tools. lib >> bin
 

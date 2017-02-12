@@ -108,23 +108,39 @@ In following exsmples, assuming that TextParser, CPMlib, and NetCDF library are 
 
 ### INTEL/GNU compiler
 
-  ~~~
-  $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib -Dwith_MPI=yes -Dwith_util=yes -Dwith_example=yes -Dwith_TP=${CDM_HOME}/TextParser -Dwith_CPM=${CDM_HOME}/CPMlib -Dwith_NetCDF=no -Denable_BUFFER_SIZE=no ..
-  ~~~
+~~~
+$ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib -Dwith_MPI=yes -Dwith_util=yes -Dwith_example=yes -Dwith_TP=${CDM_HOME}/TextParser -Dwith_CPM=${CDM_HOME}/CPMlib -Dwith_NetCDF=no -Denable_BUFFER_SIZE=no ..
+~~~
 
 
 ### FUJITSU compiler / FX10 on login nodes (Cross compilation)
 
-  ~~~
-  $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake -Dwith_MPI=yes -Dwith_util=yes -Dwith_example=yes -Dwith_TP=${CDM_HOME}/TextParser -Dwith_CPM=${CDM_HOME}/CPMlib -Dwith_NetCDF=no -Denable_BUFFER_SIZE=no ..
-  ~~~
+~~~
+$ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
+            -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake \
+            -Dwith_MPI=yes \
+            -Dwith_example=no \
+            -Dwith_util=yes \
+            -Dwith_TP=${CDM_HOME}/TextParser \
+            -Dwith_CPM=${CDM_HOME}/CPMlib \
+            -Dwith_NetCDF=no \
+            -Denable_BUFFER_SIZE=no ..
+~~~
 
 
 ### FUJITSU compiler / K computer on login nodes (Cross compilation)
 
-  ~~~
-  $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_K.cmake -Dwith_MPI=yes -Dwith_util=yes -Dwith_example=yes -Dwith_TP=${CDM_HOME}/TextParser -Dwith_CPM=${CDM_HOME}/CPMlib -Dwith_NetCDF=no -Denable_BUFFER_SIZE=no ..
-  ~~~
+~~~
+$ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
+            -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_K.cmake \
+            -Dwith_MPI=yes \
+            -Dwith_example=no \
+            -Dwith_util=yes \
+            -Dwith_TP=${CDM_HOME}/TextParser \
+            -Dwith_CPM=${CDM_HOME}/CPMlib \
+            -Dwith_NetCDF=no \
+            -Denable_BUFFER_SIZE=no ..
+~~~
 
 
 ##### Note
@@ -134,19 +150,7 @@ In following exsmples, assuming that TextParser, CPMlib, and NetCDF library are 
 
 ### Compilation of staging tool(frm)
 
-When you install staging tool onto a login node with cross-compiling environment, the tool must be compiled by a native GNU compiler on the login node. If the front-end login node does not have MPI library, specify `-Dwith_MPI=no` option. Here is an example for the K-computer.
-
-~~~
- $ ../configure --prefix=hogehoge \
-                -—with-MPI=no \
-                --with-parser=hoge \
-                --with-cpm=foo \
-                --with-frm=yes \
-                CXX=g++ \
-                FC=gfortran
-~~~
-
-Note that TextParser library to be liked also must be compiled for native environment.
+When you install staging tool onto a login node with cross-compiling environment, the tool must be compiled by a native GNU compiler on the login node. If the front-end login node does not have MPI library, specify `-Dwith_MPI=no` option.
 
 
 

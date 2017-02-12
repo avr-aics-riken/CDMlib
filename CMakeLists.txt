@@ -47,7 +47,7 @@ option (with_example "Compiling examples" "OFF")
 option (with_NetCDF "Enable NetCDF" "OFF")
 option (with_CPM "Enable CPMlib" "OFF")
 option (with_TP "Enable TextParser" "OFF")
-option (enable_BUFFER_SIZE "Enable BUfferSize option" "OFF")
+option (enable_BUFFER_SIZE "Enable Buffer Size option" "OFF")
 
 
 #######
@@ -68,8 +68,8 @@ set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}")
 
 
 #######
-set(PROJECT_VERSION "1.0.2")
-set(LIB_REVISION "20170212_1400")
+set(PROJECT_VERSION "1.0.3")
+set(LIB_REVISION "20170212_2200")
 #######
 
 
@@ -81,6 +81,7 @@ set(LIB_REVISION "20170212_1400")
 set(CMAKE_MODULE_PATH  ${PROJECT_SOURCE_DIR}/cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/CompileOptionSelector.cmake)
 include(${PROJECT_SOURCE_DIR}/cmake/cdm_package.cmake)
+
 
 
 
@@ -101,6 +102,9 @@ if(enable_BUFFER_SIZE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCDM_BUFFER_MB_SIZE=${enable_BUFFER_SIZE}")
   endif()
 endif()
+
+
+
 
 #######
 # Display options
