@@ -4,7 +4,7 @@
 ## REVISION HISTORY
 
 ---
-- 2017-2-9 Version 1.0.1
+- 2017-2-12 Version 1.0.1
   - correct FindCDM.cmake
   - enable_BUFFER_SIZE
 
@@ -16,7 +16,7 @@
 
   |Compiler|Serial|Tools|Ex.|MPI |Tools|Ex.|
   |:--|:--:|:--:|:--:|:--:|:--:|:--:|
-  |Intel 17.0.1 ||||ok|ok|100%|
+  |Intel 17.0.1 ||||ok|ok|0%|
   |GNU 6.2.0    |||||||
   |fx10         |||||||
 

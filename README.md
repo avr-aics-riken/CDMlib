@@ -81,7 +81,7 @@ $ sudo make install
 
 > Specify the directory path that TextParser is installed.
 
-`-D with_CPM=` {*CPM_directory* | no}
+`-D with_CPM=` {*CPMlib_directory* | no}
 
 > If you want to build supplied utility tools, specify the directory path that CPM library is installed. CDMlib itself doesn't need CPMlib, but fconv depends on. If not specified this option, fconv is not compiled.
 
@@ -116,14 +116,14 @@ In following exsmples, assuming that TextParser, CPMlib, and NetCDF library are 
 ### FUJITSU compiler / FX10 on login nodes (Cross compilation)
 
   ~~~
-  $ cmake -DINSTALL_DIR=${PM_HOME}/PMlib -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake -Dwith_MPI=no -Denable_Fortran=yes -Dwith_example=no  ..
+  $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx10.cmake -Dwith_MPI=yes -Dwith_util=yes -Dwith_example=yes -Dwith_TP=${CDM_HOME}/TextParser -Dwith_CPM=${CDM_HOME}/CPMlib -Dwith_NetCDF=no -Denable_BUFFER_SIZE=no ..
   ~~~
 
 
 ### FUJITSU compiler / K computer on login nodes (Cross compilation)
 
   ~~~
-  $ cmake -DINSTALL_DIR=${PM_HOME}/PMlib -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_K.cmake -Dwith_MPI=no -Denable_Fortran=yes -Dwith_example=no ..
+  $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_K.cmake -Dwith_MPI=yes -Dwith_util=yes -Dwith_example=yes -Dwith_TP=${CDM_HOME}/TextParser -Dwith_CPM=${CDM_HOME}/CPMlib -Dwith_NetCDF=no -Denable_BUFFER_SIZE=no ..
   ~~~
 
 
@@ -132,11 +132,9 @@ In following exsmples, assuming that TextParser, CPMlib, and NetCDF library are 
 
 
 
-### Compilation of staging tool
+### Compilation of staging tool(frm)
 
-When you install staging tool onto a login node with cross-compiling environment, the tool
-must be compiled by native compiler on the login node. If the front-end login node does not
-have MPI library, specify —with-MPI=no option. Here is an example for the K-computer.
+When you install staging tool onto a login node with cross-compiling environment, the tool must be compiled by a native GNU compiler on the login node. If the front-end login node does not have MPI library, specify `-Dwith_MPI=no` option. Here is an example for the K-computer.
 
 ~~~
  $ ../configure --prefix=hogehoge \

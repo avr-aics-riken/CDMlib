@@ -69,7 +69,7 @@ set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}")
 
 #######
 set(PROJECT_VERSION "1.0.1")
-set(LIB_REVISION "20170211_1800")
+set(LIB_REVISION "20170212_1200")
 #######
 
 
@@ -125,7 +125,7 @@ message( STATUS "TextParser support: "      ${with_TP})
 message( STATUS "CPMlib support    : "      ${with_CPM})
 message( STATUS "NetCDF support    : "      ${with_NetCDF})
 message( STATUS "Example           : "      ${with_example})
-message( STATUS "BUFFER_SIZE       : "      ${BUFFER_SIZE})
+message( STATUS "BUFFER_SIZE       : "      ${enable_BUFFER_SIZE})
 message(" ")
 
 if(CMAKE_CXX_COMPILER MATCHES ".*FCCpx$")
