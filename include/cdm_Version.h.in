@@ -21,9 +21,6 @@
 #define _CDM_VERSION_H_
 
 /** CDMライブラリのバージョン */
-#define CDM_VERSION_NO  "@PACKAGE_VERSION@"
-
-/** CDMライブラリのリビジョン */
-#define CDM_REVISION    "@CDM_REVISION@"
+#define CDM_VERSION  "@PROJECT_VERSION@"
 
 #endif /* _CDM_VERSION_H_ */

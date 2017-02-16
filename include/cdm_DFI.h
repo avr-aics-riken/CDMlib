@@ -1422,7 +1422,7 @@ public:
    */
   static std::string getVersionInfo()
   {
-    std::string str(CDM_VERSION_NO);
+    std::string str(CDM_VERSION);
     return str;
   }
 

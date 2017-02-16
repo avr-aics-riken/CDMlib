@@ -68,8 +68,8 @@ set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}")
 
 
 #######
-set(PROJECT_VERSION "1.0.3")
-set(LIB_REVISION "20170212_2200")
+set(PROJECT_VERSION "1.0.4")
+set(LIB_REVISION "20170216_2200")
 #######
 
 
@@ -279,7 +279,7 @@ endif()
 #######
 
 configure_file( config.h.in.cmake config.h )
-configure_file( include/cdm_Version.h.in ${PROJECT_BINARY_DIR}/include/cdm_Version.h)
+configure_file( include/cdm_Version.h.in ${PROJECT_BINARY_DIR}/include/cdm_Version.h @ONLY)
 
 
 #######

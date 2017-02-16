@@ -4,6 +4,10 @@
 ## REVISION HISTORY
 
 ---
+- 2017-2-16 Version 1.0.4
+  - enable CDM_VERSION
+
+---
 - 2017-2-12 Version 1.0.3
   - update fx10 compile options
 
