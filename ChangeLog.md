@@ -4,6 +4,18 @@
 ## REVISION HISTORY
 
 ---
+- 2017-2-23 Version 1.0.5
+  - update build on K, with cmake 2.6.x
+  - Tested
+
+  |Compiler|Serial|Tools|Ex.|MPI |Tools|Ex.|
+  |:--|:--:|:--:|:--:|:--:|:--:|:--:|
+  |Intel 17.0.1 ||||ok|ok|0%|
+  |GNU 6.2.0    |||||||
+  |fx10         ||||ok|||
+  |K            ||||ok|||
+  
+---
 - 2017-2-16 Version 1.0.4
   - enable CDM_VERSION
 
@@ -22,13 +34,6 @@
 - 2017-2-9 Version 1.0.0
   - cmake version
   - examples are still working
-  - Tested
-
-  |Compiler|Serial|Tools|Ex.|MPI |Tools|Ex.|
-  |:--|:--:|:--:|:--:|:--:|:--:|:--:|
-  |Intel 17.0.1 ||||ok|ok|0%|
-  |GNU 6.2.0    |||||||
-  |fx10         |||||||
 
 ---
 - 2015-12-12 Version 0.9.4

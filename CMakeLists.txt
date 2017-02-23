@@ -34,7 +34,7 @@
 # -D enable_BUFFER_SIZE=<size MB>
 #
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.6)
 
 
 #######
@@ -68,8 +68,8 @@ set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}")
 
 
 #######
-set(PROJECT_VERSION "1.0.4")
-set(LIB_REVISION "20170216_2200")
+set(PROJECT_VERSION "1.0.5")
+set(LIB_REVISION "20170223_1200")
 #######
 
 
