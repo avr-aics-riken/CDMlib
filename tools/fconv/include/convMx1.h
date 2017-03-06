@@ -2,13 +2,17 @@
 #define _CONVMX1_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #include "conv.h"
@@ -45,7 +49,7 @@ public:
   /**
    * @brief Mx1の実行
    * @return エラーコード
-   */ 
+   */
   bool exec();
 
   /**
@@ -60,7 +64,7 @@ public:
    * @param[in] sz     サイズ
    * @param[in] dfi    dfi
    * @param[in] DFI_Process cdm_Process
-   * @param[in] mapHeadX 
+   * @param[in] mapHeadX
    * @param[in] mapHeadY
    * @param[in] mapHeadZ
    * @param[out] min 最小値
@@ -77,8 +81,8 @@ public:
                    int sz[3],
                    cdm_DFI* dfi,
                    cdm_Process* DFI_Process,
-                   headT mapHeadX, 
-                   headT mapHeadY, 
+                   headT mapHeadX,
+                   headT mapHeadY,
                    headT mapHeadZ,
                    double* min,
                    double* max);
@@ -100,7 +104,7 @@ public:
    * @param[in] mapHeadZ
    * @param[out] min 最小値
    * @param[out] max 最大値
-   */ 
+   */
   bool
   convMx1_out_ijkn(cdm_FILE* pFile,
                    std::string inPath,
@@ -127,7 +131,7 @@ public:
    * @param[in]  ivar_out 格子データの コンポーネント位置
    */
   bool InterPolate(cdm_Array* src_old, cdm_Array* src, cdm_Array* outArray,
-                   int ivar_src, int ivar_out); 
+                   int ivar_src, int ivar_out);
 
   /**
    * @brief 配列のゼロクリア
@@ -148,7 +152,7 @@ public:
   bool setGridData_XY(cdm_TypeArray<T>* O,
                       cdm_TypeArray<T>* S,
                       int ivar_out,
-                      int ivar_src); 
+                      int ivar_src);
 
   /**
    * @brief 内部の格子点のデータを重み付けでで割る
@@ -156,7 +160,7 @@ public:
    * @param[in]  ivar_out コンポーネント位置
    */
   template<class T>
-  void VolumeDataDivide8(cdm_TypeArray<T> *O, int ivar_out); 
+  void VolumeDataDivide8(cdm_TypeArray<T> *O, int ivar_out);
 
   /**
    * @brief NIJK配列をスカラーのIJK配列にコピーコントロール
@@ -164,10 +168,10 @@ public:
    * @param[in] ivar コピーするコンポーネント位置
    * @return IJKにコピーされて配列ポインタ
    */
-  cdm_Array* nijk_to_ijk(cdm_Array* src, int ivar); 
+  cdm_Array* nijk_to_ijk(cdm_Array* src, int ivar);
 
   /**
-   * @brief NIJK配列をスカラーのIJK配列にコピー 
+   * @brief NIJK配列をスカラーのIJK配列にコピー
    * @param[in] S コピー元配列
    * @param[in] O コピー先配列
    * @param[in] ivar コピーするコンポーネント位置

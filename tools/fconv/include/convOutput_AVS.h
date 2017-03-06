@@ -2,13 +2,17 @@
 #define _CONVOUTPUT_AVS_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -43,7 +47,7 @@ public:
                         const std::string prefix,
                         const unsigned step,
                         const int id,
-                        const bool mio); 
+                        const bool mio);
 
 
   /**
@@ -54,7 +58,7 @@ public:
    */
   bool WriteFieldData(cdm_FILE* pFile,
                       cdm_Array* src,
-                      size_t dLen); 
+                      size_t dLen);
 
   /**
    * @brief avsファイルのヘッダー処理
@@ -62,7 +66,7 @@ public:
    * @param [in] in_dfi   dfiのポインター
    */
   void output_avs(
-                  int myRank, 
+                  int myRank,
                   vector<cdm_DFI *>in_dfi);
 
   /**
@@ -87,8 +91,8 @@ protected:
    */
 /*
   void output_avs_Mx1(
-                      int myRank, 
-                      vector<cdm_DFI *>in_dfi); 
+                      int myRank,
+                      vector<cdm_DFI *>in_dfi);
 */
   /**
    * @brief avsファイルのヘッダー処理（MxM)
@@ -96,8 +100,8 @@ protected:
    * @param [in] in_dfi dfiのポインター
    */
   void output_avs_MxM(
-                      int myRank, 
-                      vector<cdm_DFI *>in_dfi); 
+                      int myRank,
+                      vector<cdm_DFI *>in_dfi);
 
   /**
    * @brief avsファイルのヘッダー処理（MxN)
@@ -107,10 +111,10 @@ protected:
    * @param [in] head     headインデックス
    */
   void output_avs_MxN(
-                      int myRank, 
+                      int myRank,
                       vector<cdm_DFI *>in_dfi,
                       cpm_ParaManager* paraMngr,
-                      int *head); 
+                      int *head);
 
   /**
    * @brief avs coord data ファイル出力
@@ -156,7 +160,7 @@ protected:
                          bool mio,
                          int ndim,
                          int nspace,
-                         int dims[3]);  
+                         int dims[3]);
 
   /**
    * @brief avsファイルヘッダー出力 (不等間隔格子対応版)
@@ -170,8 +174,8 @@ protected:
                          int RankID,
                          bool mio,
                          CDM::E_CDM_DFITYPE dfi_type,
-                         int dims[3]);  
+                         int dims[3]);
 
 };
 
-#endif // _CONVOUTPUT_AVS_H_ 
+#endif // _CONVOUTPUT_AVS_H_

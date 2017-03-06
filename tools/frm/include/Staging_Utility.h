@@ -1,17 +1,21 @@
 /*
- * frm (File Rank Mapper)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
  * @file Staging_Utility.h
  * @brief Staging Class Header
- * @author aics 
+ * @author aics
  * @data 2013/4/24
  */
 
@@ -49,7 +53,7 @@ public:
    int rankStart;
    int rankEnd;
   };
-  
+
   /** staging 用 info.txt ファイルの Process */
   struct Rank
   {
@@ -85,7 +89,7 @@ public:
   ~Staging(){};
 
 public:
-  
+
   //cdm_DFI *DFI;
   vector<cdm_DFI *> DFI;
 
@@ -113,7 +117,7 @@ public:
   int m_Gdiv[3];                ///< Staging用分割数
   string m_ActiveSubdomain;     ///< ActiveSubdomainファイル名
   int m_NumberOfRank;           ///< Staging用並列数
-  vector<Rank> m_GRankInfo;     ///< Staging用並列情報テーブル 
+  vector<Rank> m_GRankInfo;     ///< Staging用並列情報テーブル
   vector<string> m_dfi_fname;   ///<STaging用DFIファイル名
 //FCONV 20140116.s
   string m_fconvfile;           ///< FCONV 入力ファイル名
@@ -127,7 +131,7 @@ public:
   int    m_CropEnd[3];          ///< FCONV 入力領域エンド位置
   int    m_outList;             ///< FCONV ファイル割振り方法
   std::vector<step_rank_info> m_StepRankList; ///< ファイル割振りリスト
-//FCONV 20140116.e 
+//FCONV 20140116.e
 
   std::vector<ActiveSubDomain> m_subDomainInfo; ///< 活性サブドメイン情報
 
@@ -146,27 +150,27 @@ public:
 //20160407.fub.s
   /** 引数にエラーチェック
    * @ retval 終了コード(STG_SUCCESS=正常終了)
-   */ 
+   */
   stg_ErrorCode ArgErrorCheck();
 
   /** fubフィルコピー（フィールドデータファイルと座標値データファイルコピー
    *
    */
   void FubFileCopy(int readRankID, int step, const bool mio,
-                   std::string path2, cdm_DFI *dfi, char *cmd); 
+                   std::string path2, cdm_DFI *dfi, char *cmd);
 //20160407.fub.e
   /** 初期化、ファイルの読込み
-   * @param[in] infofname ステージング用procファイル名 
+   * @param[in] infofname ステージング用procファイル名
    * @retval    true  ファイル読込み成功
-   * @retval    false ファイル読込み失敗 
+   * @retval    false ファイル読込み失敗
    */
   //bool Initial(string infofname, string dfifname);
   bool Initial(string infofname);
 
   /** ステージング用procファイルの読込み
-   * @retval     true     ファイル読込み成功 
+   * @retval     true     ファイル読込み成功
    * @retval     false    ファイル読込み失敗
-   */ 
+   */
   //bool ReadInfo(string infofile, string &fconvfile);
   bool ReadInfo();
 
@@ -185,14 +189,14 @@ public:
   bool FconvInputCheck();
 
   /** step基準のリスト作成
-   * @param[in] myID 処理ランク 
+   * @param[in] myID 処理ランク
    */
   void makeStepList(int myID);
 
   /** rank基準のリスト生成
-   * @param[in] myID 処理ランク 
+   * @param[in] myID 処理ランク
    */
-  void makeRankList(int myID); 
+  void makeRankList(int myID);
 
 //FCONV 20140116.e
 
@@ -205,7 +209,7 @@ public:
    * @param[in] subDomain チェックする活性サブドメイン情報
    * @retval    true      存在する
    * @retval    false     存在しない
-   */ 
+   */
   bool IsExistSubdomain( ActiveSubDomain subDomain );
 
   /** 活性サブドメイン情報の追加
@@ -213,24 +217,24 @@ public:
    * @retval    true      追加した
    * @retval    false     追加に失敗(同じ領域分割位置で追加済み)
    */
-  bool AddSubdomain( ActiveSubDomain subDomain ); 
+  bool AddSubdomain( ActiveSubDomain subDomain );
 
   /** 活性サブドメインの数を取得
    * 活性サブドメインの数＝活性サブドメイン情報配列のサイズだが、
    * この配列が空のとき、領域分割数でサブドメイン数を決定して返す
    * @return 活性サブドメインの数
    */
-  int GetSubdomainNum() const; 
+  int GetSubdomainNum() const;
 
   /**  活性サブドメイン情報を取得
    * @param[in]  idx 登録順番号
    * @return 活性サブドメイン情報ポインタ
    */
-  const ActiveSubDomain* GetSubdomainInfo( size_t idx ) const; 
+  const ActiveSubDomain* GetSubdomainInfo( size_t idx ) const;
 
   /** ランクマップを生成
    * @retval ランクマップ
-   */ 
+   */
   //bool CreateRankMap();
   int* CreateRankMap();
 
@@ -238,7 +242,7 @@ public:
    * @retval 有効なランクマップ
    *
    */
-  int* CreateActiveRankMap(); 
+  int* CreateActiveRankMap();
 
   /** ActiveSubdomainファイルのエンディアンチェック
    *  ActiveSubdomainファイルのエンディアンをチェック
@@ -248,13 +252,13 @@ public:
    * @retval     STG_UnKnown フォーマットが異なる
    *
    */
-  static stg_EMatchType isMatchEndianSbdmMagick( int ident ); 
+  static stg_EMatchType isMatchEndianSbdmMagick( int ident );
 
   /** ActiveSubdomainファイルの読み込み
    * ActiveSubdomainファイルを読み込み、活性ドメイン情報を生成する
    * @param[in]  subDomainFile ActiveSubdomainファイル名
    * @return   終了コード(STG_SUCCESS=正常終了)
-   */ 
+   */
    stg_ErrorCode ReadActiveSubdomainFile( std::string subDomainFile );
 
   /** ActiveSubdomainファイルの読み込み(static関数)
@@ -262,7 +266,7 @@ public:
    * @param[in]  subDomainFile ActiveSubdomainファイル名
    * @param[out] subDomainInfo 活性ドメイン情報
    * @param[out] div           ActiveSubdiomainファイル中の領域分割数
-   * @return   終了コード(STG_SUCCESS=正常終了) 
+   * @return   終了コード(STG_SUCCESS=正常終了)
    */
    static stg_ErrorCode ReadActiveSubdomainFile( std::string subDomainFile,
                                                  std::vector<ActiveSubDomain>& subDomainInfo,
@@ -271,12 +275,12 @@ public:
   /** VOXEL数の取得
    * @return VOXEL数情報実数配列のポインタ
    */
-   const int* GetVoxNum() const; 
+   const int* GetVoxNum() const;
 
   /** 領域情報のチェック
    * 活性サブドメイン配列が空のとき、全領域が活性サブドメインになるため
    * このチェック関数内で活性サブドメイン情報を生成する.
-   * @param[in] nRank 並列プロセス数 
+   * @param[in] nRank 並列プロセス数
    * @return   終了コード(STG_SUCCESS=正常終了)
    */
    stg_ErrorCode CheckData( int nRank );
@@ -286,7 +290,7 @@ public:
    * @retval true  正常終了
    * @retval false エラー
    */
-   bool CreateHeadTail(int* rankMap); 
+   bool CreateHeadTail(int* rankMap);
 
   /** head&tail情報の作成
    * @param[in] rankMap ランクマップ
@@ -294,7 +298,7 @@ public:
    * @retval true  正常終了
    * @retval false エラー
    */
-   bool CreateHeadTail(int* rankMap, vector<Rank>& RankInfo); 
+   bool CreateHeadTail(int* rankMap, vector<Rank>& RankInfo);
 
   /** head&taileのセット
    */
@@ -302,23 +306,23 @@ public:
 
   /** head&tailをガイドセルで更新
    * @param[in]  mst_head 更新元のヘッドインデックス
-   * @param[in]  mst_tail 更新元のテイルインデックス 
+   * @param[in]  mst_tail 更新元のテイルインデックス
    * @param[out] head 更新したヘッドインデックス
    * @param[out] tail 更新したテイルインデックス
    */
-  void UpdateHeadTail(const int* mst_head, const int* mst_tail, int* head, int* tail); 
+  void UpdateHeadTail(const int* mst_head, const int* mst_tail, int* head, int* tail);
 
   /** Headマップの生成
    * @param[in] head head情報
    * @param[in] map headマップ
    */
    void CreateHeadMap(std::set<int>head, headT &map);
- 
+
   /** 粗密データ判定
    * @param [in] Gvoxel     計算空間全体のボクセルサイズ（自）
    * @param [in] DFI_Gvoxel 計算空間全体のボクセルサイズ（DFI）
    * @return STG_E_GV_SAME:密 STG_E_GVX2_SAME:粗 STG_E_OTHER:その他
-   */ 
+   */
   stg_EGlobalVoxel CheckGlobalVoxel(int Gvoxel[3], int DFI_Gvoxel[3]);
 
 
@@ -326,7 +330,7 @@ public:
    * @param [out] HeadTail 粗密用heat,tail情報テーブル
    * @param [in]  numrank  dfiのランク数
    */
-  void MakeGVX2HeadTeail(int (*HeadTail)[6], int numrank); 
+  void MakeGVX2HeadTeail(int (*HeadTail)[6], int numrank);
 
   /** 検索範囲のしぼりこみ
    * @param [in] HeadTail heat,tail情報テーブル
@@ -337,7 +341,7 @@ public:
 
   /** ファイルをステージング用のディレクトリにコピー
    * @param [in] readRankList 読込みランクリスト
-   * @param [in] myRank 処理するランク番号 
+   * @param [in] myRank 処理するランク番号
    * @param [in] 処理するindex.dfiのポインタ(fub用追加)
    * @retval true  正常終了
    * @retval false エラー
@@ -349,7 +353,7 @@ public:
 
   /** ファイルをステージング用のディレクトリにコピー(FCONV用)
    * @param [in] info 処理リスト
-   * @param [in] myRank 処理するランク番号 
+   * @param [in] myRank 処理するランク番号
    * @param [in] ndfi 処理するDFI通番
    * @retval true  正常終了
    * @retval false エラー
@@ -374,14 +378,14 @@ public:
   /** index.dfiファイルの生成、出力
    * @param [in] dfi_name index dfi ファイル名
    * @param [in] dfi 処理しているdfiポインター
-   */ 
+   */
 //20160408.fub.s
 //CDM::E_CDM_ERRORCODE
 //WriteIndexDfiFile(const std::string dfi_name);
   CDM::E_CDM_ERRORCODE
   WriteIndexDfiFile(const std::string dfi_name, cdm_DFI *dfi);
 //20160408.fub.e
- 
+
   /** index.dfiファイルの生成、出力（FCONV用）
    * @param [in] dfi_name index dfi ファイル名
    * @param [in] info 処理リスト
@@ -401,7 +405,7 @@ public:
    * @param [in] path パス
    * @return error code
    */
-   int MakeDirectory(string path);  
+   int MakeDirectory(string path);
 
   /**
    * @brief ディレクトリパスの作成(MakeDirectory関数を呼出して作成)

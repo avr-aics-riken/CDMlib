@@ -1,8 +1,15 @@
 /*
- *
- *
- *
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #include "fub_DATA.h"
@@ -45,11 +52,11 @@ bool fub_DATA::isMatchEndianSbdmMagick(int ident)
   }
 */
 
-  if( ident < 0 || ident > 100 ) 
+  if( ident < 0 || ident > 100 )
   {
     BSWAP32(ident);
     if( ident > 0 && ident < 100 ) return false;
-  } 
+  }
 
   return true;
 
@@ -204,7 +211,7 @@ int fub_DATA::getNval()
 
 // #################################################################
 // コーナー座標のセット
-void fub_DATA::setCorner(int vc, string dftype) 
+void fub_DATA::setCorner(int vc, string dftype)
 {
 
    int NI,NJ,NK;
@@ -238,7 +245,7 @@ void fub_DATA::setCorner(int vc, string dftype)
      corner[_P110].x = xyz[_IDX_S4D(iend,jend,0,0,NI,NJ,NK,vc)];
      corner[_P110].y = xyz[_IDX_S4D(iend,jend,0,1,NI,NJ,NK,vc)];
      corner[_P110].z = xyz[_IDX_S4D(iend,jend,0,2,NI,NJ,NK,vc)];
-   
+
      //xyz(0,jend,0)
      corner[_P010].x = xyz[_IDX_S4D(0,jend,0,0,NI,NJ,NK,vc)];
      corner[_P010].y = xyz[_IDX_S4D(0,jend,0,1,NI,NJ,NK,vc)];
@@ -279,7 +286,7 @@ void fub_DATA::setCorner(int vc, string dftype)
      corner[_P110].x = (double)f_xyz[_IDX_S4D(iend,jend,0,0,NI,NJ,NK,vc)];
      corner[_P110].y = (double)f_xyz[_IDX_S4D(iend,jend,0,1,NI,NJ,NK,vc)];
      corner[_P110].z = (double)f_xyz[_IDX_S4D(iend,jend,0,2,NI,NJ,NK,vc)];
-   
+
      //xyz(0,jend,0)
      corner[_P010].x = (double)f_xyz[_IDX_S4D(0,jend,0,0,NI,NJ,NK,vc)];
      corner[_P010].y = (double)f_xyz[_IDX_S4D(0,jend,0,1,NI,NJ,NK,vc)];
@@ -311,7 +318,7 @@ void fub_DATA::setCorner(int vc, string dftype)
 
 // #################################################################
 // コーナー座標のセット
-void fub_DATA::setMinMax(int vc, string dftype) 
+void fub_DATA::setMinMax(int vc, string dftype)
 {
 
    int NI,NJ,NK;
@@ -436,7 +443,7 @@ bool fub_DATA::checkNeighborMX(fub_DATA *data2, double tol)
 // +X方向ノード検索
 bool fub_DATA::checkNeighborPX(fub_DATA *data2, double tol)
 {
-  if( Coord::Same(data2->corner[_P000], corner[_P100], tol) ) { 
+  if( Coord::Same(data2->corner[_P000], corner[_P100], tol) ) {
     this->nID[X_PLUS]=data2;
     data2->nID[X_MINUS]=this;
     return true;
@@ -507,7 +514,7 @@ void fub_DATA::setFubDataMap(int ipos, int jpos, int kpos, int idiv,
 
       fubDataMap[_IDX_S3D(ipos+1,jpos,kpos,idiv,jdiv,kdiv,0)] = root->nID[X_PLUS];
 
-      setFubDataMap(ipos+1,jpos,kpos,idiv,jdiv,kdiv,fubDataMap); 
+      setFubDataMap(ipos+1,jpos,kpos,idiv,jdiv,kdiv,fubDataMap);
 
     }
   }

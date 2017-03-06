@@ -1,11 +1,15 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 
@@ -27,16 +31,16 @@ CONV::CONV()
   m_procGrp = 0;
   m_myRank  = -1;
   m_numProc = 0;
-  
+
   m_pflag=0;
   m_pflagv=0;
   m_lflag=0;
   m_lflagv=0;
- 
+
   m_in_dfi.clear();
-  
+
   m_staging=0;
-  
+
 }
 
 
@@ -72,7 +76,7 @@ CONV* CONV::ConvInit(InputParam* param)
 //
 CDM::E_CDM_ERRORCODE CONV::ReadDfiFiles()
 {
-  
+
   // dfiファイルの読込み
   int tempg[3];
   int tempd[3];
@@ -88,19 +92,19 @@ CDM::E_CDM_ERRORCODE CONV::ReadDfiFiles()
     m_in_dfi.push_back(dfi_in);
     m_param->m_dfiList[i].in_dfi = dfi_in;
   }
- 
+
   LOG_OUTV_ {
     PrintDFI(m_fplog);
     m_param->PrintParam(m_fplog);
   }
-  
+
   STD_OUTV_ {
     if( m_myRank == 0 ) {
       PrintDFI(stdout);
       m_param->PrintParam(stdout);
     }
   }
-  
+
   // dfi毎の変数の個数、出力ガイドセルのチェックと更新、等
   if( !CheckDFIdata() ) return CDM::E_CDM_ERROR;
 
@@ -120,7 +124,7 @@ bool CONV::CheckDFIdata()
 
   for( int i=0; i<m_in_dfi.size(); i++) {
     //不等間隔格子のデータをSPH形式かBOV形式で出力しようとしたらエラー
-    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH || 
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_SPH ||
         m_param->Get_OutputFormat() == CDM::E_CDM_FMT_BOV ) {
       if( m_in_dfi[i]->GetDFIType() == CDM::E_CDM_DFITYPE_NON_UNIFORM_CARTESIAN ) {
         printf("\tCan't Convert Non-Uniform Cartesian data to SPH or BOV format.\n");
@@ -174,7 +178,7 @@ bool CONV::CheckDFIdata()
                 Finfo1->Prefix.c_str(),m_in_dfi[i]->get_dfi_fname().c_str(),
                 m_in_dfi[j]->get_dfi_fname().c_str());
         ierr=false;
-      } 
+      }
     }
 
     //voxel size のチェック
@@ -218,14 +222,14 @@ void CONV::CheckDir(string dirstr)
 {
   Hostonly_
   {
-    
+
 #ifndef _WIN32
-    
+
     if( dirstr.size() == 0 ) {
       //printf("\toutput current directory\n");
       return;
     }
-    
+
     DIR* dir;
     if( !(dir = opendir(dirstr.c_str())) ) {
       if( errno == ENOENT ) {
@@ -247,30 +251,30 @@ void CONV::CheckDir(string dirstr)
         Exit(0);
       }
     }
-    
+
 #else // for windows
-    
+
     if( dirstr.size() == 0 ) {
       printf("\toutput current directory\n");
       return;
     }
-    
+
     // check to exist directory
     if (IsDirExsist(dirstr)) {
       // exist directory
       return;
     }
-    
+
     // make directory
     if(!CreateDirectory(dirstr.c_str(), NULL)){
       printf("\tCan't generate directory(%s).\n", dirstr.c_str());
       Exit(0);
     }
-    
+
 #endif  // _WIN32
-    
+
   }
-  
+
   return;
 }
 
@@ -284,10 +288,10 @@ void CONV::OpenLogFile()
   char* tmp = new char[len];
   memset(tmp, 0, sizeof(char)*len);
   sprintf(tmp, "%s_%06d.%s", prefix.c_str(), m_myRank, "txt");
-  
+
   std::string logname(tmp);
   if ( tmp ) delete [] tmp;
-  
+
   if ( !(m_fplog = fopen(logname.c_str(), "w")) ){
     printf("\tFile Open Error : '%s'\n",logname.c_str());
     Exit(0);
@@ -296,13 +300,13 @@ void CONV::OpenLogFile()
   fprintf(m_fplog,"### log_comb.txt ###\n");
   fprintf(m_fplog,"####################\n");
   fprintf(m_fplog,"\n");
-  
+
   fprintf(m_fplog,"procGrp  = %d\n", m_procGrp);
   fprintf(m_fplog,"myRank   = %d\n", m_myRank);
   fprintf(m_fplog,"numProc  = %d\n", m_numProc);
   fprintf(m_fplog,"HostName = %s\n", m_HostName.c_str());
   fprintf(m_fplog,"\n");
-  
+
 }
 
 // #################################################################
@@ -366,13 +370,13 @@ void CONV::PrintDFI(FILE* fp)
     }
 
     const cdm_MPI *DFI_MPI = dfi->GetcdmMPI();
-    fprintf(fp,"\tDFI_MPI->NumberOfRank              = %d\n",DFI_MPI->NumberOfRank); 
-    fprintf(fp,"\tDFI_MPI->NumberOfGroup             = %d\n",DFI_MPI->NumberOfGroup); 
-   
+    fprintf(fp,"\tDFI_MPI->NumberOfRank              = %d\n",DFI_MPI->NumberOfRank);
+    fprintf(fp,"\tDFI_MPI->NumberOfGroup             = %d\n",DFI_MPI->NumberOfGroup);
+
     const cdm_Domain *DFI_Domain = dfi->GetcdmDomain();
-    fprintf(fp,"\tDFI_Domain->GlobalVoxel[0]         = %d\n",DFI_Domain->GlobalVoxel[0]); 
-    fprintf(fp,"\tDFI_Domain->GlobalVoxel[1]         = %d\n",DFI_Domain->GlobalVoxel[1]); 
-    fprintf(fp,"\tDFI_Domain->GlobalVoxel[2]         = %d\n",DFI_Domain->GlobalVoxel[2]); 
+    fprintf(fp,"\tDFI_Domain->GlobalVoxel[0]         = %d\n",DFI_Domain->GlobalVoxel[0]);
+    fprintf(fp,"\tDFI_Domain->GlobalVoxel[1]         = %d\n",DFI_Domain->GlobalVoxel[1]);
+    fprintf(fp,"\tDFI_Domain->GlobalVoxel[2]         = %d\n",DFI_Domain->GlobalVoxel[2]);
     fprintf(fp,"\tDFI_Domain->GlobalDivision[0]      = %d\n",DFI_Domain->GlobalDivision[0]);
     fprintf(fp,"\tDFI_Domain->GlobalDivision[1]      = %d\n",DFI_Domain->GlobalDivision[1]);
     fprintf(fp,"\tDFI_Domain->GlobalDivision[2]      = %d\n",DFI_Domain->GlobalDivision[2]);
@@ -403,7 +407,7 @@ void CONV::PrintDFI(FILE* fp)
       fprintf(fp,"\t  DFI_Process->RankList[%d].TailIndex[2] = %d\n",j,
               DFI_Process->RankList[j].TailIndex[2]);
     }
-    
+
     const cdm_TimeSlice* DFI_TSlice = dfi->GetcdmTimeSlice();
     fprintf(fp,"\tDFI_TSlice->SliceList.size()       = %d\n",DFI_TSlice->SliceList.size());
     for(int j=0; j<DFI_TSlice->SliceList.size(); j++ ) {
@@ -460,7 +464,7 @@ void CONV::MemoryRequirement(const double Memory, FILE* fp)
   const double TB = 1024.0*GB;
   const double PB = 1024.0*TB;
   const double factor = 1.05; // estimate 5% for addtional
-  
+
   // Global memory
   fprintf (fp," MemorySize = ");
   if ( mem > PB ) {
@@ -484,7 +488,7 @@ void CONV::MemoryRequirement(const double Memory, FILE* fp)
   else {
     fprintf (fp,"Caution! Memory required : %d (Byte)", (int)(mem *factor) );
   }
-  
+
   fflush(fp);
 }
 
@@ -499,10 +503,10 @@ void CONV::MemoryRequirement(const double TotalMemory, const double sphMemory, c
   const double TB = 1024.0*GB;
   const double PB = 1024.0*TB;
   const double factor = 1.05; // estimate 5% for addtional
-  
+
   fprintf (fp,"*** Required MemorySize ***");
   fprintf (fp,"\n");
-  
+
   mem = sphMemory;
   fprintf (fp,"  read SPH MemorySize = ");
   if ( mem > PB ) {
@@ -526,7 +530,7 @@ void CONV::MemoryRequirement(const double TotalMemory, const double sphMemory, c
   else {
     fprintf (fp,"Caution! Memory required : %d (Byte)", (int)(mem *factor) );
   }
-  
+
   mem = plot3dMemory;
   fprintf (fp,"  write PLOT3D MemorySize = ");
   if ( mem > PB ) {
@@ -550,7 +554,7 @@ void CONV::MemoryRequirement(const double TotalMemory, const double sphMemory, c
   else {
     fprintf (fp,"Caution! Memory required : %d (Byte)", (int)(mem *factor) );
   }
-  
+
   mem = thinMemory;
   fprintf (fp,"  write thin out MemorySize = ");
   if ( mem > PB ) {
@@ -574,7 +578,7 @@ void CONV::MemoryRequirement(const double TotalMemory, const double sphMemory, c
   else {
     fprintf (fp,"Caution! Memory required : %d (Byte)", (int)(mem *factor) );
   }
-  
+
   mem = TotalMemory;
   fprintf (fp,"  TotalMemorySize = ");
   if ( mem > PB ) {
@@ -598,10 +602,10 @@ void CONV::MemoryRequirement(const double TotalMemory, const double sphMemory, c
   else {
     fprintf (fp,"Caution! Memory required : %d (Byte)", (int)(mem *factor) );
   }
-  
+
   fprintf (fp,"\n");
   fprintf (fp,"\n");
-  
+
   fflush(fp);
 }
 //20160422.fub.s
@@ -615,14 +619,14 @@ void CONV::SetPrefixFileInfo(cdm_DFI* dfi, int ndfi)
   if( !F_Info->Prefix.empty() ) return;
 
   std::string dfiname;
-  //出力DFIがあるときdfinameをセット  
+  //出力DFIがあるときdfinameをセット
   if( m_param->Get_Outputdfi_on() ) {
     dfiname = m_param->m_dfiList[ndfi].out_dfi_name;
   } else {
   //出力DFIがないとき、入力DFIのdfinameをセット
     dfiname = dfi->get_dfi_fname();
   }
-  
+
   //dfinameからディレクトリ、拡張子を除いてPrefixにする
   F_Info->Prefix = CDM::ExtractPathWithoutExt(CDM::cdmPath_FileName(dfiname));
   dfi->SetcdmFileInfo(*F_Info);
@@ -642,7 +646,7 @@ double CONV::GetSliceTime(cdm_DFI* dfi, int step)
 
   return 0.0;
 
-} 
+}
 
 // #################################################################
 // X-Y面のコンバイン
@@ -653,10 +657,10 @@ bool CONV::convertXY(
                      int tailS[3],
                      int n)
 {
- 
+
   //debug
   const int *tmp = src->getHeadIndex();
- 
+
   //copy
   int gcB          = buf->getGcInt();
   const int *headB = buf->getHeadIndex();
@@ -683,7 +687,7 @@ bool CONV::convertXY(
   }
   //uint16
   else if( buf_dtype == CDM::E_CDM_UINT16 ) {
-    cdm_TypeArray<unsigned short> *B = dynamic_cast<cdm_TypeArray<unsigned short>*>(buf); 
+    cdm_TypeArray<unsigned short> *B = dynamic_cast<cdm_TypeArray<unsigned short>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
   //int16
@@ -721,7 +725,7 @@ bool CONV::convertXY(
     cdm_TypeArray<double> *B = dynamic_cast<cdm_TypeArray<double>*>(buf);
     return copyArray(B, src, sta, end, n);
   }
-  
+
   return false;
 }
 
@@ -841,9 +845,9 @@ void CONV::makeRankList(vector<step_rank_info> &StepRankList)
         info.rankStart = j;
       }
       info.rankEnd = j;
-      cnt++; 
+      cnt++;
       if( end < cnt ) break;
-    }    
+    }
     if( info.rankStart > -1 ) StepRankList.push_back(info);
     if( end < cnt ) break;
   }
@@ -895,7 +899,7 @@ bool CONV::DtypeMinMax(cdm_Array* src,
     cdm_TypeArray<double> *data = dynamic_cast<cdm_TypeArray<double>*>(src);
     if( !calcMinMax(data,min,max) ) return false;
   }
- 
+
   return true;
 
 }
@@ -912,7 +916,7 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
   vector<std::string> out_dfi_name  = m_InputCntl->Get_OutdfiNameList();
   vector<std::string> out_proc_name = m_InputCntl->Get_OutprocNameList();
 
-  if( minmaxList.size() != out_dfi_name.size() && 
+  if( minmaxList.size() != out_dfi_name.size() &&
       minmaxList.size() != out_proc_name.size() ) return false;
   */
   for(int i=0; i<minmaxList.size(); i++) {
@@ -957,7 +961,7 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
     char* cdumy = (char*)(&idumy);
     CDM::E_CDM_ENDIANTYPE Endian=CDM::E_CDM_ENDIANTYPE_UNKNOWN;
     if( cdumy[0] == 0x01 ) Endian = CDM::E_CDM_LITTLE;
-    if( cdumy[0] == 0x00 ) Endian = CDM::E_CDM_BIG;    
+    if( cdumy[0] == 0x00 ) Endian = CDM::E_CDM_BIG;
 //20160427.fub.e
 
     //FileInfoの出力
@@ -998,7 +1002,7 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
       return false;
     }
     delete Fpath;
-    
+
     //Visitの出力
     cdm_VisIt *dfi_Visit = (cdm_VisIt *)dfi->GetcdmVisIt();
     cdm_VisIt *Visit = new cdm_VisIt("off");
@@ -1008,7 +1012,7 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
       return false;
     }
     delete Visit;
-    
+
     //Unitの出力
     cdm_Unit *dfi_Unit = (cdm_Unit *)dfi->GetcdmUnit();
     if( dfi_Unit->Write(fp, 0) != CDM::E_CDM_SUCCESS )
@@ -1046,7 +1050,7 @@ bool CONV::WriteIndexDfiFile(vector<dfi_MinMax*> minmaxList)
     }
 
     fclose(fp);
-    
+
   }
 
   return true;
@@ -1057,13 +1061,13 @@ struct stIJK
   int i, j, k;
 };
 //#################################################################
-bool CONV::makeProcInfo(cdm_DFI* dfi, 
+bool CONV::makeProcInfo(cdm_DFI* dfi,
                         cdm_Domain* &out_domain,
-                        cdm_MPI* &out_mpi, 
+                        cdm_MPI* &out_mpi,
                         cdm_Process* &out_process,
                         int numProc)
 {
-  
+
   //間引き数の取得
   int thin_count = m_param->Get_ThinOut();
 
@@ -1162,7 +1166,7 @@ stmpd_printf("**** voxel = %d %d %d\n", Gvoxel[0], Gvoxel[1], Gvoxel[2]);
           rank.HeadIndex[j]=rank.HeadIndex[j]+1;
           rank.TailIndex[j]=rank.HeadIndex[j]+rank.VoxelSize[j]-1;
         }
-      }  
+      }
       for(int j=0; j<3; j++) Sum_VoxelSize[j] += rank.VoxelSize[j];
       rank.c_id = dfi_Process->RankList[i].c_id;
       rank.bc_id = dfi_Process->RankList[i].bc_id;
@@ -1269,9 +1273,9 @@ stmpd_printf("**** voxel = %d %d %d\n", Gvoxel[0], Gvoxel[1], Gvoxel[2]);
     }
 
     // Gvoxelを更新
-    Gvoxel[0] = tailX[Gdiv[0]-1];    
-    Gvoxel[1] = tailY[Gdiv[1]-1];    
-    Gvoxel[2] = tailZ[Gdiv[2]-1];    
+    Gvoxel[0] = tailX[Gdiv[0]-1];
+    Gvoxel[1] = tailY[Gdiv[1]-1];
+    Gvoxel[2] = tailZ[Gdiv[2]-1];
 #endif
   } else if( numProc == 1 ) {
     rank.RankID=0;
@@ -1288,7 +1292,7 @@ stmpd_printf("**** voxel = %d %d %d\n", Gvoxel[0], Gvoxel[1], Gvoxel[2]);
   }
 
 stmpd_printf("**** voxel = %d %d %d\n", Gvoxel[0], Gvoxel[1], Gvoxel[2]);
-  //out_domainの生成 
+  //out_domainの生成
   if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_CARTESIAN )
   {
     //等間隔格子の場合
@@ -1313,7 +1317,7 @@ stmpd_printf("**** voxel = %d %d %d\n", Gvoxel[0], Gvoxel[1], Gvoxel[2]);
 //#################################################################
 // 格子データ出力用の情報作成メソッド(メソッドmakeProcInfoを参考に作成)
 // Mx1変換でのみ利用するため、makeProcInfoでのnumProcは1として実装
-bool CONV::makeGridInfo(cdm_DFI* dfi, 
+bool CONV::makeGridInfo(cdm_DFI* dfi,
                         cdm_Domain* &out_domain,
                         cdm_Process* &out_process,
                         int gc)
@@ -1375,7 +1379,7 @@ bool CONV::makeGridInfo(cdm_DFI* dfi,
     pit[i] = Gregion[i]/(double)Gvoxel[i];
   }
 
-  //out_domainの生成 
+  //out_domainの生成
   if( dfi->GetDFIType() == CDM::E_CDM_DFITYPE_CARTESIAN )
   {
     //等間隔格子の場合

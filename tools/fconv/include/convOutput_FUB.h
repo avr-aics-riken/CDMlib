@@ -2,13 +2,17 @@
 #define _CONVOUTPUT_FUB_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -45,7 +49,7 @@ public:
                         const unsigned step,
                         const int id,
                         const bool mio);
-                  
+
 
   /**
    * @brief sphファイルのheaderの書き込み
@@ -72,12 +76,12 @@ public:
                     double* org,
                     double* pit,
                     const std::string prefix,
-                    cdm_FILE *pFile); 
+                    cdm_FILE *pFile);
 
   /**
    * @brief マーカーの書き込み
    * @param[in] dmy   マーカー
-   * @param[in] pFile 出力ファイルポインタ 
+   * @param[in] pFile 出力ファイルポインタ
    * @param[in] out   plot3d用
    */
   bool
@@ -87,4 +91,4 @@ protected:
 
 };
 
-#endif // _CONVOUTPUT_FUB_H_ 
+#endif // _CONVOUTPUT_FUB_H_

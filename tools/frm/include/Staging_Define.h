@@ -1,17 +1,21 @@
 /*
- * frm (File Rank Mapper)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
  * @file Staging_Define.h
  * Staging マクロ記述ヘッダーファイル
- * @author aics 
+ * @author aics
  * @data 2013/4/25
  */
 
@@ -43,7 +47,7 @@ enum stg_ErrorCode
 {
   STG_SUCCESS                      = 0    ///<正常終了
 //20160407.fub.s
-, STG_ERROR_ILLEGAL_OPTION_C       = 10   ///< 無効な引数 -c　が指示された 
+, STG_ERROR_ILLEGAL_OPTION_C       = 10   ///< 無効な引数 -c　が指示された
 //20160407.fub.e
 , STG_ERROR                        = 1000 ///< その他のエラー
 , STG_ERROR_MISMATCH_NP_SUBDOMAIN  = 3003 ///< 並列数とサブドメイン数が一致していない

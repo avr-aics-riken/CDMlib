@@ -1,11 +1,15 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -46,7 +50,7 @@ void convOutput_PLOT3D::WriteGridData(std::string prefix,
 {
 
   //step 0 以外は出力しない
-  if( step != 0 ) return; 
+  if( step != 0 ) return;
 
   int id,jd,kd;
   id=sz[0]; //+1;
@@ -61,11 +65,11 @@ void convOutput_PLOT3D::WriteGridData(std::string prefix,
 
   if( outDtype == CDM::E_CDM_FLOAT64 ) {
     double* x = new double[maxsize];
-    OutputPlot3D_xyz(prefix, step, myRank, guide, org, pit, sz, &x[0], 
+    OutputPlot3D_xyz(prefix, step, myRank, guide, org, pit, sz, &x[0],
                      &x[outsize] , &x[outsize*2] );
   }else if( outDtype == CDM::E_CDM_FLOAT32 ) {
     float* x = new float[maxsize];
-    OutputPlot3D_xyz(prefix, step, myRank, guide, org, pit, sz, &x[0], 
+    OutputPlot3D_xyz(prefix, step, myRank, guide, org, pit, sz, &x[0],
                      &x[outsize] , &x[outsize*2] );
   }
 }
@@ -82,7 +86,7 @@ void convOutput_PLOT3D::WriteGridData(std::string prefix,
 {
 
   //step 0 以外は出力しない
-  if( step != 0 ) return; 
+  if( step != 0 ) return;
 
   int outDtype = m_InputCntl->Get_OutputDataType();
   if( outDtype == CDM::E_CDM_DTYPE_UNKNOWN ) outDtype = dType;
@@ -114,7 +118,7 @@ void convOutput_PLOT3D::WriteNgrid(cdm_FILE* pFile, int ngrid)
       break;
     case CDM::E_CDM_FILE_TYPE_BINARY:
       fwrite(&ngrid, sizeof(int), 1, fp);
-      break;      
+      break;
     default:
       break;
     }
@@ -146,7 +150,7 @@ void convOutput_PLOT3D::WriteBlockData(cdm_FILE* pFile, int id, int jd, int kd)
       break;
    default:
       break;
-   }      
+   }
 
 }
 
@@ -216,7 +220,7 @@ bool convOutput_PLOT3D::WriteHeaderRecord(
   //WriteNgrid(fp,ngrid);
 
   //block data の出力
-  
+
   WriteFuncBlockData(pFile,imax,jmax,kmax,dim);
   //WriteFuncBlockData(fp,imax+1,jmax+1,kmax+1,dim);
   //格子点への補間は行わず、双対セルとして扱うため、+1は不要
@@ -229,8 +233,8 @@ bool convOutput_PLOT3D::WriteHeaderRecord(
 
 // #################################################################
 // func 出力
-bool convOutput_PLOT3D::WriteFieldData(cdm_FILE* pFile, 
-                                       cdm_Array* src, 
+bool convOutput_PLOT3D::WriteFieldData(cdm_FILE* pFile,
+                                       cdm_Array* src,
                                        size_t dLen)
 {
 
@@ -294,7 +298,7 @@ void convOutput_PLOT3D::WriteFuncData(cdm_FILE* pFile, cdm_Array* p3src)
 
   switch (m_InputCntl->Get_OutputFileType()) {
     case CDM::E_CDM_FILE_TYPE_FBINARY:
-      p3src->writeBinary(fp);      
+      p3src->writeBinary(fp);
       break;
     case CDM::E_CDM_FILE_TYPE_ASCII:
       if( p3src->getDataType() == CDM::E_CDM_FLOAT32) {
@@ -311,7 +315,7 @@ void convOutput_PLOT3D::WriteFuncData(cdm_FILE* pFile, cdm_Array* p3src)
     default:
       break;
   }
-    
+
 }
 
 // #################################################################
@@ -324,4 +328,3 @@ bool convOutput_PLOT3D::WriteDataMarker(int dmy, cdm_FILE* pFile, bool out)
   if( fwrite(&dmy, sizeof(int), 1, fp) != 1 ) return false;
   return true;
 }
-                                         

@@ -2,13 +2,17 @@
 #define _CONV_PLOT3D_INLINE_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -26,7 +30,7 @@
 
 /**
  * @brief xyzファイルの出力
- * @param [in] prefix ファイル接頭文字 
+ * @param [in] prefix ファイル接頭文字
  * @param [in] step   ステップ
  * @param [in] rank   ランク
  * @param [in] guide  ガイドセル数
@@ -39,16 +43,16 @@
  */
 template<class T1, class T2>
 CONV_INLINE
-void 
+void
 convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
-                                    int step, 
-                                    int rank, 
-                                    int guide, 
-                                    T1* origin, 
-                                    T1* pitch, 
-                                    int* size, 
-                                    T2* x, 
-                                    T2* y, 
+                                    int step,
+                                    int rank,
+                                    int guide,
+                                    T1* origin,
+                                    T1* pitch,
+                                    int* size,
+                                    T2* x,
+                                    T2* y,
                                     T2* z)
 {
   //value
@@ -61,13 +65,13 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
 
   //間引き数の取得
   int thin_count = m_InputCntl->Get_ThinOut();
-  
+
   int *iblank=NULL;//dummy
   int id,jd,kd;//出力サイズ
   id=size[0]+1;//+2*gc_out
   jd=size[1]+1;//+2*gc_out
   kd=size[2]+1;//+2*gc_out
-  
+
   //間引きのための処理
   int irest=(id-1)%thin_count;
   int jrest=(jd-1)%thin_count;
@@ -82,7 +86,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
   if(irest!=0) id=id+1;
   if(jrest!=0) jd=jd+1;
   if(krest!=0) kd=kd+1;
-  
+
   // ガイドセル出力があった場合オリジナルポイントを調整しておく
   T2 l_org[3], l_pit[3];
   for (int i=0; i<3; i++)
@@ -90,12 +94,12 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
     l_org[i] = (T2)origin[i] + (T2)pitch[i]*(T2)gd;
     l_pit[i] = (T2)pitch[i];
   }
-    
+
   // 出力ファイル名
   std::string tmp;
   //std::string t_prefix=prefix+"_Grid";
   int fnameformat = m_InputCntl->Get_OutputFilenameFormat();
-  tmp = m_InputCntl->Get_OutputDir() +"/"+ 
+  tmp = m_InputCntl->Get_OutputDir() +"/"+
         cdm_DFI::Generate_FileName(prefix,
                                    rank,
                                    //step,
@@ -104,7 +108,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
                                    (CDM::E_CDM_OUTPUT_FNAME)fnameformat,
                                    false,
                                    CDM::E_CDM_OFF);
-    
+
   //open file
   cdm_FILE*pFile;
   if( m_InputCntl->Get_OutputFileType() == CDM::E_CDM_FILE_TYPE_ASCII ) {
@@ -118,11 +122,11 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
       Exit(0);
     }
   }
-    
+
   //write block data
   //WriteNgrid(fp,ngrid);//if multi grid
   WriteBlockData(pFile,id,jd,kd);
-    
+
   for(int k=0;k<kd;k++){
   for(int j=0;j<jd;j++){
   for(int i=0;i<id;i++){
@@ -131,7 +135,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
     y[ip]=l_org[1]+(T2)thin_count*l_pit[1]*(T2)j;//-pitch[1]*(float)gc_out;
     z[ip]=l_org[2]+(T2)thin_count*l_pit[2]*(T2)k;//-pitch[2]*(float)gc_out;
   }}}
-    
+
   //x direction modify
   if(irest!=0 && (id-2)>=0 ){
     for(int k=0;k<kd;k++){
@@ -140,7 +144,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
       x[ip]=l_org[0]+(T2)thin_count*l_pit[0]*(T2)(id-2)+(T2)irest*l_pit[0];//-pitch[0]*(float)gc_out;
     }}
   }
-    
+
   //y direction modify
   if(jrest!=0 && (jd-2)>=0 ){
     for(int k=0;k<kd;k++){
@@ -149,7 +153,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
       y[ip]=l_org[1]+(T2)thin_count*l_pit[1]*(T2)(jd-2)+(T2)jrest*l_pit[1];//-pitch[1]*(float)gc_out;
     }}
   }
-    
+
   //z direction modify
   if(krest!=0 && (kd-2)>=0 ){
     for(int j=0;j<jd;j++){
@@ -158,7 +162,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
       z[ip]=l_org[2]+(T2)thin_count*l_pit[2]*(T2)(kd-2)+(T2)krest*l_pit[2];//-pitch[2]*(float)gc_out;
     }}
   }
-    
+
   //z direction modify
   if(krest!=0){
     for(int k=kd-1;k<kd;k++){
@@ -168,13 +172,13 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
       z[ip]=l_org[2]+(T2)krest*l_pit[2]*(T2)k;//-pitch[2]*(float)gc_out;
     }}}
   }
-  
+
   //write
   if(!WriteXYZData(pFile, id, jd, kd, ngrid, x, y, z)) printf("\terror WriteXYZData\n");
-  
+
   //close file
   cdm_FILE::CloseFile(pFile);
-    
+
 }
 
 /**
@@ -262,7 +266,7 @@ convOutput_PLOT3D::WriteXYZ_FORMATTED(cdm_FILE* pFile,
   int s12 =(size_t)id*(size_t)jd;
   int ns12=s12/10;
 
-/*  
+/*
   for(int k=0; k<kd; k++) {
     //x-y面の出力
     for(int i=0; i<ns12; i++) {
@@ -283,12 +287,12 @@ convOutput_PLOT3D::WriteXYZ_FORMATTED(cdm_FILE* pFile,
    }
 
 }
- 
+
 // #################################################################
 // output xyz file (不等間隔格子対応版)
 template<class T>
 CONV_INLINE
-void 
+void
 convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
                                     int step,
                                     int rank,
@@ -300,7 +304,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
   // 出力ファイル名
   std::string tmp;
   int fnameformat = m_InputCntl->Get_OutputFilenameFormat();
-  tmp = m_InputCntl->Get_OutputDir() +"/"+ 
+  tmp = m_InputCntl->Get_OutputDir() +"/"+
         cdm_DFI::Generate_FileName(prefix,
                                    rank,
                                    //step,
@@ -370,7 +374,7 @@ convOutput_PLOT3D::OutputPlot3D_xyz(std::string prefix,
 
   //close file
   cdm_FILE::CloseFile(pFile);
-    
+
 }
 
 // #################################################################
@@ -448,4 +452,4 @@ convOutput_PLOT3D::WriteXYZ_FORMATTED(cdm_FILE* pFile,
 
 }
 
-#endif // _CONV_PLOT3D_INLINE_H_ 
+#endif // _CONV_PLOT3D_INLINE_H_

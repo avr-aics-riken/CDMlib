@@ -1,15 +1,19 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
- * @file   convMxM.C 
+ * @file   convMxM.C
  * @brief  convMxM Class
  * @author aics
  */
@@ -85,8 +89,8 @@ bool convMxM::exec()
       //minmaxの初期化
       int nsize = nVari;
       if( nVari > 1 ) nsize++;
-      double *min = new double[nsize]; 
-      double *max = new double[nsize]; 
+      double *min = new double[nsize];
+      double *max = new double[nsize];
       for(int n=0; n<nsize; n++) {
          min[n]=DBL_MAX;
          max[n]=-DBL_MAX;
@@ -100,20 +104,20 @@ bool convMxM::exec()
       for(int k=m_StepRankList[i].rankStart; k<=m_StepRankList[i].rankEnd; k++) {
         //MxMの読込みコンバート出力
         if( !mxmsolv(m_StepRankList[i].dfi->get_dfi_fname(),
-                     m_StepRankList[i].dfi, 
-                     TSlice->SliceList[j].step, 
-                     (float)TSlice->SliceList[j].time, 
+                     m_StepRankList[i].dfi,
+                     TSlice->SliceList[j].step,
+                     (float)TSlice->SliceList[j].time,
                      k,
                      min,
                      max) ) return false;
-      } 
+      }
 
       //dfiごとに登録
       for(int ndfi = 0; ndfi<minmaxList.size(); ndfi++) {
         if( minmaxList[ndfi]->dfi != m_StepRankList[i].dfi ) continue;
         for(int n=0; n<nsize; n++) {
           if( minmaxList[ndfi]->Min[j*nsize+n] > min[n] ) minmaxList[ndfi]->Min[j*nsize+n] = min[n];
-          if( minmaxList[ndfi]->Max[j*nsize+n] < max[n] ) minmaxList[ndfi]->Max[j*nsize+n] = max[n]; 
+          if( minmaxList[ndfi]->Max[j*nsize+n] < max[n] ) minmaxList[ndfi]->Max[j*nsize+n] = max[n];
         }
       }
     }
@@ -154,11 +158,11 @@ bool convMxM::exec()
     for(int i=0; i<m_in_dfi.size(); i++) {
       cdm_Domain* out_domain = NULL;
       cdm_MPI* out_mpi = NULL;
-      cdm_Process* out_process = NULL; 
+      cdm_Process* out_process = NULL;
       const cdm_MPI* dfi_mpi = m_in_dfi[i]->GetcdmMPI();
-      int numProc = dfi_mpi->NumberOfRank; 
+      int numProc = dfi_mpi->NumberOfRank;
 
-      //Proc情報の生成 
+      //Proc情報の生成
       makeProcInfo(m_in_dfi[i],out_domain,out_mpi,out_process,numProc);
 
       //Procファイル出力
@@ -194,7 +198,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   const cdm_TimeSlice* TSlice = dfi->GetcdmTimeSlice();
 
 //20160420.fub.s
-  cdm_FieldFileNameFormat * Ffformat = 
+  cdm_FieldFileNameFormat * Ffformat =
        (cdm_FieldFileNameFormat *)dfi->GetcdmFieldFileNameFormat();
 //20160420.fub.e
 
@@ -242,7 +246,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   if(DFI_Process->RankList[RankID].VoxelSize[0]%thin_count != 0) l_imax_th++;
   if(DFI_Process->RankList[RankID].VoxelSize[1]%thin_count != 0) l_jmax_th++;
   if(DFI_Process->RankList[RankID].VoxelSize[2]%thin_count != 0) l_kmax_th++;
-  
+
   //間引き後のheadインデックスを求める
   int head[3];
   head[0] = (DFI_Process->RankList[RankID].HeadIndex[0]-1)/thin_count;
@@ -265,7 +269,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   } else {
     d_type = m_param->Get_OutputDataType();
   }
-  
+
   //出力バッファのインスタンス
   int szS[3];
   szS[0]=l_imax_th;
@@ -313,7 +317,7 @@ bool convMxM::mxmsolv(std::string dfiname,
 
 
     //間引き及び型変換がない場合
-    if( thin_count == 1 && buf->getDataType() == src->getDataType() && 
+    if( thin_count == 1 && buf->getDataType() == src->getDataType() &&
         buf->getArrayShape() == src->getArrayShape() ) {
         src = buf;
     } else {
@@ -380,7 +384,7 @@ bool convMxM::mxmsolv(std::string dfiname,
        }
 
        //間引き及び型変換がない場合
-       if( thin_count == 1 && buf_xyz->getDataType() == xyz_fub->getDataType() && 
+       if( thin_count == 1 && buf_xyz->getDataType() == xyz_fub->getDataType() &&
           buf_xyz->getArrayShape() == xyz_fub->getArrayShape() ) {
           xyz_fub = buf_xyz;
        } else {
@@ -604,7 +608,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   out_dfi->set_output_type(m_param->Get_OutputFileType());
 
   //節点への補間フラグのセット(AVSおよびVTK形式)
-  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
+  if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS ||
       m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
     out_dfi->set_interp_flag(m_param->Get_Interp_flag());
   }
@@ -632,7 +636,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   out_dfi->set_output_fname(output_fname);
 
   //fubの座標値データ出力
-  if (m_param->Get_OutputFormat() == CDM::E_CDM_FMT_FUB ) 
+  if (m_param->Get_OutputFormat() == CDM::E_CDM_FMT_FUB )
   {
     if ( xyz_fub ) {
       out_dfi->WriteCoordinateData((unsigned)l_step,
@@ -640,11 +644,11 @@ bool convMxM::mxmsolv(std::string dfiname,
                                    l_time,
                                    xyz_fub);
     } else if( l_step == TSlice->SliceList[0].step ) {
- 
+
       int b_sz[3];
-      b_sz[0]=DFI_Process->RankList[RankID].VoxelSize[0];  
-      b_sz[1]=DFI_Process->RankList[RankID].VoxelSize[1];  
-      b_sz[2]=DFI_Process->RankList[RankID].VoxelSize[2];  
+      b_sz[0]=DFI_Process->RankList[RankID].VoxelSize[0];
+      b_sz[1]=DFI_Process->RankList[RankID].VoxelSize[1];
+      b_sz[2]=DFI_Process->RankList[RankID].VoxelSize[2];
 
       cdm_Array *buf_xyz = cdm_Array::instanceArray
                ( d_type
@@ -654,7 +658,7 @@ bool convMxM::mxmsolv(std::string dfiname,
                , 3 );
 
       if( d_type == CDM::E_CDM_FLOAT64 ) {
-       
+
         double *buf_xyz_p = (double *)buf_xyz->getData();
 
         //座標値の生成
@@ -664,7 +668,7 @@ bool convMxM::mxmsolv(std::string dfiname,
           buf_xyz_p[_CDM_IDX_IJKN(i,j,k,0,b_sz[0],b_sz[1],b_sz[2],outGc)] = DFI_Domain->CellX(ii-1);
           buf_xyz_p[_CDM_IDX_IJKN(i,j,k,1,b_sz[0],b_sz[1],b_sz[2],outGc)] = DFI_Domain->CellY(jj-1);
           buf_xyz_p[_CDM_IDX_IJKN(i,j,k,2,b_sz[0],b_sz[1],b_sz[2],outGc)] = DFI_Domain->CellZ(kk-1);
-        }}} 
+        }}}
 
       } else if( d_type == CDM::E_CDM_FLOAT32 ) {
 
@@ -677,7 +681,7 @@ bool convMxM::mxmsolv(std::string dfiname,
           buf_xyz_p[_CDM_IDX_IJKN(i,j,k,0,b_sz[0],b_sz[1],b_sz[2],outGc)] = (float)DFI_Domain->CellX(i-1);
           buf_xyz_p[_CDM_IDX_IJKN(i,j,k,1,b_sz[0],b_sz[1],b_sz[2],outGc)] = (float)DFI_Domain->CellY(j-1);
           buf_xyz_p[_CDM_IDX_IJKN(i,j,k,2,b_sz[0],b_sz[1],b_sz[2],outGc)] = (float)DFI_Domain->CellZ(k-1);
-        }}} 
+        }}}
 
       }
 
@@ -689,7 +693,7 @@ bool convMxM::mxmsolv(std::string dfiname,
                , 3 );
 
       //間引き及び型変換がない場合
-      if( thin_count == 1 && buf_xyz->getDataType() == xyz_fub->getDataType() && 
+      if( thin_count == 1 && buf_xyz->getDataType() == xyz_fub->getDataType() &&
          buf_xyz->getArrayShape() == xyz_fub->getArrayShape() ) {
          xyz_fub = buf_xyz;
       } else {
@@ -733,7 +737,7 @@ bool convMxM::mxmsolv(std::string dfiname,
   {
     out_dfi->setVariableName(i, DFI_FInfo->VariableName[i]);
   }
-  
+
 
   //フィールドデータ出力
   double tmp_minmax[8];

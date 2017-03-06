@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_DFI_Read.C
  * @brief  cdm_DFI Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -18,15 +24,15 @@
 // フィールドデータの読込み（引数で渡された配列にデータを読込み返す）
 CDM::E_CDM_ERRORCODE
 cdm_DFI::ReadData(cdm_Array *dst,
-                  const unsigned step, 
-                  const int gc, 
-                  const int Gvoxel[3], 
-                  const int Gdivision[3], 
-                  const int head[3], 
+                  const unsigned step,
+                  const int gc,
+                  const int Gvoxel[3],
+                  const int Gdivision[3],
+                  const int head[3],
                   const int tail[3],
                   double &time,
-                  const bool avr_mode, 
-                  unsigned &avr_step, 
+                  const bool avr_mode,
+                  unsigned &avr_step,
                   double &avr_time)
 {
 
@@ -35,7 +41,7 @@ cdm_DFI::ReadData(cdm_Array *dst,
   /** dts にHead/Tailをセット */
 
   int Shead[3];
-  for(int i=0; i<3; i++) Shead[i] = head[i]; 
+  for(int i=0; i<3; i++) Shead[i] = head[i];
   dst->setHeadIndex(Shead);
 
   /** index DFIファイルの ディレクトリパスを取得 */
@@ -50,7 +56,7 @@ cdm_DFI::ReadData(cdm_Array *dst,
                            Gdivision, DFI_Domain->GlobalDivision);
 
   /** 粗密フラグセット */
-  if( readflag == CDM::E_CDM_SAMEDIV_REFINEMENT || readflag == CDM::E_CDM_DIFFDIV_REFINEMENT ) isSame = false; 
+  if( readflag == CDM::E_CDM_SAMEDIV_REFINEMENT || readflag == CDM::E_CDM_DIFFDIV_REFINEMENT ) isSame = false;
 
   /**読込みランクリストの生成 */
   ret = DFI_Process.CheckReadRank(DFI_Domain, head, tail, readflag, m_readRankList);
@@ -77,9 +83,9 @@ cdm_DFI::ReadData(cdm_Array *dst,
     int copy_sta[3],copy_end[3],read_sta[3],read_end[3];
 
     /** 読込み領域 start end の取得 */
-    CreateReadStartEnd(isSame,head, tail, gc, DFI_Process.RankList[n].HeadIndex, 
+    CreateReadStartEnd(isSame,head, tail, gc, DFI_Process.RankList[n].HeadIndex,
                        DFI_Process.RankList[n].TailIndex,
-                       DFI_Finfo.GuideCell, readflag, 
+                       DFI_Finfo.GuideCell, readflag,
                        copy_sta, copy_end, read_sta, read_end);
 
     /** 読込み方法の取得 */
@@ -99,8 +105,8 @@ cdm_DFI::ReadData(cdm_Array *dst,
     if( !fopen(fname.c_str(),"rb") ) return CDM::E_CDM_ERROR_OPEN_FIELDDATA;
 //20160427.fub.e
     cdm_Array* src = ReadFieldData(fname, step, time, read_sta, read_end,
-                                   DFI_Process.RankList[n].HeadIndex, 
-                                   DFI_Process.RankList[n].TailIndex, 
+                                   DFI_Process.RankList[n].HeadIndex,
+                                   DFI_Process.RankList[n].TailIndex,
                                    avr_mode, avr_step, avr_time, ret);
     if( ret != CDM::E_CDM_SUCCESS ) {
       if( src != NULL ) delete src;
@@ -174,10 +180,10 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
   bool matchEndian = true;
   if( Endian != DFI_Finfo.Endian ) matchEndian = false;
 
-  //RealType real_type;
+
   int voxsize[3];
   /** ヘッダーレコードの読込み */
-  ret = read_HeaderRecord(fp, matchEndian, step, DFI_head, DFI_tail, 
+  ret = read_HeaderRecord(fp, matchEndian, step, DFI_head, DFI_tail,
                          DFI_Finfo.GuideCell, voxsize, time);
   if( ret != CDM::E_CDM_SUCCESS )
   {
@@ -207,7 +213,7 @@ cdm_Array* cdm_DFI::ReadFieldData(std::string fname,
                    ( DFI_Finfo.DataType
                    , DFI_Finfo.ArrayShape
                    , szB
-                   , 0 
+                   , 0
                    , DFI_Finfo.NumVariables );
   } else if( DFI_Finfo.ArrayShape == CDM::E_CDM_IJKN ) {
     buf = cdm_Array::instanceArray

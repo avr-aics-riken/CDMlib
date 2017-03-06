@@ -2,13 +2,17 @@
 #define _CONVOUTPUT_NETCDF_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -46,7 +50,7 @@ public:
                         const unsigned step,
                         const int id,
                         const bool mio);
-                  
+
 
   /**
    * @brief NetCDFファイルのheaderの書き込み
@@ -73,7 +77,7 @@ public:
                     double* org,
                     double* pit,
                     const std::string prefix,
-                    cdm_FILE *pFile); 
+                    cdm_FILE *pFile);
 
 
   /**
@@ -86,8 +90,8 @@ public:
    * @param [in] variname      VTK形式で出力する変数名
    */
   bool
-  WriteFieldData(cdm_FILE* pFile, 
-                 cdm_Array* src, 
+  WriteFieldData(cdm_FILE* pFile,
+                 cdm_Array* src,
                  size_t dLen,
                  CDM::E_CDM_DTYPE d_type,
                  bool flag_variname,
@@ -116,4 +120,4 @@ protected:
 };
 
 #endif /*_WITH_NETCDF4_*/
-#endif // _CONVOUTPUT_NETCDF_H_ 
+#endif // _CONVOUTPUT_NETCDF_H_

@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_DFI_PLOT3D.C
  * @brief  cdm_DFI_PLOT3D Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -158,10 +164,10 @@ cdm_DFI_PLOT3D::write_HeaderRecord(cdm_FILE* pFile,
 // #################################################################
 // データレコード出力
 CDM::E_CDM_ERRORCODE
-//cdm_DFI_PLOT3D::write_DataRecord(FILE* fp, 
-cdm_DFI_PLOT3D::write_DataRecord(cdm_FILE* pFile, 
-                                 cdm_Array* val, 
-                                 const int gc, 
+//cdm_DFI_PLOT3D::write_DataRecord(FILE* fp,
+cdm_DFI_PLOT3D::write_DataRecord(cdm_FILE* pFile,
+                                 cdm_Array* val,
+                                 const int gc,
                                  const int n)
 {
   FILE *fp = pFile->m_fp;
@@ -214,7 +220,7 @@ cdm_DFI_PLOT3D::write_DataRecord(cdm_FILE* pFile,
   } else if( val->getDataType() == CDM::E_CDM_FLOAT64 ) {
     cdm_TypeArray<double> *data = dynamic_cast<cdm_TypeArray<double>*>(val);
     write_Func(fp, data, szVal, nvari);
-  }   
+  }
 
   return CDM::E_CDM_SUCCESS;
 }
@@ -253,7 +259,7 @@ cdm_DFI_PLOT3D::write_GridData(const int* iblank)
   // ディレクトリ作成
   std::string dir = CDM::cdmPath_DirName(fname);
   if ( MakeDirectory(dir) != 1 ) return CDM::E_CDM_ERROR_MAKEDIRECTORY;
-  
+
   //GRID data file open
   FILE* fp=NULL;
   if( (fp = fopen(fname.c_str(),"w"))  == NULL ) {
@@ -281,4 +287,3 @@ cdm_DFI_PLOT3D::write_GridData(const int* iblank)
   return true;
 
 }
-

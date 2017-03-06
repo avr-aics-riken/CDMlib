@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_FilePath.C
  * @brief  cdm_FilePath Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -40,7 +46,7 @@ cdm_FilePath::~cdm_FilePath()
 // #################################################################
 // proc.dfi ファイル名の読込み
 CDM::E_CDM_ERRORCODE
-cdm_FilePath::Read(cdm_TextParser tpCntl) 
+cdm_FilePath::Read(cdm_TextParser tpCntl)
 {
 
   std::string str;
@@ -62,7 +68,7 @@ cdm_FilePath::Read(cdm_TextParser tpCntl)
 // #################################################################
 // proc.dfi ファイル名の出力
 CDM::E_CDM_ERRORCODE
-cdm_FilePath::Write(FILE* fp, 
+cdm_FilePath::Write(FILE* fp,
                     const unsigned tab)
 {
 
@@ -79,4 +85,3 @@ cdm_FilePath::Write(FILE* fp,
   return CDM::E_CDM_SUCCESS;
 
 }
-

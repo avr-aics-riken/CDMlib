@@ -2,17 +2,23 @@
 #define _CDM_DFI_SPH_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_DFI_SPH.h
  * @brief  cdm_DFI_SPH Class Header
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -32,8 +38,8 @@ public:
   /** コンストラクタ */
   cdm_DFI_SPH();
 
-  /** 
-   * @brief コンストラクタ 
+  /**
+   * @brief コンストラクタ
    * @param [in] F_Info  FileInfo
    * @param [in] F_Path  FilePath
    * @param [in] visit   VisIt option
@@ -43,16 +49,16 @@ public:
    * @param [in] TSlice  TimeSlice
    * @param [in] process Process
    */
-  cdm_DFI_SPH(const cdm_FileInfo F_Info, 
+  cdm_DFI_SPH(const cdm_FileInfo F_Info,
               const cdm_FilePath F_Path,
               const cdm_VisIt visit,
-              const cdm_Unit unit, 
-              const cdm_Domain* domain, 
+              const cdm_Unit unit,
+              const cdm_Domain* domain,
               const cdm_MPI mpi,
-              const cdm_TimeSlice TSlice, 
+              const cdm_TimeSlice TSlice,
               const cdm_Process process)
   {
-    DFI_Finfo      = F_Info; 
+    DFI_Finfo      = F_Info;
     DFI_Fpath      = F_Path;
     DFI_VisIt      = visit;
     DFI_Unit       = unit;
@@ -62,7 +68,7 @@ public:
     DFI_Process    = process;
     m_bgrid_interp_flag = false;
   };
-  
+
   /**　デストラクタ */
   ~cdm_DFI_SPH();
 
@@ -83,13 +89,13 @@ protected:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-//read_HeaderRecord(FILE* fp, 
-  read_HeaderRecord(cdm_FILE* pFile, 
+//read_HeaderRecord(FILE* fp,
+  read_HeaderRecord(cdm_FILE* pFile,
                     bool matchEndian,
                     unsigned step,
                     const int head[3],
                     const int tail[3],
-                    int gc, 
+                    int gc,
                     int voxsize[3],
                     double &time);
 
@@ -103,7 +109,7 @@ protected:
    * @param[in]  nz          z方向のボクセルサイズ（実セル＋ガイドセル＊２）
    * @param[out] src         読み込んだデータを格納した配列のポインタ
    * @return error code
-   */ 
+   */
   CDM::E_CDM_ERRORCODE
   read_Datarecord(cdm_FILE* pFile,
                   bool matchEndian,
@@ -118,7 +124,7 @@ protected:
    * @param[in]  pFile       ファイルポインタ
    * @param[in]  matchEndian true:Endian一致
    * @param[in]  step        読込みstep番号
-   * @param[out] avr_step    平均ステップ   
+   * @param[out] avr_step    平均ステップ
    * @param[out] avr_time    平均タイム
    * @return error code
    */
@@ -126,9 +132,9 @@ protected:
 //read_averaged(FILE* fp,
   read_averaged(cdm_FILE* pFile,
                 bool matchEndian,
-                unsigned step, 
+                unsigned step,
                 unsigned &avr_step,
-                double &avr_time); 
+                double &avr_time);
 
   /**
    * @brief SPHヘッダレコードの出力

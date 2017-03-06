@@ -1,9 +1,15 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /*
@@ -16,7 +22,7 @@
 #define _CDM_ACTIVESUBDOMAIN_
 
 /** ActiveSubDomian class */
-class cdm_ActiveSubDomain 
+class cdm_ActiveSubDomain
 {
 
 public:
@@ -26,9 +32,9 @@ public:
 
   /** コンストラクタ
    * @param[in] pos  領域分割内での位置
-   */ 
+   */
   cdm_ActiveSubDomain( int pos[3]);
-  
+
   /** デストラクタ */
   virtual ~cdm_ActiveSubDomain();
 
@@ -37,7 +43,7 @@ public:
 
   /** 位置のセット
    * @param[in] pos  領域分割内での位置
-   */ 
+   */
   void SetPos( int pos[3] );
 
   /** 位置の取得
@@ -61,7 +67,7 @@ public:
 
 private:
   int m_pos[3]; ///<領域分割内での位置
-   
+
 
 };
 

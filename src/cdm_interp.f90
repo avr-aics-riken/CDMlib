@@ -1,12 +1,16 @@
-!########################################################################
+!###################################################################################
 !
 ! CDMlib - Cartesian Data Management library
-! 
-! Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
+!
+! Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
 ! All rights reserved.
 !
-!########################################################################
+! Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+! All rights reserved.
 !
+!###################################################################################
+!
+
 !> @file    cdm_interp.f90
 !! @brief   粗データsrcを密データdstに補間するルーチン群
 !! @author  kero
@@ -41,7 +45,7 @@ subroutine cdm_interp_ijkn_r4(szS,gcS,szD,gcD,nc,src,dst)
   integer :: ii,jj,kk
   real*4  :: q
 
-  include 'cdm_interp_ijkn.h'
+  include 'cdm_interp_ijkn.fi'
 
   return
 end subroutine cdm_interp_ijkn_r4
@@ -76,7 +80,7 @@ subroutine cdm_interp_ijkn_r8(szS,gcS,szD,gcD,nc,src,dst)
   integer :: ii,jj,kk
   real*8  :: q
 
-  include 'cdm_interp_ijkn.h'
+  include 'cdm_interp_ijkn.fi'
 
   return
 end subroutine cdm_interp_ijkn_r8
@@ -111,7 +115,7 @@ subroutine cdm_interp_nijk_r4(szS,gcS,szD,gcD,nc,src,dst)
   integer :: ii,jj,kk
   real*4  :: q
 
-  include 'cdm_interp_nijk.h'
+  include 'cdm_interp_nijk.fi'
 
   return
 end subroutine cdm_interp_nijk_r4
@@ -146,8 +150,7 @@ subroutine cdm_interp_nijk_r8(szS,gcS,szD,gcD,nc,src,dst)
   integer :: ii,jj,kk
   real*8  :: q
 
-  include 'cdm_interp_nijk.h'
+  include 'cdm_interp_nijk.fi'
 
   return
 end subroutine cdm_interp_nijk_r8
-

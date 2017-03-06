@@ -1,15 +1,19 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
- * @file   convMxN.C 
+ * @file   convMxN.C
  * @brief  convMxN Class
  * @author aics
  */
@@ -110,7 +114,7 @@ void convMxN::VoxelInit()
   for(int i=0; i<3; i++) m_Gvoxel[i]=tmp[i];
   */
   for(int i=0; i<3; i++) m_Gvoxel[i]=DFI_Domain->GlobalVoxel[i];
-  
+
   tmp = m_paraMngr->GetVoxelHeadIndex();
   for(int i=0; i<3; i++) m_Head[i]=tmp[i]+1;
   tmp = m_paraMngr->GetVoxelTailIndex();
@@ -119,9 +123,9 @@ void convMxN::VoxelInit()
   for(int i=0; i<3; i++) m_Gdiv[i]=tmp[i];
 
   //入力指示を考慮したヘッド、テイルに更新
- 
+
   tmp = m_paraMngr->GetLocalVoxelSize();
- 
+
   for(int i=0; i<3; i++) {
     //if( m_Head[i] < IndexStart[i] ) m_Head[i]=IndexStart[i];
     if( m_Head[i] < IndexStart[i] ) {
@@ -211,7 +215,7 @@ void convMxN::VoxelInit()
     //間引きありのとき、出力ガイドセルを0に設定
     if( thin_count > 1 ) outGc=0;
     //格子点出力のとき、出力ガイドセルを0に設定
-    if( m_param->Get_Interp_flag() ) outGc=0; 
+    if( m_param->Get_Interp_flag() ) outGc=0;
 
     cdm_DFI *dfi = NULL;
     if( DFI_FInfo->DFIType == CDM::E_CDM_DFITYPE_CARTESIAN )
@@ -358,7 +362,7 @@ void convMxN::VoxelInit()
     dfi->set_output_type(m_param->Get_OutputFileType());
 
     //節点への補間フラグのセット(AVSおよびVTK形式)
-    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS || 
+    if( m_param->Get_OutputFormat() == CDM::E_CDM_FMT_AVS ||
         m_param->Get_OutputFormat() == CDM::E_CDM_FMT_VTK ) {
       dfi->set_interp_flag(m_param->Get_Interp_flag());
     }
@@ -412,7 +416,7 @@ void convMxN::VoxelInit()
     for(int n=0; n<DFI_FInfo->NumVariables; n++) {
        std::string variable = m_in_dfi[i]->getVariableName(n);
        if( variable != "" ) dfi->setVariableName(n,variable);
-    } 
+    }
 
     m_out_dfi.push_back(dfi);
   }
@@ -447,7 +451,7 @@ bool convMxN::exec()
 
   CDM::E_CDM_DTYPE d_type;
 
-  CDM::E_CDM_ERRORCODE ret; 
+  CDM::E_CDM_ERRORCODE ret;
   double rtime;
   unsigned idummy = 0;
   double ddummy = 0.0;
@@ -493,7 +497,7 @@ bool convMxN::exec()
   int szS[3];
   const int *cropIndexStart = m_param->Get_CropIndexStart();
   for(int i=0; i<3; i++) {
-    szS[i]=sz[i]/thin_count; 
+    szS[i]=sz[i]/thin_count;
     if( szS[i] < 1 ) {
       printf("\toutput domain size error\n");
       return false;
@@ -537,7 +541,7 @@ bool convMxN::exec()
     }
 
     if( thin_count > 1 ) outGc=0;
-    if( m_param->Get_Interp_flag() ) outGc=0; 
+    if( m_param->Get_Interp_flag() ) outGc=0;
 
     //読込みバッファのインスタンス
     cdm_Array* buf = cdm_Array::instanceArray
@@ -587,14 +591,14 @@ bool convMxN::exec()
 //20160425.fub.s
     cdm_Array* src_xyz = NULL;
 //20160425.fub.e
-   
+
     //DFI_FInfoクラスの取得
 //20160425.fub.s
   //const cdm_FileInfo* DFI_FInfo = m_in_dfi[i]->GetcdmFileInfo();
     cdm_FileInfo* DFI_FInfo = (cdm_FileInfo *)m_in_dfi[i]->GetcdmFileInfo();
     const cdm_Domain* DFI_Domain = m_in_dfi[i]->GetcdmDomain();
 //20160425.fub.e
-    prefix=DFI_FInfo->Prefix; 
+    prefix=DFI_FInfo->Prefix;
 
     //TimeSliceクラスの取得
     const cdm_TimeSlice* TSlice = m_in_dfi[i]->GetcdmTimeSlice();
@@ -658,7 +662,7 @@ bool convMxN::exec()
 
           }
         }
- 
+
         if( src_xyz == NULL && j==0 ) {
           //座標値出力バッファのインスタンス
           src_xyz = cdm_Array::instanceArray
@@ -762,7 +766,7 @@ bool convMxN::exec()
         double *recv2 = new double[nbuff];
         MPI_Reduce(send2, recv2, nbuff, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
         max = recv2;
-      } 
+      }
 
       //出力処理
       double *tmp_minmax = new double[nsize*2];
@@ -770,7 +774,7 @@ bool convMxN::exec()
         tmp_minmax[n*2+0] = min[n];
         tmp_minmax[n*2+1] = max[n];
       }
-  
+
       m_out_dfi[i]->SetcdmTimeSlice(*TSlice);
 
       ret = m_out_dfi[i]->WriteData(
@@ -811,7 +815,7 @@ bool convMxN::exec()
       }
 //20160425.fub.e
 
-    } 
+    }
     delete src;
 //20160425.fub.s
     if( src_xyz ) delete src_xyz;
@@ -821,4 +825,3 @@ bool convMxN::exec()
   return true;
 
 }
-

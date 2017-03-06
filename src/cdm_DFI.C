@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_DFI.C
  * @brief  cdm_DFI Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -56,7 +62,7 @@ cdm_DFI::~cdm_DFI()
 
 // #################################################################
 // DFI read インスタンス
-cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm, 
+cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
                            const std::string DfiName,
                            const int G_Voxel[3],
                            const int G_Div[3],
@@ -95,7 +101,7 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
 
   /** Fileinfoの読込み */
   cdm_FileInfo F_info;
-  if( F_info.Read(tpCntl) != CDM::E_CDM_SUCCESS ) 
+  if( F_info.Read(tpCntl) != CDM::E_CDM_SUCCESS )
   {
     printf("\tFileInfo Data Read error %s\n",DfiName.c_str());
     ret = CDM::E_CDM_ERROR_READ_FILEINFO;
@@ -110,7 +116,7 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
     ret = CDM::E_CDM_ERROR_READ_FILEPATH;
     return NULL;
   }
-  
+
   /** VisItオプションの読込み */
   cdm_VisIt visit;
   if( visit.Read(tpCntl) != CDM::E_CDM_SUCCESS )
@@ -252,7 +258,7 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
         return NULL;
       }
     }
-    dfi_fub->DFI_FieldFileNameFormat = FFFormat; 
+    dfi_fub->DFI_FieldFileNameFormat = FFFormat;
 
 /*
     if( dfi_fub->readFileListTP(tpCntl) != CDM::E_CDM_SUCCESS )
@@ -279,7 +285,7 @@ cdm_DFI* cdm_DFI::ReadInit(const MPI_Comm comm,
   dfi->m_read_type = dfi->CheckReadType(G_Voxel,dfi->DFI_Domain->GlobalVoxel,
                                          G_Div,dfi->DFI_Domain->GlobalDivision);
   if( dfi->m_read_type == CDM::E_CDM_READTYPE_UNKNOWN ) {
-    //printf("\tDimension size error (%d %d %d)\n", 
+    //printf("\tDimension size error (%d %d %d)\n",
     //       G_Voxel[0], G_Voxel[1], G_Voxel[2]);
     ret = CDM::E_CDM_ERROR_INVALID_DIVNUM;
     dfi->m_comm = comm;
@@ -326,7 +332,7 @@ cdm_FileInfo* cdm_DFI::GetcdmFileInfo()
 }
 
 // #################################################################
-void 
+void
 cdm_DFI::SetcdmFilePath(cdm_FilePath FPath)
 {
   DFI_Fpath = FPath;
@@ -380,7 +386,7 @@ cdm_Domain* cdm_DFI::GetcdmDomain()
 
 // #################################################################
 //
-void 
+void
 cdm_DFI::SetcdmDomain(cdm_Domain* domain)
 {
   if( DFI_Domain ) delete DFI_Domain;
@@ -398,7 +404,7 @@ cdm_MPI* cdm_DFI::GetcdmMPI()
 
 // #################################################################
 //
-void 
+void
 cdm_DFI::SetcdmMPI(cdm_MPI mpi)
 {
   DFI_MPI = mpi;
@@ -593,8 +599,8 @@ const int* cdm_DFI::GetDFIGlobalDivision()
   return DFI_Domain->GlobalDivision;
 }
 // #################################################################
-// Create Domain & Process  
-void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm, 
+// Create Domain & Process
+void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm,
                                         cdm_Process &G_Process)
 {
 
@@ -647,7 +653,7 @@ void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm,
   } else {
     G_Rank.RankID=0;
     for(int i=0; i<3; i++) {
-      G_Rank.HeadIndex[i]=DFI_Process.RankList[0].HeadIndex[i]; 
+      G_Rank.HeadIndex[i]=DFI_Process.RankList[0].HeadIndex[i];
       G_Rank.TailIndex[i]=DFI_Process.RankList[0].TailIndex[i];
       G_Rank.VoxelSize[i]=G_Rank.TailIndex[i]-G_Rank.HeadIndex[i]+1;
     }
@@ -659,7 +665,7 @@ void cdm_DFI::cdm_Create_dfiProcessInfo(const MPI_Comm comm,
 
 // #################################################################
 // 読込み判定
-CDM::E_CDM_READTYPE cdm_DFI::CheckReadType(const int G_voxel[3], 
+CDM::E_CDM_READTYPE cdm_DFI::CheckReadType(const int G_voxel[3],
                                            const int DFI_GlobalVoxel[3],
                                            const int G_Div[3],
                                            const int DFI_GlobalDivision[3])
@@ -691,21 +697,21 @@ CDM::E_CDM_READTYPE cdm_DFI::CheckReadType(const int G_voxel[3],
         G_voxel[1] == DFI_GlobalVoxel[1]*2 &&
         G_voxel[2] == DFI_GlobalVoxel[2]*2 ) return CDM::E_CDM_DIFFDIV_REFINEMENT;
   }
- 
+
   return CDM::E_CDM_READTYPE_UNKNOWN;
 }
 
 // #################################################################
 // 読込み範囲を求める
 void cdm_DFI::CreateReadStartEnd(bool isSame,
-                            const int head[3], 
-                            const int tail[3], 
-                            const int gc, 
+                            const int head[3],
+                            const int tail[3],
+                            const int gc,
                             const int DFI_head[3],
-                            const int DFI_tail[3], 
-                            const int DFI_gc, 
-                            const CDM::E_CDM_READTYPE readflag, 
-                            int copy_sta[3], 
+                            const int DFI_tail[3],
+                            const int DFI_gc,
+                            const CDM::E_CDM_READTYPE readflag,
+                            int copy_sta[3],
                             int copy_end[3],
                             int read_sta[3],
                             int read_end[3])
@@ -732,14 +738,14 @@ void cdm_DFI::CreateReadStartEnd(bool isSame,
   for(int i=0; i<3; i++) {
     copy_sta[i] = max(head[i],src_head[i]);
     copy_end[i] = min(tail[i],src_tail[i]);
-    
+
     //仮想セルが読込みの実セル内のときの処理（スタート）
     if( copy_sta[i] == 1 ) {
       copy_sta[i] -= min(gc,src_gc);
     } else if( head[i]>src_head[i] ) {
       copy_sta[i] = max(head[i]-gc,src_head[i]);
     }
- 
+
     //仮想セルが読込みの実セル内のときの処理
     if( ( isSame  && copy_end[i] == DFI_Domain->GlobalVoxel[i] )  ||
         ( !isSame && copy_end[i] == DFI_Domain->GlobalVoxel[i]*2 ) ) {
@@ -766,8 +772,8 @@ void cdm_DFI::CreateReadStartEnd(bool isSame,
 
 // #################################################################
 // ファイル名を作成(ディレクトリパス付加）
-std::string cdm_DFI::Generate_FieldFileName(int RankID, 
-                                       int step, 
+std::string cdm_DFI::Generate_FieldFileName(int RankID,
+                                       int step,
                                        const bool mio)
 {
 
@@ -825,12 +831,12 @@ std::string cdm_DFI::Generate_FieldFileName(int RankID,
     if( DFI_Finfo.DirectoryPath.empty() ) return "";
     if( DFI_Finfo.Prefix.empty() ) return "";
 //  } else {
-//    if( DFI_Finfo.Prefix.empty() ) return getFieldDataFileName(RankID);  
+//    if( DFI_Finfo.Prefix.empty() ) return getFieldDataFileName(RankID);
   }
 //20160329.fub.e
 
 #if 0
-  int len = DFI_Finfo.DirectoryPath.size() + DFI_Finfo.Prefix.size() + fmt.size() + 25; 
+  int len = DFI_Finfo.DirectoryPath.size() + DFI_Finfo.Prefix.size() + fmt.size() + 25;
   // id(6) + step(10) + 1(\0) + "_"(2) + "."(1)+"id"(2)
   if( DFI_Finfo.TimeSliceDirFlag == CDM::E_CDM_ON ) len += 11;
 
@@ -839,18 +845,18 @@ std::string cdm_DFI::Generate_FieldFileName(int RankID,
 
   if( mio ) {
     if( DFI_Finfo.TimeSliceDirFlag == CDM::E_CDM_ON ) {
-      sprintf(tmp, "%s/%010d/%s_%010d_id%06d.%s",DFI_Finfo.DirectoryPath.c_str(),step,DFI_Finfo.Prefix.c_str(), 
+      sprintf(tmp, "%s/%010d/%s_%010d_id%06d.%s",DFI_Finfo.DirectoryPath.c_str(),step,DFI_Finfo.Prefix.c_str(),
             step,RankID,fmt.c_str());
     } else {
-      sprintf(tmp, "%s/%s_%010d_id%06d.%s",DFI_Finfo.DirectoryPath.c_str(),DFI_Finfo.Prefix.c_str(), 
+      sprintf(tmp, "%s/%s_%010d_id%06d.%s",DFI_Finfo.DirectoryPath.c_str(),DFI_Finfo.Prefix.c_str(),
             step,RankID,fmt.c_str());
     }
   } else {
     if( DFI_Finfo.TimeSliceDirFlag == CDM::E_CDM_ON ) {
-      sprintf(tmp, "%s/%010d/%s_%010d.%s",DFI_Finfo.DirectoryPath.c_str(),step,DFI_Finfo.Prefix.c_str(), 
+      sprintf(tmp, "%s/%010d/%s_%010d.%s",DFI_Finfo.DirectoryPath.c_str(),step,DFI_Finfo.Prefix.c_str(),
             step,fmt.c_str());
     } else {
-      sprintf(tmp, "%s/%s_%010d.%s",DFI_Finfo.DirectoryPath.c_str(),DFI_Finfo.Prefix.c_str(), 
+      sprintf(tmp, "%s/%s_%010d.%s",DFI_Finfo.DirectoryPath.c_str(),DFI_Finfo.Prefix.c_str(),
             step,fmt.c_str());
     }
   }
@@ -863,7 +869,7 @@ std::string cdm_DFI::Generate_FieldFileName(int RankID,
     }
   }
 //20150918.NetCDF.e
-  
+
   std::string fname(tmp);
   if( tmp ) delete [] tmp;
 #else
@@ -894,7 +900,7 @@ std::string cdm_DFI::Generate_FileName(std::string prefix,
   memset(tmp, 0, sizeof(char)*len);
 
   //step出力なしのファイル名生成
-  if( step < 0 ) 
+  if( step < 0 )
   {
     if( mio ) {
 //    sprintf(tmp,"%s_id%06d.%s",prefix.c_str(),RankID,ext.c_str());
@@ -923,8 +929,8 @@ std::string cdm_DFI::Generate_FileName(std::string prefix,
   }
 
   //step_rank
-//  if( output_fname != CDM::E_CDM_FNAME_RANK_STEP ) 
-  if( output_fname != CDM::E_CDM_FNAME_RANK_STEP && output_fname != CDM::E_CDM_FNAME_RANK ) 
+//  if( output_fname != CDM::E_CDM_FNAME_RANK_STEP )
+  if( output_fname != CDM::E_CDM_FNAME_RANK_STEP && output_fname != CDM::E_CDM_FNAME_RANK )
   {
     if( TimeSliceDirFlag == CDM::E_CDM_ON ) {
 //    sprintf(tmp,"%010d/%s_%010d_id%06d.%s",step,prefix.c_str(),step,RankID,ext.c_str());
@@ -933,7 +939,7 @@ std::string cdm_DFI::Generate_FileName(std::string prefix,
 //    sprintf(tmp,"%s_%010d_id%06d.%s",prefix.c_str(),step,RankID,ext.c_str());
       sprintf(tmp,"%s_%010d%s%06d.%s",prefix.c_str(),step,RankNoPrefix.c_str(),RankID,ext.c_str());
     }
-  } else if( output_fname == CDM::E_CDM_FNAME_RANK_STEP ) 
+  } else if( output_fname == CDM::E_CDM_FNAME_RANK_STEP )
   {
   //rank_step
     if( TimeSliceDirFlag == CDM::E_CDM_ON ) {
@@ -976,7 +982,7 @@ int cdm_DFI::MakeDirectory(const std::string path)
   }
 
   // failed
-  return 1;       
+  return 1;
 }
 
 // #################################################################
@@ -1078,7 +1084,7 @@ void cdm_DFI::AddUnit(const std::string Name,
 
   /** UnitElemの生成 */
   cdm_UnitElem unit =  cdm_UnitElem(Name,Unit,reference,difference,BsetDiff);
-  
+
   /** UnilListへのセット */
   DFI_Unit.UnitList.insert(map<std::string,cdm_UnitElem>::value_type(Name,unit));
 

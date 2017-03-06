@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
- * @file   cdm_TimeSlice.C 
+/**
+ * @file   cdm_TimeSlice.C
  * @brief  cdm_Slice Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -47,7 +53,7 @@ cdm_Slice::~cdm_Slice()
 CDM::E_CDM_ERRORCODE
 cdm_Slice::Read(cdm_TextParser tpCntl,
                 std::string label_leaf,
-                CDM::E_CDM_FORMAT format) 
+                CDM::E_CDM_FORMAT format)
 {
 #if 0
   std::string str;
@@ -271,11 +277,11 @@ cdm_Slice::Read(cdm_TextParser tpCntl,
 }
 
 // #################################################################
-// TimeSliceを出力する 
+// TimeSliceを出力する
 CDM::E_CDM_ERRORCODE
 cdm_Slice::Write(FILE* fp,
                  const unsigned tab,
-                 CDM::E_CDM_FORMAT format) 
+                 CDM::E_CDM_FORMAT format)
 {
 
   _CDM_WRITE_TAB(fp, tab);
@@ -324,7 +330,7 @@ cdm_Slice::Write(FILE* fp,
 cdm_TimeSlice::cdm_TimeSlice()
 {
   SliceList.clear();
-} 
+}
 
 // #################################################################
 // デストラクタ
@@ -373,7 +379,7 @@ cdm_TimeSlice::Read(cdm_TextParser tpCntl,
     iret = slice.Read(tpCntl,label_leaf);
 
     if( iret == CDM::E_CDM_SUCCESS ) {
-      SliceList.push_back(slice); 
+      SliceList.push_back(slice);
     } else return iret;
 
   }
@@ -431,7 +437,7 @@ cdm_TimeSlice::Read(cdm_TextParser tpCntl,
 }
 
 // #################################################################
-// TimeSliceを出力する 
+// TimeSliceを出力する
 CDM::E_CDM_ERRORCODE
 cdm_TimeSlice::Write(FILE* fp,
                      const unsigned tab,
@@ -461,7 +467,7 @@ cdm_TimeSlice::Write(FILE* fp,
 
 // #################################################################
 // DFIに出力されているminmaxの合成値を取得
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_TimeSlice::getVectorMinMax(const unsigned step,
                                double &vec_min,
                                double &vec_max)
@@ -479,7 +485,7 @@ cdm_TimeSlice::getVectorMinMax(const unsigned step,
 
 // #################################################################
 // DFIに出力されているminmaxとminmaxの合成値を取得
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_TimeSlice::getMinMax(const unsigned step,
                          const int variNo,
                          double &min_value,

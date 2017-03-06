@@ -1,11 +1,15 @@
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -64,13 +68,13 @@ cdm_FILE* convOutput_AVS::OutputFile_Open(const std::string prefix,
 }
 
 // #################################################################
-bool 
+bool
 convOutput_AVS::WriteFieldData(cdm_FILE* pFile, cdm_Array* src, size_t dLen)
 {
   FILE *fp = pFile->m_fp;
 
   const int* sz = src->getArraySizeInt();
-  
+
   cdm_Array *out = cdm_Array::instanceArray
                    (src->getDataType(),
                     src->getArrayShape(),
@@ -90,7 +94,7 @@ convOutput_AVS::WriteFieldData(cdm_FILE* pFile, cdm_Array* src, size_t dLen)
 // #################################################################
 // output_avs
 /*
-void 
+void
 convOutput_AVS::output_avs(
                            int myRank,
                            vector<cdm_DFI *>in_dfi,
@@ -109,8 +113,8 @@ convOutput_AVS::output_avs(
 }
 */
 // #################################################################
-// output avs file 
-void convOutput_AVS::output_avs(int myRank, 
+// output avs file
+void convOutput_AVS::output_avs(int myRank,
                                 vector<cdm_DFI *>in_dfi)
 {
 
@@ -162,7 +166,7 @@ void convOutput_AVS::output_avs(int myRank,
 }
 // #################################################################
 // output avs file (不等間隔格子対応版)
-void convOutput_AVS::output_avs(int myRank, 
+void convOutput_AVS::output_avs(int myRank,
                                 vector<cdm_DFI *>in_dfi,
                                 cdm_Domain* out_domain,
                                 cdm_Process* out_process,
@@ -195,7 +199,7 @@ void convOutput_AVS::output_avs(int myRank,
 }
 // #################################################################
 // output avs filei MxM
-void convOutput_AVS::output_avs_MxM(int myRank, 
+void convOutput_AVS::output_avs_MxM(int myRank,
                                     vector<cdm_DFI *>in_dfi)
 {
   if( myRank != 0 ) return; //myRank==0のときのみヘッダーレコードを出力
@@ -248,7 +252,7 @@ void convOutput_AVS::output_avs_MxM(int myRank,
       nspace=3;
       output_avs_header(in_dfi[i], j, true, ndim, nspace, dims);
 
-    } 
+    }
   }
 
   return;
@@ -257,7 +261,7 @@ void convOutput_AVS::output_avs_MxM(int myRank,
 
 // #################################################################
 // output avs filei MxN
-void convOutput_AVS::output_avs_MxN(int myRank, 
+void convOutput_AVS::output_avs_MxN(int myRank,
                                     vector<cdm_DFI *>in_dfi,
                                     cpm_ParaManager* paraMngr,
                                     int *mHead)
@@ -309,8 +313,8 @@ void convOutput_AVS::output_avs_MxN(int myRank,
 
 // #################################################################
 // output coord data (cod)
-void convOutput_AVS::output_avs_coord(int RankID, 
-                                      bool mio, 
+void convOutput_AVS::output_avs_coord(int RankID,
+                                      bool mio,
                                       double min_ext[3],
                                       double max_ext[3])
 {
@@ -320,7 +324,7 @@ void convOutput_AVS::output_avs_coord(int RankID,
 
   //座標値データファイルオープン
   CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
-  cod_fname = m_InputCntl->Get_OutputDir() +"/"+ 
+  cod_fname = m_InputCntl->Get_OutputDir() +"/"+
               cdm_DFI::Generate_FileName("cord",
                                          RankID,
                                          -1,
@@ -365,7 +369,7 @@ void convOutput_AVS::output_avs_coord(int RankID,
 
   //座標値データファイルオープン
   CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
-  cod_fname = m_InputCntl->Get_OutputDir() +"/"+ 
+  cod_fname = m_InputCntl->Get_OutputDir() +"/"+
               cdm_DFI::Generate_FileName("cord",
                                          RankID,
                                          -1,
@@ -488,11 +492,11 @@ void convOutput_AVS::output_avs_coord(int RankID,
 }
 // #################################################################
 // output avc Header (fld)
-void convOutput_AVS::output_avs_header(cdm_DFI* dfi, 
-                                       int RankID, 
-                                       bool mio, 
+void convOutput_AVS::output_avs_header(cdm_DFI* dfi,
+                                       int RankID,
+                                       bool mio,
                                        int ndim,
-                                       int nspace, 
+                                       int nspace,
                                        int dims[3])
 {
 
@@ -508,7 +512,7 @@ void convOutput_AVS::output_avs_header(cdm_DFI* dfi,
 
   //データタイプのセット
   int out_dtype = m_InputCntl->Get_OutputDataType();
-  if( out_dtype == CDM::E_CDM_DTYPE_UNKNOWN ) out_dtype = dfi->GetDataType(); 
+  if( out_dtype == CDM::E_CDM_DTYPE_UNKNOWN ) out_dtype = dfi->GetDataType();
   if(      out_dtype == CDM::E_CDM_INT8    ) {
     dType="byte";
   } else if( out_dtype == CDM::E_CDM_INT16   ) {
@@ -527,7 +531,7 @@ void convOutput_AVS::output_avs_header(cdm_DFI* dfi,
 
   //出力ヘッダーファイルオープン
   CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
-  fld_fname = m_InputCntl->Get_OutputDir() +"/"+ 
+  fld_fname = m_InputCntl->Get_OutputDir() +"/"+
               cdm_DFI::Generate_FileName(DFI_FInfo->Prefix,
                                          RankID,
                                          -1,
@@ -535,7 +539,7 @@ void convOutput_AVS::output_avs_header(cdm_DFI* dfi,
                                          fnameformat,
                                          mio,
                                          CDM::E_CDM_OFF);
-                                          
+
   if( (fp = fopen(fld_fname.c_str(),"w")) == NULL ) {
     printf("\tCan't open file.(%s)\n",fld_fname.c_str());
     Exit(0);
@@ -620,9 +624,9 @@ void convOutput_AVS::output_avs_header(cdm_DFI* dfi,
 }
 // #################################################################
 // output avc Header (fld) (不等間隔格子対応版)
-void convOutput_AVS::output_avs_header(cdm_DFI* dfi, 
-                                       int RankID, 
-                                       bool mio, 
+void convOutput_AVS::output_avs_header(cdm_DFI* dfi,
+                                       int RankID,
+                                       bool mio,
                                        CDM::E_CDM_DFITYPE dfi_type,
                                        int dims[3])
 {
@@ -639,7 +643,7 @@ void convOutput_AVS::output_avs_header(cdm_DFI* dfi,
 
   //データタイプのセット
   int out_dtype = m_InputCntl->Get_OutputDataType();
-  if( out_dtype == CDM::E_CDM_DTYPE_UNKNOWN ) out_dtype = dfi->GetDataType(); 
+  if( out_dtype == CDM::E_CDM_DTYPE_UNKNOWN ) out_dtype = dfi->GetDataType();
   if(      out_dtype == CDM::E_CDM_INT8    ) {
     dType="byte";
   } else if( out_dtype == CDM::E_CDM_INT16   ) {
@@ -658,7 +662,7 @@ void convOutput_AVS::output_avs_header(cdm_DFI* dfi,
 
   //出力ヘッダーファイルオープン
   CDM::E_CDM_OUTPUT_FNAME fnameformat = m_InputCntl->Get_OutputFilenameFormat();
-  fld_fname = m_InputCntl->Get_OutputDir() +"/"+ 
+  fld_fname = m_InputCntl->Get_OutputDir() +"/"+
               cdm_DFI::Generate_FileName(DFI_FInfo->Prefix,
                                          RankID,
                                          -1,
@@ -666,7 +670,7 @@ void convOutput_AVS::output_avs_header(cdm_DFI* dfi,
                                          fnameformat,
                                          mio,
                                          CDM::E_CDM_OFF);
-                                          
+
   if( (fp = fopen(fld_fname.c_str(),"w")) == NULL ) {
     printf("\tCan't open file.(%s)\n",fld_fname.c_str());
     Exit(0);

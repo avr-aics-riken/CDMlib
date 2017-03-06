@@ -2,14 +2,20 @@
 #define _CDM_NONUNIFORMDOMAIN_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_NonUniformDomain.h
  * @brief  cdm_NonUniformDomain Class Header
  * @author aics
@@ -56,8 +62,8 @@ public:
     CoordinateFileEndian = CDM::E_CDM_ENDIANTYPE_UNKNOWN;
   }
 
-  /** 
-  * @brief コンストラクタ 
+  /**
+  * @brief コンストラクタ
   * @param [in] _XCoordinates   X座標データポインタ(Domainの格子点)
   * @param [in] _YCoordinates   Y座標データポインタ(Domainの格子点)
   * @param [in] _ZCoordinates   Z座標データポインタ(Domainの格子点)
@@ -67,14 +73,14 @@ public:
   * @param [in] _GlobalVoxel    ボクセル数
   * @param [in] _GlobalDivision 分割数
   * @param [in] _gc             ガイドセル数
-  */ 
+  */
   cdm_NonUniformDomain(const T* _XCoordinates,
                        const T* _YCoordinates,
                        const T* _ZCoordinates,
                        const std::string _CoordinateFile,
                        const CDM::E_CDM_FILE_TYPE _CoordinateFileType,
                        const CDM::E_CDM_ENDIANTYPE _CoordinateFileEndian,
-                       const int* _GlobalVoxel, 
+                       const int* _GlobalVoxel,
                        const int* _GlobalDivision,
                        const int _gc=0)
   {
@@ -129,7 +135,7 @@ public:
     }
   }
 
-  /** 
+  /**
   * @brief コンストラクタ(proc.dfi出力用)
   * @param [in] _GlobalOrigin   起点座標
   * @param [in] _GlobalRegion   各軸方向の長さ
@@ -139,10 +145,10 @@ public:
   * @param [in] _CoordinateFileType      座標データのファイルタイプ
   * @param [in] _CoordinateFilePrecision 座標データのデータ精度
   * @param [in] _CoordinateFileEndian    座標データのエンディアンタイプ
-  */ 
+  */
   cdm_NonUniformDomain(const T* _GlobalOrigin,
                        const T* _GlobalRegion,
-                       const int* _GlobalVoxel, 
+                       const int* _GlobalVoxel,
                        const int* _GlobalDivision,
                        const std::string _CoordinateFile,
                        const CDM::E_CDM_FILE_TYPE _CoordinateFileType,
@@ -286,7 +292,7 @@ public:
 
   /**
    * @brief Domain(proc.dfi)を読込む
-   * @param [in]   tpCntl  cdm_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス
    * @param [in]   dirName DFIのディレクトリパス
    * @return error code
    */

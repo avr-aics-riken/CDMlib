@@ -2,17 +2,23 @@
 #define _CDM_DFI_INLINE_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_DFI.h
  * @brief  cdm_DFI Class Header
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI_SPH.h"
@@ -43,20 +49,20 @@
 // フィールドデータの読込み(読み込んだデータのポインタを戻り値として
 // 返す）
 
-//template<class T, class TimeT, class TimeAvrT> 
+//template<class T, class TimeT, class TimeAvrT>
 //CDM_INLINE T*
-template<class TimeT, class TimeAvrT> 
+template<class TimeT, class TimeAvrT>
 CDM_INLINE void*
 cdm_DFI::ReadData(CDM::E_CDM_ERRORCODE &ret,
-                  const unsigned step, 
-                  const int gc, 
-                  const int Gvoxel[3], 
-                  const int Gdivision[3], 
-                  const int head[3], 
+                  const unsigned step,
+                  const int gc,
+                  const int Gvoxel[3],
+                  const int Gdivision[3],
+                  const int head[3],
                   const int tail[3],
                   TimeT &time,
-                  const bool mode, 
-                  unsigned &step_avr, 
+                  const bool mode,
+                  unsigned &step_avr,
                   TimeAvrT &time_avr)
 {
 
@@ -92,7 +98,7 @@ cdm_DFI::ReadData(CDM::E_CDM_ERRORCODE &ret,
 
 // #################################################################
 // フィールドデータの読込み(引数で渡された配列にデータを読込む）
-template<class T, class TimeT, class TimeAvrT> 
+template<class T, class TimeT, class TimeAvrT>
 CDM_INLINE
 CDM::E_CDM_ERRORCODE cdm_DFI::ReadData(T *val,
                                        const unsigned step,
@@ -132,26 +138,26 @@ CDM::E_CDM_ERRORCODE cdm_DFI::ReadData(T *val,
    //data->getData(true);
    delete data;
 
-   return ret; 
+   return ret;
 }
 
 // #################################################################
 // 座標値データの読込み(読み込んだデータのポインタを戻り値として
 // 返す）
-//template<class T, class TimeT, class TimeAvrT> 
+//template<class T, class TimeT, class TimeAvrT>
 //CDM_INLINE T*
-template<class TimeT, class TimeAvrT> 
+template<class TimeT, class TimeAvrT>
 CDM_INLINE void*
 cdm_DFI::ReadCoordinateData(CDM::E_CDM_ERRORCODE &ret,
-                  const unsigned step, 
-                  const int gc, 
-                  const int Gvoxel[3], 
-                  const int Gdivision[3], 
-                  const int head[3], 
+                  const unsigned step,
+                  const int gc,
+                  const int Gvoxel[3],
+                  const int Gdivision[3],
+                  const int head[3],
                   const int tail[3],
                   TimeT &time,
-                  const bool mode, 
-                  unsigned &step_avr, 
+                  const bool mode,
+                  unsigned &step_avr,
                   TimeAvrT &time_avr)
 {
 
@@ -185,7 +191,7 @@ cdm_DFI::ReadCoordinateData(CDM::E_CDM_ERRORCODE &ret,
 
 // #################################################################
 // 座標値データの読込み(引数で渡された配列にデータを読込む）
-template<class T, class TimeT, class TimeAvrT> 
+template<class T, class TimeT, class TimeAvrT>
 CDM_INLINE
 CDM::E_CDM_ERRORCODE cdm_DFI::ReadCoordinateData(T *val,
                                        const unsigned step,
@@ -224,23 +230,23 @@ CDM::E_CDM_ERRORCODE cdm_DFI::ReadCoordinateData(T *val,
 
    delete data;
 
-   return ret; 
+   return ret;
 }
 
 // #################################################################
 // フィールドデータの出力
-template<class T, class TimeT, class TimeAvrT> 
+template<class T, class TimeT, class TimeAvrT>
 CDM_INLINE
 CDM::E_CDM_ERRORCODE
-cdm_DFI::WriteData(const unsigned step, 
-                   TimeT time, 
+cdm_DFI::WriteData(const unsigned step,
+                   TimeT time,
                    const int sz[3],
                    const int nVari,
-                   const int gc, 
-                   T* val, 
+                   const int gc,
+                   T* val,
                    T* minmax,
-                   const bool avr_mode, 
-                   const unsigned step_avr, 
+                   const bool avr_mode,
+                   const unsigned step_avr,
                    TimeAvrT time_avr)
 {
   //フィールドデータの変数の個数と登録された変数名の個数の一致確認
@@ -284,12 +290,12 @@ cdm_DFI::WriteData(const unsigned step,
 
   delete data;
   return ret;
-                                          
+
 }
 
 // #################################################################
 // フィールドデータの出力(dfi fileの出力なし)
-template<class T, class TimeT, class TimeAvrT> 
+template<class T, class TimeT, class TimeAvrT>
 CDM_INLINE
 CDM::E_CDM_ERRORCODE
 cdm_DFI:: WriteFieldDataFile(const unsigned step,
@@ -356,16 +362,16 @@ cdm_DFI::WriteCoordinateData(const unsigned step,
   ret = WriteCoordinateData(step, gc, time, data);
 
   DFI_Finfo.NumVariables = tnval;
-  
+
   delete data;
   return ret;
 
 }
 // #################################################################
 // TimeSliceをセット
-template<class T, class TimeT, class TimeAvrT> 
+template<class T, class TimeT, class TimeAvrT>
 CDM_INLINE
-void 
+void
 cdm_DFI::AddTimeSlice(const unsigned step,
                       TimeT time,
                       T* minmax,
@@ -742,7 +748,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
 //if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D ) {
 //20160401.fub.s
 //  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D || format == CDM::E_CDM_FMT_NETCDF4 ) {
-  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D || format == CDM::E_CDM_FMT_NETCDF4 || 
+  if( format == CDM::E_CDM_FMT_BOV || format == CDM::E_CDM_FMT_PLOT3D || format == CDM::E_CDM_FMT_NETCDF4 ||
       format == CDM::E_CDM_FMT_FUB || format == CDM::E_CDM_FMT_FUB_COD ) {
 //20160401.fub.e
 //20150918.NetCDF.e
@@ -763,7 +769,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
 
   cdm_VisIt out_visit;
   out_visit.PlotGC = "off";
-  
+
   cdm_Unit out_unit;
 
   cdm_MPI out_mpi;
@@ -816,7 +822,7 @@ cdm_DFI* cdm_DFI::WriteInit(const MPI_Comm comm,
 #endif
 //20150918.NetCDF.e
 //20160328.fub.s
-  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_FUB || 
+  } else if( out_F_info.FileFormat == CDM::E_CDM_FMT_FUB ||
              out_F_info.FileFormat == CDM::E_CDM_FMT_FUB_COD ) {
     dfi = new cdm_DFI_FUB(out_F_info, out_F_path, out_visit, out_unit, out_domain, out_mpi,
                              out_TSlice, out_Process);

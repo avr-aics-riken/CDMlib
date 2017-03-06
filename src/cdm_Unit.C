@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_Unit.C
  * @brief  cdm_Unit Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -58,7 +64,7 @@ cdm_UnitElem::~cdm_UnitElem()
 
 // #################################################################
 // Unit要素の読込み
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_UnitElem::Read(cdm_TextParser tpCntl,
                    const std::string label_leaf)
 {
@@ -135,8 +141,8 @@ cdm_Unit::~cdm_Unit()
 
 // #################################################################
 // Unitの読込み
-CDM::E_CDM_ERRORCODE 
-cdm_Unit::Read(cdm_TextParser tpCntl) 
+CDM::E_CDM_ERRORCODE
+cdm_Unit::Read(cdm_TextParser tpCntl)
 {
 
   std::string str;
@@ -166,13 +172,13 @@ cdm_Unit::Read(cdm_TextParser tpCntl)
     }
   }
 
-  return iret; 
+  return iret;
 
 }
 
 // #################################################################
 // 該当するUnitElemの取り出し
-CDM::E_CDM_ERRORCODE 
+CDM::E_CDM_ERRORCODE
 cdm_Unit::GetUnitElem(const std::string Name,
                       cdm_UnitElem &unit)
 {
@@ -183,7 +189,7 @@ cdm_Unit::GetUnitElem(const std::string Name,
 
   //見つからなかった場合はNULLを返す
   if( it == UnitList.end() ) {
-    return CDM::E_CDM_ERROR; 
+    return CDM::E_CDM_ERROR;
   }
 
   //UnitElemを返す
@@ -233,7 +239,7 @@ std::string cdm_Unit::GetBaseName(const std::string Name, int &ret)
   //見つからなかった場合は空白を返す
   if( it == UnitList.end() ) {
     ret = CDM::E_CDM_WARN_GETUNIT;
-    return ""; 
+    return "";
   }
 
   //ベース名を返す
@@ -310,8 +316,8 @@ double cdm_Unit::GetDiffValue(const std::string Name, int &ret)
 // #################################################################
 // Unitの出力
 CDM::E_CDM_ERRORCODE
-cdm_Unit::Write(FILE* fp, 
-                const unsigned tab) 
+cdm_Unit::Write(FILE* fp,
+                const unsigned tab)
 {
 
   fprintf(fp, "UnitList {\n");
@@ -347,8 +353,7 @@ void cdm_Unit::AddUnit(const std::string Name,
 
   /** UnitElemの生成 */
   cdm_UnitElem unit =  cdm_UnitElem(Name,Unit,reference,difference,BsetDiff);
-  
+
   /** UnilListへのセット */
   UnitList.insert(map<std::string,cdm_UnitElem>::value_type(Name,unit));
 }
-

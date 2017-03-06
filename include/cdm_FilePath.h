@@ -2,17 +2,23 @@
 #define _CDM_FILEPATH_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_FilePath.h
  * @brief  cdm_FilePath Class Header
- * @author aics    
+ * @author aics
  */
 
 /** index.dfi ファイルの FilePath */
@@ -25,10 +31,10 @@ public:
   /** コンストラクタ **/
   cdm_FilePath();
 
-  /** 
+  /**
    * @brief コンストラクタ
    * @param [in] _ProcDFIFile proc.dfiファイル名
-   */ 
+   */
   cdm_FilePath(const std::string _ProcDFIFile);
 
   /** デストラクタ **/
@@ -38,7 +44,7 @@ public:
   /**
    * @brief read FilePath(inde.dfi)
    * @details proc.dfiファイル名の読込み
-   * @param [in]   tpCntl  cdm_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
@@ -52,8 +58,8 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, 
-        const unsigned tab); 
+  Write(FILE* fp,
+        const unsigned tab);
 
 };
 

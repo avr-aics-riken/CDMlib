@@ -2,17 +2,23 @@
 #define _CDM_MPI_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_MPI.h
  * @brief  cdm_MPI Class Header
- * @author aics    
+ * @author aics
  */
 
 /** proc.dfi ファイルの MPI */
@@ -30,7 +36,7 @@ public:
    * @brief コンストラクタ
    * @param [in] _NumberOfRank  プロセス数
    * @param [in] _NumberOfGroup グループ数
-   */ 
+   */
   cdm_MPI(const int _NumberOfRank, int _NumberOfGroup=0);
 
   /** デストラクタ **/
@@ -38,13 +44,13 @@ public:
 
   /**
    * @brief read MPI(proc.dfi)
-   * @param [in]   tpCntl  cdm_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス
    * @param [in]   domain  Domain
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  Read(cdm_TextParser tpCntl, 
-       const cdm_Domain* domain); 
+  Read(cdm_TextParser tpCntl,
+       const cdm_Domain* domain);
 
   /**
    * @brief DFIファイル:MPIを出力する
@@ -53,7 +59,7 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, 
+  Write(FILE* fp,
         const unsigned tab);
 
 };

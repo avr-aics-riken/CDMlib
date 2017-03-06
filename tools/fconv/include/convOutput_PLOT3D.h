@@ -2,13 +2,17 @@
 #define _CONVOUTPUT_PLOT3D_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -53,7 +57,7 @@ public:
                      int guide,
                      double org[3],
                      double pit[3],
-                     int sz[3]); 
+                     int sz[3]);
 
   /**
    * @brief GRID ファイル出力 (不等間隔格子対応版)
@@ -88,14 +92,14 @@ public:
    */
   template<class T1, class T2>
   void OutputPlot3D_xyz(std::string prefix,
-                        int step, 
-                        int rank, 
-                        int guide, 
-                        T1* origin, 
-                        T1* pitch, 
-                        int* size, 
-                        T2* x, 
-                        T2* y, 
+                        int step,
+                        int rank,
+                        int guide,
+                        T1* origin,
+                        T1* pitch,
+                        int* size,
+                        T2* x,
+                        T2* y,
                         T2* z);
 
   /**
@@ -132,7 +136,7 @@ public:
   void WriteBlockData(cdm_FILE* pFile,
                       int id,
                       int jd,
-                      int kd); 
+                      int kd);
 
   /**
    * @brief gridデータ出力
@@ -144,12 +148,12 @@ public:
    * @param [in] x          x座標値
    * @param [in] y          y座標値
    * @param [in] z          z座標値
-   */ 
+   */
   template<class T>
   bool
   WriteXYZData(cdm_FILE* pFile,
-               int id, 
-               int jd, 
+               int id,
+               int jd,
                int kd,
                int ngrid,
                T*  x,
@@ -164,7 +168,7 @@ public:
    * @param [in] y       y座標値データポインタ
    * @param [in] z       z座標値データポインタ
    * @param [in] iblank  iblankデータポインタ
-   */ 
+   */
   template<class T>
   bool
   WriteXYZData(cdm_FILE* pFile,
@@ -188,7 +192,7 @@ public:
                      int id,
                      int jd,
                      int kd,
-                     T* x); 
+                     T* x);
 
   /**
    * @brief Formatted 出力 (IBLANK対応版)
@@ -200,7 +204,7 @@ public:
   void
   WriteXYZ_FORMATTED(cdm_FILE *pFile,
                      size_t sz3d,
-                     T* tmp); 
+                     T* tmp);
 
   /**
    * @brief 出力ファイルをオープンする
@@ -208,7 +212,7 @@ public:
    * @param [in] step   ステップ数
    * @param [in] id     ランク番号
    * @param [in] mio    出力時の分割指定　 true = local / false = gather(default)
-   */ 
+   */
   cdm_FILE*
   OutputFile_Open(
                   const std::string prefix,
@@ -217,7 +221,7 @@ public:
                   const bool mio);
 
   /**
-   * @brief funcデータファイルののheader部の書き込み 
+   * @brief funcデータファイルののheader部の書き込み
    * @param[in] step    ステップ数
    * @param[in] dim     変数の個数
    * @param[in] d_type  データ型タイプ
@@ -250,24 +254,24 @@ public:
    * @param [in] dLen   出力データサイズ
    */
   bool
-  WriteFieldData(cdm_FILE* pFile, 
-                 cdm_Array* src, 
+  WriteFieldData(cdm_FILE* pFile,
+                 cdm_Array* src,
                  size_t dLen);
 
   /**
-   * @brief Function ブロックデータの書き出し 
+   * @brief Function ブロックデータの書き出し
    * @param [in] pFile 出力ファイルポインタ
    * @param [in] id i方向のサイズ
    * @param [in] jd j方向のサイズ
    * @param [in] kd k方向のサイズ
    * @param [in] nvar 出力項目数
    */
-  void 
+  void
   WriteFuncBlockData(cdm_FILE* pFile,
                      int id,
                      int jd,
                      int kd,
-                     int nvar); 
+                     int nvar);
 
   /**
    * @brief func data の出力
@@ -280,7 +284,7 @@ public:
   /**
    * @brief マーカーの書き込み
    * @param[in] dmy    マーカー
-   * @param[in] pFile  出力ファイルポインタ 
+   * @param[in] pFile  出力ファイルポインタ
    * @param[in] out    Fortranマーカー出力フラグ
    */
   bool
@@ -291,4 +295,4 @@ public:
 //inline 関数
 #include "inline/conv_plot3d_inline.h"
 
-#endif // _CONVOUTPUT_PLOT3D_H_ 
+#endif // _CONVOUTPUT_PLOT3D_H_

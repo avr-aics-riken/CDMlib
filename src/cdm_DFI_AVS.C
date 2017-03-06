@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_DFI_AVS.C
  * @brief  cdm_DFI_AVS Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -88,7 +94,7 @@ bool cdm_DFI_AVS::write_ascii_header(const unsigned step,
   if( !write_avs_cord(dims,gc) ) return false;
 
   //ヘッダーデータファイルの出力
-  if( !write_avs_header(dims) ) return false; 
+  if( !write_avs_header(dims) ) return false;
 
   return true;
 
@@ -105,7 +111,7 @@ bool cdm_DFI_AVS::write_avs_cord(int dims[3],
   //ファイル名の作成
   bool mio = false;
   if( DFI_MPI.NumberOfRank > 1 ) mio = true;
-  
+
   std::string fname,tmp;
   tmp = Generate_FileName("cord",m_RankID,-1,"cod",m_output_fname,mio,
                           DFI_Finfo.TimeSliceDirFlag,DFI_Finfo.RankNoPrefix);
@@ -368,7 +374,7 @@ bool cdm_DFI_AVS::write_avs_header(int dims[3])
       }
     }
     fprintf(fp,"EOT\n");
-    
+
   }
 
   //出力ヘッダーファイルクローズ

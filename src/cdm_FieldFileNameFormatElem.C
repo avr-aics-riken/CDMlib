@@ -1,7 +1,15 @@
 /*
- *
- *
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #include "cdm_FieldFileNameFormatElem.h"
@@ -90,10 +98,10 @@ cdm_FieldFileNameFormatElem::Read(TextParser *tp)
 
 // #################################################################
 // Disitの取得（shorten=0, 整数値)
-int 
+int
 cdm_FieldFileNameFormatElem::GetDisitNo(TextParser *tp, const string label, int &err)
 {
-  
+
   string str;
   double ct;
 
@@ -153,7 +161,7 @@ cdm_FieldFileNameFormatElem::PrintParse()
 
 // #################################################################
 // Set FileNameFormat
-void 
+void
 cdm_FieldFileNameFormatElem::SetFnameFormat()
 {
 
@@ -212,7 +220,7 @@ cdm_FieldFileNameFormatElem::SetFnameFormat()
 string
 cdm_FieldFileNameFormatElem::SetDisitNoFormat(const int DisitNo)
 {
- 
+
   string str="";
   char *fmt = new char[10];
 
@@ -233,15 +241,15 @@ cdm_FieldFileNameFormatElem::SetDisitNoFormat(const int DisitNo)
 // fubファイル名の生成
 string
 cdm_FieldFileNameFormatElem::GenerateFileName(const string DirPath,
-                                          const int nStep, 
+                                          const int nStep,
                                           const int nId)
 {
 
   string fname = "";
 
-  //DirPsth 
+  //DirPsth
   if( DirPath.empty() ) {
-    fname = "./"; 
+    fname = "./";
   } else {
     int sz = DirPath.size();
     string::size_type po = DirPath.find("/");
@@ -266,9 +274,9 @@ cdm_FieldFileNameFormatElem::GenerateFileName(const string DirPath,
   } else {
     sprintf(name,FileNameFormat.c_str());
   }
-  
+
   fname += name;
-  delete [] name;  
+  delete [] name;
 
   return fname;
 
@@ -277,7 +285,7 @@ cdm_FieldFileNameFormatElem::GenerateFileName(const string DirPath,
 // #################################################################
 // ファイル有無判定
 bool
-cdm_FieldFileNameFormatElem::FileExist(const string DirPath, const int nStep, 
+cdm_FieldFileNameFormatElem::FileExist(const string DirPath, const int nStep,
                                        const int nId)
 {
 
@@ -287,7 +295,7 @@ cdm_FieldFileNameFormatElem::FileExist(const string DirPath, const int nStep,
   //ファイルオープン
   FILE *fp;
   if( !(fp = fopen(fname.c_str(),"rb"))  ) return false;
-  fclose(fp); 
+  fclose(fp);
   return true;
 
 }

@@ -2,19 +2,25 @@
 #define _CDM_DOMAIN_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_Domain.h
  * @brief  cdm_Domain Class Header
- * @author aics    
+ * @author aics
  */
-  
+
 /** proc.dfi ファイルの Domain */
 class cdm_Domain {
 
@@ -46,7 +52,7 @@ public:
   /** コンストラクタ **/
   cdm_Domain();
 
-  /** 
+  /**
   * @brief コンストラクタ (_GlobalOrigin,_GlobalPitchは、double型とfloat型の両方あり)
   * @details AVS,PLOT3D,VTK形式では、_GlobalOriginに計算領域全体の原点座標値を与える。
   *          SPH,BOV形式では、_GlobalOriginに各ランクの局所領域における原点座標値を与える。
@@ -54,14 +60,14 @@ public:
   * @param [in] _GlobalPitch    ボクセルの長さ
   * @param [in] _GlobalVoxel    ボクセル数
   * @param [in] _GlobalDivision 分割数
-  */ 
+  */
   cdm_Domain(const double* _GlobalOrigin,
-             const double* _GlobalPitch, 
-             const int* _GlobalVoxel, 
+             const double* _GlobalPitch,
+             const int* _GlobalVoxel,
              const int* _GlobalDivision);
-  cdm_Domain(const float* _GlobalOrigin, 
-             const float* _GlobalPitch, 
-             const int* _GlobalVoxel, 
+  cdm_Domain(const float* _GlobalOrigin,
+             const float* _GlobalPitch,
+             const int* _GlobalVoxel,
              const int* _GlobalDivision);
 
   /** デストラクタ **/
@@ -135,7 +141,7 @@ public:
 
   /**
    * @brief read Domain(proc.dfi)
-   * @param [in]   tpCntl  cdm_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス
    * @param [in]   dirName DFIのディレクトリパス
    * @return error code
    */
@@ -150,7 +156,7 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  virtual Write(FILE* fp, 
+  virtual Write(FILE* fp,
                 const unsigned tab) const;
 
 };

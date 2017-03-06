@@ -1,4 +1,18 @@
 /*
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
+*/
+
+/*
  *フィールドデータおよびdfiファイルを出力するサンプルコード。格子は等間隔。
  *フィールドデータ出力API関数：WriteFieldDataFile
  *index.dfiファイル出力API関数：WriteIndexDfiFile

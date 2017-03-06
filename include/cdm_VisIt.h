@@ -2,42 +2,48 @@
 #define _CDM_VISIT_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_VisIt.h
  * @brief  cdm_VisIt Class Header
- * @author aics    
+ * @author aics
  */
 
 class cdm_VisIt {
 
 public:
-  
+
   std::string PlotGC;           ///< ガイドセル描画オプション
 
   /** コンストラクタ **/
   cdm_VisIt();
 
-  
+
   /**
    * @brief コンストラクタ
    * @param [in] _PlotGC ガイドセル描画オプション
    */
   cdm_VisIt(const std::string _PlotGC);
-  
+
 
   /** デストラクタ **/
   ~cdm_VisIt();
 
   /**
    * @brief read VisItオプションの読み込み
-   * @param [in]   tpCntl  cdm_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
@@ -50,8 +56,8 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, 
-        const unsigned tab); 
+  Write(FILE* fp,
+        const unsigned tab);
 
 };
 

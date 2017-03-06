@@ -2,13 +2,17 @@
 #define _CONVMXN_H_
 
 /*
- * fconv (File Converter)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #include "conv.h"
@@ -44,12 +48,12 @@ public:
   /**
    * @brief 領域分割と出力DFIのインスタンス
    */
-  void VoxelInit(); 
+  void VoxelInit();
 
   /**
    * @brief MxNの実行
    * @return エラーコード
-   */ 
+   */
   bool exec();
 
 };

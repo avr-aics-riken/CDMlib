@@ -2,10 +2,17 @@
 #define _FUB_DATA_H_
 
 /*
- *
- *
- *
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 #include <stdio.h>
@@ -79,19 +86,19 @@ public:
 
   /** -X方向のノード検索 */
    bool checkNeighborMX(fub_DATA *data2, double tol);
- 
+
   /** +X方向のノード検索 */
    bool checkNeighborPX(fub_DATA *data2, double tol);
- 
+
   /** -Y方向のノード検索 */
    bool checkNeighborMY(fub_DATA *data2, double tol);
- 
+
   /** +Y方向のノード検索 */
    bool checkNeighborPY(fub_DATA *data2, double tol);
- 
+
   /** -Z方向のノード検索 */
    bool checkNeighborMZ(fub_DATA *data2, double tol);
- 
+
   /** +Z方向のノード検索 */
    bool checkNeighborPZ(fub_DATA *data2, double tol);
 

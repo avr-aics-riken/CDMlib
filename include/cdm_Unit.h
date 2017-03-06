@@ -2,17 +2,23 @@
 #define _CDM_UNIT_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_Unit.h
  * @brief  cdm_UnitElem & cdm_Unit Class Header
- * @author aics    
+ * @author aics
  */
 
 class cdm_UnitElem {
@@ -44,11 +50,11 @@ public:
 
   /**
    * @brief Unit要素の読込み
-   * @param [in]  tpCntl      cdm_TextParserクラス 
-   * @param [in]  label_leaf   
+   * @param [in]  tpCntl      cdm_TextParserクラス
+   * @param [in]  label_leaf
    * @return error code
    */
-   CDM::E_CDM_ERRORCODE 
+   CDM::E_CDM_ERRORCODE
    Read(cdm_TextParser tpCntl,
         const std::string label_leaf);
 
@@ -65,7 +71,7 @@ public:
 
 
 /** index.dfi ファイルの Unit */
-class cdm_Unit { 
+class cdm_Unit {
 
 public:
 
@@ -79,10 +85,10 @@ public:
 
   /**
    * @brief read Unit(inde.dfi)
-   * @param [in]   tpCntl  cdm_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス
    * @return error code
    */
-  CDM::E_CDM_ERRORCODE 
+  CDM::E_CDM_ERRORCODE
   Read(cdm_TextParser tpCntl);
 
   /**
@@ -90,8 +96,8 @@ public:
    * @param [in]  Name 取り出す単位の種類
    * @param [out] unit 取得したcdm_UnitElemクラス
    * @return error code
-   */ 
-  CDM::E_CDM_ERRORCODE 
+   */
+  CDM::E_CDM_ERRORCODE
   GetUnitElem(const std::string Name,
               cdm_UnitElem &unit);
 
@@ -128,7 +134,7 @@ public:
    * @param [in] difference 差の値
    * @param [in] BsetDiff   differenceの有無
    */
-  void 
+  void
   AddUnit(const std::string Name,
           const std::string Unit,
           const double reference,

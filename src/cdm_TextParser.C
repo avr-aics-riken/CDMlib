@@ -1,9 +1,15 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -22,9 +28,9 @@ bool cdm_TextParser::chkLabel(const std::string label, bool fullPath)
 {
   int ierror;
   std::string value;
-  
+
   if( !tp ) return false;
-  
+
   // ラベルがあるかチェック
   vector<std::string> labels;
   if( fullPath )
@@ -47,7 +53,7 @@ bool cdm_TextParser::chkLabel(const std::string label, bool fullPath)
       return false;
     }
   }
-  
+
   int flag=0;
   for (int i = 0; i < labels.size(); i++)
   {
@@ -57,12 +63,12 @@ bool cdm_TextParser::chkLabel(const std::string label, bool fullPath)
 		  break;
 	  }
   }
-  
+
   if (flag==0)
   {
 	  return false;
   }
-  
+
   return true;
 }
 
@@ -76,35 +82,35 @@ bool cdm_TextParser::chkNode(const std::string label)
   std::string node;
   vector<std::string> labels;
   int len=label.length();
-  
+
   if( !tp ) return false;
-  
+
   // Nodeがあるかチェック
   ierror = tp->getAllLabels(labels);
-  
+
   if (ierror != 0)
   {
     cout <<  "ERROR in TextParser::getAllLabels file: "
     << " ERROR CODE "<< ierror << endl;
     return false;
   }
-  
+
   int flag=0;
   for (int i = 0; i < labels.size(); i++) {
 	  node = labels[i].substr(0,len);
-    
+
     if ( !strcasecmp(node.c_str(), label.c_str()) )
     {
 		  flag=1;
 		  break;
 	  }
   }
-  
+
   if (flag==0)
   {
 	  return false;
   }
-  
+
   return true;
 }
 
@@ -121,25 +127,25 @@ int cdm_TextParser::countLabels(const std::string label)
   int flag=0;
   int inode=0;
   int next=0;
-  
+
   if( !tp ) return -1;
-  
+
   // Nodeがあるかチェック
   ierror=tp->getAllLabels(labels);
-  
+
   if (ierror != 0){
     cout <<  "ERROR in TextParser::getAllLabels file: "
     << " ERROR CODE "<< ierror << endl;
     return -1;
   }
-  
+
   for (int i = 0; i < labels.size(); i++) {
 	  node=labels[i].substr(0,len);
-    
+
 	  if( !strcasecmp(node.c_str(), label.c_str()) ){
 		  str=labels[i].substr(len+1);
 		  next=str.find("/");
-      
+
 		  if(next==0) inode++;
 		  else{
 			  if(chkstr!=str.substr(0,next)){
@@ -147,10 +153,10 @@ int cdm_TextParser::countLabels(const std::string label)
 				  inode++;
 			  }
 		  }
-      
+
 	  }
   }
-  
+
   return inode;
 }
 
@@ -170,36 +176,36 @@ void cdm_TextParser::getTPinstance()
 bool cdm_TextParser::GetNodeStr(const std::string label, const int nnode, std::string *ct)
 {
   if ( !tp ) return -1;
-  
+
   int ierror;
   int len=label.length();
   int flag=0;
   int inode=0;
   int next=0;
-  
+
   std::string node;
   std::string str;
   std::string chkstr="";
   vector<std::string> labels;
 
-  
+
   // Nodeがあるかチェック
   ierror = tp->getAllLabels(labels);
-  
+
   if (ierror != 0)
   {
     cout <<  "ERROR in TextParser::getAllLabels file: " << " ERROR CODE "<< ierror << endl;
     return false;
   }
-  
+
   for (int i = 0; i < labels.size(); i++) {
 	  node = labels[i].substr(0, len);
-    
+
 	  if ( !strcasecmp(node.c_str(), label.c_str()) )
     {
 		  str = labels[i].substr(len+1);
 		  next = str.find("/");
-      
+
 		  if ( next == 0 )
       {
 			  inode++;
@@ -212,7 +218,7 @@ bool cdm_TextParser::GetNodeStr(const std::string label, const int nnode, std::s
 				  inode++;
 			  }
 		  }
-      
+
 		  if ( inode == nnode )
       {
 			  *ct = chkstr;
@@ -353,7 +359,7 @@ bool cdm_TextParser::GetValue(const std::string label, int *ct, bool checkPath)
 {
   int ierror;
   std::string value;
-  
+
   if( !tp ) return false;
 
   // ラベルがあるかチェック
@@ -405,7 +411,7 @@ bool cdm_TextParser::GetValue(const std::string label, double *ct, bool checkPat
   std::string node;
 
   if( !tp ) return false;
-  
+
   // ラベルがあるかチェック
   if( !chkLabel(label,checkPath)){
     return false;
@@ -433,7 +439,6 @@ bool cdm_TextParser::GetValue(const std::string label, double *ct, bool checkPat
   }
 
   // string to real
-  //REAL_TYPE val = tp->convertFloat(value, &ierror);
   double val = tp->convertFloat(value, &ierror);
   if (ierror != TP_NO_ERROR){
 	  cout << " label: " << label << endl;
@@ -453,25 +458,25 @@ bool cdm_TextParser::GetValue(const std::string label, std::string *ct, bool che
 {
   int ierror;
   std::string value;
-  
+
   if ( !tp ) return false;
-  
+
   // ラベルがあるかチェック
   if ( !chkLabel(label,checkPath) )
   {
     return false;
   }
-  
+
   //値の取得
   ierror = tp->getValue(label, value); //labelは絶対パスを想定
-  
+
   if (ierror != TP_NO_ERROR)
   {
 	  cout << " label: " << label << endl;
 	  cout <<  "ERROR no label " << label << endl;
 	  return false;
   }
-  
+
   //型の取得
   TextParserValueType type = tp->getType(label, &ierror);
   if (ierror != TP_NO_ERROR)
@@ -480,16 +485,16 @@ bool cdm_TextParser::GetValue(const std::string label, std::string *ct, bool che
 	  cout <<  "ERROR in TextParser::getType file: " << ierror << endl;
 	  return false;
   }
-  
+
   if( type != TP_STRING_VALUE )
   {
 	  cout << " label: " << label << endl;
 	  cout <<  "ERROR in TextParser::Type error: " << ierror << endl;
 	  return false;
   }
-  
+
   *ct=value;
-  
+
   return true;
 }
 
@@ -501,7 +506,7 @@ int cdm_TextParser::readTPfile(const std::string filename)
 {
   int ierr = TP_NO_ERROR;
   if( !tp ) return TP_ERROR;
-  
+
   // read
   if( (ierr = tp->read_local(filename)) != TP_NO_ERROR )
   {

@@ -2,24 +2,30 @@
 #define _CDM_TIMESLICE_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_TimeSlice.h
  * @brief  cdm_Slice & cdm_TimeSliceClass Header
- * @author aics    
+ * @author aics
  */
 
 /** index.dfi ファイルの Slice */
 class cdm_Slice {
 
 public :
-  
+
   int    step;                          ///<ステップ番号
   double time;                          ///<時刻
   bool   avr_mode;                      ///<Average出力フラグ true:出力なし、false:出力
@@ -39,12 +45,12 @@ public :
   /**
   * @brief TimeSlice要素を読込む(inde.dfi)
   * @param [in]  tpCntl     cdm_TextParserクラス
-  * @param [in]  label_leaf ベースとなる名前（"/TimeSlice/Slice")   
+  * @param [in]  label_leaf ベースとなる名前（"/TimeSlice/Slice")
   * @param [in]  format ファイルフォーマット
   * @return error code
-  */  
+  */
   CDM::E_CDM_ERRORCODE
-  Read(cdm_TextParser tpCntl, 
+  Read(cdm_TextParser tpCntl,
        std::string label_leaf,
        CDM::E_CDM_FORMAT format);
 
@@ -56,7 +62,7 @@ public :
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, 
+  Write(FILE* fp,
         const unsigned tab,
         CDM::E_CDM_FORMAT format);
 
@@ -80,10 +86,10 @@ public:
   * @param [in]      tpCntl cdm_TextParserクラス
   * @param [in]      format ファイルフォーマット
   * @return error code
-  */  
+  */
   CDM::E_CDM_ERRORCODE
   Read(cdm_TextParser tpCntl,
-       CDM::E_CDM_FORMAT format); 
+       CDM::E_CDM_FORMAT format);
 
   /**
    * @brief DFIファイル:TimeSlice要素を出力する
@@ -93,16 +99,16 @@ public:
    * @return true:出力成功 false:出力失敗
    */
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, 
+  Write(FILE* fp,
         const unsigned tab,
         CDM::E_CDM_FORMAT format);
 
   /**
-   * @brief DFIに出力されているminmaxの合成値を取得 
+   * @brief DFIに出力されているminmaxの合成値を取得
    * @param [in]  step 取得するステップ
    * @param [out] vec_min 取得したminの合成値
    * @param [out] vec_max 取得したminの合成値
-   * @return error code 取得出来たときは E_CDM_SUCCESS 
+   * @return error code 取得出来たときは E_CDM_SUCCESS
    */
   CDM::E_CDM_ERRORCODE getVectorMinMax(const unsigned step,
                                        double &vec_min,
@@ -114,13 +120,13 @@ public:
    * @param [in]  variNo 取得する変数番号(0～n)
    * @param [out] min_value 取得したmin
    * @param [out] max_value 取得したmax
-   * @return error code 取得出来たときは E_CDM_SUCCESS 
+   * @return error code 取得出来たときは E_CDM_SUCCESS
    */
   CDM::E_CDM_ERRORCODE getMinMax(const unsigned step,
                                  const int variNo,
                                  double &min_value,
                                  double &max_value);
- 
+
 
   /**
    * @brief SliceListへの追加

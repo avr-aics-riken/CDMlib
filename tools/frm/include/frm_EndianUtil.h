@@ -1,11 +1,15 @@
 /*
- * frm (File Rank Mapper)
- *
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -140,7 +144,7 @@
   }
 #else // SUPER_UX
   #ifndef BSWAPVEC
-   
+
   #define BSWAPVEC(a,n) do{\
     for(register unsigned int _i=0;_i<(n);_i++){BSWAP32(a[_i]);}\
   }while(0)
@@ -217,4 +221,3 @@ STG_INLINE EMatchType isMatchEndian(const std::string& fname, int val) {
 }
 
 #endif // _FRM_ENDIAN_UTIL_H_
-

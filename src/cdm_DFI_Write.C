@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_DFI_Write.C
  * @brief  cdm_DFI Class
- * @author aics     
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -91,14 +97,14 @@ cdm_DFI::WriteIndexDfiFile(const std::string dfi_name)
   }
 
   //Unit {} の出力
-  if( DFI_Unit.Write(fp, 0) != CDM::E_CDM_SUCCESS ) 
+  if( DFI_Unit.Write(fp, 0) != CDM::E_CDM_SUCCESS )
   {
     fclose(fp);
     return CDM::E_CDM_ERROR_WRITE_UNIT;
   }
 
   //TimeSlice {} の出力
-  if ( DFI_TimeSlice.Write(fp, 1, DFI_Finfo.FileFormat) != CDM::E_CDM_SUCCESS ) 
+  if ( DFI_TimeSlice.Write(fp, 1, DFI_Finfo.FileFormat) != CDM::E_CDM_SUCCESS )
   {
     fclose(fp);
     return CDM::E_CDM_ERROR_WRITE_TIMESLICE;
@@ -346,7 +352,7 @@ cdm_DFI::WriteData(const unsigned step,
                , DFI_Finfo.ArrayShape
                , DFI_Process.RankList[m_RankID].VoxelSize
                , DFI_Finfo.GuideCell
-               , DFI_Finfo.NumVariables); 
+               , DFI_Finfo.NumVariables);
     //配列のコピー val -> outArray
     int ret = val->copyArray(outArray);
   }
@@ -469,7 +475,7 @@ cdm_DFI::WriteFieldDataFile(const unsigned step,
                , DFI_Finfo.ArrayShape
                , DFI_Process.RankList[m_RankID].VoxelSize
                , DFI_Finfo.GuideCell
-               , DFI_Finfo.NumVariables); 
+               , DFI_Finfo.NumVariables);
     //配列のコピー val -> outArray
     int ret = val->copyArray(outArray);
   }
@@ -610,7 +616,7 @@ cdm_DFI::WriteFieldData(std::string fname,
 
     }
 
-  } 
+  }
 
   //データ出力
   //if( write_DataRecord(fp, val, DFI_Finfo.GuideCell, m_RankID) != CDM::E_CDM_SUCCESS) {
@@ -635,4 +641,3 @@ cdm_DFI::WriteFieldData(std::string fname,
   return CDM::E_CDM_SUCCESS;
 
 }
-

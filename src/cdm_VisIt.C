@@ -1,15 +1,21 @@
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_VisIt.C
  * @brief  cdm_VisIt Class
- * @author aics    
+ * @author aics
  */
 
 #include "cdm_DFI.h"
@@ -73,7 +79,7 @@ cdm_VisIt::Write(FILE* fp,
 
   _CDM_WRITE_TAB(fp, tab);
   fprintf(fp, "PlotGuideCell = \"%s\"\n", PlotGC.c_str());
-  
+
   _CDM_WRITE_TAB(fp, tab);
   fprintf(fp, "ResultFormat  =  \"FBinary\"\n");
 
@@ -84,4 +90,3 @@ cdm_VisIt::Write(FILE* fp,
   return CDM::E_CDM_SUCCESS;
 
 }
-

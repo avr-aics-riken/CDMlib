@@ -1,9 +1,15 @@
 /*
- *  CDMlib - Cartesian Data Management library
- *
- *  Copyright (c) 2013-2016 Advanced Institute for Computational Science, RIKEN.
- *  All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
 /**
@@ -350,7 +356,7 @@ cdm_DFI_FUB::getCoordinateFileName(std::string FieldFileName)
   //FileListがないとき拡張子をxyzに変更して座標値ファイル名にする
   std::string fub_ext = D_CDM_EXT_FUB;
   std::string::size_type pos = FieldFileName.find("."+fub_ext);
-  
+
   std::string fname,xyz_fub;
   xyz_fub = D_CDM_EXT_XYZ;
   fname = FieldFileName;
@@ -385,13 +391,13 @@ cdm_DFI_FUB::ReadCoordinateData(cdm_Array *dst,
 
   DFI_Finfo.FileFormat = CDM::E_CDM_FMT_FUB_COD;
   DFI_Finfo.NumVariables = 3;
- 
+
   CDM::E_CDM_ERRORCODE ret;
   ret = ReadData(dst, step, gc, Gvoxel, Gdivision, head, tail, time,
                  avr_mode, avr_step, avr_time);
 
   DFI_Finfo.FileFormat = xfmt;
-  DFI_Finfo.NumVariables = xnum; 
+  DFI_Finfo.NumVariables = xnum;
 
   return ret;
 }
@@ -463,7 +469,7 @@ cdm_DFI_FUB::WriteFileList(FILE* fp,
     _CDM_WRITE_TAB(fp, tab);
     fprintf(fp, "Rank[@] {\n");
     fprintf(fp, "\n");
-    
+
     _CDM_WRITE_TAB(fp, tab+1);
     fprintf(fp, "ID        = %d\n", fubFlist[i].id);
 

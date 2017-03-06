@@ -2,17 +2,23 @@
 #define _CDM_FILEINFO_H_
 
 /*
- * CDMlib - Cartesian Data Management library
- *
- * Copyright (c) 2013-2015 Advanced Institute for Computational Science, RIKEN.
- * All rights reserved.
- *
+###################################################################################
+#
+# CDMlib - Cartesian Data Management library
+#
+# Copyright (c) 2013-2017 Advanced Institute for Computational Science (AICS), RIKEN.
+# All rights reserved.
+#
+# Copyright (c) 2016-2017 Research Institute for Information Technology (RIIT), Kyushu University.
+# All rights reserved.
+#
+###################################################################################
  */
 
-/** 
+/**
  * @file   cdm_FileInfo.h
  * @brief  cdm_FileInfo Class Header
- * @author aics    
+ * @author aics
  */
 
 
@@ -25,7 +31,7 @@ public:
   CDM::E_CDM_DFITYPE    DFIType;          ///<dfi種別
   CDM::E_CDM_OUTPUT_FNAME FieldFilenameFormat; ///<ファイル命名基準
   //FCONV 20140116.e
- 
+
   std::string           DirectoryPath;    ///<フィールデータの存在するディレクトリパス
                                           ///< index.dfiからの相対パスまたは絶対パス
   CDM::E_CDM_ONOFF      TimeSliceDirFlag; ///<TimeSlice on or off
@@ -43,8 +49,8 @@ public:
   /** コンストラクタ **/
   cdm_FileInfo();
 
-  /** 
-   * @brief コンストラクタ 
+  /**
+   * @brief コンストラクタ
    * @param [in] _DFIType          dfi種別
    * @param [in] _FieldFilenameFormat ファイル命名基準
    * @param [in] _DirectoryPath    ディレクトリパス
@@ -59,14 +65,14 @@ public:
    */
   cdm_FileInfo(const CDM::E_CDM_DFITYPE _DFIType,
                const CDM::E_CDM_OUTPUT_FNAME _FieldFilenameFormat,
-               const std::string _DirectoryPath, 
-               const CDM::E_CDM_ONOFF _TimeSliceDirFlag, 
-               const std::string _Prefix, 
+               const std::string _DirectoryPath,
+               const CDM::E_CDM_ONOFF _TimeSliceDirFlag,
+               const std::string _Prefix,
                const CDM::E_CDM_FORMAT _FileFormat,
-               const int _GuideCell, 
-               const CDM::E_CDM_DTYPE _DataType, 
-               const CDM::E_CDM_ENDIANTYPE _Endian, 
-               const CDM::E_CDM_ARRAYSHAPE _ArrayShape, 
+               const int _GuideCell,
+               const CDM::E_CDM_DTYPE _DataType,
+               const CDM::E_CDM_ENDIANTYPE _Endian,
+               const CDM::E_CDM_ARRAYSHAPE _ArrayShape,
                const int _NumVariables,
                const std::string _RankNoPrefix=std::string(CDM::C_CDM_RANKNOPREFIX));
 
@@ -77,11 +83,11 @@ public:
 
   /**
    * @brief read FileInfo(inde.dfi)
-   * @param [in]   tpCntl  cdm_TextParserクラス 
+   * @param [in]   tpCntl  cdm_TextParserクラス
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  Read(cdm_TextParser tpCntl); 
+  Read(cdm_TextParser tpCntl);
 
   /**
    * @brief DFIファイル:FileInfo要素を出力する
@@ -90,22 +96,22 @@ public:
    * @return error code
    */
   CDM::E_CDM_ERRORCODE
-  Write(FILE* fp, 
-        const unsigned tab); 
+  Write(FILE* fp,
+        const unsigned tab);
 
   /**
    * @brief 変数名をセットする
    * @param [in] pvari    変数位置 0:u, 1:v, 2:w
    * @param [in] variName 変数名 "u","v","w",,,
    */
-  void setVariableName(int pvari, std::string variName); 
+  void setVariableName(int pvari, std::string variName);
 
   /**
    * @brief 変数名を取得する
    * @param [in] pvari    変数位置 0:u, 1:v, 2:w
    * @return 変数名　変数名が無い場合は空白が返される
    */
-  std::string getVariableName(int pvari); 
+  std::string getVariableName(int pvari);
 
 };
 
