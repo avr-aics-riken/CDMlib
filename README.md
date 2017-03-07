@@ -113,7 +113,7 @@ $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib -Dwith_MPI=yes -Dwith_util=yes -Dwith_e
 ~~~
 
 
-### FUJITSU compiler / FX10 on login nodes (Cross compilation)
+### FUJITSU compiler / FX10, FX100, K on login nodes (Cross compilation)
 
 ~~~
 $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
@@ -125,12 +125,17 @@ $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
             -Dwith_CPM=${CDM_HOME}/CPMlib \
             -Dwith_NetCDF=no \
             -Denable_BUFFER_SIZE=no ..
-~~~
 
+$ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
+            -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_fx100.cmake \
+            -Dwith_MPI=yes \
+            -Dwith_example=no \
+            -Dwith_util=yes \
+            -Dwith_TP=${CDM_HOME}/TextParser \
+            -Dwith_CPM=${CDM_HOME}/CPMlib \
+            -Dwith_NetCDF=no \
+            -Denable_BUFFER_SIZE=no ..
 
-### FUJITSU compiler / K computer on login nodes (Cross compilation)
-
-~~~
 $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
             -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_K.cmake \
             -Dwith_MPI=yes \
@@ -144,6 +149,7 @@ $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
 
 
 ##### Note
+- On Fujitsu machines(fx10, K, fx100), confirm appropriate directrory path for compiler environment.
 - Before building, execute following command for clean. `$ make distclean`
 
 

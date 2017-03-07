@@ -2,19 +2,24 @@
 
 
 ## REVISION HISTORY
+---
+- 2017-03-07  Version 1.0.6
+  - add fx100 entry
+  - Tested
+
+|Compiler|Serial|Tools|Ex.|MPI |Tools|Ex.|
+|:--|:--:|:--:|:--:|:--:|:--:|:--:|
+|Intel 17.0.1 ||||ok|ok|0%|
+|GNU 6.2.0    |||||||
+|fx10         ||||ok|||
+|K            ||||ok|||
+|fx100        ||||ok|||
 
 ---
 - 2017-2-23 Version 1.0.5
   - update build on K, with cmake 2.6.x
-  - Tested
 
-  |Compiler|Serial|Tools|Ex.|MPI |Tools|Ex.|
-  |:--|:--:|:--:|:--:|:--:|:--:|:--:|
-  |Intel 17.0.1 ||||ok|ok|0%|
-  |GNU 6.2.0    |||||||
-  |fx10         ||||ok|||
-  |K            ||||ok|||
-  
+
 ---
 - 2017-2-16 Version 1.0.4
   - enable CDM_VERSION
