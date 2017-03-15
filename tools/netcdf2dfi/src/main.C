@@ -14,6 +14,12 @@
  * @author aics
  */
 
+#ifdef _CDM_WITHOUT_MPI_
+ #include "mpi_stubs.h"
+#else
+ #include "mpi.h"
+#endif
+
 #include "netcdf2dfi.h"
 
 /** @brief netcdf2dfiメイン関数
