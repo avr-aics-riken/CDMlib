@@ -22,6 +22,7 @@
  * @date   2013/11/7
  */
 
+#include "mpi.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

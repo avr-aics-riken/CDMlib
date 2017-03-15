@@ -15,7 +15,7 @@ include_directories(
        ${PROJECT_BINARY_DIR}/include
        ${PROJECT_SOURCE_DIR}/include
        ${PROJECT_SOURCE_DIR}/include/inline
-       ${PROJECT_SOURCE_DIR}/tools/ntcdf2dfi/include
+       ${PROJECT_SOURCE_DIR}/tools/netcdf2dfi/include
        ${TP_INC}
        ${NetCDF_INC}
 )
