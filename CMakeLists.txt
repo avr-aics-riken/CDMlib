@@ -27,6 +27,8 @@
 #
 # -D with_NetCDF=installed_directory
 #
+# -D with_HDF=installed_directory
+#
 # -D with_util={yes|no}
 #
 # -D with_example={no|yes}
@@ -45,6 +47,7 @@ option (with_util "Enable utility" "ON")
 option (with_MPI "Enable MPI" "ON")
 option (with_example "Compiling examples" "OFF")
 option (with_NetCDF "Enable NetCDF" "OFF")
+option (with_HDF "Enable NetCDF(HDF)" "OFF")
 option (with_CPM "Enable CPMlib" "OFF")
 option (with_TP "Enable TextParser" "OFF")
 option (enable_BUFFER_SIZE "Enable Buffer Size option" "OFF")
@@ -128,6 +131,7 @@ message( STATUS "MPI support       : "      ${with_MPI})
 message( STATUS "TextParser support: "      ${with_TP})
 message( STATUS "CPMlib support    : "      ${with_CPM})
 message( STATUS "NetCDF support    : "      ${with_NetCDF})
+message( STATUS "HDF support       : "      ${with_HDF})
 message( STATUS "Example           : "      ${with_example})
 message( STATUS "BUFFER_SIZE       : "      ${enable_BUFFER_SIZE})
 message(" ")
@@ -187,13 +191,23 @@ ELSE()
   SET(CPM_LIB "${CPM_DIR}/lib")
 ENDIF()
 
-
 # NetCDF
 IF(with_NetCDF STREQUAL "no")
 else()
-  SET(NetCDF_DIR "${with_NetCDF}")
-  SET(NetCDF_INC "${NetCDF_DIR}/include")
-  SET(NetCDF_LIB "${NetCDF_DIR}/lib")
+  IF(with_HDF)
+    SET(HDF_DIR "${with_HDF}")
+    SET(HDF_INC "${HDF_DIR}/include")
+    SET(HDF_LIB "${HDF_DIR}/lib")
+    SET(NetCDF_DIR "${with_NetCDF}")
+    SET(NetCDF_INC "${NetCDF_DIR}/include")
+    SET(NetCDF_LIB "${NetCDF_DIR}/lib")
+    SET(LIB_NETCDF "-lnetcdf -lhdf5_hl -lhdf5 -lz")
+  ELSE() 
+    SET(NetCDF_DIR "${with_NetCDF}")
+    SET(NetCDF_INC "${NetCDF_DIR}/include")
+    SET(NetCDF_LIB "${NetCDF_DIR}/lib")
+    SET(LIB_NETCDF "-lnetcdf")
+  ENDIF()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_WITH_NETCDF4_")
 ENDIF()
 

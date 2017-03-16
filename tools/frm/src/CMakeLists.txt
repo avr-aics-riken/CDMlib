@@ -18,6 +18,7 @@ include_directories(
        ${PROJECT_SOURCE_DIR}/tools/frm/include
        ${TP_INC}
        ${NetCDF_INC}
+       ${HDF_INC}
 )
 
 
@@ -25,6 +26,7 @@ link_directories(
       ${PROJECT_BINARY_DIR}/src
       ${TP_LIB}
       ${NetCDF_LIB}
+      ${HDF_LIB}
 )
 
 
@@ -36,5 +38,5 @@ set(frm_files
 
 
 add_executable(frm ${frm_files})
-target_link_libraries(frm -lCDMmpi -lTPmpi)
+target_link_libraries(frm -lCDMmpi -lTPmpi ${LIB_NETCDF})
 install(TARGETS frm DESTINATION bin)

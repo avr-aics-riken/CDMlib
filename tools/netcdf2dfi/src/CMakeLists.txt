@@ -18,6 +18,7 @@ include_directories(
        ${PROJECT_SOURCE_DIR}/tools/netcdf2dfi/include
        ${TP_INC}
        ${NetCDF_INC}
+       ${HDF_INC}
 )
 
 
@@ -25,6 +26,7 @@ link_directories(
       ${PROJECT_BINARY_DIR}/src
       ${TP_LIB}
       ${NetCDF_LIB}
+      ${HDF_LIB}
 )
 
 
@@ -35,5 +37,5 @@ set(netcdf2dfi_files
 
 
 add_executable(netcdf2dfi ${netcdf2dfi_files})
-target_link_libraries(netcdf2dfi -lCDMmpi -lTPmpi)
+target_link_libraries(netcdf2dfi -lCDMmpi -lTPmpi ${LIB_NETCDF})
 install(TARGETS netcdf2dfi DESTINATION bin)
