@@ -20,6 +20,7 @@ include_directories(
        ${TP_INC}
        ${CPM_INC}
        ${NetCDF_INC}
+       ${HDF_INC}
 )
 
 
@@ -28,6 +29,7 @@ link_directories(
       ${TP_LIB}
       ${CPM_LIB}
       ${NetCDF_LIB}
+      ${HDF_LIB}
 )
 
 
@@ -50,5 +52,5 @@ set(fconv_files
 
 
 add_executable(fconv ${fconv_files})
-target_link_libraries(fconv -lCDMmpi -lCPMmpi -lTPmpi)
+target_link_libraries(fconv -lCDMmpi -lCPMmpi -lTPmpi ${LIB_NETCDF})
 install(TARGETS fconv DESTINATION bin)

@@ -17,12 +17,14 @@ include_directories(
       ${PROJECT_SOURCE_DIR}/include/inline
       ${TP_INC}
       ${NetCDF_INC}
+      ${HDF_INC}
 )
 
 link_directories(
       ${PROJECT_BINARY_DIR}/src
       ${TP_LIB}
       ${NetCDF_LIB}
+      ${HDF_LIB}
 )
 
 
@@ -32,7 +34,7 @@ link_directories(
 add_executable(output_uc ./sample_output_Uni.C)
 
 if(with_MPI)
-  target_link_libraries(output_uc -lCDMmpi -lTPmpi)
+  target_link_libraries(output_uc -lCDMmpi -lTPmpi ${LIB_NETCDF})
   set (test_parameters -np 4
                       "output_uc"
                       "${PROJECT_SOURCE_DIR}/Examples/cxx/data/input1.txt"
@@ -41,7 +43,7 @@ if(with_MPI)
   add_test(NAME TEST_1 COMMAND "mpirun" ${test_parameters}
   )
 else()
-  target_link_libraries(output_uc -lCDM -lCPM -lTP)
+  target_link_libraries(output_uc -lCDM -lCPM -lTP ${LIB_NETCDF})
 endif()
 
 
@@ -51,7 +53,7 @@ endif()
 add_executable(output_nuc ./sample_output_NonUni.C)
 
 if(with_MPI)
-  target_link_libraries(output_nuc -lCDMmpi -lTPmpi)
+  target_link_libraries(output_nuc -lCDMmpi -lTPmpi ${LIB_NETCDF})
   set (test_parameters -np 4
                       "output_nuc"
                       "${PROJECT_SOURCE_DIR}/Examples/cxx_FDM/data/input1.txt"
@@ -60,7 +62,7 @@ if(with_MPI)
   add_test(NAME TEST_2 COMMAND "mpirun" ${test_parameters}
   )
 else()
-  target_link_libraries(output_nuc -lCDM -lCPM -lTP)
+  target_link_libraries(output_nuc -lCDM -lCPM -lTP ${LIB_NETCDF})
 endif()
 
 
@@ -70,9 +72,9 @@ endif()
 add_executable(input ./sample_input.C)
 
 if(with_MPI)
-  target_link_libraries(input -lCDMmpi -lTPmpi)
+  target_link_libraries(input -lCDMmpi -lTPmpi ${LIB_NETCDF})
 else()
-  target_link_libraries(input -lCDM -lCPM -lTP)
+  target_link_libraries(input -lCDM -lCPM -lTP ${LIB_NETCDF})
 endif()
 
 if(with_MPI)

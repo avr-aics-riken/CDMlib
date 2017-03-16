@@ -17,12 +17,14 @@ include_directories(
        ${PROJECT_SOURCE_DIR}/include/inline
        ${TP_INC}
        ${NetCDF_INC}
+       ${HDF_INC}
 )
 
 
 link_directories(
       ${TP_LIB}
       ${NetCDF_LIB}
+      ${HDF_LIB}
 )
 
 
@@ -55,11 +57,11 @@ set(cdm_files
 
 if(with_MPI)
   add_library(CDMmpi STATIC ${cdm_files})
-  target_link_libraries(CDMmpi -lCPMmpi -lTPmpi)
+  target_link_libraries(CDMmpi -lTPmpi ${LIB_NETCDF})
   install(TARGETS CDMmpi DESTINATION lib)
 else()
   add_library(CDM STATIC ${cdm_files})
-  target_link_libraries(CDM -lCPM -lTP)
+  target_link_libraries(CDM -lTP ${LIB_NETCDF})
   install(TARGETS CDM DESTINATION lib)
 endif()
 
@@ -104,3 +106,4 @@ install(FILES
         ${PROJECT_SOURCE_DIR}/include/inline/cdm_Plot3d_inline.h
         DESTINATION include/inline
 )
+
