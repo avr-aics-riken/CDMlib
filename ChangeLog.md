@@ -2,6 +2,14 @@
 
 
 ## REVISION HISTORY
+
+---
+- 2017-03-25  Version 1.0.7
+  - HDF support
+  - fix include order of mpi.h for intel mpi
+  - preserve CMakeCache.txt at ${INSTALL_DIR}/share
+
+
 ---
 - 2017-03-07  Version 1.0.6
   - add fx100 entry

@@ -71,8 +71,8 @@ set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}")
 
 
 #######
-set(PROJECT_VERSION "1.0.6")
-set(LIB_REVISION "20170307_1000")
+set(PROJECT_VERSION "1.0.7")
+set(LIB_REVISION "20170325_1400")
 #######
 
 
@@ -202,7 +202,7 @@ else()
     SET(NetCDF_INC "${NetCDF_DIR}/include")
     SET(NetCDF_LIB "${NetCDF_DIR}/lib")
     SET(LIB_NETCDF "-lnetcdf -lhdf5_hl -lhdf5 -lz")
-  ELSE() 
+  ELSE()
     SET(NetCDF_DIR "${with_NetCDF}")
     SET(NetCDF_INC "${NetCDF_DIR}/include")
     SET(NetCDF_LIB "${NetCDF_DIR}/lib")
@@ -303,6 +303,7 @@ configure_file( include/cdm_Version.h.in ${PROJECT_BINARY_DIR}/include/cdm_Versi
 install(FILES  ChangeLog.md
                README.md
                LICENSE.txt
+               ${PROJECT_BINARY_DIR}/CMakeCache.txt
         DESTINATION share)
 
 

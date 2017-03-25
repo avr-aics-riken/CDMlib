@@ -23,6 +23,7 @@ CDMlib provides following functions for reading and writing files of the Cartesi
 - TextParser
 - CPMlib(option)
 - NetCDF4 library(option)
+- HDF library(option)
 
 
 ## INGREDIENTS
@@ -89,6 +90,9 @@ $ sudo make install
 
 > Specify the directory path that netCDF library is installed when you use netCDF4 file format. See the section of NetCDF support.
 
+`-D with_HDF=installed_directory`
+> Specify the directory path that HDF library is installed when you use HDF file format. See the section of HDF5 support.
+
 `-D with_example=` {no | yes}
 
 >  This option turns on compiling sample codes. The default is no.
@@ -109,7 +113,7 @@ In following exsmples, assuming that TextParser, CPMlib, and NetCDF library are 
 ### INTEL/GNU compiler
 
 ~~~
-$ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib -Dwith_MPI=yes -Dwith_util=yes -Dwith_example=yes -Dwith_TP=${CDM_HOME}/TextParser -Dwith_CPM=${CDM_HOME}/CPMlib -Dwith_NetCDF=no -Denable_BUFFER_SIZE=no ..
+$ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib -Dwith_MPI=yes -Dwith_util=yes -Dwith_example=yes -Dwith_TP=${CDM_HOME}/TextParser -Dwith_CPM=${CDM_HOME}/CPMlib -Dwith_HDF=no -Dwith_NetCDF=no -Denable_BUFFER_SIZE=no ..
 ~~~
 
 
@@ -123,6 +127,7 @@ $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
             -Dwith_util=yes \
             -Dwith_TP=${CDM_HOME}/TextParser \
             -Dwith_CPM=${CDM_HOME}/CPMlib \
+            -Dwith_HDF=no \
             -Dwith_NetCDF=no \
             -Denable_BUFFER_SIZE=no ..
 
@@ -133,6 +138,7 @@ $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
             -Dwith_util=yes \
             -Dwith_TP=${CDM_HOME}/TextParser \
             -Dwith_CPM=${CDM_HOME}/CPMlib \
+            -Dwith_HDF=no \
             -Dwith_NetCDF=no \
             -Denable_BUFFER_SIZE=no ..
 
@@ -143,6 +149,7 @@ $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
             -Dwith_util=yes \
             -Dwith_TP=${CDM_HOME}/TextParser \
             -Dwith_CPM=${CDM_HOME}/CPMlib \
+            -Dwith_HDF=no \
             -Dwith_NetCDF=no \
             -Denable_BUFFER_SIZE=no ..
 ~~~
