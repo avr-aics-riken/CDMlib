@@ -263,7 +263,7 @@ cdm_Process::cdm_Process()
 // デストラクタ
 cdm_Process::~cdm_Process()
 {
-  if( m_rankMap ) delete m_rankMap;
+  if( m_rankMap ) delete[] m_rankMap;
 }
 
 // #################################################################
