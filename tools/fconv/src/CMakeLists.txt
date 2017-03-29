@@ -51,6 +51,12 @@ set(fconv_files
 )
 
 
-add_executable(fconv ${fconv_files})
-target_link_libraries(fconv -lCDMmpi -lCPMmpi -lTPmpi ${LIB_NETCDF})
-install(TARGETS fconv DESTINATION bin)
+if(with_MPI)
+  add_executable(fconv ${fconv_files})
+  target_link_libraries(fconv -lCDMmpi -lCPMmpi -lTPmpi ${LIB_NETCDF})
+  install(TARGETS fconv DESTINATION bin)
+else()
+  add_executable(fconv ${fconv_files})
+  target_link_libraries(fconv -lCDM -lCPM -lTP ${LIB_NETCDF})
+  install(TARGETS fconv DESTINATION bin)
+endif()

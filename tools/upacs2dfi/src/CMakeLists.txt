@@ -33,6 +33,12 @@ set(upacs2dfi_files
 )
 
 
-add_executable(upacs2dfi ${upacs2dfi_files})
-target_link_libraries(upacs2dfi -lCDMmpi -lTPmpi)
-install(TARGETS upacs2dfi DESTINATION bin)
+if(with_MPI)
+  add_executable(upacs2dfi ${upacs2dfi_files})
+  target_link_libraries(upacs2dfi -lCDMmpi -lTPmpi)
+  install(TARGETS upacs2dfi DESTINATION bin)
+else()
+  add_executable(upacs2dfi ${upacs2dfi_files})
+  target_link_libraries(upacs2dfi -lCDM -lTP)
+  install(TARGETS upacs2dfi DESTINATION bin)
+endif()

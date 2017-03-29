@@ -37,6 +37,12 @@ set(frm_files
 )
 
 
-add_executable(frm ${frm_files})
-target_link_libraries(frm -lCDMmpi -lTPmpi ${LIB_NETCDF})
-install(TARGETS frm DESTINATION bin)
+if(with_MPI)
+  add_executable(frm ${frm_files})
+  target_link_libraries(frm -lCDMmpi -lTPmpi ${LIB_NETCDF})
+  install(TARGETS frm DESTINATION bin)
+else()
+  add_executable(frm ${frm_files})
+  target_link_libraries(frm -lCDM -lTP ${LIB_NETCDF})
+  install(TARGETS frm DESTINATION bin)
+endif()

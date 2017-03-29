@@ -15,7 +15,7 @@
 
 # Following parameters must be given at cmake command line
 
-# Build options, see README.md for details.
+# Build options, see Readme.md for details.
 #
 # -D INSTALL_DIR=install_directory
 #
@@ -71,8 +71,8 @@ set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}")
 
 
 #######
-set(PROJECT_VERSION "1.0.7")
-set(LIB_REVISION "20170325_1400")
+set(PROJECT_VERSION "1.0.8")
+set(LIB_REVISION "20170329_2400")
 #######
 
 
@@ -301,8 +301,8 @@ configure_file( include/cdm_Version.h.in ${PROJECT_BINARY_DIR}/include/cdm_Versi
 #######
 
 install(FILES  ChangeLog.md
-               README.md
-               LICENSE.txt
+               Readme.md
+               License.txt
                ${PROJECT_BINARY_DIR}/CMakeCache.txt
         DESTINATION share)
 

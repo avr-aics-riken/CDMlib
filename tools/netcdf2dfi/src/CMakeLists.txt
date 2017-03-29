@@ -36,6 +36,12 @@ set(netcdf2dfi_files
 )
 
 
-add_executable(netcdf2dfi ${netcdf2dfi_files})
-target_link_libraries(netcdf2dfi -lCDMmpi -lTPmpi ${LIB_NETCDF})
-install(TARGETS netcdf2dfi DESTINATION bin)
+if(with_MPI)
+  add_executable(netcdf2dfi ${netcdf2dfi_files})
+  target_link_libraries(netcdf2dfi -lCDMmpi -lTPmpi ${LIB_NETCDF})
+  install(TARGETS netcdf2dfi DESTINATION bin)
+else()
+  add_executable(netcdf2dfi ${netcdf2dfi_files})
+  target_link_libraries(netcdf2dfi -lCDM -lTP ${LIB_NETCDF})
+  install(TARGETS netcdf2dfi DESTINATION bin)
+endif()

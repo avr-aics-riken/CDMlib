@@ -29,8 +29,8 @@ CDMlib provides following functions for reading and writing files of the Cartesi
 ## INGREDIENTS
 ~~~
 ChangeLog         History of development
-LICENSE.txt       License to apply
-README.md         This document, including the description of build
+License.txt       License to apply
+Readme.md         This document, including the description of build
 cmake/            Modules of cmake
 doc/              Document
 example/          Example source codes

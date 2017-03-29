@@ -4,6 +4,11 @@
 ## REVISION HISTORY
 
 ---
+- 2017-03-29  Version 1.0.8
+  - change CMakeLists.txt in tools/
+
+
+---
 - 2017-03-25  Version 1.0.7
   - HDF support
   - fix include order of mpi.h for intel mpi
