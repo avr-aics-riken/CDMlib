@@ -18,7 +18,7 @@
  * @author aics
  */
 
-#ifdef _CDM_WITHOUT_MPI_
+#ifdef DISABLE_MPI
  #include "mpi_stubs.h"
 #else
  #include "mpi.h"

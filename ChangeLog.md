@@ -4,6 +4,11 @@
 ## REVISION HISTORY
 
 ---
+- 2017-03-30 Version 1.0.9
+  - change _CDM_WITHOUT_MPI_ to DISABLE_MPI due to maintain the consistency with other libraries
+  - add namespace CDM to mpi_stubs.h to avoid conflict with other libs
+
+---
 - 2017-03-29  Version 1.0.8
   - change CMakeLists.txt in tools/
 
