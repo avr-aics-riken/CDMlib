@@ -430,7 +430,7 @@ cdm_TypeArray<T>::copyArray( int _sta[3], int _end[3], cdm_Array *dstptr )
   CDM::E_CDM_ARRAYSHAPE shape = src->getArrayShape();
 
   // 変数の個数
-  if( src->getNvari() != src->getNvari() )
+  if( src->getNvari() != dst->getNvari() )
   {
     return 4;
   }

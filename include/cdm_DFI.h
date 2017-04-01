@@ -53,6 +53,8 @@
 
 #include "cdm_FILE.h"
 
+using namespace CDM;
+
 /** CDM main class */
 class cdm_DFI {
 

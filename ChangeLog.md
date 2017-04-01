@@ -4,6 +4,12 @@
 ## REVISION HISTORY
 
 ---
+- 2017-04-01 Version 1.1.0
+  - cdm_Array_inline.h at L. 433 : if( src->getNvari() != src->getNvari() )
+  - add using namespace CDM into cdm_DFI.h
+  - add Serial flag -DDISABLE_MPI in CMakeLists.txt
+
+---
 - 2017-03-30 Version 1.0.9
   - change _CDM_WITHOUT_MPI_ to DISABLE_MPI due to maintain the consistency with other libraries
   - add namespace CDM to mpi_stubs.h to avoid conflict with other libs
