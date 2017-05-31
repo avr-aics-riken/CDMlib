@@ -71,8 +71,8 @@ set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}")
 
 
 #######
-set(PROJECT_VERSION "1.1.0")
-set(LIB_REVISION "20170401_1600")
+set(PROJECT_VERSION "1.1.1")
+set(LIB_REVISION "20170601_0830")
 #######
 
 
@@ -142,7 +142,7 @@ message( STATUS "Example           : "      ${with_example})
 message( STATUS "BUFFER_SIZE       : "      ${enable_BUFFER_SIZE})
 message(" ")
 
-if(CMAKE_CXX_COMPILER MATCHES ".*FCCpx$")
+if(USE_F_TCS STREQUAL "YES")
 else()
   if(with_MPI)
     include(FindMPI)

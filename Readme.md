@@ -117,7 +117,7 @@ $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib -Dwith_MPI=yes -Dwith_util=yes -Dwith_e
 ~~~
 
 
-### FUJITSU compiler / FX10, FX100, K on login nodes (Cross compilation)
+### FUJITSU compiler / FX10, FX100, K on login nodes (Cross compilation) and Fujitsu TCS environment for intel PC
 
 ~~~
 $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
@@ -144,6 +144,17 @@ $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
 
 $ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
             -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_K.cmake \
+            -Dwith_MPI=yes \
+            -Dwith_example=no \
+            -Dwith_util=yes \
+            -Dwith_TP=${CDM_HOME}/TextParser \
+            -Dwith_CPM=${CDM_HOME}/CPMlib \
+            -Dwith_HDF=no \
+            -Dwith_NetCDF=no \
+            -Denable_BUFFER_SIZE=no ..
+
+$ cmake -DINSTALL_DIR=${CDM_HOME}/CDMlib \
+            -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain_intel_F_TCS.cmake \
             -Dwith_MPI=yes \
             -Dwith_example=no \
             -Dwith_util=yes \

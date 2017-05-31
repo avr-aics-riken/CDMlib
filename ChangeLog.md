@@ -4,6 +4,11 @@
 ## REVISION HISTORY
 
 ---
+- 2017-06-01 Version 1.1.1
+  - Add INTEL_F_TCS environment to cmake
+
+
+---
 - 2017-04-01 Version 1.1.0
   - cdm_Array_inline.h at L. 433 : if( src->getNvari() != src->getNvari() )
   - add using namespace CDM into cdm_DFI.h
