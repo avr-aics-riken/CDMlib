@@ -4,6 +4,12 @@
 ## REVISION HISTORY
 
 ---
+- 2017-07-05 Version 1.1.3
+  - bug fix CMAKE_FORCE_Fortran_COMPILER in Toolchain_K.cmake
+  - set(CMAKE_FIND_ROOT_PATH /opt/FJSVtclang/1.2.0) in Toolchain_K.cmake
+
+
+---
 - 2017-06-02 Version 1.1.2
   - change order .*frtpx$ > INTEL_F_TCS > GNU > Intel > PGI in FreeForm MACRO
 
