@@ -4,6 +4,13 @@
 ## REVISION HISTORY
 
 ---
+- 2018-09-26 Version 1.1.4
+  - checkOMPを陽に書く
+  - CMP0012
+  - CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS TRUE
+
+
+---
 - 2017-07-05 Version 1.1.3
   - bug fix CMAKE_FORCE_Fortran_COMPILER in Toolchain_K.cmake
   - set(CMAKE_FIND_ROOT_PATH /opt/FJSVtclang/1.2.0) in Toolchain_K.cmake

@@ -21,7 +21,7 @@ CDMlib provides following functions for reading and writing files of the Cartesi
 - Cmake
 - MPI library
 - TextParser
-- CPMlib(option)
+- CPMlib(option, required to build tools, not for library itself)
 - NetCDF4 library(option)
 - HDF library(option)
 
@@ -255,3 +255,4 @@ Meanwhile, the summary is displayed for stdout.
 * Eri       Takebe
 * Yoichi    Tanaka
 * Syoyo     Fujita
+* Jorji     Nonaka

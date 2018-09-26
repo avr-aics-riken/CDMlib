@@ -46,10 +46,10 @@ cmake_minimum_required(VERSION 2.6)
 option (with_util "Enable utility" "ON")
 option (with_MPI "Enable MPI" "ON")
 option (with_example "Compiling examples" "OFF")
-#option (with_NetCDF "Enable NetCDF" "OFF")
-#option (with_HDF "Enable NetCDF(HDF)" "OFF")
-#option (with_CPM "Enable CPMlib" "OFF")
-#option (with_TP "Enable TextParser" "OFF")
+option (with_NetCDF "Enable NetCDF" "OFF")
+option (with_HDF "Enable NetCDF(HDF)" "OFF")
+option (with_CPM "Enable CPMlib" "OFF")
+option (with_TP "Enable TextParser" "OFF")
 option (enable_BUFFER_SIZE "Enable Buffer Size option" "OFF")
 
 
@@ -69,10 +69,16 @@ set (CMAKE_INSTALL_PREFIX "${INSTALL_DIR}")
 #set(CMAKE_BUILD_TYPE Release)
 
 
+#######
+# Policy setting
+#######
+
+cmake_policy(SET CMP0012 NEW)
+
 
 #######
-set(PROJECT_VERSION "1.1.3")
-set(LIB_REVISION "20170705_2200")
+set(PROJECT_VERSION "1.1.4")
+set(LIB_REVISION "20180926_1400")
 #######
 
 
