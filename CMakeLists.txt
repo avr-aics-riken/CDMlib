@@ -77,8 +77,8 @@ cmake_policy(SET CMP0012 NEW)
 
 
 #######
-set(PROJECT_VERSION "1.1.4")
-set(LIB_REVISION "20180926_1400")
+set(PROJECT_VERSION "1.1.5")
+set(LIB_REVISION "20180926_1430")
 #######
 
 
@@ -196,7 +196,7 @@ ENDIF()
 
 
 # CPMlib
-IF(with_CPM STREQUAL "no")
+IF(with_CPM STREQUAL "OFF")
 ELSE()
   SET(CPM_DIR "${with_CPM}")
   SET(CPM_INC "${CPM_DIR}/include")
@@ -204,7 +204,7 @@ ELSE()
 ENDIF()
 
 # NetCDF
-IF(with_NetCDF STREQUAL "no")
+IF(with_NetCDF STREQUAL "OFF")
 else()
   IF(with_HDF)
     SET(HDF_DIR "${with_HDF}")
@@ -242,7 +242,7 @@ else()
   message("upacs2dfi  : not build because with_MPI=no")
 endif()
 
-if(with_NetCDF STREQUAL "no")
+if(with_NetCDF STREQUAL "OFF")
   message("netcdf2dfi : not build because with_NetCDF=no")
 else()
   message("netcdf2dfi : build")

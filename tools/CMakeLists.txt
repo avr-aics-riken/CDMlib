@@ -20,7 +20,7 @@ if(with_MPI)
   add_subdirectory(upacs2dfi/src)
 endif()
 
-if(with_NetCDF STREQUAL "no")
+if(with_NetCDF STREQUAL "OFF")
 else()
   add_subdirectory(netcdf2dfi/src)
 endif()

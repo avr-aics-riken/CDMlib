@@ -4,6 +4,11 @@
 ## REVISION HISTORY
 
 ---
+- 2018-09-26 Version 1.1.5
+  - netCDFのオプション改修
+
+
+---
 - 2018-09-26 Version 1.1.4
   - checkOMPを陽に書く
   - CMP0012

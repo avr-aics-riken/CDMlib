@@ -33,7 +33,6 @@ set(cdm_files
     cdm_DFI_AVS.C
     cdm_DFI_BOV.C
     cdm_DFI_FUB.C
-    cdm_DFI_NETCDF.C
     cdm_DFI_PLOT3D.C
     cdm_DFI_Read.C
     cdm_DFI_SPH.C
@@ -54,6 +53,9 @@ set(cdm_files
     cdm_VisIt.C
 )
 
+if(with_NetCDF)
+  set(cdm_files "${cdm_files} cdm_DFI_NETCDF.C")
+endif()
 
 if(with_MPI)
   add_library(CDMmpi STATIC ${cdm_files})
